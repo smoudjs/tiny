@@ -12,24 +12,47 @@
 </head>
 <body>
 <script type="text/javascript">
-	
-	// Create a new THREE.WebGLRenderer
-	const renderer = new THREE.WebGLRenderer({ alpha: true });
-	renderer.setSize(window.innerWidth, window.innerHeight);
+	var d = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAJ9JREFUeNq01ssOwyAMRFG46v//Mt1ESmgh+DFmE2GPOBARKb2NVjo+17PXLD8a1+pl5+A+wSgFygymWYHBb0FtsKhJDdZlncG2IzJ4ayoMDv20wTmSMzClEgbWYNTAkQ0Z+OJ+A/eWnAaR9+oxCF4Os0H8htsMUp+pwcgBBiMNnAwF8GqIgL2hAzaGFFgZauDPKABmowZ4GL369/0rwACp2yA/ttmvsQAAAABJRU5ErkJggg=="
 
-	document.body.appendChild(renderer.domElement);
+	var t = "data:image/png;base64,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"
 
-	// Create a UI of 720 pixels high
-	// will scale up to match renderer.domElement's size
-	const ui = new Tiny(720);
+
+	const game = new Tiny(720, 450, null, true, {
+		preload: function() {
+			this.load.image("ter", t)
+			this.load.image("te23r", d)
+		},
+		create: function() {
+			var t2 = game.add._sprite("ter")
+			t2.anchor.set(0.5)
+			t2.position.set(300, 300)
+			var t3 = game.add._sprite("ter")	
+			t3.scale.set(2)
+			t2.addChild(t3)
+			var t4 = game.add._sprite("ter")
+			t4.x = -100
+			t2.addChild(t4)
+
+			this.rectangle = game.add._sprite("ter")
+
+		},
+		update: function(time, delta) {
+			//console.log("dfsd", )
+			this.rectangle.x = 500 + Math.sin(time / 500) * 100;
+			this.rectangle.y = 200 + Math.cos(time / 500) * 100;
+
+			this.rectangle.scale.x = Math.sin(time / 500);
+			this.rectangle.scale.y = Math.cos(time / 500);
+		}
+	});
 
 	// Place a Pretty Pink 500x150 rectangle in the center of the screen
-	const rectangle = ui.createRectangle('#FF6D92', 0, 0, 500, 100);
+	const rectangle = game.createRectangle('#FF6D92', 0, 0, 500, 100);
 	rectangle.anchor.x = Tiny.anchors.center;
 	rectangle.anchor.y = Tiny.anchors.center;
 
 	// Add some text to the rectangle
-	const text = ui.createText('BEST BUTTON EVER', 40, 'Arial', 'white');
+	const text = game.createText('BEST BUTTON EVER', 40, 'Arial', 'white');
 	text.textAlign = 'center';
 	text.textBaseline = 'middle';
 	text.anchor.x = Tiny.anchors.center;
@@ -42,16 +65,6 @@
 		console.info('You got me!');
 	});
 
-	// Animate that rectangle!
-	const animate = (deltaTime = 0) => {
-		rectangle.x = Math.sin(deltaTime / 500) * 100;
-		rectangle.y = Math.cos(deltaTime / 500) * 100;
-
-		ui.render(renderer);
-
-		requestAnimationFrame(animate);
-	};
-	animate();
 
 </script>
 </body>

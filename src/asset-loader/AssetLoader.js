@@ -57,9 +57,12 @@ AssetLoader.queueNext = function() {
  * @param {any} asset
  */
 
+AssetLoader.loadingCallback = function() {}
+
 AssetLoader.done = function(key, asset) {
 	AssetLoader.loadedAssets[key] = asset;
 	AssetLoader.updateAssetProgress(key, 1, 1);
+	AssetLoader.loadingCallback(key, asset)
 };
 
 /**
@@ -150,6 +153,8 @@ AssetLoader.getAssetById = function(id) {
  */
 
 AssetLoader.asyncQueue = function(queue, callback) {
+	if (queue.length == 0)
+		return callback()
 	var workingQueue = queue.slice();
 	var next = function() {
 		var collection = workingQueue.shift();
@@ -198,14 +203,14 @@ AssetLoader.asyncCollection = function(collection, callback) {
  * @param {string} asset
  */
 
-AssetLoader.add = function(asset) {
+AssetLoader.add = function(key, asset) {
 	var fileType = asset.split('.').pop();
 	if (fileType === 'png') {
-		AssetLoader.add.image(asset);
+		AssetLoader.add.image(key, asset);
 	} else if (fileType === 'json') {
-		AssetLoader.add.json(asset);
+		AssetLoader.add.json(key, asset);
 	} else if (fileType === 'css') {
-		AssetLoader.add.css(asset);
+		AssetLoader.add.css(key, asset);
 	} else {
 		throw new Error('Unsupported file-type (' + fileType + ') passed to AssetLoader.add.');
 	}
@@ -217,11 +222,11 @@ AssetLoader.add = function(asset) {
  * @param {string} asset
  */
 
-AssetLoader.add.image = function(asset) {
+AssetLoader.add.image = function(key, asset) {
 	AssetLoader.push(function(done) {
 		var img = new Image();
 		img.onload = function() {
-			AssetLoader.done(asset, img);
+			AssetLoader.done(key, img);
 			// @TODO: Can use XHR instead so we can get actual image loading progress
 			AssetLoader.updateAssetProgress(asset, 1, 1);
 			done();
@@ -287,8 +292,8 @@ AssetLoader.add.image = function(asset) {
  * @param {string} css
  */
 
-AssetLoader.add.webFont = function(fontFamily, css) {
-	AssetLoader.add.css(css);
+AssetLoader.add.webFont = function(key, fontFamily, css) {
+	AssetLoader.add.css(key, css);
 
 	// Preload font
 	var el = document.createElement('div');
@@ -307,10 +312,10 @@ AssetLoader.add.webFont = function(fontFamily, css) {
  * @param {string} asset
  */
 
-AssetLoader.add.json = function(asset) {
+AssetLoader.add.json = function(key, asset) {
 	AssetLoader.push(function(done) {
 		loadJSON(asset, function(response) {
-			AssetLoader.done(asset, response);
+			AssetLoader.done(key, response);
 			done();
 		});
 	});
@@ -322,18 +327,19 @@ AssetLoader.add.json = function(asset) {
  * @param {string} script
  */
 
-AssetLoader.add.script = function(asset) {
+AssetLoader.add.script = function(key, asset) {
 	AssetLoader.push(function(done) {
 		AssetLoader.loader.script(asset, function() {
-			AssetLoader.done(asset, asset);
+			AssetLoader.done(key, asset);
 			done();
 		});
 	})
 };
 
-AssetLoader.loader.script = function(asset, callback) {
+AssetLoader.loader.script = function(key, asset, callback) {
 	var el = document.createElement('script');
 	el.src = asset;
+	el.id = key
 	el.onload = callback;
 	document.head.appendChild(el);
 };
@@ -344,14 +350,14 @@ AssetLoader.loader.script = function(asset, callback) {
  * @param {string} asset
  */
 
-AssetLoader.add.css = function(asset) {
+AssetLoader.add.css = function(key, asset) {
 	AssetLoader.push(function(done) {
 		var el = document.createElement('link');
 		el.type = 'text/css';
 		el.rel = 'stylesheet';
 		el.href = asset;
 		el.onload = function() {
-			AssetLoader.done(asset, el);
+			AssetLoader.done(key, el);
 			done();
 		};
 		document.head.appendChild(el);

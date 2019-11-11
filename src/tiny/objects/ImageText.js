@@ -47,7 +47,7 @@ obs.forEach(function(o) {
         },
         set: function(new_v) {
             if (this[observable] != new_v)
-                this.__ui.shouldReDraw = true;
+                this.__ui._should_redraw = true;
             this[observable] = new_v
             this.setText()
         },

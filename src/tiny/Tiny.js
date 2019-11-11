@@ -1,18 +1,19 @@
 var anchors = require('./anchors.js');
-// var BitmapText = require('./BitmapText.js');
+
+var BitmapText = require('./objects/BitmapText.js');
 var Rectangle = require('./objects/Rectangle.js');
 var Sprite = require('./objects/Sprite.js');
 var Text = require('./objects/Text.js');
 var RoundRectangle = require('./objects/RoundRectangle.js');
 var Circle = require('./objects/Circle.js');
 var CircularProgress = require('./objects/CircularProgress.js');
-
-// var Ellipse = require('./Ellipse.js');
-// var Ellipse = require('./objects/CircularProgress.js');
 var ImageText = require('./objects/ImageText.js');
 
-var isFirefox = require('./utils/browserDetection.js').isFirefox;
 
+var isFirefox = require('./utils/browserDetection.js').isFirefox;
+var Loader = require('./Loader.js');
+var Renderer = require('./utils/renderer.js');
+var objectsFactory = require('./objectFactory.js');
 
 var dirtyProperties = ['x','y','width','height','rotation','alpha','visible','pivot','anchor','smoothing','stretch','offset','scale','parent','textAlign','assetPath','color','left','right','up','down','ActiveInvoke','value'];
 
@@ -26,7 +27,7 @@ var observeDirtyProperties = function(object, ui) {
 		Object.defineProperty(object, prop, {
 			set: function(value) {
 				if (object[prop] !== value) {
-					ui.shouldReDraw = true;
+					ui._should_redraw = true;
 				}
 
 				object[proxyKey] = value;
@@ -40,7 +41,7 @@ var observeDirtyProperties = function(object, ui) {
 };
 
 
-var Tiny = function(height, parentNode) {
+var Tiny = function(width, height, parentNode, enableRAF, states) {
 	this.displayObjects = [];
 	this.eventListeners = {
 		click: [],
@@ -50,8 +51,23 @@ var Tiny = function(height, parentNode) {
 	this.parentNode = parentNode || document.body;
 	this.canvas = document.createElement('canvas');
 	this.height = height || 720;
+	this.width = width || 430;
 	this.context = this.canvas.getContext('2d');
-	this.shouldReDraw = true;
+
+	this.stage = new Tiny.Stage()
+	this.textures = {}
+	this.renderer = new Tiny.CanvasRenderer(width, height, {view: this.canvas, autoResize: true})
+
+	this._should_redraw = true;
+
+	states = states || {}
+	this._preload_cb = states.preload || function() {}
+	this._create_cb = states.create || function() {}
+	this._update_cb = states.update || function() {}
+
+	this.load = new Loader(this)
+
+	objectsFactory(this)
 
 
 	this.addCanvasToDom();
@@ -69,6 +85,12 @@ var Tiny = function(height, parentNode) {
 	} else {
 		window.addEventListener('mousedown', this.clickHandler.bind(this));
 	}
+
+	this._self_raf = enableRAF
+	if (this._self_raf)
+		this._raf = new Renderer(this);
+
+	this.preload()
 };
 
 Tiny.anchors = anchors;
@@ -76,79 +98,114 @@ Tiny.anchors = anchors;
 Tiny.prototype.addCanvasToDom = function() {
 	this.parentNode.appendChild(this.canvas);
 
-	// Make sure the gameCanvas has position
-
-	//	this.gameCanvas.style.position = 'absolute'; // relative
-	
-
-	this.canvas.style.position = 'absolute'; // absolute
-	//this.canvas.style.left = 0;
+	this.canvas.style.position = 'absolute'; 
 
 	this.canvas.style.top="0px";
-//	this.gameCanvas.style.top="0px";
 	this.canvas.style.left="0px";
-//	this.gameCanvas.style.left="0px";
 
-	this.canvas.style.zIndex = 1;
 	this.canvas.style.transformOrigin = '0% 0%';
 	this.canvas.style.perspective = '1000px'; // Hardware acceleration!
 
 };
 
 Tiny.prototype.resize = function(width, height) {
-	var gameCanvasAspect = width / height
-	this.width = this.height * gameCanvasAspect;
+	this.renderer.resize(width, height)
+	// //var gameCanvasAspect = width / height
+	// this.width = width//this.height * gameCanvasAspect;
+	// this.height = height
 
-	this.canvas.width = this.width
-	this.canvas.height = this.height;
+	// this.canvas.width = this.width
+	// this.canvas.height = this.height;
 
-	this.canvas.style.width = width + "px"
-	this.canvas.style.height = height + "px"
+	// this.canvas.style.width = width + "px"
+	// this.canvas.style.height = height + "px"
 
-	//this.canvas.style.transform = 'scale(' + (this.gameCanvas.width / this.width) + ')';
+	// //this.canvas.style.transform = 'scale(' + (this.gameCanvas.width / this.width) + ')';
 
-	this.shouldReDraw = true;
+	// this._should_redraw = true;
 };
 
-Tiny.prototype.draw = function() {
-	if (!this.shouldReDraw) return;
+Tiny.prototype.render = function() {
+	
+	// //if (this._should_redraw) {
 
-	// Reset canvas
-	if (this.clearRect) {
-		this.context.clearRect(this.clearRect.x, this.clearRect.y, this.clearRect.width, this.clearRect.height);
-	} else {
-		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-	}
+	// 	if (this.clearRect) {
+	// 		this.context.clearRect(this.clearRect.x, this.clearRect.y, this.clearRect.width, this.clearRect.height);
+	// 	} else {
+	// 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+	// 	}
 
-	var self = this;
-	var length = this.displayObjects.length;
-	for (var i = 0;i < length;i++) {
-		this.displayObjects[i].render(self.context);
-	}
+	// 	var self = this;
+	// 	var length = this.displayObjects.length;
+	// 	for (var i = 0;i < length;i++) {
+	// 		this.displayObjects[i].render(self.context);
+	// 	}
 
-	this.shouldReDraw = false;
+	// 	this._should_redraw = false;
+	// //}
+
+	this.renderer.render(this.stage)
+
+
+	// if (this.colorReplace) {
+	// 	this.context.save();
+
+	// 	this.context.fillStyle = this.colorReplace
+	// 	this.context.globalCompositeOperation = 'hue';
+	// 	this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+	// 	this.context.restore();
+	// }
 };
 
-Tiny.prototype.render = function(renderer) {
-	this.draw();
 
-	if (this.colorReplace) {
-		this.context.save();
-
-		this.context.fillStyle = this.colorReplace
-		this.context.globalCompositeOperation = 'hue';
-		this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-		this.context.restore();
-	}
+Tiny.prototype.preload = function() {
+	this._preload_cb()
+	this.load.start(this.create)
 };
 
-Tiny.prototype.createSprite = function(imagePath, x, y, width, height) {
-	var displayObject = new Sprite(this, imagePath, x, y, width, height);
-	this.displayObjects.push(displayObject);
-	observeDirtyProperties(displayObject, this);
-	return displayObject;
+Tiny.prototype.create = function() {
+	this._create_cb()
+
+	if (this._self_raf)
+		this._raf.start()
 };
+
+var time, prevTime = 0, deltaTime = 0;
+
+Tiny.prototype.update = function(time) {
+	//time = time || Date.now();
+    deltaTime = time - prevTime
+
+	this._update_cb(time, deltaTime)
+	if (Tiny._tween_enabled)
+		TWEEN.update()
+
+	this.stage.updateTransform()
+	this.render()
+
+	prevTime = time
+};
+
+Tiny.prototype.pause = function() {
+	if (this._self_raf)
+		this._raf.isRunning = false
+}
+
+Tiny.prototype.resume = function() {
+	if (this._self_raf)
+		this._raf.isRunning = true
+}
+
+
+Tiny.prototype.destroy = function() {
+	if (Tiny._tween_enabled)
+		TWEEN.removeAll()
+
+	if (this._self_raf)
+		this._raf.stop()
+
+}
 
 Tiny.prototype.createSpriteFromSheet = function(imagePath, sheetImagePath, sheetDataPath, x, y, width, height) {
 	var displayObject = new Sprite(this, imagePath, x, y, width, height, sheetImagePath, sheetDataPath);
@@ -184,9 +241,6 @@ Tiny.prototype.createRoundRectangle = function(color, x, y, width, height, radiu
 	observeDirtyProperties(displayObject, this);
 	return displayObject;
 };
-
-
-
 
 Tiny.prototype.createCircle = function(color, x, y, radius) {
 	var displayObject = new Circle(this, color, x, y, radius);

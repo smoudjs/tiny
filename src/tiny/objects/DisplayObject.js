@@ -1,21 +1,12 @@
 var anchors = require('../anchors.js');
 
-/**
- * DisplayObject
- *
- * Used internally by ThreeUI, shouldn't be used directly
- * Use ThreeUI.createSprite and ThreeUI.createRectangle methods instead
- *
- * @param {ThreeUI} ui
- * @param {string} assetId
- * @param {int} x
- * @param {int} y
- */
+var DisplayObject = function(game, x, y, width, height) {
+	this.game = game;
 
-var DisplayObject = function(ui, x, y, width, height) {
-	this.ui = ui;
 	this.x = typeof x !== 'undefined' ? x : 0;
 	this.y = typeof y !== 'undefined' ? y : 0;
+	this.position = new Tiny.Point(1, 1, this.game);
+
 	this.width = typeof width !== 'undefined' ? width : 0;
 	this.height = typeof height !== 'undefined' ? height : 0;
 	this.rotation = 0;
@@ -34,10 +25,11 @@ var DisplayObject = function(ui, x, y, width, height) {
 		x: false,
 		y: false
 	};
-	this.scale = {
-		x: 1,
-		y: 1
-	};
+
+
+	this.scale = new Tiny.Point(1, 1, this.game);
+
+
 	this.offset = {
 		left: 0,
 		top: 0,
@@ -46,6 +38,23 @@ var DisplayObject = function(ui, x, y, width, height) {
 	};
 	this.parent = undefined;
 };
+
+// var _observables = [scale]
+// _observables.forEach(function(o) {
+//     var observable = "_" + o
+//     Object.defineProperty(ImageText.prototype, o, {
+//         get: function() {
+//             return this[observable]
+//         },
+//         set: function(new_v) {
+//             if (this[observable] != new_v)
+//                 this.__game._should_redraw = true;
+//             this[observable] = new_v
+//             this.setText()
+//         },
+//     });
+// })
+
 
 /**
  * Get the bounds for the DisplayObject's position in the canvas
@@ -76,8 +85,8 @@ DisplayObject.prototype.getParentBounds = function () {
 		return {
 			x: 0,
 			y: 0,
-			width: this.ui.width,
-			height: this.ui.height
+			width: this.game.width,
+			height: this.game.height
 		};
 	} else if (this.parent instanceof DisplayObject) {
 		return this.parent.getBounds();
@@ -249,7 +258,7 @@ DisplayObject.prototype.shouldReceiveEvents = function() {
  */
 
 DisplayObject.prototype.onClick = function(callback) {
-	this.ui.addEventListener('click', callback, this);
+	this.game.addEventListener('click', callback, this);
 };
 
 /**
@@ -328,6 +337,32 @@ Object.defineProperty(DisplayObject.prototype, '_proxied_visible', { // Set on p
 		return this._visible = toggle;
 	},
 });
+
+
+// Object.defineProperty(DisplayObject.prototype, "x", {
+//     get: function() {
+//         return this.scale.x
+//     },
+//     set: function(value) {
+//        // if (this[observable] != new_v)
+//             this.game._should_redraw = true;
+//         this.scale.x = value
+//        // this.setText()
+//     },
+// });
+
+// Object.defineProperty(DisplayObject.prototype, "y", {
+//     get: function() {
+//         return this.scale.y
+//     },
+//     set: function(value) {
+//        // if (this[observable] != new_v)
+//             this.game._should_redraw = true;
+//         this.scale.y = value
+//        // this.setText()
+//     },
+// });
+
 
 
 // Export DisplayObject as module
