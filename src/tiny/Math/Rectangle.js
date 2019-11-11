@@ -11,6 +11,8 @@ Tiny.Rectangle = function (x, y, width, height) {
 
     this.width = width;
     this.height = height;
+
+    this.type = Tiny.Primitives.RECT
 };
 
 Tiny.Rectangle.prototype = {

@@ -1,122 +1,263 @@
-var DisplayObject = require('./DisplayObject.js');
 
-/**
- * Sprite
- * @extends ThreeUI.DisplayObject
- * 
- * Used internally by ThreeUI, shouldn't be used directly
- * Use ThreeUI.createSprite instead to create sprites
- * 
- * @param {ThreeUI} ui
- * @param {string} assetPath 
- * @param {int} x 
- * @param {int} y 
- * @param {int} width
- * @param {int} height
- */
+Tiny.Sprite = function(texture)
+{
+    Tiny.DisplayObjectContainer.call(this);
 
-var Sprite = function(ui, assetPath, x, y, width, height, sheetImagePath, sheetDataPath) {
-	this.setAssetPath(assetPath, sheetImagePath, sheetDataPath);
+    this.anchor = new Tiny.Point();
 
-	var x = typeof x !== 'undefined' ? x : 0;
-	var y = typeof y !== 'undefined' ? y : 0;
-	var width = typeof width !== 'undefined' ? width : null;
-	var height = typeof height !== 'undefined' ? height : null;
+    this.texture = texture //|| PIXI.Texture.emptyTexture;
 
-	if (this.asset) {
-		width = width !== null ? width : this.asset.width;
-		height = height !== null ? height : this.asset.height;
-	} 
-	// else if (this.sheet && this.sheetImageData) {
-	// 	width = width !== null ? width : this.sheetImageData['frame']['w'];
-	// 	height = height !== null ? height : this.sheetImageData['frame']['h'];
-	// }
+    this._width = 0;
 
-	// Run DisplayObject constructor on this object
-	DisplayObject.bind(this)(ui, x, y, width, height);
+    this._height = 0;
+
+    this.tint = 0xFFFFFF;
+
+    this.blendMode = Tiny.blendModes.NORMAL;
+
+    this.shader = null;
+
+    if (this.texture.baseTexture.hasLoaded)
+    {
+        this.onTextureUpdate();
+    }
+
+    this.renderable = true;
+
 };
 
-Sprite.prototype = Object.create(DisplayObject.prototype);
 
-/**
- * Draw this Sprite onto the provided context
- * Used internally by DisplayObject.render
- * 
- * @param {CanvasRenderingContext2D} context
- * @param {int} x
- * @param {int} y
- * @param {int} width
- * @param {int} height
- */
+Tiny.Sprite.prototype = Object.create(Tiny.DisplayObjectContainer.prototype);
+Tiny.Sprite.prototype.constructor = Tiny.Sprite;
 
-Sprite.prototype.draw = function(context, x, y, width, height) {
-	if (this.sheet && this.sheetImageData) {
-		// We're handling a sprite from a sheet
-		// context.drawImage(this.sheet, this.sheetImageData['frame']['x'], this.sheetImageData['frame']['y'], this.sheetImageData['frame']['w'], this.sheetImageData['frame']['h'], x, y, width, height);
-	} else {
-		context.drawImage(this.asset, x, y, width, height);
-	}
+Object.defineProperty(Tiny.Sprite.prototype, 'width', {
+
+    get: function() {
+        return this.scale.x * this.texture.frame.width;
+    },
+
+    set: function(value) {
+        this.scale.x = value / this.texture.frame.width;
+        this._width = value;
+    }
+
+});
+
+Object.defineProperty(Tiny.Sprite.prototype, 'height', {
+
+    get: function() {
+        return  this.scale.y * this.texture.frame.height;
+    },
+
+    set: function(value) {
+        this.scale.y = value / this.texture.frame.height;
+        this._height = value;
+    }
+
+});
+
+Tiny.Sprite.prototype.setTexture = function(texture)
+{
+    this.texture = texture;
+    this.cachedTint = 0xFFFFFF;
 };
 
-/**
- * Adjust the asset ID of this sprite
- * 
- * @param {string} assetPath
- * @param {string} sheetImagePath
- * @param {string} sheetDataPath
- */
-
-Sprite.prototype.setAssetPath = function(assetPath, sheetImagePath, sheetDataPath) {
-	this.assetPath = assetPath;
-	if (typeof sheetImagePath === 'undefined' && !this.sheet) {
-		this.asset = AssetLoader.getAssetById(assetPath);
-		this.sheet = null;
-	} 
-	// else {
-	// 	this.asset = null;
-	// 	this.parseSheet(assetPath, sheetImagePath, sheetDataPath)
-	// }
+Tiny.Sprite.prototype.onTextureUpdate = function()
+{
+    // so if _width is 0 then width was not set..
+    if (this._width) this.scale.x = this._width / this.texture.frame.width;
+    if (this._height) this.scale.y = this._height / this.texture.frame.height;
 };
 
-// /**
-//  * Parse a sheet from its image and data
-//  * 
-//  * @param {string} sheetImagePath
-//  * @param {string} sheetDataPath
-//  */
+Tiny.Sprite.prototype.getBounds = function(matrix)
+{
+    var width = this.texture.frame.width;
+    var height = this.texture.frame.height;
 
-// Sprite.prototype.parseSheet = function(assetPath, sheetImagePath, sheetDataPath) {
-// 	if(typeof sheetDataPath === 'undefined' && !this.sheetData) {
-// 		throw new Error('Sheet data path missing when creating sprite from sheet');
-// 	}
+    var w0 = width * (1-this.anchor.x);
+    var w1 = width * -this.anchor.x;
 
-// 	if (sheetImagePath || !this.sheet) {
-// 		this.sheet = AssetLoader.getAssetById(sheetImagePath);
-// 	}
+    var h0 = height * (1-this.anchor.y);
+    var h1 = height * -this.anchor.y;
 
-// 	if (sheetDataPath || !this.sheetData) {
-// 		this.sheetData = AssetLoader.getAssetById(sheetDataPath);
-// 	}
+    var worldTransform = matrix || this.worldTransform;
 
-// 	if (typeof this.sheetData !== 'object') {
-// 		throw new Error('Invalid sheet data ' + sheetDataPath + ' -- not an object');
-// 	} else if(!this.sheetData['frames']) {
-// 		throw new Error('Invalid sheet data ' + sheetDataPath + ' -- does not have frames');
-// 	}
+    var a = worldTransform.a;
+    var b = worldTransform.b;
+    var c = worldTransform.c;
+    var d = worldTransform.d;
+    var tx = worldTransform.tx;
+    var ty = worldTransform.ty;
 
-// 	var data;
-// 	this.sheetData['frames'].forEach(function(frame) {
-// 		if (frame['filename'] === assetPath) {
-// 			data = frame;
-// 		}
-// 	});	
+    var maxX = -Infinity;
+    var maxY = -Infinity;
 
-// 	if (!data) {
-// 		throw new Error('Asset "' + assetPath + '" does not exist in sheet "' + sheetDataPath + '"');
-// 	}
+    var minX = Infinity;
+    var minY = Infinity;
 
-// 	this.sheetImageData = data;
-// };
+    if (b === 0 && c === 0)
+    {
+        // scale may be negative!
+        if (a < 0) a *= -1;
+        if (d < 0) d *= -1;
 
-// Export Sprite as module
-module.exports = Sprite;
+        // this means there is no rotation going on right? RIGHT?
+        // if thats the case then we can avoid checking the bound values! yay         
+        minX = a * w1 + tx;
+        maxX = a * w0 + tx;
+        minY = d * h1 + ty;
+        maxY = d * h0 + ty;
+    }
+    else
+    {
+        var x1 = a * w1 + c * h1 + tx;
+        var y1 = d * h1 + b * w1 + ty;
+
+        var x2 = a * w0 + c * h1 + tx;
+        var y2 = d * h1 + b * w0 + ty;
+
+        var x3 = a * w0 + c * h0 + tx;
+        var y3 = d * h0 + b * w0 + ty;
+
+        var x4 =  a * w1 + c * h0 + tx;
+        var y4 =  d * h0 + b * w1 + ty;
+
+        minX = x1 < minX ? x1 : minX;
+        minX = x2 < minX ? x2 : minX;
+        minX = x3 < minX ? x3 : minX;
+        minX = x4 < minX ? x4 : minX;
+
+        minY = y1 < minY ? y1 : minY;
+        minY = y2 < minY ? y2 : minY;
+        minY = y3 < minY ? y3 : minY;
+        minY = y4 < minY ? y4 : minY;
+
+        maxX = x1 > maxX ? x1 : maxX;
+        maxX = x2 > maxX ? x2 : maxX;
+        maxX = x3 > maxX ? x3 : maxX;
+        maxX = x4 > maxX ? x4 : maxX;
+
+        maxY = y1 > maxY ? y1 : maxY;
+        maxY = y2 > maxY ? y2 : maxY;
+        maxY = y3 > maxY ? y3 : maxY;
+        maxY = y4 > maxY ? y4 : maxY;
+    }
+
+    var bounds = this._bounds;
+
+    bounds.x = minX;
+    bounds.width = maxX - minX;
+
+    bounds.y = minY;
+    bounds.height = maxY - minY;
+
+    // store a reference so that if this function gets called again in the render cycle we do not have to recalculate
+    this._currentBounds = bounds;
+
+    return bounds;
+};
+
+
+Tiny.Sprite.prototype._renderCanvas = function(renderSession)
+{
+    // If the sprite is not visible or the alpha is 0 then no need to render this element
+    if (this.visible === false || this.alpha === 0 || this.renderable === false || this.texture.crop.width <= 0 || this.texture.crop.height <= 0) return;
+
+    if (this.blendMode !== renderSession.currentBlendMode)
+    {
+        renderSession.currentBlendMode = this.blendMode;
+        renderSession.context.globalCompositeOperation = Tiny.blendModesCanvas[renderSession.currentBlendMode];
+    }
+
+    if (this._mask)
+    {
+        renderSession.maskManager.pushMask(this._mask, renderSession);
+    }
+
+    //  Ignore null sources
+    if (this.texture.valid)
+    {
+        var resolution = this.texture.baseTexture.resolution / renderSession.resolution;
+
+        renderSession.context.globalAlpha = this.worldAlpha;
+
+         //  If smoothingEnabled is supported and we need to change the smoothing property for this texture
+        if (renderSession.smoothProperty && renderSession.scaleMode !== this.texture.baseTexture.scaleMode)
+        {
+            renderSession.scaleMode = this.texture.baseTexture.scaleMode;
+            renderSession.context[renderSession.smoothProperty] = (renderSession.scaleMode === 0);
+        }
+
+        //  If the texture is trimmed we offset by the trim x/y, otherwise we use the frame dimensions
+        var dx = (this.texture.trim) ? this.texture.trim.x - this.anchor.x * this.texture.trim.width : this.anchor.x * -this.texture.frame.width;
+        var dy = (this.texture.trim) ? this.texture.trim.y - this.anchor.y * this.texture.trim.height : this.anchor.y * -this.texture.frame.height;
+
+        //  Allow for pixel rounding
+        if (renderSession.roundPixels)
+        {
+            renderSession.context.setTransform(
+                this.worldTransform.a,
+                this.worldTransform.b,
+                this.worldTransform.c,
+                this.worldTransform.d,
+                (this.worldTransform.tx * renderSession.resolution) | 0,
+                (this.worldTransform.ty * renderSession.resolution) | 0);
+            dx = dx | 0;
+            dy = dy | 0;
+        }
+        else
+        {
+            renderSession.context.setTransform(
+                this.worldTransform.a,
+                this.worldTransform.b,
+                this.worldTransform.c,
+                this.worldTransform.d,
+                this.worldTransform.tx * renderSession.resolution,
+                this.worldTransform.ty * renderSession.resolution);
+        }
+
+        // if (this.tint !== 0xFFFFFF)
+        // {
+        //     if (this.cachedTint !== this.tint)
+        //     {
+        //         this.cachedTint = this.tint;
+        //         this.tintedTexture = PIXI.CanvasTinter.getTintedTexture(this, this.tint);
+        //     }
+
+        //     renderSession.context.drawImage(
+        //                         this.tintedTexture,
+        //                         0,
+        //                         0,
+        //                         this.texture.crop.width,
+        //                         this.texture.crop.height,
+        //                         dx / resolution,
+        //                         dy / resolution,
+        //                         this.texture.crop.width / resolution,
+        //                         this.texture.crop.height / resolution);
+        // }
+        // else
+        // {
+            renderSession.context.drawImage(
+                                this.texture.baseTexture.source,
+                                this.texture.crop.x,
+                                this.texture.crop.y,
+                                this.texture.crop.width,
+                                this.texture.crop.height,
+                                dx / resolution,
+                                dy / resolution,
+                                this.texture.crop.width / resolution,
+                                this.texture.crop.height / resolution);
+        // }
+    }
+
+    // OVERWRITE
+    for (var i = 0; i < this.children.length; i++)
+    {
+        this.children[i]._renderCanvas(renderSession);
+    }
+
+    if (this._mask)
+    {
+        renderSession.maskManager.popMask(renderSession);
+    }
+};

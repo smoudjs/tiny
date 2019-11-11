@@ -9,13 +9,6 @@
  * @class CanvasGraphics
  * @static
  */
-Tiny.Graphics = {
-    POLY: 0,
-    RECT: 1, 
-    CIRC: 2,
-    ELIP: 3,
-    RREC: 4
-}
 
 Tiny.CanvasGraphics = function()
 {
@@ -48,8 +41,8 @@ Tiny.CanvasGraphics.renderGraphics = function(graphics, context)
         var lineColor = data._lineTint;
 
         context.lineWidth = data.lineWidth;
-
-        if (data.type === Tiny.Graphics.POLY)
+        
+        if (data.type === Tiny.Primitives.POLY)
         {
             context.beginPath();
 
@@ -87,7 +80,7 @@ Tiny.CanvasGraphics.renderGraphics = function(graphics, context)
                 context.stroke();
             }
         }
-        else if (data.type === Tiny.Graphics.RECT)
+        else if (data.type === Tiny.Primitives.RECT)
         {
             if (data.fillColor || data.fillColor === 0)
             {
@@ -103,7 +96,7 @@ Tiny.CanvasGraphics.renderGraphics = function(graphics, context)
                 context.strokeRect(shape.x, shape.y, shape.width, shape.height);
             }
         }
-        else if (data.type === Tiny.Graphics.CIRC)
+        else if (data.type === Tiny.Primitives.CIRC)
         {
             // TODO - need to be Undefined!
             context.beginPath();
@@ -124,7 +117,7 @@ Tiny.CanvasGraphics.renderGraphics = function(graphics, context)
                 context.stroke();
             }
         }
-        else if (data.type === Tiny.Graphics.ELIP)
+        else if (data.type === Tiny.Primitives.ELIP)
         {
             // ellipse code taken from: http://stackoverflow.com/questions/2172798/how-to-draw-an-oval-in-html5-canvas
 
@@ -166,7 +159,7 @@ Tiny.CanvasGraphics.renderGraphics = function(graphics, context)
                 context.stroke();
             }
         }
-        else if (data.type === Tiny.Graphics.RREC)
+        else if (data.type === Tiny.Primitives.RREC)
         {
             var rx = shape.x;
             var ry = shape.y;
@@ -231,7 +224,7 @@ Tiny.CanvasGraphics.renderGraphicsMask = function(graphics, context)
         var data = graphics.graphicsData[i];
         var shape = data.shape;
 
-        if (data.type === Tiny.Graphics.POLY)
+        if (data.type === Tiny.Primitives.POLY)
         {
 
             var points = shape.points;
@@ -250,18 +243,18 @@ Tiny.CanvasGraphics.renderGraphicsMask = function(graphics, context)
             }
 
         }
-        else if (data.type === Tiny.Graphics.RECT)
+        else if (data.type === Tiny.Primitives.RECT)
         {
             context.rect(shape.x, shape.y, shape.width, shape.height);
             context.closePath();
         }
-        else if (data.type === Tiny.Graphics.CIRC)
+        else if (data.type === Tiny.Primitives.CIRC)
         {
             // TODO - need to be Undefined!
             context.arc(shape.x, shape.y, shape.radius, 0, 2 * Math.PI);
             context.closePath();
         }
-        else if (data.type === Tiny.Graphics.ELIP)
+        else if (data.type === Tiny.Primitives.ELIP)
         {
 
             // ellipse code taken from: http://stackoverflow.com/questions/2172798/how-to-draw-an-oval-in-html5-canvas
@@ -287,7 +280,7 @@ Tiny.CanvasGraphics.renderGraphicsMask = function(graphics, context)
             context.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
             context.closePath();
         }
-        else if (data.type === Tiny.Graphics.RREC)
+        else if (data.type === Tiny.Primitives.RREC)
         {
 
             var rx = shape.x;
