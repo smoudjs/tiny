@@ -29,7 +29,7 @@ const config = {
 	},
 	plugins: [
 		new UglifyJSPlugin()
-		//new webpack.BannerPlugin({ banner: banner, raw: true }), // with banner
+		//new webpack.BannerPlugin({ banner: banner, raw: true }),
 	],
 };
 

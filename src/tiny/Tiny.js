@@ -1,4 +1,4 @@
-var ObjectFactory = require('./ObjectFactory.js');
+var ObjectCreator = require('./ObjectCreator.js');
 
 var Tiny = function(width, height, parentNode, enableRAF, states) {
 
@@ -22,7 +22,7 @@ var Tiny = function(width, height, parentNode, enableRAF, states) {
 	if (Tiny.Loader)
 		this.load = new Tiny.Loader(this)
 
-	this.add = new ObjectFactory(this)
+	this.add = new ObjectCreator(this)
 
 	if (Tiny.Input)
 		this.input = new Tiny.Input(this)
