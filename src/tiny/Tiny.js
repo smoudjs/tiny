@@ -1,42 +1,40 @@
-var Loader = require('./Loader.js');
-var Input = require('./Input.js');
-var Renderer = require('./utils/renderer.js');
 var ObjectFactory = require('./ObjectFactory.js');
 
 var Tiny = function(width, height, parentNode, enableRAF, states) {
-	//this.objects = [];
-
-	this.eventListeners = {
-		click: [],
-	};
 
 	this.parentNode = parentNode || document.body;
 	this.canvas = document.createElement('canvas');
+	this._scale = Tiny.ScaleManager.NORMAL
 	this.height = height || 720;
 	this.width = width || 430;
 
 	this.stage = new Tiny.Stage()
 	this.textures = {}
 	this.renderer = new Tiny.CanvasRenderer(width, height, {view: this.canvas, autoResize: true})
+	Tiny.defaultRenderer = this.renderer
 
 	states = states || {}
 	this._preload_cb = states.preload || function() {}
 	this._create_cb = states.create || function() {}
 	this._update_cb = states.update || function() {}
+	this._resize_cb = states.resize || function() {}
 
-	this.load = new Loader(this)
+	if (Tiny.Loader)
+		this.load = new Tiny.Loader(this)
 
 	this.add = new ObjectFactory(this)
-	this.input = new Input(this)
+
+	if (Tiny.Input)
+		this.input = new Tiny.Input(this)
 
 	this.addCanvasToDom();
 	
 
-	this.resize(window.innerWidth, window.innerHeight);
+	this.resize(this.width, this.height);
 
-	this._self_raf = enableRAF
+	this._self_raf = enableRAF && Tiny.RAF
 	if (this._self_raf)
-		this._raf = new Renderer(this);
+		this._raf = new Tiny.RAF(this);
 
 	this.preload()
 };
@@ -54,9 +52,46 @@ Tiny.prototype.addCanvasToDom = function() {
 
 };
 
-Tiny.prototype.resize = function(width, height) {
-	this.renderer.resize(width, height)
+Tiny.prototype.setPixelRatio = function(dpr) {
+	this.renderer.resolution = dpr
+	this.resize()
 };
+
+Tiny.prototype.resize = function(width, height) {
+	this.width = width || this.width
+	this.height = height || this.height
+	this.renderer.resize(this.width, this.height)
+	this._resize_cb(this.renderer.width, this.renderer.height)
+};
+
+Tiny.prototype.setSize = Tiny.prototype.resize
+
+Tiny.prototype._defineResizeEvent = function() {
+	if (!this._definedResizeListener) {
+		this._definedResizeListener = true
+		window.addEventListener( 'resize', function() {
+			if (this._scale == Tiny.ScaleManager.SHOW_ALL) {
+	        	this.resize(window.innerWidth, window.innerHeight)
+	        }
+		}.bind(this), false );
+	}
+}
+
+Object.defineProperty(Tiny.prototype, 'scale', {
+
+    get: function() {
+        return  this._scale;
+    },
+
+    set: function(value) {
+        this._scale = value;
+        if (this._scale == Tiny.ScaleManager.SHOW_ALL) {
+        	this._defineResizeEvent()
+        	this.resize(window.innerWidth, window.innerHeight)
+        }
+    }
+
+});
 
 Tiny.prototype.render = function() {
 	this.renderer.render(this.stage)
@@ -65,7 +100,10 @@ Tiny.prototype.render = function() {
 
 Tiny.prototype.preload = function() {
 	this._preload_cb()
-	this.load.start(this.create)
+	if (Tiny.Loader)
+		this.load.start(this.create)
+	else
+		this.create()
 };
 
 Tiny.prototype.create = function() {
@@ -78,7 +116,6 @@ Tiny.prototype.create = function() {
 var time, prevTime = 0, deltaTime = 0;
 
 Tiny.prototype.update = function(time) {
-	//time = time || Date.now();
     deltaTime = time - prevTime
 
 	this._update_cb(time, deltaTime)
@@ -110,21 +147,6 @@ Tiny.prototype.destroy = function() {
 		this._raf.stop()
 
 }
-
-// Tiny.prototype.createText = function(text, font, color, x, y) {
-// 	var displayObject = new Text(this, text, font, color, x, y);
-// 	this.displayObjects.push(displayObject);
-// 	observeDirtyProperties(displayObject, this);
-// 	return displayObject;
-// };
-
-Tiny.prototype.addEventListener = function(type, callback, displayObject) {
-	this.eventListeners[type].push({
-		callback: callback,
-		displayObject: displayObject
-	});
-};
-
 
 module.exports = Tiny;
 window.Tiny = Tiny;

@@ -1,27 +1,32 @@
-var Input = function (game)
+Tiny.Input = function (game)
 {
     this.game = game;
-    this.listeners = []
+    this._active_objects = []
 
-    window.addEventListener('touchend', this.clickHandler.bind(this));
+    window.addEventListener('touchstart', this.clickHandler.bind(this));
 
-    if (/firefox/i.test(navigator.userAgent)) {
-        // Firefox blocks window.open from mousedown events, so bind click instead
+    // if (/firefox/i.test(navigator.userAgent)) {
+    //     // Firefox blocks window.open from mousedown events, so bind click instead
+    //     window.addEventListener('click', this.clickHandler.bind(this));
+    // } else {
         window.addEventListener('click', this.clickHandler.bind(this));
-    } else {
-        window.addEventListener('mousedown', this.clickHandler.bind(this));
-    }
+    // }
 };
 
-var isInBoundingBox = function(x, y, boundX, boundY, boundWidth, boundHeight) {
-    return (
-        x >= boundX &&
-        x <= boundX + boundWidth &&
-        y >= boundY &&
-        y <= boundY + boundHeight
-    );
-};
-Input.prototype = {
+Tiny.Input.prototype = {
+
+    _checkOnActiveObjects: function(obj, x, y) {
+        if (obj.inputEnabled) {
+            if (obj.getBounds().contains(x, y))
+                this._active_objects.push(obj)
+        }
+
+        if (obj.children && obj.children.length > 0) {
+            for (var t = 0; t < obj.children.length; t++)
+                this._checkOnActiveObjects(obj.children[t], x, y)
+        }
+    },
+
     clickHandler: function(event) {
         var coords = null;
         if (typeof TouchEvent !== 'undefined' && event instanceof TouchEvent) {
@@ -41,43 +46,29 @@ Input.prototype = {
 
         if (this.listeningToTouchEvents && event instanceof MouseEvent || coords === null) return;
 
-      //  coords = this.windowToUISpace(coords.x, coords.y);
+        coords = this.windowToUISpace(coords.x, coords.y);
 
-        var callbackQueue = [];
+        this._active_objects = []
 
-        this.listeners.forEach(function(listener) {
-            if (listener.inputEnabled) {
-                console.log(coords)
+        for (var t = 0; t < this.game.stage.children.length; t++)
+            this._checkOnActiveObjects(this.game.stage.children[t], coords.x, coords.y)
 
-                var bounds = listener.getBounds();
-                if (isInBoundingBox(coords.x, coords.y, bounds.x, bounds.y, bounds.width, bounds.height)) {
-                    // Put listeners in a queue first, so state changes do not impact checking other click handlers
-                    callbackQueue.push(listener.onClick);
-                }
+        var i = this._active_objects.length
+
+        //while (i--) {
+            if (i > 0 && typeof this._active_objects[i - 1].onClick == "function") {
+                this._active_objects[i - 1].onClick()
+            //    break;
             }
-        });
+       // }
 
-        callbackQueue.forEach(function(callback){
-            if (typeof callback == "function")
-                callback();
-        });
     },
 
     windowToUISpace: function(x, y) {
         var bounds = this.game.canvas.getBoundingClientRect();
-        var scale = this.game.height / bounds.height;
-
         return {
-            x: (x - bounds.left) * scale,
-            y: (y - bounds.top) * scale,
+            x: (x - bounds.left),
+            y: (y - bounds.top),
         };
-    },
-
-    appendListener: function(obj) {
-        if (this.listeners.indexOf(obj) == -1)
-            this.listeners.push(obj)
     }
-
 };
-
-module.exports = Input

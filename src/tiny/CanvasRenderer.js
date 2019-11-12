@@ -29,7 +29,8 @@ Tiny.CanvasRenderer = function(width, height, options)
 
     this.count = 0;
 
-    this.maskManager = new Tiny.CanvasMaskManager();
+    if (Tiny.CanvasMaskManager)
+        this.maskManager = new Tiny.CanvasMaskManager();
 
     this.renderSession = {
         context: this.context,

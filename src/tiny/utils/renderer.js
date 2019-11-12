@@ -1,5 +1,5 @@
 
-var RequestAnimationFrame = function (game, forceSetTimeOut)
+Tiny.RAF = function (game, forceSetTimeOut)
 {
 
     if (forceSetTimeOut === undefined) { forceSetTimeOut = false; }
@@ -27,7 +27,7 @@ var RequestAnimationFrame = function (game, forceSetTimeOut)
 
 };
 
-RequestAnimationFrame.prototype = {
+Tiny.RAF.prototype = {
 
     start: function ()
     {
@@ -113,5 +113,3 @@ RequestAnimationFrame.prototype = {
     }
 
 };
-
-module.exports = RequestAnimationFrame

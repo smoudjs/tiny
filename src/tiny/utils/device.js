@@ -295,7 +295,7 @@ Tiny.Device._initialize = function ()
 
         Tiny.CanvasPool.removeByCanvas(canvas);
 
-        PIXI.CanvasTinter.tintMethod = (device.canUseMultiply) ? PIXI.CanvasTinter.tintWithMultiply : PIXI.CanvasTinter.tintWithPerPixel;
+        Tiny.CanvasTinter.tintMethod = (device.canUseMultiply) ? Tiny.CanvasTinter.tintWithMultiply : Tiny.CanvasTinter.tintWithPerPixel;
 
     }
 

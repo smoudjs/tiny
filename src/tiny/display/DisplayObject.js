@@ -1,14 +1,3 @@
-/**
- * @author Mat Groves http://matgroves.com/ @Doormat23
- */
-
-/**
- * The base class for all objects that are rendered on the screen.
- * This is an abstract class and should not be used on its own rather it should be extended.
- *
- * @class DisplayObject
- * @constructor
- */
 
 Tiny.DisplayObject = function()
 {
@@ -28,12 +17,12 @@ Tiny.DisplayObject = function()
     this.worldTransform = new Tiny.Matrix();
     this._sr = 0;
     this._cr = 1;
-    this.filterArea = null;
     this._bounds = new Tiny.Rectangle(0, 0, 1, 1);
     this._currentBounds = null;
     this._mask = null;
     this._cacheAsBitmap = false;
     this._cacheIsDirty = false;
+    this.inputEnabled = false
 
 };
 
@@ -60,14 +49,11 @@ Tiny.DisplayObject.prototype.destroy = function()
     this.parent = null;
     this.stage = null;
     this.worldTransform = null;
-    this.filterArea = null;
     this._bounds = null;
     this._currentBounds = null;
     this._mask = null;
 
     this.renderable = false;
-
-    this._destroyCachedSprite();
 };
 
 Object.defineProperty(Tiny.DisplayObject.prototype, 'worldVisible', {
@@ -103,60 +89,6 @@ Object.defineProperty(Tiny.DisplayObject.prototype, 'mask', {
         if (this._mask) this._mask.isMask = true;
     }
 
-});
-
-Object.defineProperty(Tiny.DisplayObject.prototype, 'filters', {
-
-    get: function() {
-        return this._filters;
-    },
-
-    set: function(value) {
-
-        if (value)
-        {
-            // now put all the passes in one place..
-            var passes = [];
-
-            for (var i = 0; i < value.length; i++)
-            {
-                var filterPasses = value[i].passes;
-
-                for (var j = 0; j < filterPasses.length; j++)
-                {
-                    passes.push(filterPasses[j]);
-                }
-            }
-
-            // TODO change this as it is legacy
-            this._filterBlock = { target: this, filterPasses: passes };
-        }
-
-        this._filters = value;
-    }
-});
-
-Object.defineProperty(Tiny.DisplayObject.prototype, 'cacheAsBitmap', {
-
-    get: function() {
-        return  this._cacheAsBitmap;
-    },
-
-    set: function(value) {
-
-        if (this._cacheAsBitmap === value) return;
-
-        if (value)
-        {
-            this._generateCachedSprite();
-        }
-        else
-        {
-            this._destroyCachedSprite();
-        }
-
-        this._cacheAsBitmap = value;
-    }
 });
 
 Tiny.DisplayObject.prototype.updateTransform = function()
@@ -262,7 +194,7 @@ Tiny.DisplayObject.prototype.generateTexture = function(resolution, scaleMode, r
 {
     var bounds = this.getLocalBounds();
 
-    var renderTexture = new PIXI.RenderTexture(bounds.width | 0, bounds.height | 0, renderer, scaleMode, resolution);
+    var renderTexture = new Tiny.RenderTexture(bounds.width | 0, bounds.height | 0, renderer, scaleMode, resolution);
     
     Tiny.DisplayObject._tempMatrix.tx = -bounds.x;
     Tiny.DisplayObject._tempMatrix.ty = -bounds.y;
@@ -270,11 +202,6 @@ Tiny.DisplayObject.prototype.generateTexture = function(resolution, scaleMode, r
     renderTexture.render(this, Tiny.DisplayObject._tempMatrix);
 
     return renderTexture;
-};
-
-Tiny.DisplayObject.prototype.updateCache = function()
-{
-    this._generateCachedSprite();
 };
 
 Tiny.DisplayObject.prototype.toGlobal = function(position)
@@ -295,59 +222,6 @@ Tiny.DisplayObject.prototype.toLocal = function(position, from)
     this.displayObjectUpdateTransform();
 
     return this.worldTransform.applyInverse(position);
-};
-
-Tiny.DisplayObject.prototype._renderCachedSprite = function(renderSession)
-{
-    this._cachedSprite.worldAlpha = this.worldAlpha;
-
-    PIXI.Sprite.prototype._renderCanvas.call(this._cachedSprite, renderSession);
-
-};
-
-Tiny.DisplayObject.prototype._generateCachedSprite = function()
-{
-    this._cacheAsBitmap = false;
-
-    var bounds = this.getLocalBounds();
-
-    if (!this._cachedSprite)
-    {
-        var renderTexture = new PIXI.RenderTexture(bounds.width | 0, bounds.height | 0);//, renderSession.renderer);
-
-        this._cachedSprite = new PIXI.Sprite(renderTexture);
-        this._cachedSprite.worldTransform = this.worldTransform;
-    }
-    else
-    {
-        this._cachedSprite.texture.resize(bounds.width | 0, bounds.height | 0);
-    }
-
-    var tempFilters = this._filters;
-    this._filters = null;
-
-    this._cachedSprite.filters = tempFilters;
-
-    Tiny.DisplayObject._tempMatrix.tx = -bounds.x;
-    Tiny.DisplayObject._tempMatrix.ty = -bounds.y;
-    
-    this._cachedSprite.texture.render(this, Tiny.DisplayObject._tempMatrix, true);
-
-    this._cachedSprite.anchor.x = -( bounds.x / bounds.width );
-    this._cachedSprite.anchor.y = -( bounds.y / bounds.height );
-
-    this._filters = tempFilters;
-
-    this._cacheAsBitmap = true;
-};
-
-Tiny.DisplayObject.prototype._destroyCachedSprite = function()
-{
-    if (!this._cachedSprite) return;
-
-    this._cachedSprite.texture.destroy(true);
-
-    this._cachedSprite = null;
 };
 
 Tiny.DisplayObject.prototype._renderCanvas = function(renderSession)

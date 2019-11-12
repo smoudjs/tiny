@@ -1,27 +1,8 @@
-/**
- * @author Mat Groves http://matgroves.com/ @Doormat23
- */
-
-
-/**
- * A set of functions used by the canvas renderer to draw the primitive graphics data.
- *
- * @class CanvasGraphics
- * @static
- */
 
 Tiny.CanvasGraphics = function()
 {
 };
 
-/*
- * Renders a Tiny.Graphics object to a canvas.
- *
- * @method renderGraphics
- * @static
- * @param graphics {Graphics} the actual graphics object to render
- * @param context {CanvasRenderingContext2D} the 2d drawing method of the canvas
- */
 Tiny.CanvasGraphics.renderGraphics = function(graphics, context)
 {
     var worldAlpha = graphics.worldAlpha;
@@ -199,15 +180,6 @@ Tiny.CanvasGraphics.renderGraphics = function(graphics, context)
     }
 };
 
-/*
- * Renders a graphics mask
- *
- * @static
- * @private
- * @method renderGraphicsMask
- * @param graphics {Graphics} the graphics which will be used as a mask
- * @param context {CanvasRenderingContext2D} the context 2d method of the canvas
- */
 Tiny.CanvasGraphics.renderGraphicsMask = function(graphics, context)
 {
     var len = graphics.graphicsData.length;

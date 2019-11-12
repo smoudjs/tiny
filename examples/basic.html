@@ -3,7 +3,6 @@
 <head>
 	<title>Basic Example</title>
 	
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/87/three.min.js"></script>
 	<script src="../lib/tiny.min.js"></script>
 
 	<style type="text/css">
@@ -24,6 +23,8 @@
 		},
 		create: function() {
 			var t2 = game.add.sprite(300, 300, "ter")
+			t2.inputEnabled = true
+			t2.onClick = function() {console.log("fdsgdsfgfg")}
 			t2.anchor.set(0.5)
 			t2.position.set(300, 300)
 			var t3 = game.add.sprite(0 ,0, "ter")	
@@ -32,6 +33,7 @@
 			var t4 = game.add.sprite(-100, 0, "ter")
 			t4.x = -100
 			t2.addChild(t4)
+			t4.inputEnabled = true
 			window.d = t3
 
 			this.rectangle = game.add.sprite(0, 0, "ter")
@@ -44,8 +46,13 @@
 
 			this.rectangle.scale.x = Math.sin(time / 500);
 			this.rectangle.scale.y = Math.cos(time / 500);
+		},
+		resize: function(width, height) {
+			console.log(width)
 		}
 	});
+
+	game.scale = Tiny.ScaleManager.SHOW_ALL
 
 	// // Place a Pretty Pink 500x150 rectangle in the center of the screen
 	// const rectangle = game.createRectangle('#FF6D92', 0, 0, 500, 100);

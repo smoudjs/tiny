@@ -18,6 +18,11 @@ Tiny.scaleModes = {
 	DEFAULT: 0
 }
 
+Tiny.ScaleManager = {
+    NORMAL: 0,
+    SHOW_ALL: 1
+}
+
 Tiny.hex2rgb = function(hex) {
     return [(hex >> 16 & 0xFF) / 255, ( hex >> 8 & 0xFF) / 255, (hex & 0xFF)/ 255];
 };
@@ -26,5 +31,19 @@ Tiny.rgb2hex = function(rgb) {
     return ((rgb[0]*255 << 16) + (rgb[1]*255 << 8) + rgb[2]*255);
 };
 
-Tiny.CIRCLE = Tiny.Primitives.CIRC
-Tiny.POLYGON = Tiny.Primitives.POLY
+Tiny.getNextPowerOfTwo = function(number)
+{
+    if (number > 0 && (number & (number - 1)) === 0)
+        return number;
+    else
+    {
+        var result = 1;
+        while (result < number) result <<= 1;
+        return result;
+    }
+};
+
+Tiny.isPowerOfTwo = function(width, height)
+{
+    return (width > 0 && (width & (width - 1)) === 0 && height > 0 && (height & (height - 1)) === 0);
+};

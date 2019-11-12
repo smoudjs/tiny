@@ -216,27 +216,27 @@ Tiny.Sprite.prototype._renderCanvas = function(renderSession)
                 this.worldTransform.ty * renderSession.resolution);
         }
 
-        // if (this.tint !== 0xFFFFFF)
-        // {
-        //     if (this.cachedTint !== this.tint)
-        //     {
-        //         this.cachedTint = this.tint;
-        //         this.tintedTexture = PIXI.CanvasTinter.getTintedTexture(this, this.tint);
-        //     }
+        if (this.tint !== 0xFFFFFF)
+        {
+            if (this.cachedTint !== this.tint)
+            {
+                this.cachedTint = this.tint;
+                this.tintedTexture = Tiny.CanvasTinter.getTintedTexture(this, this.tint);
+            }
 
-        //     renderSession.context.drawImage(
-        //                         this.tintedTexture,
-        //                         0,
-        //                         0,
-        //                         this.texture.crop.width,
-        //                         this.texture.crop.height,
-        //                         dx / resolution,
-        //                         dy / resolution,
-        //                         this.texture.crop.width / resolution,
-        //                         this.texture.crop.height / resolution);
-        // }
-        // else
-        // {
+            renderSession.context.drawImage(
+                                this.tintedTexture,
+                                0,
+                                0,
+                                this.texture.crop.width,
+                                this.texture.crop.height,
+                                dx / resolution,
+                                dy / resolution,
+                                this.texture.crop.width / resolution,
+                                this.texture.crop.height / resolution);
+        }
+        else
+        {
             renderSession.context.drawImage(
                                 this.texture.baseTexture.source,
                                 this.texture.crop.x,
@@ -247,7 +247,7 @@ Tiny.Sprite.prototype._renderCanvas = function(renderSession)
                                 dy / resolution,
                                 this.texture.crop.width / resolution,
                                 this.texture.crop.height / resolution);
-        // }
+        }
     }
 
     // OVERWRITE

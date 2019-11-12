@@ -45,8 +45,7 @@ Tiny.Graphics = function()
     this.boundsPadding = 0;
 
     this._localBounds = new Tiny.Rectangle(0,0,1,1);
-    this.dirty = true;
-    this.webGLDirty = false;
+    this._boundsDirty = true;
     this.cachedSpriteDirty = false;
 
 };
@@ -55,15 +54,7 @@ Tiny.Graphics = function()
 Tiny.Graphics.prototype = Object.create( Tiny.DisplayObjectContainer.prototype );
 Tiny.Graphics.prototype.constructor = Tiny.Graphics;
 
-/**
- * Specifies the line style used for subsequent calls to Graphics methods such as the lineTo() method or the drawCircle() method.
- *
- * @method lineStyle
- * @param lineWidth {Number} width of the line to draw, will update the objects stored style
- * @param color {Number} color of the line to draw, will update the objects stored style
- * @param alpha {Number} alpha of the line to draw, will update the objects stored style
- * @return {Graphics}
- */
+
 Tiny.Graphics.prototype.lineStyle = function(lineWidth, color, alpha)
 {
     this.lineWidth = lineWidth || 0;
@@ -89,14 +80,6 @@ Tiny.Graphics.prototype.lineStyle = function(lineWidth, color, alpha)
     return this;
 };
 
-/**
- * Moves the current drawing position to x, y.
- *
- * @method moveTo
- * @param x {Number} the X coordinate to move to
- * @param y {Number} the Y coordinate to move to
- * @return {Graphics}
-  */
 Tiny.Graphics.prototype.moveTo = function(x, y)
 {
     this.drawShape(new Tiny.Polygon([x, y]));
@@ -104,15 +87,6 @@ Tiny.Graphics.prototype.moveTo = function(x, y)
     return this;
 };
 
-/**
- * Draws a line using the current line style from the current drawing position to (x, y);
- * The current drawing position is then set to (x, y).
- *
- * @method lineTo
- * @param x {Number} the X coordinate to draw to
- * @param y {Number} the Y coordinate to draw to
- * @return {Graphics}
- */
 Tiny.Graphics.prototype.lineTo = function(x, y)
 {
     if (!this.currentPath)
@@ -121,22 +95,12 @@ Tiny.Graphics.prototype.lineTo = function(x, y)
     }
 
     this.currentPath.shape.points.push(x, y);
-    this.dirty = true;
+    this._boundsDirty = true;
+    this.cachedSpriteDirty = true;
 
     return this;
 };
 
-/**
- * Calculate the points for a quadratic bezier curve and then draws it.
- * Based on: https://stackoverflow.com/questions/785097/how-do-i-implement-a-bezier-curve-in-c
- *
- * @method quadraticCurveTo
- * @param cpX {Number} Control point x
- * @param cpY {Number} Control point y
- * @param toX {Number} Destination point x
- * @param toY {Number} Destination point y
- * @return {Graphics}
- */
 Tiny.Graphics.prototype.quadraticCurveTo = function(cpX, cpY, toX, toY)
 {
     if (this.currentPath)
@@ -175,23 +139,12 @@ Tiny.Graphics.prototype.quadraticCurveTo = function(cpX, cpY, toX, toY)
                      ya + ( ((cpY + ( (toY - cpY) * j )) - ya) * j ) );
     }
 
-    this.dirty = true;
+    this._boundsDirty = true;
+    this.cachedSpriteDirty = true;
 
     return this;
 };
 
-/**
- * Calculate the points for a bezier curve and then draws it.
- *
- * @method bezierCurveTo
- * @param cpX {Number} Control point x
- * @param cpY {Number} Control point y
- * @param cpX2 {Number} Second Control point x
- * @param cpY2 {Number} Second Control point y
- * @param toX {Number} Destination point x
- * @param toY {Number} Destination point y
- * @return {Graphics}
- */
 Tiny.Graphics.prototype.bezierCurveTo = function(cpX, cpY, cpX2, cpY2, toX, toY)
 {
     if (this.currentPath)
@@ -233,24 +186,12 @@ Tiny.Graphics.prototype.bezierCurveTo = function(cpX, cpY, cpX2, cpY2, toX, toY)
                      dt3 * fromY + 3 * dt2 * j * cpY + 3 * dt * t2 * cpY2 + t3 * toY);
     }
     
-    this.dirty = true;
+    this._boundsDirty = true;
+    this.cachedSpriteDirty = true;
 
     return this;
 };
 
-/*
- * The arcTo() method creates an arc/curve between two tangents on the canvas.
- * 
- * "borrowed" from https://code.google.com/p/fxcanvas/ - thanks google!
- *
- * @method arcTo
- * @param x1 {Number} The x-coordinate of the beginning of the arc
- * @param y1 {Number} The y-coordinate of the beginning of the arc
- * @param x2 {Number} The x-coordinate of the end of the arc
- * @param y2 {Number} The y-coordinate of the end of the arc
- * @param radius {Number} The radius of the arc
- * @return {Graphics}
- */
 Tiny.Graphics.prototype.arcTo = function(x1, y1, x2, y2, radius)
 {
     if (this.currentPath)
@@ -302,23 +243,12 @@ Tiny.Graphics.prototype.arcTo = function(x1, y1, x2, y2, radius)
         this.arc(cx + x1, cy + y1, radius, startAngle, endAngle, b1 * a2 > b2 * a1);
     }
 
-    this.dirty = true;
+    this._boundsDirty = true;
+    this.cachedSpriteDirty = true;
 
     return this;
 };
 
-/**
- * The arc method creates an arc/curve (used to create circles, or parts of circles).
- *
- * @method arc
- * @param cx {Number} The x-coordinate of the center of the circle
- * @param cy {Number} The y-coordinate of the center of the circle
- * @param radius {Number} The radius of the circle
- * @param startAngle {Number} The starting angle, in radians (0 is at the 3 o'clock position of the arc's circle)
- * @param endAngle {Number} The ending angle, in radians
- * @param anticlockwise {Boolean} Optional. Specifies whether the drawing should be counterclockwise or clockwise. False is default, and indicates clockwise, while true indicates counter-clockwise.
- * @return {Graphics}
- */
 Tiny.Graphics.prototype.arc = function(cx, cy, radius, startAngle, endAngle, anticlockwise)
 {
     //  If we do this we can never draw a full circle
@@ -385,20 +315,12 @@ Tiny.Graphics.prototype.arc = function(cx, cy, radius, startAngle, endAngle, ant
                     ( (cTheta * -s) + (sTheta * c) ) * radius + cy);
     }
 
-    this.dirty = true;
+    this._boundsDirty = true;
+    this.cachedSpriteDirty = true;
 
     return this;
 };
 
-/**
- * Specifies a simple one-color fill that subsequent calls to other Graphics methods
- * (such as lineTo() or drawCircle()) use when drawing.
- *
- * @method beginFill
- * @param color {Number} the color of the fill
- * @param alpha {Number} the alpha of the fill
- * @return {Graphics}
- */
 Tiny.Graphics.prototype.beginFill = function(color, alpha)
 {
     this.filling = true;
@@ -418,12 +340,6 @@ Tiny.Graphics.prototype.beginFill = function(color, alpha)
     return this;
 };
 
-/**
- * Applies a fill to the lines and shapes that were added since the last call to the beginFill() method.
- *
- * @method endFill
- * @return {Graphics}
- */
 Tiny.Graphics.prototype.endFill = function()
 {
     this.filling = false;
@@ -433,15 +349,6 @@ Tiny.Graphics.prototype.endFill = function()
     return this;
 };
 
-/**
- * @method drawRect
- *
- * @param x {Number} The X coord of the top-left of the rectangle
- * @param y {Number} The Y coord of the top-left of the rectangle
- * @param width {Number} The width of the rectangle
- * @param height {Number} The height of the rectangle
- * @return {Graphics}
- */
 Tiny.Graphics.prototype.drawRect = function(x, y, width, height)
 {
     this.drawShape(new Tiny.Rectangle(x, y, width, height));
@@ -449,15 +356,6 @@ Tiny.Graphics.prototype.drawRect = function(x, y, width, height)
     return this;
 };
 
-/**
- * @method drawRoundedRect
- *
- * @param x {Number} The X coord of the top-left of the rectangle
- * @param y {Number} The Y coord of the top-left of the rectangle
- * @param width {Number} The width of the rectangle
- * @param height {Number} The height of the rectangle
- * @param radius {Number} Radius of the rectangle corners
- */
 Tiny.Graphics.prototype.drawRoundedRect = function(x, y, width, height, radius)
 {
     this.drawShape(new Tiny.RoundedRectangle(x, y, width, height, radius));
@@ -465,15 +363,7 @@ Tiny.Graphics.prototype.drawRoundedRect = function(x, y, width, height, radius)
     return this;
 };
 
-/*
-* Draws a circle.
-*
-* @method Phaser.Graphics.prototype.drawCircle
-* @param {Number} x - The X coordinate of the center of the circle.
-* @param {Number} y - The Y coordinate of the center of the circle.
-* @param {Number} diameter - The diameter of the circle.
-* @return {Graphics} This Graphics object.
-*/
+
 Tiny.Graphics.prototype.drawCircle = function(x, y, diameter)
 {
     this.drawShape(new Tiny.Circle(x, y, diameter));
@@ -481,16 +371,6 @@ Tiny.Graphics.prototype.drawCircle = function(x, y, diameter)
     return this;
 };
 
-/**
- * Draws an ellipse.
- *
- * @method drawEllipse
- * @param x {Number} The X coordinate of the center of the ellipse
- * @param y {Number} The Y coordinate of the center of the ellipse
- * @param width {Number} The half width of the ellipse
- * @param height {Number} The half height of the ellipse
- * @return {Graphics}
- */
 Tiny.Graphics.prototype.drawEllipse = function(x, y, width, height)
 {
     this.drawShape(new Tiny.Ellipse(x, y, width, height));
@@ -498,13 +378,6 @@ Tiny.Graphics.prototype.drawEllipse = function(x, y, width, height)
     return this;
 };
 
-/**
- * Draws a polygon using the given path.
- *
- * @method drawPolygon
- * @param path {Array} The path data used to construct the polygon. If you've got a Phaser.Polygon object then pass `polygon.points` here.
- * @return {Graphics}
- */
 Tiny.Graphics.prototype.drawPolygon = function(path)
 {
     // prevents an argument assignment deopt
@@ -523,45 +396,38 @@ Tiny.Graphics.prototype.drawPolygon = function(path)
         }
     }
 
-    this.drawShape(new Phaser.Polygon(points));
+    this.drawShape(new Tiny.Polygon(points));
 
     return this;
 };
 
-/**
- * Clears the graphics that were drawn to this Graphics object, and resets fill and line style settings.
- *
- * @method clear
- * @return {Graphics}
- */
 Tiny.Graphics.prototype.clear = function()
 {
     this.lineWidth = 0;
     this.filling = false;
 
-    this.dirty = true;
-    this.clearDirty = true;
+    this._boundsDirty = true;
+    this.cachedSpriteDirty = true;
     this.graphicsData = [];
+    this.updateLocalBounds();
 
     return this;
 };
 
-/**
- * Useful function that returns a texture of the graphics object that can then be used to create sprites
- * This can be quite useful if your geometry is complicated and needs to be reused multiple times.
- *
- * @method generateTexture
- * @param resolution {Number} The resolution of the texture being generated
- * @param scaleMode {Number} Should be one of the PIXI.scaleMode consts
- * @return {Texture} a texture of the graphics object
- */
+Tiny.Graphics.prototype.destroy = function (destroyChildren)
+{
+
+    this.clear();
+
+};
+
 Tiny.Graphics.prototype.generateTexture = function(resolution, scaleMode)
 {
     resolution = resolution || 1;
 
     var bounds = this.getBounds();
    
-    var canvasBuffer = new PIXI.CanvasBuffer(bounds.width * resolution, bounds.height * resolution);
+    var canvasBuffer = new Tiny.CanvasBuffer(bounds.width * resolution, bounds.height * resolution);
     
     var texture = Tiny.Texture.fromCanvas(canvasBuffer.canvas, scaleMode);
     texture.baseTexture.resolution = resolution;
@@ -575,13 +441,6 @@ Tiny.Graphics.prototype.generateTexture = function(resolution, scaleMode)
     return texture;
 };
 
-/**
-* Renders the object using the Canvas renderer
-*
-* @method _renderCanvas
-* @param renderSession {RenderSession} 
-* @private
-*/
 Tiny.Graphics.prototype._renderCanvas = function(renderSession)
 {
     if (this.isMask === true)
@@ -591,13 +450,13 @@ Tiny.Graphics.prototype._renderCanvas = function(renderSession)
 
     // if the tint has changed, set the graphics object to dirty.
     if (this._prevTint !== this.tint) {
-        this.dirty = true;
+        this._boundsDirty = true;
         this._prevTint = this.tint;
     }
 
     if (this._cacheAsBitmap)
     {
-        if (this.dirty || this.cachedSpriteDirty)
+        if (this.cachedSpriteDirty)
         {
             this._generateCachedSprite();
    
@@ -605,7 +464,7 @@ Tiny.Graphics.prototype._renderCanvas = function(renderSession)
             this.updateCachedSpriteTexture();
 
             this.cachedSpriteDirty = false;
-            this.dirty = false;
+            this._boundsDirty = false;
         }
 
         this._cachedSprite.alpha = this.alpha;
@@ -653,15 +512,9 @@ Tiny.Graphics.prototype._renderCanvas = function(renderSession)
     }
 };
 
-/**
- * Retrieves the bounds of the graphic shape as a rectangle object
- *
- * @method getBounds
- * @return {Rectangle} the rectangular bounding area
- */
 Tiny.Graphics.prototype.getBounds = function(matrix)
 {
-    if(!this._currentBounds)
+    if(!this._currentBounds || this._boundsDirty)
     {
 
         // return an empty object if the item is a mask!
@@ -670,12 +523,11 @@ Tiny.Graphics.prototype.getBounds = function(matrix)
             return Tiny.EmptyRectangle;
         }
 
-    if (this.dirty)
+    if (this._boundsDirty )
     {
         this.updateLocalBounds();
-        this.webGLDirty = true;
         this.cachedSpriteDirty = true;
-        this.dirty = false;
+        this._boundsDirty = false;
     }
 
     var bounds = this._localBounds;
@@ -741,12 +593,6 @@ Tiny.Graphics.prototype.getBounds = function(matrix)
     return this._currentBounds;
 };
 
-/**
-* Tests if a point is inside this graphics object
-*
-* @param point {Point} the point to test
-* @return {boolean} the result of the test
-*/
 Tiny.Graphics.prototype.containsPoint = function( point )
 {
     this.worldTransform.applyInverse(point,  tempPoint);
@@ -775,11 +621,6 @@ Tiny.Graphics.prototype.containsPoint = function( point )
     return false;
 };
 
-/**
- * Update the bounds of the object
- *
- * @method updateLocalBounds
- */
 Tiny.Graphics.prototype.updateLocalBounds = function()
 {
     var minX = Infinity;
@@ -799,7 +640,7 @@ Tiny.Graphics.prototype.updateLocalBounds = function()
             var lineWidth = data.lineWidth;
             shape = data.shape;
 
-            if (type === Tiny.Graphics.RECT || type === Tiny.Graphics.RREC)
+            if (type === Tiny.Primitives.RECT || type === Tiny.Primitives.RREC)
             {
                 x = shape.x - lineWidth / 2;
                 y = shape.y - lineWidth / 2;
@@ -812,7 +653,7 @@ Tiny.Graphics.prototype.updateLocalBounds = function()
                 minY = y < minY ? y : minY;
                 maxY = y + h > maxY ? y + h : maxY;
             }
-            else if (type === Tiny.Graphics.CIRC)
+            else if (type === Tiny.Primitives.CIRC)
             {
                 x = shape.x;
                 y = shape.y;
@@ -825,7 +666,7 @@ Tiny.Graphics.prototype.updateLocalBounds = function()
                 minY = y - h < minY ? y - h : minY;
                 maxY = y + h > maxY ? y + h : maxY;
             }
-            else if (type === Tiny.Graphics.ELIP)
+            else if (type === Tiny.Primitives.ELIP)
             {
                 x = shape.x;
                 y = shape.y;
@@ -845,7 +686,7 @@ Tiny.Graphics.prototype.updateLocalBounds = function()
 
                 for (var j = 0; j < points.length; j++)
                 {
-                    if (points[j] instanceof Phaser.Point)
+                    if (points[j] instanceof Tiny.Point)
                     {
                         x = points[j].x;
                         y = points[j].y;
@@ -887,19 +728,13 @@ Tiny.Graphics.prototype.updateLocalBounds = function()
     this._localBounds.height = (maxY - minY) + padding * 2;
 };
 
-/**
- * Generates the cached sprite when the sprite has cacheAsBitmap = true
- *
- * @method _generateCachedSprite
- * @private
- */
 Tiny.Graphics.prototype._generateCachedSprite = function()
 {
     var bounds = this.getLocalBounds();
 
     if (!this._cachedSprite)
     {
-        var canvasBuffer = new PIXI.CanvasBuffer(bounds.width, bounds.height);
+        var canvasBuffer = new Tiny.CanvasBuffer(bounds.width, bounds.height);
         var texture = Tiny.Texture.fromCanvas(canvasBuffer.canvas);
         
         this._cachedSprite = new Tiny.Sprite(texture);
@@ -962,13 +797,6 @@ Tiny.Graphics.prototype.destroyCachedSprite = function()
     this._cachedSprite = null;
 };
 
-/**
- * Draws the given shape to this Graphics object. Can be any of Circle, Rectangle, Ellipse, Line or Polygon.
- *
- * @method drawShape
- * @param {Circle|Rectangle|Ellipse|Line|Polygon} shape The Shape object to draw.
- * @return {GraphicsData} The generated GraphicsData object.
- */
 Tiny.Graphics.prototype.drawShape = function(shape)
 {
     if (this.currentPath)
@@ -992,28 +820,19 @@ Tiny.Graphics.prototype.drawShape = function(shape)
     
     this.graphicsData.push(data);
 
-    if (data.type === Tiny.Graphics.POLY)
+    if (data.type === Tiny.Primitives.POLY)
     {
         data.shape.closed = this.filling;
         this.currentPath = data;
     }
 
-    this.dirty = true;
+    this._boundsDirty = true;
+    this.cachedSpriteDirty = true;
+
 
     return data;
 };
 
-/**
- * When cacheAsBitmap is set to true the graphics object will be rendered as if it was a sprite.
- * This is useful if your graphics element does not change often, as it will speed up the rendering of the object in exchange for taking up texture memory.
- * It is also useful if you need the graphics object to be anti-aliased, because it will be rendered using canvas.
- * This is not recommended if you are constantly redrawing the graphics element.
- *
- * @property cacheAsBitmap
- * @type Boolean
- * @default false
- * @private
- */
 Object.defineProperty(Tiny.Graphics.prototype, "cacheAsBitmap", {
 
     get: function() {
@@ -1031,7 +850,7 @@ Object.defineProperty(Tiny.Graphics.prototype, "cacheAsBitmap", {
         else
         {
             this.destroyCachedSprite();
-            this.dirty = true;
+            this._boundsDirty = true;
         }
 
     }

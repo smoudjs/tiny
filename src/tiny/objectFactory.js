@@ -5,7 +5,8 @@ var ObjectFactory = function (game)
 
 ObjectFactory.prototype = {
 	sprite: function(x, y, imagePath, width, height) {
-		var sprite = new Tiny.Sprite(this.game.textures[imagePath])
+
+		var sprite = new Tiny.Sprite( (typeof imagePath == "string" ? this.game.textures[imagePath] : imagePath) )
 		this.game.stage.addChild(sprite)
 		sprite.x = x || 0, sprite.y = y || 0
 		//game.objects.push(sprite)

@@ -21,8 +21,6 @@ Tiny.BaseTexture = function(source, scaleMode)
 
     this.premultipliedAlpha = true;
 
-    this._glTextures = [];
-
     this.mipmap = false;
 
     this._dirty = [true, true, true, true];
@@ -76,8 +74,6 @@ Tiny.BaseTexture.prototype.destroy = function()
         delete Tiny.BaseTextureCache[this.source._pixiId];
     }
     this.source = null;
-
-    this.unloadFromGPU();
 };
 
 Tiny.BaseTexture.prototype.updateSourceImage = function(newSrc)
@@ -89,32 +85,7 @@ Tiny.BaseTexture.prototype.updateSourceImage = function(newSrc)
 
 Tiny.BaseTexture.prototype.dirty = function()
 {
-    for (var i = 0; i < this._glTextures.length; i++)
-    {
-        this._dirty[i] = true;
-    }
-};
 
-Tiny.BaseTexture.prototype.unloadFromGPU = function()
-{
-    this.dirty();
-
-    // delete the webGL textures if any.
-    for (var i = this._glTextures.length - 1; i >= 0; i--)
-    {
-        var glTexture = this._glTextures[i];
-        var gl = Tiny.glContexts[i];
-
-        if(gl && glTexture)
-        {
-            gl.deleteTexture(glTexture);
-        }
-        
-    }
-
-    this._glTextures.length = 0;
-
-    this.dirty();
 };
 
 Tiny.BaseTexture.fromImage = function(imageUrl, crossorigin, scaleMode)
