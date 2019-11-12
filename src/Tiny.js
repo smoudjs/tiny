@@ -37,7 +37,12 @@
 	require('./tiny/CanvasRenderer.js'); // 3 Kb
 
 	require('./tiny/utils/CanvasBuffer.js'); // 1 Kb
+	// require('./tiny/utils/CanvasTinter.js'); // 1 Kb
 
+	// require('./tiny/time/Timer.js'); // 1 Kb
+	// require('./tiny/utils/Tween.js'); // 9 Kb
+
+	
 // /////////////////// #################### Mini version 42 Kb
 // 	require('./tiny/utils/polyfill.js');
 // 	require('./tiny/Tiny.js');

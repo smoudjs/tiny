@@ -3,17 +3,22 @@ Tiny.Input = function (game)
     this.game = game;
     this._active_objects = []
 
-    window.addEventListener('touchstart', this.clickHandler.bind(this));
+    this.clickHandler_bind = this.clickHandler.bind(this)
+    window.addEventListener('touchstart', this.clickHandler_bind);
 
     // if (/firefox/i.test(navigator.userAgent)) {
     //     // Firefox blocks window.open from mousedown events, so bind click instead
     //     window.addEventListener('click', this.clickHandler.bind(this));
     // } else {
-        window.addEventListener('click', this.clickHandler.bind(this));
+        window.addEventListener('click', this.clickHandler_bind);
     // }
 };
 
 Tiny.Input.prototype = {
+    destroy: function() {
+        window.removeEventListener('touchstart', this.clickHandler_bind);
+        window.removeEventListener('click', this.clickHandler_bind);
+    },
 
     _checkOnActiveObjects: function(obj, x, y) {
         if (obj.inputEnabled) {

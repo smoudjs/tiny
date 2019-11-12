@@ -11,6 +11,8 @@ Tiny.Sprite = function(texture)
 
     this._height = 0;
 
+    this._frame = 0;
+
     this.tint = 0xFFFFFF;
 
     this.blendMode = Tiny.blendModes.NORMAL;
@@ -23,12 +25,28 @@ Tiny.Sprite = function(texture)
     }
 
     this.renderable = true;
-
 };
 
 
 Tiny.Sprite.prototype = Object.create(Tiny.DisplayObjectContainer.prototype);
 Tiny.Sprite.prototype.constructor = Tiny.Sprite;
+
+Object.defineProperty(Tiny.Sprite.prototype, 'frame', {
+
+    get: function() {
+        return this._frame
+    },
+
+    set: function(value) {
+        if (this._frames) {
+            this._frame = value
+            if (this._frame > (this._frames.length - 1))
+                this._frame = 0
+            this.setTexture(Tiny.TextureCache[this._frames[this._frame].uuid])
+        }
+    }
+
+});
 
 Object.defineProperty(Tiny.Sprite.prototype, 'width', {
 
@@ -67,6 +85,23 @@ Tiny.Sprite.prototype.onTextureUpdate = function()
     // so if _width is 0 then width was not set..
     if (this._width) this.scale.x = this._width / this.texture.frame.width;
     if (this._height) this.scale.y = this._height / this.texture.frame.height;
+};
+
+Tiny.Sprite.prototype.animate = function(delay)
+{
+    if (this._frames) {
+        delay = delay || (this._frames[0].duration || 100)
+        if (!this.animation) {
+
+            this.animation = this.game.timer.loop(delay, function() {
+                this.frame += 1
+            }.bind(this))
+            this.animation.start()
+        } else {
+            this.animation.delay = delay
+            this.animation.start()
+        }
+    }
 };
 
 Tiny.Sprite.prototype.getBounds = function(matrix)

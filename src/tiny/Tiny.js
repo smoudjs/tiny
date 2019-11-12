@@ -9,7 +9,6 @@ var Tiny = function(width, height, parentNode, enableRAF, states) {
 	this.width = width || 430;
 
 	this.stage = new Tiny.Stage()
-	this.textures = {}
 	this.renderer = new Tiny.CanvasRenderer(width, height, {view: this.canvas, autoResize: true})
 	Tiny.defaultRenderer = this.renderer
 
@@ -27,6 +26,9 @@ var Tiny = function(width, height, parentNode, enableRAF, states) {
 	if (Tiny.Input)
 		this.input = new Tiny.Input(this)
 
+	if (Tiny.TimerCreator)
+		this.timer = new Tiny.TimerCreator(this)
+
 	this.addCanvasToDom();
 	
 
@@ -35,6 +37,10 @@ var Tiny = function(width, height, parentNode, enableRAF, states) {
 	this._self_raf = enableRAF && Tiny.RAF
 	if (this._self_raf)
 		this._raf = new Tiny.RAF(this);
+
+	this.time = {
+		timeToCall: 15
+	}
 
 	this.preload()
 };
@@ -122,6 +128,11 @@ Tiny.prototype.update = function(time) {
 	if (Tiny._tween_enabled)
 		TWEEN.update()
 
+	if (this.timers)
+		this.timers.forEach(function(e) {
+			e.update(deltaTime)
+		})
+
 	this.stage.updateTransform()
 	this.render()
 
@@ -140,11 +151,21 @@ Tiny.prototype.resume = function() {
 
 
 Tiny.prototype.destroy = function() {
+	this.stage.destroy()
+	this.stage.children = []
+	this.update()
+
 	if (Tiny._tween_enabled)
 		TWEEN.removeAll()
 
 	if (this._self_raf)
 		this._raf.stop()
+
+	if (this.timers)
+		this.timer.removeAll()
+
+	if (Tiny.Input)
+		this.input.destroy()
 
 }
 
