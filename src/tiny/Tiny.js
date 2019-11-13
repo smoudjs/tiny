@@ -133,7 +133,6 @@ Tiny.prototype.update = function(time) {
 			e.update(deltaTime)
 		})
 
-	this.stage.updateTransform()
 	this.render()
 
 	prevTime = time
