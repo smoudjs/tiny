@@ -99,12 +99,12 @@ Tiny.CanvasRenderer.prototype.render = function(stage)
 };
 
 Tiny.CanvasRenderer.prototype.destroy = function(removeView)
-{
+{   
     if (typeof removeView === "undefined") { removeView = true; }
 
-    if (removeView && this.view.parent)
+    if (removeView && this.view.parentNode)
     {
-        this.view.parent.removeChild(this.view);
+        this.view.parentNode.removeChild(this.view);
     }
 
     this.view = null;

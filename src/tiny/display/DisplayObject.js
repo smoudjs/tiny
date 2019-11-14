@@ -54,6 +54,7 @@ Tiny.DisplayObject.prototype.destroy = function()
     this._mask = null;
 
     this.renderable = false;
+    this._destroyCachedSprite();
 };
 
 Object.defineProperty(Tiny.DisplayObject.prototype, 'worldVisible', {
@@ -89,6 +90,29 @@ Object.defineProperty(Tiny.DisplayObject.prototype, 'mask', {
         if (this._mask) this._mask.isMask = true;
     }
 
+});
+
+Object.defineProperty(Tiny.DisplayObject.prototype, 'cacheAsBitmap', {
+
+    get: function() {
+        return  this._cacheAsBitmap;
+    },
+
+    set: function(value) {
+
+        if (this._cacheAsBitmap === value) return;
+
+        if (value)
+        {
+            this._generateCachedSprite();
+        }
+        else
+        {
+            this._destroyCachedSprite();
+        }
+
+        this._cacheAsBitmap = value;
+    }
 });
 
 Tiny.DisplayObject.prototype.updateTransform = function()
@@ -178,7 +202,7 @@ Tiny.DisplayObject.prototype.getBounds = function(matrix)
 
 Tiny.DisplayObject.prototype.getLocalBounds = function()
 {
-    return this.getBounds(Tiny.identityMatrix);///PIXI.EmptyRectangle();
+    return this.getBounds(Tiny.identityMatrix);
 };
 
 Tiny.DisplayObject.prototype.setStageReference = function(stage)
@@ -204,6 +228,12 @@ Tiny.DisplayObject.prototype.generateTexture = function(resolution, scaleMode, r
     return renderTexture;
 };
 
+Tiny.DisplayObject.prototype.updateCache = function()
+{
+    this._generateCachedSprite();
+};
+
+
 Tiny.DisplayObject.prototype.toGlobal = function(position)
 {
     // don't need to u[date the lot
@@ -224,9 +254,56 @@ Tiny.DisplayObject.prototype.toLocal = function(position, from)
     return this.worldTransform.applyInverse(position);
 };
 
+Tiny.DisplayObject.prototype._renderCachedSprite = function(renderSession)
+{
+    this._cachedSprite.worldAlpha = this.worldAlpha;
+
+    Tiny.Sprite.prototype._renderCanvas.call(this._cachedSprite, renderSession);
+    
+};
+
+Tiny.DisplayObject.prototype._generateCachedSprite = function()
+{
+    this._cacheAsBitmap = false;
+
+    var bounds = this.getLocalBounds();
+
+    if (!this._cachedSprite)
+    {
+        var renderTexture = new Tiny.RenderTexture(bounds.width | 0, bounds.height | 0);//, renderSession.renderer);
+
+        this._cachedSprite = new Tiny.Sprite(renderTexture);
+        this._cachedSprite.worldTransform = this.worldTransform;
+    }
+    else
+    {
+        this._cachedSprite.texture.resize(bounds.width | 0, bounds.height | 0);
+    }
+
+
+    Tiny.DisplayObject._tempMatrix.tx = -bounds.x;
+    Tiny.DisplayObject._tempMatrix.ty = -bounds.y;
+    
+    this._cachedSprite.texture.render(this, Tiny.DisplayObject._tempMatrix, true);
+
+    this._cachedSprite.anchor.x = -( bounds.x / bounds.width );
+    this._cachedSprite.anchor.y = -( bounds.y / bounds.height );
+
+    this._cacheAsBitmap = true;
+};
+
+Tiny.DisplayObject.prototype._destroyCachedSprite = function()
+{
+    if (!this._cachedSprite) return;
+
+    this._cachedSprite.texture.destroy(true);
+
+    this._cachedSprite = null;
+};
+
+
 Tiny.DisplayObject.prototype._renderCanvas = function(renderSession)
 {
-
     renderSession = renderSession;
 };
 
@@ -253,3 +330,5 @@ Object.defineProperty(Tiny.DisplayObject.prototype, 'y', {
     }
 
 });
+
+Tiny.DisplayObject._tempMatrix = new Tiny.Matrix();

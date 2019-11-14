@@ -177,6 +177,27 @@ Tiny.CanvasGraphics.renderGraphics = function(graphics, context)
                 context.stroke();
             }
         }
+        else if (data.type === Tiny.Primitives.RREC_LJOIN)
+        {
+            var rx = shape.x;
+            var ry = shape.y;
+            var width = shape.width;
+            var height = shape.height;
+            var radius = shape.radius;
+
+            if (data.fillColor || data.fillColor === 0)
+            {
+                context.globalAlpha = data.fillAlpha * worldAlpha;
+                context.fillStyle = '#' + ('00000' + ( fillColor | 0).toString(16)).substr(-6);
+                context.strokeStyle = '#' + ('00000' + ( fillColor | 0).toString(16)).substr(-6);
+            }
+
+            context.lineJoin = "round";
+            context.lineWidth = radius;
+
+            context.strokeRect(rx + (radius / 2), ry + (radius / 2), width - radius, height - radius);
+            context.fillRect(rx + (radius / 2), ry + (radius / 2), width - radius, height - radius);
+        }
     }
 };
 
@@ -252,7 +273,7 @@ Tiny.CanvasGraphics.renderGraphicsMask = function(graphics, context)
             context.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
             context.closePath();
         }
-        else if (data.type === Tiny.Primitives.RREC)
+        else if (data.type === Tiny.Primitives.RREC || data.type === Tiny.Primitives.RREC_LJOIN)
         {
 
             var rx = shape.x;

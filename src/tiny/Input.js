@@ -21,7 +21,7 @@ Tiny.Input.prototype = {
     },
 
     _checkOnActiveObjects: function(obj, x, y) {
-        if (obj.inputEnabled) {
+        if (obj.inputEnabled && obj.worldVisible) {
             if (obj.getBounds().contains(x, y))
                 this._active_objects.push(obj)
         }
@@ -31,7 +31,7 @@ Tiny.Input.prototype = {
                 this._checkOnActiveObjects(obj.children[t], x, y)
         }
     },
-
+    onClick: function() {},
     clickHandler: function(event) {
         var coords = null;
         if (typeof TouchEvent !== 'undefined' && event instanceof TouchEvent) {
@@ -57,9 +57,9 @@ Tiny.Input.prototype = {
 
         for (var t = 0; t < this.game.stage.children.length; t++)
             this._checkOnActiveObjects(this.game.stage.children[t], coords.x, coords.y)
-
+        
         var i = this._active_objects.length
-
+        this.onClick()
         //while (i--) {
             if (i > 0 && typeof this._active_objects[i - 1].onClick == "function") {
                 this._active_objects[i - 1].onClick()

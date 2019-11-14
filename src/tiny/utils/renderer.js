@@ -25,6 +25,7 @@ Tiny.RAF = function (game, forceSetTimeOut)
     this._onLoop = null;
     this._timeOutID = null;
 
+    this._prevTime = 0
 };
 
 Tiny.RAF.prototype = {
@@ -53,42 +54,40 @@ Tiny.RAF.prototype = {
 
             this._onLoop = function (time)
             {
+                
                 return _this.updateRAF(time);
             };
 
             this._timeOutID = window.requestAnimationFrame(this._onLoop);
         }
-
     },
 
     updateRAF: function (rafTime)
     {
-
         if (this.isRunning)
         {
-
-            this.game.update(Math.floor(rafTime));
+            this.game.update(Math.floor(rafTime), rafTime - this._prevTime);
 
             this._timeOutID = window.requestAnimationFrame(this._onLoop);
         }
+        this._prevTime = rafTime
 
     },
 
     updateSetTimeout: function ()
     {
-
+        var time = Date.now()
         if (this.isRunning)
         {
-            this.game.update(Date.now());
+            this.game.update(time - this.paused, time - this._prevTime);
 
             this._timeOutID = window.setTimeout(this._onLoop, this.game.time.timeToCall);
         }
-
+        this._prevTime = time
     },
 
     stop: function ()
     {
-
         if (this._isSetTimeOut)
         {
             clearTimeout(this._timeOutID);
@@ -99,7 +98,6 @@ Tiny.RAF.prototype = {
         }
 
         this.isRunning = false;
-
     },
 
     isSetTimeOut: function ()

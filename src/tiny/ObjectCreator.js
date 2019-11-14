@@ -4,16 +4,31 @@ var ObjectFactory = function (game)
 };
 
 ObjectFactory.prototype = {
-	sprite: function(x, y, imagePath, width, height) {
-		var texture =  (typeof imagePath == "string" ? Tiny.TextureCache[imagePath] : imagePath)
-		var _frames = null
-		if (texture.frameData && texture.frameData.length > 0) {
-			_frames = texture.frameData
-			texture = Tiny.TextureCache[texture.frameData[0].uuid]
+	group: function(x, y) {
+		var group = new Tiny.DisplayObjectContainer()
+		group.game = this.game
+		this.game.stage.addChild(group)
+		group.x = x || 0, group.y = y || 0
+		return group;
+	},
+	sprite: function(x, y, imagePath, key) {
+		var texture = null
+		if (typeof imagePath == "string") {
+			if (key)
+				imagePath = imagePath + "_" + key
+			texture = Tiny.TextureCache[imagePath]
+		} else
+			texture = imagePath
+
+		if (!texture)
+			return false
+
+		if (texture.max_no_frame) {
+			texture = Tiny.TextureCache[texture.key + "_" + 0]
 		}
+
 		var sprite = new Tiny.Sprite( texture )
 		sprite.game = this.game
-		sprite._frames = _frames
 		this.game.stage.addChild(sprite)
 		sprite.x = x || 0, sprite.y = y || 0
 		//game.objects.push(sprite)
@@ -37,7 +52,7 @@ ObjectFactory.prototype = {
 		//game.objects.push(sprite)
 		
 		return graphics;
-	},
+	}
 };
 
 module.exports = ObjectFactory

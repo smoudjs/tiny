@@ -4,19 +4,22 @@ var Tiny = function(width, height, parentNode, enableRAF, states) {
 
 	this.parentNode = parentNode || document.body;
 	this.canvas = document.createElement('canvas');
-	this._scale = Tiny.ScaleManager.NORMAL
+	this.scale = Tiny.ScaleManager.NORMAL
 	this.height = height || 720;
 	this.width = width || 430;
 
 	this.stage = new Tiny.Stage()
-	this.renderer = new Tiny.CanvasRenderer(width, height, {view: this.canvas, autoResize: true})
+	this.renderer = new Tiny.CanvasRenderer(this.width, this.height, {view: this.canvas, autoResize: true})
 	Tiny.defaultRenderer = this.renderer
 
+	this.callbackContext = null
 	states = states || {}
+	this.state = 0
 	this._preload_cb = states.preload || function() {}
 	this._create_cb = states.create || function() {}
 	this._update_cb = states.update || function() {}
 	this._resize_cb = states.resize || function() {}
+	this._destroy_cb = states.destroy || function() {}
 
 	if (Tiny.Loader)
 		this.load = new Tiny.Loader(this)
@@ -32,8 +35,6 @@ var Tiny = function(width, height, parentNode, enableRAF, states) {
 	this.addCanvasToDom();
 	
 
-	this.resize(this.width, this.height);
-
 	this._self_raf = enableRAF && Tiny.RAF
 	if (this._self_raf)
 		this._raf = new Tiny.RAF(this);
@@ -42,7 +43,12 @@ var Tiny = function(width, height, parentNode, enableRAF, states) {
 		timeToCall: 15
 	}
 
-	this.preload()
+	this.paused = false
+	this.pauseDuration = 0
+	var self = this
+	setTimeout(function() {
+		self.preload()
+	}, 0)
 };
 
 Tiny.prototype.addCanvasToDom = function() {
@@ -67,37 +73,12 @@ Tiny.prototype.resize = function(width, height) {
 	this.width = width || this.width
 	this.height = height || this.height
 	this.renderer.resize(this.width, this.height)
-	this._resize_cb(this.renderer.width, this.renderer.height)
+	if (this.state > 0)
+		this._resize_cb.call(this.callbackContext, this.renderer.width, this.renderer.height)
 };
 
 Tiny.prototype.setSize = Tiny.prototype.resize
 
-Tiny.prototype._defineResizeEvent = function() {
-	if (!this._definedResizeListener) {
-		this._definedResizeListener = true
-		window.addEventListener( 'resize', function() {
-			if (this._scale == Tiny.ScaleManager.SHOW_ALL) {
-	        	this.resize(window.innerWidth, window.innerHeight)
-	        }
-		}.bind(this), false );
-	}
-}
-
-Object.defineProperty(Tiny.prototype, 'scale', {
-
-    get: function() {
-        return  this._scale;
-    },
-
-    set: function(value) {
-        this._scale = value;
-        if (this._scale == Tiny.ScaleManager.SHOW_ALL) {
-        	this._defineResizeEvent()
-        	this.resize(window.innerWidth, window.innerHeight)
-        }
-    }
-
-});
 
 Tiny.prototype.render = function() {
 	this.renderer.render(this.stage)
@@ -105,54 +86,60 @@ Tiny.prototype.render = function() {
 
 
 Tiny.prototype.preload = function() {
-	this._preload_cb()
+	this._preload_cb.call(this.callbackContext)
 	if (Tiny.Loader)
 		this.load.start(this.create)
 	else
 		this.create()
+
+	this.state = 1
 };
 
 Tiny.prototype.create = function() {
-	this._create_cb()
+	this._create_cb.call(this.callbackContext)
 
 	if (this._self_raf)
 		this._raf.start()
+
+	this.state = 2
 };
 
-var time, prevTime = 0, deltaTime = 0;
 
-Tiny.prototype.update = function(time) {
-    deltaTime = time - prevTime
+Tiny.prototype.update = function(time, delta) {
+	if (!this.paused) {
+		this._update_cb.call(this.callbackContext, time, delta)
+		if (Tiny._tween_enabled)
+			TWEEN.update()
 
-	this._update_cb(time, deltaTime)
-	if (Tiny._tween_enabled)
-		TWEEN.update()
+		if (this.timers)
+			this.timers.forEach(function(e) {
+				e.update(delta)
+			})
 
-	if (this.timers)
-		this.timers.forEach(function(e) {
-			e.update(deltaTime)
-		})
-
-	this.render()
-
-	prevTime = time
+		this.render()
+	} else
+		this.pauseDuration += delta
 };
 
 Tiny.prototype.pause = function() {
-	if (this._self_raf)
-		this._raf.isRunning = false
+	this.paused = true
 }
 
 Tiny.prototype.resume = function() {
-	if (this._self_raf)
-		this._raf.isRunning = true
+	this.paused = false
 }
 
 
 Tiny.prototype.destroy = function() {
+	this.paused = true
 	this.stage.destroy()
+	for (var y in Tiny.TextureCache) Tiny.TextureCache[y].destroy(true)
+	for (var y in Tiny.BaseTextureCache) Tiny.BaseTextureCache[y].destroy()
+	Tiny.BaseTextureCache = []
+	Tiny.TextureCache = []
 	this.stage.children = []
 	this.update()
+	this.renderer.destroy(true)
 
 	if (Tiny._tween_enabled)
 		TWEEN.removeAll()
@@ -166,6 +153,9 @@ Tiny.prototype.destroy = function() {
 	if (Tiny.Input)
 		this.input.destroy()
 
+	this.canvas = void 0
+
+	this._destroy_cb.call(this.callbackContext)
 }
 
 module.exports = Tiny;

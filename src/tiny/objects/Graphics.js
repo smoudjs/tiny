@@ -363,6 +363,15 @@ Tiny.Graphics.prototype.drawRoundedRect = function(x, y, width, height, radius)
     return this;
 };
 
+Tiny.Graphics.prototype.drawRoundedRect2 = function(x, y, width, height, radius)
+{   
+    var shape = new Tiny.RoundedRectangle(x, y, width, height, radius)
+    shape.type = Tiny.Primitives.RREC_LJOIN;
+    this.drawShape(shape);
+
+    return this;
+};
+
 
 Tiny.Graphics.prototype.drawCircle = function(x, y, diameter)
 {
@@ -640,7 +649,7 @@ Tiny.Graphics.prototype.updateLocalBounds = function()
             var lineWidth = data.lineWidth;
             shape = data.shape;
 
-            if (type === Tiny.Primitives.RECT || type === Tiny.Primitives.RREC)
+            if (type === Tiny.Primitives.RECT || type === Tiny.Primitives.RREC || type === Tiny.Primitives.RREC_LJOIN)
             {
                 x = shape.x - lineWidth / 2;
                 y = shape.y - lineWidth / 2;

@@ -1,7 +1,7 @@
 // require('./asset-loader/AssetLoader.js');
 
 
-// /////////////////// #################### Standart version 62 Kb
+// /////////////////// #################### Standart version 65 Kb
 // 	require('./tiny/utils/polyfill.js');
 // 	require('./tiny/Tiny.js');
 // 	require('./tiny/global.js');
@@ -162,6 +162,7 @@
 
 /////////////////// #################### CUSTOM (delete what is unnecessary)
 	require('./tiny/utils/polyfill.js');
+
 	require('./tiny/Tiny.js');
 	require('./tiny/global.js');
 
@@ -203,4 +204,7 @@
 	// require('./tiny/utils/canvasPool.js');
 	// require('./tiny/utils/device.js');
 	// require('./tiny/utils/color.js');
-	 require('./tiny/utils/EventTarget.js');	
+	// require('./tiny/utils/EventTarget.js');	2 Kb
+
+
+	require('./tiny/custom/ResizerByPeter.js');

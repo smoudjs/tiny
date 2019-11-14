@@ -1,13 +1,14 @@
 
-Tiny.Timer = function(game, cb, delay, loop, n, oncomplete) {
+Tiny.Timer = function(status, autoRemove, game, cb, delay, loop, n, oncomplete) {
     this.game = game;
     this._cb_ = cb || function() {}
     this.delay = delay || 1000
     this.loop = loop
     this._count = n || 0
     this._repeat = (this._count > 0)
-    this.status = 0
+    this.status = status
     this._lastFrame = 0
+    this.autoRemove = autoRemove
     this._oncomplete = oncomplete || function() {}
 }
 
@@ -31,11 +32,13 @@ Tiny.Timer.prototype = {
                 if (this._repeat) {
                     this._count--;
                     if (this._count === 0) {
-                        this.status = 0
+                        this.status = 0;
+                        (this.autoRemove && this.game.timer.remove(this))
                         this._oncomplete()
                     }
                 } else if (!this.loop) {
-                    this.status = 0
+                    this.status = 0;
+                    (this.autoRemove && this.game.timer.remove(this))
                 }
             }
         }
@@ -46,10 +49,8 @@ Tiny.TimerCreator = function (game)
 {
     this.game = game;
     this.game.timers = []
-
-    this.game.timers.remove = function(item) {
-        this.splice(this.indexOf(item), 1)
-    }
+    this.autoStart = true
+    this.autoRemove = true
 };
 
 Tiny.TimerCreator.prototype = {
@@ -64,17 +65,17 @@ Tiny.TimerCreator.prototype = {
         this.game.timers.splice(this.game.timers.indexOf(tm), 1)
     },
     add: function(delay, cb) {
-        var timer = new Tiny.Timer(this.game, cb, delay)
+        var timer = new Tiny.Timer((this.autoStart ? 1 : 0), this.autoRemove, this.game, cb, delay)
         this.game.timers.push(timer)
         return timer
     },
     loop: function(delay, cb) {
-        var timer = new Tiny.Timer(this.game, cb, delay, true)
+        var timer = new Tiny.Timer((this.autoStart ? 1 : 0), this.autoRemove, this.game, cb, delay, true)
         this.game.timers.push(timer)
         return timer
     },
     repeat: function(delay, n, cb, complete) {
-        var timer = new Tiny.Timer(this.game, cb, delay, false, n, complete)
+        var timer = new Tiny.Timer((this.autoStart ? 1 : 0), this.autoRemove, this.game, cb, delay, false, n, complete)
         this.game.timers.push(timer)
         return timer
     }

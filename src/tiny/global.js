@@ -1,13 +1,17 @@
+Tiny.VERSION = "1.0.2" 
+
 Tiny.PI_2 = Math.PI * 2
 Tiny._UID = 0
-Tiny.RETINA_PREFIX = 'none'
+Tiny.RETINA_PREFIX = '@2x'
+
 
 Tiny.Primitives = {
     POLY: 0,
     RECT: 1, 
     CIRC: 2,
     ELIP: 3,
-    RREC: 4
+    RREC: 4,
+    RREC_LJOIN: 5
 }
 
 Tiny.blendModes = {

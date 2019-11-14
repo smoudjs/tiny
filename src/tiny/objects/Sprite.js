@@ -31,6 +31,20 @@ Tiny.Sprite = function(texture)
 Tiny.Sprite.prototype = Object.create(Tiny.DisplayObjectContainer.prototype);
 Tiny.Sprite.prototype.constructor = Tiny.Sprite;
 
+Object.defineProperty(Tiny.Sprite.prototype, 'frameName', {
+
+    get: function() {
+        return this.texture.frame.name
+    },
+
+    set: function(value) {
+        if (this.texture.frame.name) {
+            this.setTexture(Tiny.TextureCache[this.texture.key + "_" + value])
+        }
+    }
+
+});
+
 Object.defineProperty(Tiny.Sprite.prototype, 'frame', {
 
     get: function() {
@@ -38,11 +52,11 @@ Object.defineProperty(Tiny.Sprite.prototype, 'frame', {
     },
 
     set: function(value) {
-        if (this._frames) {
+        if (this.texture.max_no_frame) {
             this._frame = value
-            if (this._frame > (this._frames.length - 1))
+            if (this._frame > this.texture.max_no_frame)
                 this._frame = 0
-            this.setTexture(Tiny.TextureCache[this._frames[this._frame].uuid])
+            this.setTexture(Tiny.TextureCache[this.texture.key + "_" + this._frame])
         }
     }
 
@@ -89,16 +103,16 @@ Tiny.Sprite.prototype.onTextureUpdate = function()
 
 Tiny.Sprite.prototype.animate = function(delay)
 {
-    if (this._frames) {
-        delay = delay || (this._frames[0].duration || 100)
+    if (this.texture.max_no_frame && this.texture.frame.index != undefined) {
+        var o_delay = delay || (this.texture.frame.duration || 100)
         if (!this.animation) {
-
-            this.animation = this.game.timer.loop(delay, function() {
+            this.animation = this.game.timer.loop(o_delay, function() {
                 this.frame += 1
+                this.animation.delay = delay || (this.texture.frame.duration || 100)
             }.bind(this))
             this.animation.start()
         } else {
-            this.animation.delay = delay
+            this.animation.delay = o_delay
             this.animation.start()
         }
     }

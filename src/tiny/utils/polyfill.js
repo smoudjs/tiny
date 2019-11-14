@@ -3,3 +3,8 @@ if (!Date.now) {
     return new Date().getTime();
   };
 }
+
+if (typeof(Float32Array) == 'undefined')
+{
+	window.Float32Array = Array
+}
