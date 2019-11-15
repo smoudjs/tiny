@@ -168,6 +168,7 @@
 
 	require('./tiny/math/Math.js'); // 1 Kb
 
+	require('./tiny/ObjectCreator.js'); // 1 Kb
 	require('./tiny/Loader.js'); // 3 Kb
 	require('./tiny/Input.js'); // 1 Kb
 	require('./tiny/utils/renderer.js'); // 2 Kb
@@ -177,8 +178,9 @@
 	require('./tiny/math/Rectangle.js');  //  8 Kb
 
 	require('./tiny/math/RoundedRectangle.js');	//
-	require('./tiny/math/Polygon.js');			//
-	require('./tiny/math/Circle.js');			// 6 Kb
+	Tiny.Polygon = function() {}
+	// require('./tiny/math/Polygon.js');			//
+	// require('./tiny/math/Circle.js');			// 6 Kb
 
 	require('./tiny/textures/BaseTexture.js');	//
 	require('./tiny/textures/Texture.js');		// 4 Kb
@@ -196,7 +198,7 @@
 
 	require('./tiny/CanvasRenderer.js'); // 3 Kb
 
-	require('./tiny/utils/CanvasBuffer.js'); // 1 Kb
+	// require('./tiny/utils/CanvasBuffer.js'); // 1 Kb
 	// require('./tiny/utils/CanvasTinter.js'); // 3 Kb
 	// require('./tiny/textures/RenderTexture.js'); // 2 Kb
 	require('./tiny/time/Timer.js'); // 1 Kb

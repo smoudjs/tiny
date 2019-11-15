@@ -8,14 +8,15 @@ Tiny.Loader = function (game)
 Tiny.Loader.loadSpriteSheet = function(key, frameData) {
     var max_no_frame = (frameData.length - 1)
     for (var i = 0; i <= max_no_frame; i++) {
-        frameData[i].index = i
-        frameData[i].width = Math.floor(frameData[i].width)
-        frameData[i].height = Math.floor(frameData[i].height)
-        frameData[i].x = Math.floor(frameData[i].x)
-        frameData[i].y = Math.floor(frameData[i].y)
         var uuid = key + "_" + i
 
-        Tiny.TextureCache[uuid] = new Tiny.Texture(Tiny.BaseTextureCache[key], frameData[i]);
+        Tiny.TextureCache[uuid] = new Tiny.Texture(Tiny.BaseTextureCache[key], {
+            index: i,
+            x: Math.floor(frameData[i].x),
+            y: Math.floor(frameData[i].y),
+            width: Math.floor(frameData[i].width),
+            height: Math.floor(frameData[i].height),
+        });
         Tiny.TextureCache[uuid].key = key
         Tiny.TextureCache[uuid].max_no_frame = max_no_frame
     }
@@ -93,10 +94,8 @@ Tiny.Loader.prototype = {
     image: function (key, source) {
         this.cache.push({
             src: source,
-            cb: function(asset) {
-                Tiny.BaseTextureCache[key] = new Tiny.BaseTexture(asset);
-                Tiny.TextureCache[key] = new Tiny.Texture(Tiny.BaseTextureCache[key]);
-                Tiny.TextureCache[key].key = key
+            key: key,
+            cb: function() {
             }
         })
     },
@@ -104,10 +103,8 @@ Tiny.Loader.prototype = {
     spritesheet: function(key, source, arg_1, arg_2, duration) {
         this.cache.push({
             src: source,
-            cb: function(asset) {
-                Tiny.BaseTextureCache[key] = new Tiny.BaseTexture(asset);
-                Tiny.TextureCache[key] = new Tiny.Texture(Tiny.BaseTextureCache[key]);
-                Tiny.TextureCache[key].key = key
+            key: key,
+            cb: function() {
                 if (typeof arg_1 == "number")
                     Tiny.TextureCache[key].max_no_frame = Tiny.Loader.parseSpriteSheet(key, arg_1, arg_2, duration)
                 else if (arg_1.length > 0)
@@ -119,11 +116,8 @@ Tiny.Loader.prototype = {
     atlas: function(key, source, atlasData) {
         this.cache.push({
             src: source,
-            cb: function(asset) {
-                Tiny.BaseTextureCache[key] = new Tiny.BaseTexture(asset);
-                Tiny.TextureCache[key] = new Tiny.Texture(Tiny.BaseTextureCache[key]);
-                Tiny.TextureCache[key].key = key
-
+            key: key,
+            cb: function() {
                 Tiny.Loader.loadAtlas(key, atlasData)
             }
         })
@@ -145,7 +139,11 @@ Tiny.Loader.prototype = {
             img.src = _current_data.src
 
             function dataLoaded() {
-                _current_data.cb(img)
+                Tiny.BaseTextureCache[_current_data.key] = new Tiny.BaseTexture(img);
+                Tiny.TextureCache[_current_data.key] = new Tiny.Texture(Tiny.BaseTextureCache[_current_data.key]);
+                Tiny.TextureCache[_current_data.key].key = _current_data.key
+
+                _current_data.cb()
                 if (!done) {
                     img.onload = null;
                     done = true;

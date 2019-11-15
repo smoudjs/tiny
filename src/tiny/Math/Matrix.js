@@ -1,82 +1,23 @@
-/**
- * @author Mat Groves http://matgroves.com/ @Doormat23
- */
 
-/**
- * The Matrix class is now an object, which makes it a lot faster, 
- * here is a representation of it : 
- * | a | b | tx|
- * | c | d | ty|
- * | 0 | 0 | 1 |
- *
- * @class Matrix
- * @constructor
- */
 Tiny.Matrix = function()
 {
-    /**
-     * @property a
-     * @type Number
-     * @default 1
-     */
+
     this.a = 1;
 
-    /**
-     * @property b
-     * @type Number
-     * @default 0
-     */
     this.b = 0;
 
-    /**
-     * @property c
-     * @type Number
-     * @default 0
-     */
     this.c = 0;
 
-    /**
-     * @property d
-     * @type Number
-     * @default 1
-     */
     this.d = 1;
 
-    /**
-     * @property tx
-     * @type Number
-     * @default 0
-     */
     this.tx = 0;
 
-    /**
-     * @property ty
-     * @type Number
-     * @default 0
-     */
     this.ty = 0;
 
-    /**
-    * @property {number} type - The const type of this object.
-    * @readonly
-    */
     this.type = Tiny.MATRIX;
 
 };
 
-/**
- * Creates a Matrix object based on the given array. The Element to Matrix mapping order is as follows:
- *
- * a = array[0]
- * b = array[1]
- * c = array[3]
- * d = array[4]
- * tx = array[2]
- * ty = array[5]
- *
- * @method fromArray
- * @param array {Array} The array that the matrix will be populated from.
- */
 Tiny.Matrix.prototype.fromArray = function(array)
 {
     this.a = array[0];
@@ -87,13 +28,7 @@ Tiny.Matrix.prototype.fromArray = function(array)
     this.ty = array[5];
 };
 
-/**
- * Creates an array from the current Matrix object.
- *
- * @method toArray
- * @param transpose {Boolean} Whether we need to transpose the matrix or not
- * @return {Array} the newly created array which contains the matrix
- */
+
 Tiny.Matrix.prototype.toArray = function(transpose)
 {
     if (!this.array)
@@ -131,15 +66,6 @@ Tiny.Matrix.prototype.toArray = function(transpose)
     return array;
 };
 
-/**
- * Get a new position with the current transformation applied.
- * Can be used to go from a child's coordinate space to the world coordinate space. (e.g. rendering)
- *
- * @method apply
- * @param pos {Point} The origin
- * @param [newPos] {Point} The point that the new position is assigned to (allowed to be same as input)
- * @return {Point} The new point, transformed through this matrix
- */
 Tiny.Matrix.prototype.apply = function(pos, newPos)
 {
     newPos = newPos || new Tiny.Point();
@@ -153,15 +79,6 @@ Tiny.Matrix.prototype.apply = function(pos, newPos)
     return newPos;
 };
 
-/**
- * Get a new position with the inverse of the current transformation applied.
- * Can be used to go from the world coordinate space to a child's coordinate space. (e.g. input)
- *
- * @method applyInverse
- * @param pos {Point} The origin
- * @param [newPos] {Point} The point that the new position is assigned to (allowed to be same as input)
- * @return {Point} The new point, inverse-transformed through this matrix
- */
 Tiny.Matrix.prototype.applyInverse = function(pos, newPos)
 {
     newPos = newPos || new Tiny.Point();
@@ -176,14 +93,6 @@ Tiny.Matrix.prototype.applyInverse = function(pos, newPos)
     return newPos;
 };
 
-/**
- * Translates the matrix on the x and y.
- * 
- * @method translate
- * @param {Number} x
- * @param {Number} y
- * @return {Matrix} This matrix. Good for chaining method calls.
- **/
 Tiny.Matrix.prototype.translate = function(x, y)
 {
     this.tx += x;
@@ -192,14 +101,6 @@ Tiny.Matrix.prototype.translate = function(x, y)
     return this;
 };
 
-/**
- * Applies a scale transformation to the matrix.
- * 
- * @method scale
- * @param {Number} x The amount to scale horizontally
- * @param {Number} y The amount to scale vertically
- * @return {Matrix} This matrix. Good for chaining method calls.
- **/
 Tiny.Matrix.prototype.scale = function(x, y)
 {
     this.a *= x;
@@ -212,13 +113,6 @@ Tiny.Matrix.prototype.scale = function(x, y)
     return this;
 };
 
-
-/**
- * Applies a rotation transformation to the matrix.
- * @method rotate
- * @param {Number} angle The angle in radians.
- * @return {Matrix} This matrix. Good for chaining method calls.
- **/
 Tiny.Matrix.prototype.rotate = function(angle)
 {
     var cos = Math.cos( angle );
@@ -238,13 +132,6 @@ Tiny.Matrix.prototype.rotate = function(angle)
     return this;
 };
 
-/**
- * Appends the given Matrix to this Matrix.
- * 
- * @method append
- * @param {Matrix} matrix
- * @return {Matrix} This matrix. Good for chaining method calls.
- */
 Tiny.Matrix.prototype.append = function(matrix)
 {
     var a1 = this.a;
@@ -263,12 +150,6 @@ Tiny.Matrix.prototype.append = function(matrix)
     return this;
 };
 
-/**
- * Resets this Matix to an identity (default) matrix.
- * 
- * @method identity
- * @return {Matrix} This matrix. Good for chaining method calls.
- */
 Tiny.Matrix.prototype.identity = function()
 {
     this.a = 1;

@@ -1,9 +1,9 @@
-var ObjectFactory = function (game)
+Tiny.ObjectCreator = function (game)
 {
     this.game = game;
 };
 
-ObjectFactory.prototype = {
+Tiny.ObjectCreator.prototype = {
 	group: function(x, y) {
 		var group = new Tiny.DisplayObjectContainer()
 		group.game = this.game
@@ -54,5 +54,3 @@ ObjectFactory.prototype = {
 		return graphics;
 	}
 };
-
-module.exports = ObjectFactory
