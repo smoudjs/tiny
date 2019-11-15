@@ -36,20 +36,12 @@ Tiny.BaseTexture = function(source, scaleMode)
     }
     else
     {
-        /*
         var scope = this;
         this.source.onload = function() {
             scope.hasLoaded = true;
             scope.width = scope.source.naturalWidth || scope.source.width;
             scope.height = scope.source.naturalHeight || scope.source.height;
-            scope.dirty();
-            // add it to somewhere...
-            scope.dispatchEvent( { type: 'loaded', content: scope } );
         };
-        this.source.onerror = function() {
-            scope.dispatchEvent( { type: 'error', content: scope } );
-        };
-        */
     }
 
     this.imageUrl = null;
@@ -64,8 +56,8 @@ Tiny.BaseTexture.prototype.destroy = function()
 {
     if(this.imageUrl)
     {
-        delete Tiny.BaseTextureCache[this.imageUrl];
-        delete Tiny.TextureCache[this.imageUrl];
+        delete Tiny.BaseTextureCache[this.key];
+        delete Tiny.TextureCache[this.key];
         this.imageUrl = null;
         if (!navigator.isCocoonJS) this.source.src = '';
     }
@@ -88,9 +80,9 @@ Tiny.BaseTexture.prototype.dirty = function()
 
 };
 
-Tiny.BaseTexture.fromImage = function(imageUrl, crossorigin, scaleMode)
+Tiny.BaseTexture.fromImage = function(key, imageUrl, crossorigin, scaleMode)
 {
-    var baseTexture = Tiny.BaseTextureCache[imageUrl];
+    var baseTexture = Tiny.BaseTextureCache[key];
 
     if(crossorigin === undefined && imageUrl.indexOf('data:') === -1) crossorigin = true;
 
@@ -108,7 +100,8 @@ Tiny.BaseTexture.fromImage = function(imageUrl, crossorigin, scaleMode)
         image.src = imageUrl;
         baseTexture = new Tiny.BaseTexture(image, scaleMode);
         baseTexture.imageUrl = imageUrl;
-        Tiny.BaseTextureCache[imageUrl] = baseTexture;
+        baseTexture.key = key
+        Tiny.BaseTextureCache[key] = baseTexture;
 
         // if there is an @2x at the end of the url we are going to assume its a highres image
         if( imageUrl.indexOf(Tiny.RETINA_PREFIX + '.') !== -1)

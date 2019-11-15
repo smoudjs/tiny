@@ -11,6 +11,8 @@ Tiny.Loader.loadSpriteSheet = function(key, frameData) {
         frameData[i].index = i
         frameData[i].width = Math.floor(frameData[i].width)
         frameData[i].height = Math.floor(frameData[i].height)
+        frameData[i].x = Math.floor(frameData[i].x)
+        frameData[i].y = Math.floor(frameData[i].y)
         var uuid = key + "_" + i
 
         Tiny.TextureCache[uuid] = new Tiny.Texture(Tiny.BaseTextureCache[key], frameData[i]);
@@ -108,7 +110,7 @@ Tiny.Loader.prototype = {
                 Tiny.TextureCache[key].key = key
                 if (typeof arg_1 == "number")
                     Tiny.TextureCache[key].max_no_frame = Tiny.Loader.parseSpriteSheet(key, arg_1, arg_2, duration)
-                else
+                else if (arg_1.length > 0)
                     Tiny.TextureCache[key].max_no_frame = Tiny.Loader.loadSpriteSheet(key, arg_1)
             }
         })

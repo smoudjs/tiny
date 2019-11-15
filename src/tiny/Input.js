@@ -4,20 +4,20 @@ Tiny.Input = function (game)
     this._active_objects = []
 
     this.clickHandler_bind = this.clickHandler.bind(this)
-    window.addEventListener('touchstart', this.clickHandler_bind);
+    this.game.canvas.addEventListener('touchstart', this.clickHandler_bind);
 
     // if (/firefox/i.test(navigator.userAgent)) {
     //     // Firefox blocks window.open from mousedown events, so bind click instead
     //     window.addEventListener('click', this.clickHandler.bind(this));
     // } else {
-        window.addEventListener('click', this.clickHandler_bind);
+        this.game.canvas.addEventListener('click', this.clickHandler_bind);
     // }
 };
 
 Tiny.Input.prototype = {
     destroy: function() {
-        window.removeEventListener('touchstart', this.clickHandler_bind);
-        window.removeEventListener('click', this.clickHandler_bind);
+        this.game.canvas.removeEventListener('touchstart', this.clickHandler_bind);
+        this.game.canvas.removeEventListener('click', this.clickHandler_bind);
     },
 
     _checkOnActiveObjects: function(obj, x, y) {

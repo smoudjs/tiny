@@ -125,14 +125,15 @@ Tiny.Texture.prototype._updateUvs = function()
     this._uvs.y3 = (frame.y + frame.height) / th;
 };
 
-Tiny.Texture.fromImage = function(imageUrl, crossorigin, scaleMode)
+Tiny.Texture.fromImage = function(key, imageUrl, crossorigin, scaleMode)
 {
-    var texture = Tiny.TextureCache[imageUrl];
+    var texture = Tiny.TextureCache[key];
 
     if(!texture)
     {
-        texture = new Tiny.Texture(Tiny.BaseTexture.fromImage(imageUrl, crossorigin, scaleMode));
-        Tiny.TextureCache[imageUrl] = texture;
+        texture = new Tiny.Texture(Tiny.BaseTexture.fromImage(key, imageUrl, crossorigin, scaleMode));
+        texture.key = key
+        Tiny.TextureCache[key] = texture;
     }
 
     return texture;

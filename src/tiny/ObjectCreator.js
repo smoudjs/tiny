@@ -21,7 +21,7 @@ ObjectFactory.prototype = {
 			texture = imagePath
 
 		if (!texture)
-			return false
+			throw new Error('Cache Error: image ' + imagePath + ' does`t found in cache');
 
 		if (texture.max_no_frame) {
 			texture = Tiny.TextureCache[texture.key + "_" + 0]

@@ -74,7 +74,7 @@ Tiny.prototype.resize = function(width, height) {
 	this.height = height || this.height
 	this.renderer.resize(this.width, this.height)
 	if (this.state > 0)
-		this._resize_cb.call(this.callbackContext, this.renderer.width, this.renderer.height)
+		this._resize_cb.call(this.callbackContext, this.width, this.height)
 };
 
 Tiny.prototype.setSize = Tiny.prototype.resize
@@ -131,6 +131,14 @@ Tiny.prototype.resume = function() {
 
 
 Tiny.prototype.destroy = function() {
+	if (Tiny.Input)
+		this.input.destroy()
+	if (Tiny._tween_enabled)
+		TWEEN.removeAll()
+
+	if (this.timers)
+		this.timer.removeAll()
+
 	this.paused = true
 	this.stage.destroy()
 	for (var y in Tiny.TextureCache) Tiny.TextureCache[y].destroy(true)
@@ -141,17 +149,8 @@ Tiny.prototype.destroy = function() {
 	this.update()
 	this.renderer.destroy(true)
 
-	if (Tiny._tween_enabled)
-		TWEEN.removeAll()
-
 	if (this._self_raf)
 		this._raf.stop()
-
-	if (this.timers)
-		this.timer.removeAll()
-
-	if (Tiny.Input)
-		this.input.destroy()
 
 	this.canvas = void 0
 
