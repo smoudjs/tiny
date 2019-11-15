@@ -129,6 +129,8 @@ Tiny.prototype.resume = function() {
 	this.paused = false
 }
 
+Tiny.prototype.stop = Tiny.prototype.pause
+Tiny.prototype.play = Tiny.prototype.resume
 
 Tiny.prototype.destroy = function() {
 	if (Tiny.Input)

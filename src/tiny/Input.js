@@ -55,9 +55,10 @@ Tiny.Input.prototype = {
 
         this._active_objects = []
 
-        for (var t = 0; t < this.game.stage.children.length; t++)
-            this._checkOnActiveObjects(this.game.stage.children[t], coords.x, coords.y)
-        
+        // for (var t = 0; t < this.game.stage.children.length; t++)
+        //     this._checkOnActiveObjects(this.game.stage.children[t], coords.x, coords.y)
+        this._checkOnActiveObjects(this.game.stage, coords.x, coords.y)
+
         var i = this._active_objects.length
         this.onClick()
         //while (i--) {
