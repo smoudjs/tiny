@@ -41,6 +41,23 @@ Tiny.ObjectCreator.prototype = {
 		
 		return text;
 	},
+	tileSprite: function(x, y, w, h, imagePath, key) {
+		var texture = null
+		if (typeof imagePath == "string") {
+			if (key)
+				imagePath = imagePath + "_" + key
+			texture = Tiny.TextureCache[imagePath]
+		} else
+			texture = imagePath
+
+		if (!texture)
+			throw new Error('Cache Error: image ' + imagePath + ' does`t found in cache');
+
+		var tile = new Tiny.TilingSprite( texture, w , h )
+		this.game.stage.addChild(tile)
+		tile.x = x || 0, tile.y = y || 0
+		return tile;
+	},
 	graphics: function(x, y) {
 		var graphics = new Tiny.Graphics()
 		this.game.stage.addChild(graphics)

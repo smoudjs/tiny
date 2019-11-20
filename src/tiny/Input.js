@@ -51,8 +51,7 @@ Tiny.Input.prototype = {
                 this._checkOnActiveObjects(obj.children[t], x, y)
         }
     },
-    onClick: function() {},
-
+    
     _getCoords: function(event, history) {
         var coords = null;
         if (typeof TouchEvent !== 'undefined' && event instanceof TouchEvent) {

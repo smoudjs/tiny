@@ -199,6 +199,7 @@
 	require('./tiny/objects/Sprite.js'); // 3 Kb
 	require('./tiny/objects/Graphics.js'); // 10 Kb
 	require('./tiny/objects/Text.js'); // 5 Kb
+	require('./tiny/objects/TilingSprite.js'); // 4 Kb
 
 	require('./tiny/CanvasRenderer.js'); // 3 Kb
 
