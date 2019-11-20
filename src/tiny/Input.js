@@ -89,16 +89,15 @@ Tiny.Input.prototype = {
             var i = this._active_objects.length
 
             if (i > 0) {
-                var idx = i - 1
-                this._active_objects.input["last_" + name] = {x: coords.x, y: coords.y}
+                var obj = this._active_objects[i - 1]
+                obj.input["last_" + name] = {x: coords.x, y: coords.y}
 
-                this._active_objects[idx].input.emit(name, {x: coords.x, y: coords.y})
+                obj.input.emit(name, {x: coords.x, y: coords.y})
 
                 if (name == "up") {
-                    var point = this._active_objects.input["last_down"]
-                    console.log("hgdffd")
-                    if (Tiny.Math.distance(point.x, point.y, coords.x, y: coords.y) < 20)
-                        this._active_objects[idx].input.emit("click", {x: coords.x, y: coords.y})
+                    var point = obj.input["last_down"]
+                    if (point && Tiny.Math.distance(point.x, point.y, coords.x, coords.y) < 30)
+                        obj.input.emit("click", {x: coords.x, y: coords.y})
                 }
             }
 
