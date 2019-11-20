@@ -38,7 +38,7 @@ Tiny.EventTarget = {
 
                 for(i = 0; i < length; fn = listeners[++i]) {
                     //call the event listener
-                    fn.call(this, data);
+                    fn._cb_.call(fn._ctx_, data);
 
                     //if "stopImmediatePropagation" is called, stop calling sibling events
                     if(data.stoppedImmediate) {
@@ -60,16 +60,16 @@ Tiny.EventTarget = {
             return this;
         };
 
-        obj.on = obj.addEventListener = function on(eventName, fn) {
+        obj.on = obj.addEventListener = function on(eventName, fn, cbcontext) {
             this._listeners = this._listeners || {};
 
             (this._listeners[eventName] = this._listeners[eventName] || [])
-                .push(fn);
+                .push({_cb_: fn, _ctx_: cbcontext});
 
             return this;
         };
 
-        obj.once = function once(eventName, fn) {
+        obj.once = function once(eventName, fn, cbcontext) {
             this._listeners = this._listeners || {};
 
             var self = this;
@@ -78,7 +78,7 @@ Tiny.EventTarget = {
             }
             onceHandlerWrapper._originalHandler = fn;
 
-            return this.on(eventName, onceHandlerWrapper);
+            return this.on(eventName, onceHandlerWrapper, cbcontext);
         };
 
         obj.off = obj.removeEventListener = function off(eventName, fn) {
@@ -118,6 +118,11 @@ Tiny.EventTarget = {
 
 Tiny.Event = function(target, name, data) {
     //for duck typing in the ".on()" function
+
+    for (var k in data) {
+        this[k] = data[k]
+    }
+
     this.__isEventObject = true;
 
     this.stopped = false;
@@ -127,10 +132,6 @@ Tiny.Event = function(target, name, data) {
     this.target = target;
 
     this.type = name;
-
-    this.data = data;
-
-    this.content = data;
 
     this.timeStamp = Date.now();
 };

@@ -207,6 +207,7 @@
 	// require('./tiny/textures/RenderTexture.js'); // 2 Kb
 	require('./tiny/time/Timer.js'); // 1 Kb
 	require('./tiny/utils/Tween.js');
+	require('./tiny/utils/EventTarget.js');
 	// require('./tiny/utils/canvasPool.js');
 	// require('./tiny/utils/device.js');
 	// require('./tiny/utils/color.js');

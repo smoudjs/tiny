@@ -6,7 +6,6 @@ Tiny.ObjectCreator = function (game)
 Tiny.ObjectCreator.prototype = {
 	group: function(x, y) {
 		var group = new Tiny.DisplayObjectContainer()
-		group.game = this.game
 		this.game.stage.addChild(group)
 		group.x = x || 0, group.y = y || 0
 		return group;
@@ -28,7 +27,6 @@ Tiny.ObjectCreator.prototype = {
 		}
 
 		var sprite = new Tiny.Sprite( texture )
-		sprite.game = this.game
 		this.game.stage.addChild(sprite)
 		sprite.x = x || 0, sprite.y = y || 0
 		//game.objects.push(sprite)
@@ -37,7 +35,6 @@ Tiny.ObjectCreator.prototype = {
 	},
 	text: function(x, y, text, tyle) {
 		var text = new Tiny.Text(text, tyle)
-		text.game = this.game
 		this.game.stage.addChild(text)
 		text.x = x || 0, text.y = y || 0
 		//game.objects.push(sprite)
@@ -46,7 +43,6 @@ Tiny.ObjectCreator.prototype = {
 	},
 	graphics: function(x, y) {
 		var graphics = new Tiny.Graphics()
-		graphics.game = this.game
 		this.game.stage.addChild(graphics)
 		graphics.x = x || 0, graphics.y = y || 0
 		//game.objects.push(sprite)

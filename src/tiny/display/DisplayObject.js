@@ -22,9 +22,28 @@ Tiny.DisplayObject = function()
     this._mask = null;
     this._cacheAsBitmap = false;
     this._cacheIsDirty = false;
-    this.inputEnabled = false
-
+    this.input = null
 };
+
+Object.defineProperty(Tiny.DisplayObject.prototype, 'inputEnabled', {
+
+    get: function() {
+        return (this.input && this.input.enabled)
+    },
+
+    set: function(value) {
+        if (value) {
+            if (this.input === null) {
+                this.input = {enabled: true, parent: this}
+                Tiny.EventTarget.mixin(this.input)
+            } else 
+                this.input.enabled = true
+        } else {
+            this.input !== null && (this.input.enabled = false)
+        }
+    }
+
+});
 
 Tiny.DisplayObject.prototype.constructor = Tiny.DisplayObject;
 
