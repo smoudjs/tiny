@@ -74,6 +74,8 @@ Tiny.DisplayObjectContainer.prototype.addChildAt = function(child, index)
 
         child.parent = this;
 
+        child.game = this.game;
+
         this.children.splice(index, 0, child);
 
         if(this.stage)child.setStageReference(this.stage);

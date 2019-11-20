@@ -1,6 +1,7 @@
 // require('./asset-loader/AssetLoader.js');
 
 
+
 // /////////////////// #################### Standart version 65 Kb
 // 	require('./tiny/utils/polyfill.js');
 // 	require('./tiny/Tiny.js');
@@ -8,6 +9,7 @@
 
 // 	require('./tiny/math/Math.js'); // 1 Kb
 
+// 	require('./tiny/ObjectCreator.js'); // 1 Kb
 // 	require('./tiny/Loader.js'); // 3 Kb
 // 	require('./tiny/Input.js'); // 1 Kb
 // 	require('./tiny/utils/renderer.js'); // 2 Kb
@@ -24,7 +26,7 @@
 // 	require('./tiny/textures/Texture.js');		// 4 Kb
 
 // 	require('./tiny/display/CanvasGraphics.js'); // 4Kb
-// 	require('./tiny/utils/CanvasMaskManager.js'); // 1Kb
+// 	// require('./tiny/utils/CanvasMaskManager.js'); // 1Kb
 
 // 	require('./tiny/display/DisplayObject.js');				//
 // 	require('./tiny/display/DisplayObjectContainer.js');	//
@@ -36,7 +38,7 @@
 
 // 	require('./tiny/CanvasRenderer.js'); // 3 Kb
 
-// 	require('./tiny/utils/CanvasBuffer.js'); // 1 Kb
+// 	// require('./tiny/utils/CanvasBuffer.js'); // 1 Kb
 // 	// require('./tiny/utils/CanvasTinter.js'); // 1 Kb
 
 // 	// require('./tiny/time/Timer.js'); // 1 Kb
@@ -50,6 +52,7 @@
 
 // 	require('./tiny/math/Math.js'); // 1 Kb
 
+//  require('./tiny/ObjectCreator.js'); // 1 Kb
 // 	require('./tiny/Loader.js'); // 3 Kb
 // 	require('./tiny/Input.js'); // 1 Kb
 // 	require('./tiny/utils/renderer.js'); // 2 Kb
@@ -120,6 +123,7 @@
 
 // 	require('./tiny/math/Math.js'); // 1 Kb
 
+//  require('./tiny/ObjectCreator.js'); // 1 Kb
 // 	require('./tiny/Loader.js'); // 3 Kb
 // 	require('./tiny/Input.js'); // 1 Kb
 // 	require('./tiny/utils/renderer.js'); // 2 Kb

@@ -62,6 +62,10 @@ ResizeManager.prototype = {
         var h = _height - Banner.height
         this.updateOrientation(w, h)
         this.game.setSize(w, h)
+
+        if ("google" == GPP_NETWORK && game.google_game_title)
+            game.google_game_title.onResize()
+
         setTimeout(function() {
             window.scrollTo(0, 1)
         }, 100), window.scrollTo(0, 1)

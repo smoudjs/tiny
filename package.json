@@ -8,6 +8,7 @@
     "lib": "lib"
   },
   "scripts": {
+    "dev": "webpack --watch",
     "build": "npm-run-all build:*",
     "build:cleanup": "rm -rf lib",
     "build:webpack": "webpack",

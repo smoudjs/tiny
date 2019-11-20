@@ -7,17 +7,18 @@ var Tiny = function(width, height, parentNode, enableRAF, states) {
 	this.width = width || 430;
 
 	this.stage = new Tiny.Stage()
+	this.stage.game = this
 	this.renderer = new Tiny.CanvasRenderer(this.width, this.height, {view: this.canvas, autoResize: true})
 	Tiny.defaultRenderer = this.renderer
 
 	this.callbackContext = null
 	states = states || {}
 	this.state = 0
-	this._preload_cb = states.preload || function() {}
-	this._create_cb = states.create || function() {}
-	this._update_cb = states.update || function() {}
-	this._resize_cb = states.resize || function() {}
-	this._destroy_cb = states.destroy || function() {}
+	this._preload_cb = this._preload_cb || states.preload || function() {}
+	this._create_cb = this._create_cb || states.create || function() {}
+	this._update_cb = this._update_cb || states.update || function() {}
+	this._resize_cb = this._resize_cb || states.resize || function() {}
+	this._destroy_cb = this._destroy_cb || states.destroy || function() {}
 
 	if (Tiny.Loader)
 		this.load = new Tiny.Loader(this)
@@ -86,12 +87,11 @@ Tiny.prototype.render = function() {
 
 Tiny.prototype.preload = function() {
 	this._preload_cb.call(this.callbackContext)
+	this.state = 1
 	if (Tiny.Loader)
 		this.load.start(this.create)
 	else
 		this.create()
-
-	this.state = 1
 };
 
 Tiny.prototype.create = function() {

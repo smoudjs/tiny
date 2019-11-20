@@ -10,6 +10,7 @@ Tiny.Timer = function(status, autoRemove, game, cb, delay, loop, n, oncomplete) 
     this._lastFrame = 0
     this.autoRemove = autoRemove
     this._oncomplete = oncomplete || function() {}
+    this._stop = function(){}
 }
 
 Tiny.Timer.prototype = {
@@ -22,6 +23,7 @@ Tiny.Timer.prototype = {
     stop: function() {
         this.status = 0
         this._lastFrame = 0
+        this._stop()
     },
     update: function(deltaTime) {
         if (this.status) {
