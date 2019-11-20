@@ -16,7 +16,7 @@ Tiny.Input = function (game)
     t('touchend', this.upHandler_bind);
     t('touchcancel', this.upHandler_bind);
 
-    t('click', this.clickHandler_bind);
+    // t('click', this.clickHandler_bind);
 
     t('mousedown', this.downHandler_bind);
     t('mousemove', this.moveHandler_bind);
@@ -33,7 +33,7 @@ Tiny.Input.prototype = {
         t('touchend', this.upHandler_bind);
         t('touchcancel', this.upHandler_bind);
 
-        t('click', this.clickHandler_bind);
+        // t('click', this.clickHandler_bind);
 
         t('mousedown', this.downHandler_bind);
         t('mousemove', this.moveHandler_bind);
@@ -89,8 +89,19 @@ Tiny.Input.prototype = {
             var i = this._active_objects.length
 
             if (i > 0) {
-                this._active_objects[i - 1].input.emit(name, {x: coords.x, y: coords.y})
+                var idx = i - 1
+                this._active_objects.input["last_" + name] = {x: coords.x, y: coords.y}
+
+                this._active_objects[idx].input.emit(name, {x: coords.x, y: coords.y})
+
+                if (name == "up") {
+                    var point = this._active_objects.input["last_down"]
+                    console.log("hgdffd")
+                    if (Tiny.Math.distance(point.x, point.y, coords.x, y: coords.y) < 20)
+                        this._active_objects[idx].input.emit("click", {x: coords.x, y: coords.y})
+                }
             }
+
             this.emit(name, {x: coords.x, y: coords.y})
         }
     },
@@ -110,27 +121,7 @@ Tiny.Input.prototype = {
     },
 
     clickHandler: function(event) {
-        var coords = this._getCoords(event)
-
-        if (coords !== null) {
-
-            this._active_objects = []
-
-            // for (var t = 0; t < this.game.stage.children.length; t++)
-            //     this._checkOnActiveObjects(this.game.stage.children[t], coords.x, coords.y)
-            this._checkOnActiveObjects(this.game.stage, coords.x, coords.y)
-
-            var i = this._active_objects.length
-            this.onClick()
-            //while (i--) {
-                if (i > 0) {
-                    if (typeof this._active_objects[i - 1].onClick == "function")
-                        this._active_objects[i - 1].onClick()
-                    this._active_objects[i - 1].input.emit("click")
-                //    break;
-                }
-           // }
-        }
+        this.inputHandler("click", event, false)
     },
 
     windowToUISpace: function(x, y, history) {
