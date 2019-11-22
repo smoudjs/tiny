@@ -9,6 +9,7 @@ Tiny.Input = function (game)
     this.moveHandler_bind = this.moveHandler.bind(this)
 
     this.lastMove = null
+    this.isDown = false
 
     var t = this.game.canvas.addEventListener
     t('touchstart', this.downHandler_bind);
@@ -110,10 +111,12 @@ Tiny.Input.prototype = {
     },
 
     upHandler: function(event) {
+        this.isDown = false
         this.inputHandler("up", this.lastMove, true)
     },
 
     downHandler: function(event) {
+        this.isDown = true
         this.lastMove = event
         this.inputHandler("down", event, false)
     },

@@ -16,6 +16,7 @@ Tiny.Loader.loadSpriteSheet = function(key, frameData) {
             y: Math.floor(frameData[i].y),
             width: Math.floor(frameData[i].width),
             height: Math.floor(frameData[i].height),
+            duration: frameData[i].duration
         });
         Tiny.TextureCache[uuid].key = key
         Tiny.TextureCache[uuid].max_no_frame = max_no_frame
