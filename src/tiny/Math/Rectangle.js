@@ -139,11 +139,11 @@ Tiny.Rectangle.prototype = {
     // },
 
 
-    // intersects: function (b) {
+    intersects: function (b) {
 
-    //     return Tiny.Rectangle.intersects(this, b);
+        return Tiny.Rectangle.intersects(this, b);
 
-    // },
+    },
 
     // intersectsRaw: function (left, right, top, bottom, tolerance) {
 
@@ -243,13 +243,13 @@ Object.defineProperty(Tiny.Rectangle.prototype, "right", {
 
 });
 
-// Object.defineProperty(Tiny.Rectangle.prototype, "volume", {
+Object.defineProperty(Tiny.Rectangle.prototype, "volume", {
 
-//     get: function () {
-//         return this.width * this.height;
-//     }
+    get: function () {
+        return this.width * this.height;
+    }
 
-// });
+});
 
 // Object.defineProperty(Tiny.Rectangle.prototype, "perimeter", {
 
@@ -478,16 +478,16 @@ Tiny.Rectangle.containsRect = function (a, b) {
 
 // };
 
-// Tiny.Rectangle.intersects = function (a, b) {
+Tiny.Rectangle.intersects = function (a, b) {
 
-//     if (a.width <= 0 || a.height <= 0 || b.width <= 0 || b.height <= 0)
-//     {
-//         return false;
-//     }
+    if (a.width <= 0 || a.height <= 0 || b.width <= 0 || b.height <= 0)
+    {
+        return false;
+    }
 
-//     return !(a.right < b.x || a.bottom < b.y || a.x > b.right || a.y > b.bottom);
+    return !(a.right < b.x || a.bottom < b.y || a.x > b.right || a.y > b.bottom);
 
-// };
+};
 
 // Tiny.Rectangle.intersectsRaw = function (a, left, right, top, bottom, tolerance) {
 

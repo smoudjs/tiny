@@ -81,23 +81,24 @@ Tiny.Input.prototype = {
        // console.log(name)
         var coords = this._getCoords(event, history)
         if (coords !== null) {
+            if (name != "move") {
+                this._active_objects = []
 
-            this._active_objects = []
+                this._checkOnActiveObjects(this.game.stage, coords.x, coords.y)
 
-            this._checkOnActiveObjects(this.game.stage, coords.x, coords.y)
+                var i = this._active_objects.length
 
-            var i = this._active_objects.length
+                if (i > 0) {
+                    var obj = this._active_objects[i - 1]
+                    obj.input["last_" + name] = {x: coords.x, y: coords.y}
 
-            if (i > 0) {
-                var obj = this._active_objects[i - 1]
-                obj.input["last_" + name] = {x: coords.x, y: coords.y}
+                    obj.input.emit(name, {x: coords.x, y: coords.y})
 
-                obj.input.emit(name, {x: coords.x, y: coords.y})
-
-                if (name == "up") {
-                    var point = obj.input["last_down"]
-                    if (point && Tiny.Math.distance(point.x, point.y, coords.x, coords.y) < 30)
-                        obj.input.emit("click", {x: coords.x, y: coords.y})
+                    if (name == "up") {
+                        var point = obj.input["last_down"]
+                        if (point && Tiny.Math.distance(point.x, point.y, coords.x, coords.y) < 30)
+                            obj.input.emit("click", {x: coords.x, y: coords.y})
+                    }
                 }
             }
 
