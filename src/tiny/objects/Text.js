@@ -129,6 +129,7 @@ Tiny.Text.prototype.updateText = function()
     this.context.lineWidth = this.style.strokeThickness;
     this.context.textBaseline = 'alphabetic';
     //this.context.lineJoin = 'round';
+    this.context.miterLimit = 2;
 
     var linePositionX;
     var linePositionY;

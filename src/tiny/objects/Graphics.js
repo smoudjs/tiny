@@ -425,9 +425,19 @@ Tiny.Graphics.prototype.clear = function()
 
 Tiny.Graphics.prototype.destroy = function (destroyChildren)
 {
+    if (this.children)
+    {
+        var i = this.children.length;
+
+        while (i--)
+        {
+            this.children[i].destroy();
+        }
+
+        this.children = [];
+    }
 
     this.clear();
-
 };
 
 Tiny.Graphics.prototype.generateTexture = function(resolution, scaleMode)
