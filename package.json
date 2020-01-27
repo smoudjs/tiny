@@ -1,10 +1,10 @@
 {
-  "name": "h5tinygame",
-  "version": "1.0.0",
+  "name": "h5tiny",
+  "version": "1.0.4",
   "description": "Tiny canvas framework for html5 game creating",
-  "main": "webpack.config.js",
+  "main": "./lib/tiny.js",
   "directories": {
-    "example": "examples",
+    "src": "sources",
     "lib": "lib"
   },
   "scripts": {

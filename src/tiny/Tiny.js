@@ -38,5 +38,3 @@ export default class Tiny extends Core {
 		this.renderer.render(this.stage)
 	}
 }
-
-window.Tiny = Tiny;

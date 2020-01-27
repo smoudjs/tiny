@@ -1,6 +1,6 @@
 require('./tiny/utils/polyfill.js');
 
-import Tiny from './tiny/Tiny.js'
+import Tiny from './tiny/Tiny3D.js'
 
 window.Tiny = Tiny;
 

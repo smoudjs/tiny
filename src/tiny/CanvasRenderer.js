@@ -24,10 +24,8 @@ Tiny.CanvasRenderer = function(width, height, options)
 
     this.refresh = true;
 
-    this.view.width = this.width * this.resolution;
-    this.view.height = this.height * this.resolution;
-
-    this.count = 0;
+    this.view.width = this.width;
+    this.view.height = this.height;
 
     if (Tiny.CanvasMaskManager)
         this.maskManager = new Tiny.CanvasMaskManager();

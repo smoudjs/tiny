@@ -3,7 +3,7 @@
 import Core from './TinyCommon'
 
 export default class Tiny extends Core {
-	constructor (three, enableRAF, states) {
+	constructor (three, enableRAF, states, THREE) {
 		super(enableRAF, states)
 
 		this.height = 720;
@@ -15,22 +15,22 @@ export default class Tiny extends Core {
 
 		this.inputView = three.renderer.domElement
 
-		this.scene = new Scene();
+		this.scene = new THREE.Scene();
 
-	    this.camera = new OrthographicCamera( - this.width / 2, this.width / 2, this.height / 2, - this.height / 2, 1, 10 );
+	    this.camera = new THREE.OrthographicCamera( - this.width / 2, this.width / 2, this.height / 2, - this.height / 2, 1, 10 );
 		
 		this.camera.position.z = 1;
 
-	    this.texture = new CanvasTexture(this.renderer.view);
-		this.texture.encoding = sRGBEncoding;
-	    this.material = new SpriteMaterial({ map: this.texture })
-	    this.sprite = new Sprite( this.material )
+	    this.texture = new THREE.CanvasTexture( this.renderer.view );
+		this.texture.encoding = THREE.sRGBEncoding;
+	    this.material = new THREE.SpriteMaterial({ map: this.texture })
+	    this.sprite = new THREE.Sprite( this.material )
 
 	    this.scene.add( this.sprite );
 
 	 //    this.texture.generateMipmaps = false;
 		// this.texture.wrapS = this.texture.wrapT = ClampToEdgeWrapping;
-		this.texture.minFilter = LinearFilter;
+		this.texture.minFilter = THREE.LinearFilter;
 
 		this.boot()
 	}
@@ -74,5 +74,3 @@ export default class Tiny extends Core {
 		this.material = this.sprite = this.texture = null
 	}
 }
-
-window.Tiny = Tiny;
