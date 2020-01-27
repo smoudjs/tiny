@@ -1,7 +1,8 @@
-Tiny.Stage = function()
+Tiny.Stage = function(game)
 {
     Tiny.DisplayObjectContainer.call( this );
     this.worldTransform = new Tiny.Matrix();
+    this.game = game
     this.stage = this;
 
     this.setBackgroundColor(0xffffff)

@@ -63,8 +63,10 @@ Tiny.TimerCreator.prototype = {
         this.game.timers = []
     },
     remove: function(tm) {
-        tm.stop()
-        this.game.timers.splice(this.game.timers.indexOf(tm), 1)
+        if (this.game.timers.indexOf(tm) > -1) {
+            tm.stop()
+            this.game.timers.splice(this.game.timers.indexOf(tm), 1)
+        }
     },
     add: function(delay, cb) {
         var timer = new Tiny.Timer((this.autoStart ? 1 : 0), this.autoRemove, this.game, cb, delay)

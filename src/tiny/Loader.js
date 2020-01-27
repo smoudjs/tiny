@@ -43,7 +43,6 @@ Tiny.Loader.parseSpriteSheet = function(key, frameWidth, frameHeight, duration) 
     var row = Math.floor((width) / (frameWidth));
     var column = Math.floor((height) / (frameHeight));
     var total = row * column;
-    console.log(total)
 
     if (total === 0)
         return null;

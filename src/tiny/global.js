@@ -4,6 +4,7 @@ Tiny.PI_2 = Math.PI * 2
 Tiny._UID = 0
 Tiny.RETINA_PREFIX = '@2x'
 
+Tiny.Polygon = function() {}
 
 Tiny.Primitives = {
     POLY: 0,

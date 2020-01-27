@@ -958,6 +958,4 @@ TWEEN.Interpolation = {
 
 };
 
-Tiny._tween_enabled = true
-
 window.TWEEN = TWEEN

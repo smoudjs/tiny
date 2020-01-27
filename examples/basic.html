@@ -3,7 +3,7 @@
 <head>
 	<title>Basic Example</title>
 	
-	<script src="../lib/tiny.min.js"></script>
+	<script src="../lib/tiny.js"></script>
 
 	<style type="text/css">
 	body { margin: 0; }	
@@ -65,6 +65,14 @@
 			dds.pivot.x = dds.width; dds.pivot.y = dds.height
 			dds.x = 1000
 			dds.y = 400
+
+			game.input.on("down", function() {
+				console.log("down")
+			})
+
+			game.input.on("move", function() {
+				console.log("move", game.input.isDown)
+			})
 
 
 				//setInterval(function() {dds.rotation += 0.2}, 500)

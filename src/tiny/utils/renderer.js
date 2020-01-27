@@ -1,3 +1,4 @@
+var _isSetTimeOut, _onLoop, _timeOutID, _prevTime
 
 Tiny.RAF = function (game, forceSetTimeOut)
 {
@@ -21,11 +22,11 @@ Tiny.RAF = function (game, forceSetTimeOut)
         window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
     }
 
-    this._isSetTimeOut = false;
-    this._onLoop = null;
-    this._timeOutID = null;
+    _isSetTimeOut = false;
+    _onLoop = null;
+    _timeOutID = null;
 
-    this._prevTime = 0
+    _prevTime = 0
 };
 
 Tiny.RAF.prototype = {
@@ -39,26 +40,26 @@ Tiny.RAF.prototype = {
 
         if (!window.requestAnimationFrame || this.forceSetTimeOut)
         {
-            this._isSetTimeOut = true;
+            _isSetTimeOut = true;
 
-            this._onLoop = function ()
+            _onLoop = function ()
             {
                 return _this.updateSetTimeout();
             };
 
-            this._timeOutID = window.setTimeout(this._onLoop, 0);
+            _timeOutID = window.setTimeout(_onLoop, 0);
         }
         else
         {
-            this._isSetTimeOut = false;
+            _isSetTimeOut = false;
 
-            this._onLoop = function (time)
+            _onLoop = function (time)
             {
                 
                 return _this.updateRAF(time);
             };
 
-            this._timeOutID = window.requestAnimationFrame(this._onLoop);
+            _timeOutID = window.requestAnimationFrame(_onLoop);
         }
     },
 
@@ -66,11 +67,11 @@ Tiny.RAF.prototype = {
     {
         if (this.isRunning)
         {
-            this.game.update(Math.floor(rafTime), rafTime - this._prevTime);
+            this.game.update(Math.floor(rafTime), rafTime - _prevTime);
 
-            this._timeOutID = window.requestAnimationFrame(this._onLoop);
+            _timeOutID = window.requestAnimationFrame(_onLoop);
         }
-        this._prevTime = rafTime
+        _prevTime = rafTime
 
     },
 
@@ -79,22 +80,22 @@ Tiny.RAF.prototype = {
         var time = Date.now()
         if (this.isRunning)
         {
-            this.game.update(time - this.paused, time - this._prevTime);
+            this.game.update(time - this.paused, time - _prevTime);
 
-            this._timeOutID = window.setTimeout(this._onLoop, this.game.time.timeToCall);
+            _timeOutID = window.setTimeout(_onLoop, this.game.time.timeToCall);
         }
-        this._prevTime = time
+        _prevTime = time
     },
 
     stop: function ()
     {
-        if (this._isSetTimeOut)
+        if (_isSetTimeOut)
         {
-            clearTimeout(this._timeOutID);
+            clearTimeout(_timeOutID);
         }
         else
         {
-            window.cancelAnimationFrame(this._timeOutID);
+            window.cancelAnimationFrame(_timeOutID);
         }
 
         this.isRunning = false;
@@ -102,12 +103,12 @@ Tiny.RAF.prototype = {
 
     isSetTimeOut: function ()
     {
-        return this._isSetTimeOut;
+        return _isSetTimeOut;
     },
 
     isRAF: function ()
     {
-        return (this._isSetTimeOut === false);
+        return (_isSetTimeOut === false);
     }
 
 };

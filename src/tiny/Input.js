@@ -1,136 +1,135 @@
-Tiny.Input = function (game)
+var lastMove, _active_objects, listeningToTouchEvents, _last_bounds
+var game, currentEmiter
+
+function windowToUISpace(x, y, history) {
+    var bounds = ((history && _last_bounds) ? _last_bounds : (_last_bounds = game.inputView.getBoundingClientRect(), _last_bounds));
+    return {
+        x: (x - bounds.left),
+        y: (y - bounds.top),
+    };
+}
+
+function _getCoords(event, history) {
+    var coords = null;
+    if (typeof TouchEvent !== 'undefined' && event instanceof TouchEvent) {
+        listeningToTouchEvents = true;
+
+        if (event.touches.length > 0) {
+            coords = { x: event.touches[0].pageX, y: event.touches[0].pageY };
+        } else if (event.pageX && event.pageY) {
+            coords = { x: event.pageX, y: event.pageY };
+        } else {
+            // listeningToTouchEvents = false;
+        }
+    } else {
+        // Mouse event
+        coords = { x: event.pageX, y: event.pageY };
+    }
+
+    if (listeningToTouchEvents && event instanceof MouseEvent || coords === null) return null;
+
+    coords = windowToUISpace(coords.x, coords.y, history);
+
+    return coords
+}
+
+function _checkOnActiveObjects(obj, x, y) {
+    if (obj.inputEnabled && obj.worldVisible) {
+        if (obj.getBounds().contains(x, y))
+            _active_objects.push(obj)
+    }
+
+    if (obj.children && obj.children.length > 0) {
+        for (var t = 0; t < obj.children.length; t++)
+            _checkOnActiveObjects(obj.children[t], x, y)
+    }
+}
+
+function inputHandler(name, event, history) {
+       // console.log(name)
+    var coords = _getCoords(event, history)
+    if (coords !== null) {
+        if (name != "move") {
+            _active_objects = []
+
+            _checkOnActiveObjects(game.stage, coords.x, coords.y)
+
+            var i = _active_objects.length
+
+            if (i > 0) {
+                var obj = _active_objects[i - 1]
+                obj.input["last_" + name] = {x: coords.x, y: coords.y}
+
+                obj.input.emit(name, {x: coords.x, y: coords.y})
+
+                if (name == "up") {
+                    var point = obj.input["last_down"]
+                    if (point && Tiny.Math.distance(point.x, point.y, coords.x, coords.y) < 30)
+                        obj.input.emit("click", {x: coords.x, y: coords.y})
+                }
+            }
+        }
+
+        currentEmiter.emit(name, {x: coords.x, y: coords.y})
+    }
+}
+
+function moveHandler (event) {
+    lastMove = event
+    inputHandler("move", event, true)
+}
+
+function upHandler (event) {
+    currentEmiter.isDown = false
+    inputHandler("up", lastMove, true)
+}
+
+function downHandler (event) {
+    currentEmiter.isDown = true
+    lastMove = event
+    inputHandler("down", event, false)
+}
+
+function clickHandler (event) {
+    inputHandler("click", event, false)
+}
+
+Tiny.Input = function (parent)
 {
-    this.game = game;
-    this._active_objects = []
+    game = game = parent;
+    _active_objects = []
+    currentEmiter = this
 
-    this.clickHandler_bind = this.clickHandler.bind(this)
-    this.upHandler_bind = this.upHandler.bind(this)
-    this.downHandler_bind = this.downHandler.bind(this)
-    this.moveHandler_bind = this.moveHandler.bind(this)
-
-    this.lastMove = null
+    lastMove = null
     this.isDown = false
 
-    var t = this.game.canvas.addEventListener
-    t('touchstart', this.downHandler_bind);
-    t('touchmove', this.moveHandler_bind);
-    t('touchend', this.upHandler_bind);
-    t('touchcancel', this.upHandler_bind);
+    var t = game.inputView.addEventListener
+    t('touchstart', downHandler);
+    t('touchmove', moveHandler);
+    t('touchend', upHandler);
+    t('touchcancel', upHandler);
 
-    // t('click', this.clickHandler_bind);
+    // t('click', clickHandler);
 
-    t('mousedown', this.downHandler_bind);
-    t('mousemove', this.moveHandler_bind);
-    t('mouseup', this.upHandler_bind);
+    t('mousedown', downHandler);
+    t('mousemove', moveHandler);
+    t('mouseup', upHandler);
 
     Tiny.EventTarget.mixin(this)
 };
 
 Tiny.Input.prototype = {
     destroy: function() {
-        var t = this.game.canvas.removeEventListener
-        t('touchstart', this.downHandler_bind);
-        t('touchmove', this.moveHandler_bind);
-        t('touchend', this.upHandler_bind);
-        t('touchcancel', this.upHandler_bind);
+        var t = game.inputView.removeEventListener
+        t('touchstart', downHandler);
+        t('touchmove', moveHandler);
+        t('touchend', upHandler);
+        t('touchcancel', upHandler);
 
-        // t('click', this.clickHandler_bind);
+        // t('click', clickHandler);
 
-        t('mousedown', this.downHandler_bind);
-        t('mousemove', this.moveHandler_bind);
-        t('mouseup', this.upHandler_bind);
-    },
-
-    _checkOnActiveObjects: function(obj, x, y) {
-        if (obj.inputEnabled && obj.worldVisible) {
-            if (obj.getBounds().contains(x, y))
-                this._active_objects.push(obj)
-        }
-
-        if (obj.children && obj.children.length > 0) {
-            for (var t = 0; t < obj.children.length; t++)
-                this._checkOnActiveObjects(obj.children[t], x, y)
-        }
-    },
-    
-    _getCoords: function(event, history) {
-        var coords = null;
-        if (typeof TouchEvent !== 'undefined' && event instanceof TouchEvent) {
-            this.listeningToTouchEvents = true;
-
-            if (event.touches.length > 0) {
-                coords = { x: event.touches[0].pageX, y: event.touches[0].pageY };
-            } else if (event.pageX && event.pageY) {
-                coords = { x: event.pageX, y: event.pageY };
-            } else {
-                // this.listeningToTouchEvents = false;
-            }
-        } else {
-            // Mouse event
-            coords = { x: event.pageX, y: event.pageY };
-        }
-
-        if (this.listeningToTouchEvents && event instanceof MouseEvent || coords === null) return null;
-
-        coords = this.windowToUISpace(coords.x, coords.y, history);
-
-        return coords
-    },
-
-    inputHandler: function(name, event, history) {
-       // console.log(name)
-        var coords = this._getCoords(event, history)
-        if (coords !== null) {
-            if (name != "move") {
-                this._active_objects = []
-
-                this._checkOnActiveObjects(this.game.stage, coords.x, coords.y)
-
-                var i = this._active_objects.length
-
-                if (i > 0) {
-                    var obj = this._active_objects[i - 1]
-                    obj.input["last_" + name] = {x: coords.x, y: coords.y}
-
-                    obj.input.emit(name, {x: coords.x, y: coords.y})
-
-                    if (name == "up") {
-                        var point = obj.input["last_down"]
-                        if (point && Tiny.Math.distance(point.x, point.y, coords.x, coords.y) < 30)
-                            obj.input.emit("click", {x: coords.x, y: coords.y})
-                    }
-                }
-            }
-
-            this.emit(name, {x: coords.x, y: coords.y})
-        }
-    },
-
-    moveHandler: function(event) {
-        this.lastMove = event
-        this.inputHandler("move", event, true)
-    },
-
-    upHandler: function(event) {
-        this.isDown = false
-        this.inputHandler("up", this.lastMove, true)
-    },
-
-    downHandler: function(event) {
-        this.isDown = true
-        this.lastMove = event
-        this.inputHandler("down", event, false)
-    },
-
-    clickHandler: function(event) {
-        this.inputHandler("click", event, false)
-    },
-
-    windowToUISpace: function(x, y, history) {
-        var bounds = ((history && this._last_bounds) ? this._last_bounds : (this._last_bounds = this.game.canvas.getBoundingClientRect(), this._last_bounds));
-        return {
-            x: (x - bounds.left),
-            y: (y - bounds.top),
-        };
+        t('mousedown', downHandler);
+        t('mousemove', moveHandler);
+        t('mouseup', upHandler);
     }
 };
