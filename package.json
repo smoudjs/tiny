@@ -1,11 +1,18 @@
 {
   "name": "h5tiny",
   "version": "1.0.4",
-  "description": "Tiny canvas framework for html5 game creating",
+  "description": "Fast and tiny JavaScript library for HTML5 game and creatives developing.",
   "main": "./lib/tiny.js",
   "directories": {
-    "src": "sources",
+    "src": "src",
     "lib": "lib"
+  },
+  "files": [
+    "src"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/peter-hutsul/h5tiny"
   },
   "scripts": {
     "dev": "webpack --watch",
@@ -48,9 +55,12 @@
     "webpack-merge-and-include-globally": "^2.1.20"
   },
   "keywords": [
+    "2d",
+    "HTML5",
     "canvas",
     "game",
-    "html5"
+    "tiny",
+    "javascript"
   ],
   "author": "Green Panda Games",
   "license": "ISC"
