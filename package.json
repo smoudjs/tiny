@@ -8,7 +8,8 @@
     "lib": "lib"
   },
   "files": [
-    "src"
+    "src",
+    "lib"
   ],
   "repository": {
     "type": "git",

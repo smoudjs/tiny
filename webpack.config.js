@@ -33,6 +33,9 @@ const config = {
 		'standard_graphics': './standard_graphics.js',
 		'standard_full': './standard_full.js',
 		'base3D': './base3D.js',
+		'mini3D': './mini3D.js',
+		'standard3D': './standard3D.js',
+		'tiny3D': './index3D.js',
 	},
 	output: {
 		path: `${__dirname}/lib/`,
