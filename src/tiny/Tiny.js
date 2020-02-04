@@ -1,40 +1,42 @@
-import Core from './TinyCommon'
+var Tiny = function(width, height, parentNode, enableRAF, states) {
+	parentNode = parentNode || document.body;
+	this._preboot( width, height, enableRAF, states )
 
-export default class Tiny extends Core {
-	constructor (width, height, parentNode, enableRAF, states) {
-		parentNode = parentNode || document.body;
+	this.renderer = new Tiny.CanvasRenderer(this.width, this.height, {autoResize: true})
 
-		super (enableRAF, states)
+	var view = this.inputView = this.renderer.view
 
-		this.height = height || 720;
-		this.width = width || 430;
+	parentNode.appendChild(view);
+	view.style.position = 'absolute'; 
 
-		this.renderer = new Tiny.CanvasRenderer(this.width, this.height, {autoResize: true})
+	view.style.top="0px";
+	view.style.left="0px";
 
-		var view = this.inputView = this.renderer.view
+	view.style.transformOrigin = '0% 0%';
+	view.style.perspective = '1000px';
 
-		parentNode.appendChild(view);
-		view.style.position = 'absolute'; 
-
-		view.style.top="0px";
-		view.style.left="0px";
-
-		view.style.transformOrigin = '0% 0%';
-		view.style.perspective = '1000px';
-
-		this.boot()
-	}
-
-	_preload () {
-		this.preload.call(this.callbackContext)
-		this.state = 1
-		if (Tiny.Loader)
-			this.load.start(this._create)
-		else
-			this._create()
-	}
-
-	_render () {
-		this.renderer.render(this.stage)
-	}
+	this._boot()
 }
+
+Tiny.prototype._preload = function() {
+	this.preload.call(this.callbackContext)
+	this.state = 1
+	if (Tiny.Loader)
+		this.load.start(this._create)
+	else
+		this._create()
+};
+
+Tiny.prototype._render = function() {
+	this.renderer.render(this.stage)
+};
+
+Tiny.prototype.resize = function(width, height, scale) {
+	this._resize(width, height, scale)
+};
+
+Tiny.prototype.destroy = function() {
+	this._destroy()
+};
+
+module.exports = Tiny;

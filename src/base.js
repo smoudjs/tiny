@@ -1,8 +1,8 @@
 require('./tiny/utils/polyfill.js');
 
-import Tiny from './tiny/Tiny.js'
+window.Tiny = require('./tiny/Tiny.js');
 
-window.Tiny = Tiny;
+require('./tiny/TinyCommon.js');
 
 require('./tiny/global.js');
 require('./tiny/math/Math.js'); // 1 Kb
