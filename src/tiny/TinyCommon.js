@@ -2,16 +2,15 @@ var _tween_enabled = false
 
 export default class Core {
 	constructor (enableRAF, states) {
-		this.callbackContext = null
+		this.callbackContext = this
 		states = states || {}
 		this.state = 0
-		this._preload_cb = this._preload_cb || states.preload || function() {}
-		this._create_cb = this._create_cb || states.create || function() {}
-		this._update_cb = this._update_cb || states.update || function() {}
+		this.preload = this.preload || states.preload || function() {}
+		this.create = this.create || states.create || function() {}
+		this.update = this.update || states.update || function() {}
 		this._resize_cb = this._resize_cb || states.resize || function() {}
 		this._destroy_cb = this._destroy_cb || states.destroy || function() {}
 
-		this.scale = Tiny.ScaleManager.NORMAL
 		this.stage = new Tiny.Stage(this)
 
 
@@ -49,25 +48,24 @@ export default class Core {
 		Tiny.defaultRenderer = this.renderer
 		var self = this
 		setTimeout(function() {
-			self.preload()
+			self._preload()
 		}, 0)
 	}
 
-	setPixelRatio (dpr) {
+	setPixelRatio (dpr, resize) {
 		this.renderer.resolution = dpr
-		this.resize()
 	}
 
-	resize (width, height) {
+	resize (width, height, scale) {
 		this.width = width || this.width
 		this.height = height || this.height
 		this.renderer.resize(this.width, this.height)
 		if (this.state > 0)
-			this._resize_cb.call(this.callbackContext, this.width, this.height)
+			this._resize_cb.call(this.callbackContext, this.width, this.height, scale)
 	}
 
-	create () {
-		this._create_cb.call(this.callbackContext)
+	_create () {
+		this.create.call(this.callbackContext)
 
 		if (this._raf)
 			this.raf.start()
@@ -96,9 +94,9 @@ export default class Core {
 		this.paused = false
 	}
 
-	update (time, delta) {
+	_update (time, delta) {
 		if (!this.paused) {
-			this._update_cb.call(this.callbackContext, time, delta)
+			this.update.call(this.callbackContext, time, delta)
 			if (_tween_enabled)
 				TWEEN.update()
 
@@ -107,7 +105,7 @@ export default class Core {
 					e.update(delta)
 				})
 
-			this.render()
+			this._render()
 		} else
 			this.pauseDuration += delta
 	}

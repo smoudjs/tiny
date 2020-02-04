@@ -19,15 +19,6 @@ Tiny.blendModes = {
     NORMAL: 0
 }
 
-Tiny.scaleModes = {
-	DEFAULT: 0
-}
-
-Tiny.ScaleManager = {
-    NORMAL: 0,
-    SHOW_ALL: 1
-}
-
 Tiny.hex2rgb = function(hex) {
     return [(hex >> 16 & 0xFF) / 255, ( hex >> 8 & 0xFF) / 255, (hex & 0xFF)/ 255];
 };

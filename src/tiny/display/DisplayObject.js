@@ -233,11 +233,11 @@ Tiny.DisplayObject.prototype.preUpdate = function()
 {
 };
 
-Tiny.DisplayObject.prototype.generateTexture = function(resolution, scaleMode, renderer)
+Tiny.DisplayObject.prototype.generateTexture = function(resolution, renderer)
 {
     var bounds = this.getLocalBounds();
 
-    var renderTexture = new Tiny.RenderTexture(bounds.width | 0, bounds.height | 0, renderer, scaleMode, resolution);
+    var renderTexture = new Tiny.RenderTexture(bounds.width | 0, bounds.height | 0, renderer, resolution);
     
     Tiny.DisplayObject._tempMatrix.tx = -bounds.x;
     Tiny.DisplayObject._tempMatrix.ty = -bounds.y;

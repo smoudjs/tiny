@@ -67,7 +67,7 @@ Tiny.RAF.prototype = {
     {
         if (this.isRunning)
         {
-            this.game.update(Math.floor(rafTime), rafTime - _prevTime);
+            this.game._update(Math.floor(rafTime), rafTime - _prevTime);
 
             _timeOutID = window.requestAnimationFrame(_onLoop);
         }
@@ -80,7 +80,7 @@ Tiny.RAF.prototype = {
         var time = Date.now()
         if (this.isRunning)
         {
-            this.game.update(time - this.paused, time - _prevTime);
+            this.game._update(time - this.paused, time - _prevTime);
 
             _timeOutID = window.setTimeout(_onLoop, this.game.time.timeToCall);
         }

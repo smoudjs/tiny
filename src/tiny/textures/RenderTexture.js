@@ -1,5 +1,5 @@
 
-Tiny.RenderTexture = function(width, height, renderer, scaleMode, resolution)
+Tiny.RenderTexture = function(width, height, renderer, resolution)
 {
     this.width = width || 100;
     this.height = height || 100;
@@ -15,8 +15,6 @@ Tiny.RenderTexture = function(width, height, renderer, scaleMode, resolution)
     this.baseTexture.height = this.height * this.resolution;
     this.baseTexture._glTextures = [];
     this.baseTexture.resolution = this.resolution;
-
-    this.baseTexture.scaleMode = scaleMode || Tiny.scaleModes.DEFAULT;
 
     this.baseTexture.hasLoaded = true;
 

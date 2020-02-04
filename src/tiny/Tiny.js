@@ -25,16 +25,16 @@ export default class Tiny extends Core {
 		this.boot()
 	}
 
-	preload () {
-		this._preload_cb.call(this.callbackContext)
+	_preload () {
+		this.preload.call(this.callbackContext)
 		this.state = 1
 		if (Tiny.Loader)
-			this.load.start(this.create)
+			this.load.start(this._create)
 		else
-			this.create()
+			this._create()
 	}
 
-	render () {
+	_render () {
 		this.renderer.render(this.stage)
 	}
 }

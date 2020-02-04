@@ -3,15 +3,13 @@ Tiny.BaseTextureCache = {};
 
 Tiny.BaseTextureCacheIdGenerator = 0;
 
-Tiny.BaseTexture = function(source, scaleMode)
+Tiny.BaseTexture = function(source)
 {
     this.resolution = 1;
 
     this.width = 100;
 
     this.height = 100;
-
-    this.scaleMode = scaleMode || Tiny.scaleModes.DEFAULT;
 
     this.hasLoaded = false;
 
@@ -80,7 +78,7 @@ Tiny.BaseTexture.prototype.dirty = function()
 
 };
 
-Tiny.BaseTexture.fromImage = function(key, imageUrl, crossorigin, scaleMode)
+Tiny.BaseTexture.fromImage = function(key, imageUrl, crossorigin)
 {
     var baseTexture = Tiny.BaseTextureCache[key];
 
@@ -98,7 +96,7 @@ Tiny.BaseTexture.fromImage = function(key, imageUrl, crossorigin, scaleMode)
         }
 
         image.src = imageUrl;
-        baseTexture = new Tiny.BaseTexture(image, scaleMode);
+        baseTexture = new Tiny.BaseTexture(image);
         baseTexture.imageUrl = imageUrl;
         baseTexture.key = key
         Tiny.BaseTextureCache[key] = baseTexture;
@@ -113,7 +111,7 @@ Tiny.BaseTexture.fromImage = function(key, imageUrl, crossorigin, scaleMode)
     return baseTexture;
 };
 
-Tiny.BaseTexture.fromCanvas = function(canvas, scaleMode)
+Tiny.BaseTexture.fromCanvas = function(canvas)
 {
     if(!canvas._pixiId)
     {
@@ -124,7 +122,7 @@ Tiny.BaseTexture.fromCanvas = function(canvas, scaleMode)
 
     if(!baseTexture)
     {
-        baseTexture = new Tiny.BaseTexture(canvas, scaleMode);
+        baseTexture = new Tiny.BaseTexture(canvas);
         Tiny.BaseTextureCache[canvas._pixiId] = baseTexture;
     }
 

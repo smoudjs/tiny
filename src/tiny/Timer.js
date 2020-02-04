@@ -68,13 +68,17 @@ Tiny.TimerCreator.prototype = {
             this.game.timers.splice(this.game.timers.indexOf(tm), 1)
         }
     },
-    add: function(delay, cb) {
-        var timer = new Tiny.Timer((this.autoStart ? 1 : 0), this.autoRemove, this.game, cb, delay)
+    add: function(delay, cb, autostart, autoremove) {
+        if (autostart == undefined)
+            autostart = this.autoStart
+        var timer = new Tiny.Timer((autostart ? 1 : 0), (autoremove != undefined ? autoremove : this.autoRemove), this.game, cb, delay)
         this.game.timers.push(timer)
         return timer
     },
-    loop: function(delay, cb) {
-        var timer = new Tiny.Timer((this.autoStart ? 1 : 0), this.autoRemove, this.game, cb, delay, true)
+    loop: function(delay, cb, autostart, autoremove) {
+        if (autostart == undefined)
+            autostart = this.autoStart
+        var timer = new Tiny.Timer((autostart ? 1 : 0), (autoremove != undefined ? autoremove : this.autoRemove), this.game, cb, delay, true)
         this.game.timers.push(timer)
         return timer
     },

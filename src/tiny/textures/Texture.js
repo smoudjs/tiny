@@ -125,13 +125,13 @@ Tiny.Texture.prototype._updateUvs = function()
     this._uvs.y3 = (frame.y + frame.height) / th;
 };
 
-Tiny.Texture.fromImage = function(key, imageUrl, crossorigin, scaleMode)
+Tiny.Texture.fromImage = function(key, imageUrl, crossorigin)
 {
     var texture = Tiny.TextureCache[key];
 
     if(!texture)
     {
-        texture = new Tiny.Texture(Tiny.BaseTexture.fromImage(key, imageUrl, crossorigin, scaleMode));
+        texture = new Tiny.Texture(Tiny.BaseTexture.fromImage(key, imageUrl, crossorigin));
         texture.key = key
         Tiny.TextureCache[key] = texture;
     }
@@ -146,9 +146,9 @@ Tiny.Texture.fromFrame = function(frameId)
     return texture;
 };
 
-Tiny.Texture.fromCanvas = function(canvas, scaleMode)
+Tiny.Texture.fromCanvas = function(canvas)
 {
-    var baseTexture = Tiny.BaseTexture.fromCanvas(canvas, scaleMode);
+    var baseTexture = Tiny.BaseTexture.fromCanvas(canvas);
 
     return new Tiny.Texture( baseTexture );
 
