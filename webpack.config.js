@@ -18,7 +18,7 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 // `;
 
 const config = {
-	context: `${__dirname}/src/`,
+	context: `${__dirname}/tiny`,
 	entry: {
 		
 		// 'asset-loader': './asset-loader/AssetLoader.js',

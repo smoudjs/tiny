@@ -8,7 +8,7 @@ require('../src/math/Circle.js');			// 6 Kb
 require('../src/display/CanvasGraphics.js'); // 4Kb
 
 require('../src/objects/Graphics.js'); // 10 Kb
-// require('../src/objects/TilingSprite.js'); // 4 Kb   ############### TilingSprite  game.add.tilesprite
+require('../src/objects/TilingSprite.js'); // 4 Kb   ############### TilingSprite  game.add.tilesprite
 
 require('../src/textures/RenderTexture.js'); // 2 Kb
 

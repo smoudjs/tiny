@@ -88,7 +88,7 @@ Tiny.prototype.pause = function() {
 };
 
 
-Tiny.prototype.pause = function() {
+Tiny.prototype.resume = function() {
 	if (_tween_enabled) {
 		this.tweens.forEach(function(tween) {
 			tween.resume()

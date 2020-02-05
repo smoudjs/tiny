@@ -1,6 +1,6 @@
 require('../src/utils/polyfill.js');
 
-window.Tiny = require('../src/ThreeUI.js');
+window.Tiny = require('../src/Tiny.js');
 
 require('../src/TinyCommon.js');
 
