@@ -60,6 +60,7 @@ Tiny.Text.prototype.setStyle = function(style)
     style.stroke = style.stroke || 'black';
     style.strokeThickness = style.strokeThickness || 0;
     style.wordWrap = style.wordWrap || false;
+    style.lineSpacing = style.lineSpacing || 0
     style.wordWrapWidth = style.wordWrapWidth || 100;
     
     style.dropShadow = style.dropShadow || false;
@@ -109,12 +110,12 @@ Tiny.Text.prototype.updateText = function()
     this.canvas.width = ( width + this.context.lineWidth ) * this.resolution;
     
     //calculate text height
-    var lineHeight = fontProperties.fontSize + this.style.strokeThickness;
+    var lineHeight = fontProperties.fontSize + this.style.strokeThickness + this.style.lineSpacing;
  
     var height = lineHeight * lines.length;
     if(this.style.dropShadow)height += this.style.dropShadowDistance;
 
-    this.canvas.height = height * this.resolution;
+    this.canvas.height = (height - this.style.lineSpacing) * this.resolution;
 
     this.context.scale( this.resolution, this.resolution);
 
@@ -128,8 +129,9 @@ Tiny.Text.prototype.updateText = function()
     this.context.strokeStyle = this.style.stroke;
     this.context.lineWidth = this.style.strokeThickness;
     this.context.textBaseline = 'alphabetic';
-    //this.context.lineJoin = 'round';
     this.context.miterLimit = 2;
+
+    //this.context.lineJoin = 'round';
 
     var linePositionX;
     var linePositionY;

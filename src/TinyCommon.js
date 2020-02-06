@@ -55,10 +55,6 @@ Tiny.prototype._boot = function() {
 	}, 0)
 };
 
-Tiny.prototype.setPixelRatio = function(dpr) {
-	this.renderer.resolution = dpr
-};
-
 Tiny.prototype._resize = function(width, height, scale) {
 	this.width = width || this.width
 	this.height = height || this.height

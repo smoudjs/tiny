@@ -27,6 +27,10 @@ Tiny.prototype._preload = function() {
 		this._create()
 };
 
+Tiny.prototype.setPixelRatio = function(dpr) {
+	this.renderer.resolution = dpr
+};
+
 Tiny.prototype._render = function() {
 	this.renderer.render(this.stage)
 };
