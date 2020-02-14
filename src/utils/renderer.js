@@ -1,4 +1,14 @@
-var _isSetTimeOut, _onLoop, _timeOutID, _prevTime
+var _isSetTimeOut, _onLoop, _timeOutID, _prevTime, _lastTime;
+
+var now = function() {
+    return new Date().getTime();
+}
+
+if (self.performance !== undefined && self.performance.now !== undefined) {
+    now = self.performance.now.bind(self.performance);
+} else if (Date.now !== undefined) {
+    now = Date.now;
+}
 
 Tiny.RAF = function (game, forceSetTimeOut)
 {
@@ -27,12 +37,15 @@ Tiny.RAF = function (game, forceSetTimeOut)
     _timeOutID = null;
 
     _prevTime = 0
+    _lastTime = 0
 };
 
 Tiny.RAF.prototype = {
 
     start: function ()
     {
+
+        _prevTime = now()
 
         this.isRunning = true;
 
@@ -53,38 +66,41 @@ Tiny.RAF.prototype = {
         {
             _isSetTimeOut = false;
 
-            _onLoop = function (time)
+            _onLoop = function ()
             {
                 
-                return _this.updateRAF(time);
+                return _this.updateRAF();
             };
 
             _timeOutID = window.requestAnimationFrame(_onLoop);
         }
     },
 
-    updateRAF: function (rafTime)
+    updateRAF: function ()
     {
+        _lastTime = now()
+
         if (this.isRunning)
         {
-            this.game._update(Math.floor(rafTime), rafTime - _prevTime);
+            this.game._update(Math.floor(_lastTime), _lastTime - _prevTime);
 
             _timeOutID = window.requestAnimationFrame(_onLoop);
         }
-        _prevTime = rafTime
+
+        _prevTime = _lastTime
 
     },
 
     updateSetTimeout: function ()
     {
-        var time = Date.now()
+        _lastTime = now()
         if (this.isRunning)
         {
-            this.game._update(time - this.paused, time - _prevTime);
+            this.game._update(Math.floor(_lastTime), _lastTime - _prevTime);
 
             _timeOutID = window.setTimeout(_onLoop, this.game.time.timeToCall);
         }
-        _prevTime = time
+        _prevTime = _lastTime
     },
 
     stop: function ()
