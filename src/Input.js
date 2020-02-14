@@ -54,10 +54,10 @@ function inputHandler(name, event, history) {
 
             _checkOnActiveObjects(game.stage, coords.x, coords.y)
 
-            var i = _active_objects.length
+            //var i = _active_objects.length
 
-            if (i > 0) {
-                var obj = _active_objects[i - 1]
+            for (var i = _active_objects.length - 1; i >= 0; i--) {
+                var obj = _active_objects[i]
                 obj.input["last_" + name] = {x: coords.x, y: coords.y}
 
                 obj.input.emit(name, {x: coords.x, y: coords.y})
@@ -67,7 +67,23 @@ function inputHandler(name, event, history) {
                     if (point && Tiny.Math.distance(point.x, point.y, coords.x, coords.y) < 30)
                         obj.input.emit("click", {x: coords.x, y: coords.y})
                 }
+
+                if (!obj.input.transparent)
+                    break
             }
+
+            // if (i > 0) {
+            //     var obj = _active_objects[i - 1]
+            //     obj.input["last_" + name] = {x: coords.x, y: coords.y}
+
+            //     obj.input.emit(name, {x: coords.x, y: coords.y})
+
+            //     if (name == "up") {
+            //         var point = obj.input["last_down"]
+            //         if (point && Tiny.Math.distance(point.x, point.y, coords.x, coords.y) < 30)
+            //             obj.input.emit("click", {x: coords.x, y: coords.y})
+            //     }
+            // }
         }
 
         currentEmiter.emit(name, {x: coords.x, y: coords.y})
