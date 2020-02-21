@@ -203,6 +203,7 @@ Tiny.DisplayObjectContainer.prototype.displayObjectContainerUpdateTransform = Ti
 Tiny.DisplayObjectContainer.prototype.getBounds = function()
 {
     if(this.children.length === 0)return Tiny.EmptyRectangle;
+    if (this._cachedSprite) return this._cachedSprite.getBounds()
 
     // TODO the bounds have already been calculated this render session so return what we have
 
