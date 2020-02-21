@@ -283,6 +283,7 @@ Tiny.DisplayObject.prototype._renderCachedSprite = function(renderSession)
 
 Tiny.DisplayObject.prototype._generateCachedSprite = function()
 {
+    this._cachedSprite = null
     this._cacheAsBitmap = false;
 
     var bounds = this.getLocalBounds();
