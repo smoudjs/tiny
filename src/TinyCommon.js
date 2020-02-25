@@ -45,6 +45,9 @@ Tiny.prototype._boot = function() {
 	if (Tiny.TimerCreator)
 		this.timer = new Tiny.TimerCreator(this)
 
+	if (Tiny.Particles)
+		this.particles = new Tiny.Particles(this)
+
 	if (this._raf)
 		this.raf = new Tiny.RAF(this);
 
@@ -104,6 +107,9 @@ Tiny.prototype._update = function(time, delta) {
 			this.timers.forEach(function(e) {
 				e.update(delta)
 			})
+
+		if (this.particles)
+			this.particles.update( time, delta )
 
 		this._render()
 	} else

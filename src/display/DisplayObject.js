@@ -3,8 +3,6 @@ Tiny.DisplayObject = function()
 {
     this.position = new Tiny.Point(0, 0);
     this.scale = new Tiny.Point(1, 1);
-    this.transformCallback = null;
-    this.transformCallbackContext = null;
     this.pivot = new Tiny.Point(0, 0);
     this.rotation = 0;
     this.alpha = 1;
@@ -62,8 +60,6 @@ Tiny.DisplayObject.prototype.destroy = function()
         this.children = [];
     }
 
-    this.transformCallback = null;
-    this.transformCallbackContext = null;
     this.hitArea = null;
     this.parent = null;
     this.stage = null;
@@ -201,12 +197,6 @@ Tiny.DisplayObject.prototype.updateTransform = function()
 
     // multiply the alphas..
     this.worldAlpha = this.alpha * this.parent.worldAlpha;
-
-    //  Custom callback?
-    if (this.transformCallback)
-    {
-        this.transformCallback.call(this.transformCallbackContext, wt, pt);
-    }
 
 };
 

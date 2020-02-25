@@ -1,4 +1,4 @@
-Tiny.VERSION = "1.2.0" 
+Tiny.VERSION = "1.2.1" 
 
 Tiny.PI_2 = Math.PI * 2
 Tiny._UID = 0
@@ -18,6 +18,10 @@ Tiny.Primitives = {
 Tiny.blendModes = {
     NORMAL: 0
 }
+
+Tiny.rnd = function(min, max) {
+    return min + Math.floor(Math.random() * (max - min + 1));
+};
 
 Tiny.hex2rgb = function(hex) {
     return [(hex >> 16 & 0xFF) / 255, ( hex >> 8 & 0xFF) / 255, (hex & 0xFF)/ 255];

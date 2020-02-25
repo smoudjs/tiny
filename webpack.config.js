@@ -32,6 +32,8 @@ const config = {
 		'full': './full.js',
 		'standard_graphics': './standard_graphics.js',
 		'standard_full': './standard_full.js',
+		'plugins': './plugins.js',
+		'pack': './pack.js',
 		// 'three/base': './three/base.js',
 		// 'three/mini': './three/mini.js',
 		// 'three/standard': './three/standard.js',
