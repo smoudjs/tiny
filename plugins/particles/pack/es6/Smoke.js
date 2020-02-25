@@ -6,8 +6,8 @@ export default class SmokeParticle extends Tiny.Particle {
     }
 
     update ( time, delta ) {
-        this.scale.set(Math.min(this.lifespan / 1000, 0.7));
-        this.alpha = Math.min(this.lifespan / 1000, 1)
+        this.scale.set(Math.min(time / 1000, 0.7));
+        this.alpha = Math.min(time / 1000, 1)
 
         this.y -= this.yspeed
         this.x += this.xspeed
@@ -21,9 +21,9 @@ export default class SmokeParticle extends Tiny.Particle {
         this.rotationsp = Math.random() * 0.02 - 0.01
     }
 
-    draw ( renderSession ) {
+    draw ( context ) {
 
-        renderSession.context.fillRect(0, 0, this.scale.x * 150, this.scale.y * 150)
+        context.fillRect(0, 0, this.scale.x * 150, this.scale.y * 150)
 
         // renderSession.context.beginPath();
         // renderSession.context.arc(0,0, this.scale.y * 100, 0, 2 * Math.PI, false);

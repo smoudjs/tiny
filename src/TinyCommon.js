@@ -109,7 +109,7 @@ Tiny.prototype._update = function(time, delta) {
 			})
 
 		if (this.particles)
-			this.particles.update( time, delta )
+			this.particles.update( delta )
 
 		this._render()
 	} else

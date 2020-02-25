@@ -5,13 +5,16 @@ var BaseTest = {
 	},
 	create: function(  ) {
 		var dds = this.game.add.group(220, 122)
-		var t2 = this.game.add.sprite(300, 300, "base")
+
+		var t2 = this.bottomRightSprite = this.game.add.sprite(0, 0, "base")
 		t2.inputEnabled = true
 		t2.input.on("down", function() {
 			console.log("Coin 1 clicked")
 		})
 		t2.anchor.set(0.5)
-		t2.position.set(300, 300)
+		t2.position.set(this.game.width - 100, this.game.height - 100)
+
+
 		var t3 = this.testCoin = this.game.add.sprite(0 ,0, "base")	
 		t3.inputEnabled = true
 		t3.input.on("down", function() {
@@ -19,9 +22,7 @@ var BaseTest = {
 		})
 		t3.scale.set(2)
 		dds.addChild(t3)
-		dds.addChild(t2)
 
-		dds.children[1].x = 400
 		dds.pivot.x = dds.width; dds.pivot.y = dds.height
 		dds.x = 1000
 		dds.y = 400
@@ -48,8 +49,14 @@ var BaseTest = {
 
 		this.rectangle.scale.x = Math.sin(time / 500);
 		this.rectangle.scale.y = Math.cos(time / 500);
+	},
+	resize: function( width, height ) {
+		this.bottomRightSprite.x = width - 100
+		this.bottomRightSprite.y = height - 100
 	}
 }
+
+
 
 var DragAndDropTest = {
 	preload: function(  ) {
@@ -57,14 +64,14 @@ var DragAndDropTest = {
 	},
 	create: function(  ) {
 		this.graphics = this.game.add.graphics(100, 0)
-		this.graphics.beginFill(0x4545f1)
-		this.graphics.drawCircle(0, 0, 225)
-		this.graphics.beginFill(0x4545d1)
-		this.graphics.drawCircle(0, 0, 205)
+		this.graphics.beginFill(0x0a6dc1)
+		this.graphics.drawCircle(0, 0, 182)
+		this.graphics.beginFill(0x04589e)
+		this.graphics.drawCircle(0, 0, 170)
 
 		for (var i = 0; i < 40; i++) {
-			this.graphics.beginFill(0xff4545, 0.06)
-			this.graphics.drawCircle(0, 0, i * 5)
+			this.graphics.beginFill(0x5500c5, 0.06)
+			this.graphics.drawCircle(0, 0, i * 4)
 		}
 
 		var newTexture = this.graphics.generateTexture()
@@ -80,7 +87,7 @@ var DragAndDropTest = {
 		var text = this.text = this.game.add.text(0, 0, "Drag me!", {fill: "#ffffff"})
 		text.anchor.set(0.5)
 
-		new TWEEN.Tween(text.scale).to({x: 1.3, y: 1.3}, 500).yoyo(true).easing(TWEEN.Easing.Sinusoidal.InOut).repeat(Infinity).start()
+		new TWEEN.Tween(text.scale).to({x: 1.1, y: 1.1}, 500).yoyo(true).easing(TWEEN.Easing.Sinusoidal.InOut).repeat(Infinity).start()
 
 		var pulseTween = new TWEEN.Tween(sprite.scale).to({x: 1.1, y: 1.1}, 100).yoyo(true).easing(TWEEN.Easing.Sinusoidal.InOut).repeat(Infinity).start()
 		pulseTween.pause()
@@ -95,6 +102,7 @@ var DragAndDropTest = {
 		this.game.input.on("up", function(e) {
 			dragging = false
 			pulseTween.pause()
+			sprite.scale.set(1)
 		})
 
 		this.game.input.on("move", function(e) {
@@ -168,8 +176,6 @@ var GraphicsTest = {
 	}
 }
 
-
-
 var EmitterTest = {
 	create: function(  ) {
 
@@ -184,8 +190,27 @@ var EmitterTest = {
 
 		//this.emmiter.start(false, 1200, 0)
 		this.emmiter.flow(1000, 100, 5)
-	},
-	update: function( time, delta ) {
-		
+
+		var bombEmitter = this.bombEmitter = this.game.add.emitter(400, this.game.height - 400, 300)
+
+		bombEmitter.pattern = Tiny.ExplodeParticle
+		bombEmitter.fillStyle = "#ff1212"
+
+		bombEmitter.makeParticles()
+
+		var game = this.game
+
+		game.timer.loop(500, function() {
+			bombEmitter.x = Tiny.rnd(100, game.width - 100)
+			bombEmitter.x = Tiny.rnd(100, game.height - 100)
+
+			game.timer.add(100, function(argument) {
+				bombEmitter.explode(200, 80)
+			})
+
+			//bombEmitter.explode(600, 80)
+
+		})
+
 	}
 }

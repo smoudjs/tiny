@@ -258,7 +258,7 @@ Tiny.Emitter.prototype.destroy = function() {
 
 
 
-Tiny.Emitter.prototype.update = function( time, delta ) {
+Tiny.Emitter.prototype.update = function( delta ) {
 
     if (this.visible === false) return;
 
@@ -320,7 +320,7 @@ Tiny.Emitter.prototype.update = function( time, delta ) {
 
     while (i--)
     {
-        this.particles[i]._update( time, delta);
+        this.particles[i]._update( delta );
     }
 
     //console.log(time)

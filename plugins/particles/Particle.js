@@ -92,7 +92,7 @@ Tiny.Particle.prototype.draw = function(renderSession) {
 
 };
 
-Tiny.Particle.prototype._update = function( time, delta ) {
+Tiny.Particle.prototype._update = function( delta ) {
     if (this.visible === false) return false
 
     this.lifespan -= delta;
@@ -103,7 +103,7 @@ Tiny.Particle.prototype._update = function( time, delta ) {
         return false;
     }
 
-    this.update( time, delta )
+    this.update( this.lifespan, delta )
 
     this.updateTransform()
 
@@ -126,5 +126,5 @@ Tiny.Particle.prototype._renderCanvas = function(renderSession)
     if ( this.texture.valid )
         this.drawTexture( renderSession )
     else
-        this.draw( renderSession )
+        this.draw( renderSession.context )
 };

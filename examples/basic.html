@@ -12,8 +12,8 @@
 	</style>
 </head>
 <body>
-<script type="text/javascript" src="resources.js"> </script>
 
+<script type="text/javascript" src="resources.js"> </script>
 
 <script type="text/javascript"src="tests.js"> </script>
 
@@ -31,6 +31,9 @@
 			},
 			update: function(  time, delta ) {
 				
+			},
+			resize: function(  width, height ) {
+				
 			}
 		}
 
@@ -46,16 +49,18 @@
 
 	var GameIndex = {
 		init: function() {
-			const game = new Tiny(1420, 850, null, true, {
+			const game = new Tiny(window.innerWidth, window.innerHeight, null, true, {
 				preload: function() {
 					for (var i = 0; i < TESTS.length; i++) {
 						TESTS[i].preload()
 					}
+					console.log("Preloaded")
 				},
 				create: function() {
 					for (var i = 0; i < TESTS.length; i++) {
 						TESTS[i].create()
 					}
+					console.log("Created")
 				},
 				update: function(time, delta) {
 					for (var i = 0; i < TESTS.length; i++) {
@@ -63,9 +68,16 @@
 					}
 				},
 				resize: function(width, height) {
-					console.log(width, height)
+					console.log("Resized: ", width, height)
+					for (var i = 0; i < TESTS.length; i++) {
+						TESTS[i].resize(width, height)
+					}
 				}
 			});
+
+			window.addEventListener("resize", function(argument) {
+				game.resize(window.innerWidth, window.innerHeight)
+			})
 
 			pushTest(BaseTest, game)
 			pushTest(EmitterTest, game)
