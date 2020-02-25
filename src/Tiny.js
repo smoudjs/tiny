@@ -4,7 +4,7 @@ var Tiny = function(width, height, parentNode, enableRAF, states) {
 
 	this.renderer = new Tiny.CanvasRenderer(this.width, this.height, {autoResize: true})
 
-	var view = this.inputView = this.renderer.view
+	var view = this.canvas = this.inputView = this.renderer.view
 
 	parentNode.appendChild(view);
 	view.style.position = 'absolute'; 
