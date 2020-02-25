@@ -56,8 +56,6 @@ var BaseTest = {
 	}
 }
 
-
-
 var DragAndDropTest = {
 	preload: function(  ) {
 		

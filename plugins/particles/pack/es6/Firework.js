@@ -16,8 +16,8 @@ export default class FireworkParticle extends Tiny.Particle {
 
         speed = (normTime * normTime * normTime) * 10
 
-        this.x += this.xspeed * speed * normTime
-        this.y += this.yspeed * speed + (normTime * 10)
+        this.x += this.xspeed * speed * delta * normTime
+        this.y += this.yspeed * speed * delta + (normTime * 10) * delta
     }
 
     onEmit () {
@@ -27,8 +27,8 @@ export default class FireworkParticle extends Tiny.Particle {
 
         this.maxlifespan = this.lifespan
 
-        this.xspeed = Math.sin(randAgle) * rand_speed
-        this.yspeed = Math.cos(randAgle) * rand_speed
+        this.xspeed = Math.sin(randAgle) * rand_speed * 0.05
+        this.yspeed = Math.cos(randAgle) * rand_speed * 0.05
     }
 
     draw ( context ) {

@@ -18,8 +18,8 @@ Tiny.FireworkParticle.prototype.update = function( time, delta ) {
 
     speed = (normTime * normTime * normTime) * 10
 
-    this.x += this.xspeed * speed * normTime
-    this.y += this.yspeed * speed + (normTime * 10)
+    this.x += this.xspeed * speed * delta * normTime
+    this.y += this.yspeed * speed * delta + (normTime * 0.8) * delta
 }
 
 Tiny.FireworkParticle.prototype.onEmit = function(  ) {
@@ -29,8 +29,8 @@ Tiny.FireworkParticle.prototype.onEmit = function(  ) {
 
     this.maxlifespan = this.lifespan
 
-    this.xspeed = Math.sin(randAgle) * rand_speed
-    this.yspeed = Math.cos(randAgle) * rand_speed
+    this.xspeed = Math.sin(randAgle) * rand_speed * 0.05
+    this.yspeed = Math.cos(randAgle) * rand_speed * 0.05
 }
 
 Tiny.FireworkParticle.prototype.draw = function( context )

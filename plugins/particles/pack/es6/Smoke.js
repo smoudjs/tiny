@@ -9,14 +9,14 @@ export default class SmokeParticle extends Tiny.Particle {
         this.scale.set(Math.min(time / 1000, 0.7));
         this.alpha = Math.min(time / 1000, 1)
 
-        this.y -= this.yspeed
-        this.x += this.xspeed
+        this.y -= this.yspeed * delta
+        this.x += this.xspeed * delta
         this.rotation += this.rotationsp
     }
 
     onEmit () {
-        this.xspeed = Tiny.rnd(-4, 4)
-        this.yspeed = Tiny.rnd(2, 10)
+        this.xspeed = Tiny.rnd(-4, 4) * 0.05
+        this.yspeed = Tiny.rnd(2, 10) * 0.05
         this.rotationsp = Math.random() * 0.02 - 0.01
     }
 
