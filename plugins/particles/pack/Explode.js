@@ -9,28 +9,32 @@ Tiny.ExplodeParticle.prototype.constructor = Tiny.ExplodeParticle;
 
 Tiny.ExplodeParticle.prototype.update = function( time, delta ) {
 
-    this.scale.set(Math.min(time / 400, 0.7));
-    this.alpha = Math.min(time / 300, 1)
+    var scale = Math.min(time / 200, 1)
+    this.scale.set(scale * scale * scale * scale);
+    this.alpha = Math.min(time / 250, 1)
 
-    this.x += this.xspeed
-    this.y += this.yspeed
+    var speed = (scale * scale * scale * scale) * 5
+
+    this.x += this.xspeed * speed
+    this.y += this.yspeed * speed
 }
 
 Tiny.ExplodeParticle.prototype.onEmit = function(  ) {
     var randAgle = Math.random() * Math.PI * 2
 
-    var rand_speed = Math.random() * 22
+    var rand_speed = Math.random() * 3
+
 
     this.xspeed = Math.sin(randAgle) * rand_speed
     this.yspeed = Math.cos(randAgle) * rand_speed
 
-    this.x = this.xspeed * 2
-    this.y = this.yspeed * 2
+    this.x = this.xspeed * Math.random() * 3
+    this.y = this.yspeed * Math.random() * 3
 }
 
 Tiny.ExplodeParticle.prototype.draw = function( context )
 {
     context.beginPath();
-    context.arc(0,0, this.scale.y * 120, 0, 2 * Math.PI, false);
+    context.arc(0, 0, 20, 0, 2 * Math.PI, false);
     context.fill();
 };

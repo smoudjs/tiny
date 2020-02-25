@@ -179,13 +179,13 @@ var GraphicsTest = {
 var EmitterTest = {
 	create: function(  ) {
 
-		this.emmiter = this.game.add.emitter(700, 200, 1200)
+		var emmiter = this.emmiter = this.game.add.emitter(700, 500, 1200)
 		this.emmiter.width = 40
 
 		this.emmiter.pattern = Tiny.SmokeParticle
 		this.emmiter.fillStyle = "#666666"
 
-		this.emmiter.makeParticles(Tiny.TextureCache["atlas_BR"])
+		this.emmiter.makeParticles(Tiny.TextureCache["atlas_BR"])//Tiny.TextureCache["atlas_BR"])
 		this.emmiter.scale.set(0.7)
 
 		//this.emmiter.start(false, 1200, 0)
@@ -194,23 +194,44 @@ var EmitterTest = {
 		var bombEmitter = this.bombEmitter = this.game.add.emitter(400, this.game.height - 400, 300)
 
 		bombEmitter.pattern = Tiny.ExplodeParticle
-		bombEmitter.fillStyle = "#ff1212"
 
 		bombEmitter.makeParticles()
 
 		var game = this.game
 
-		game.timer.loop(500, function() {
-			bombEmitter.x = Tiny.rnd(100, game.width - 100)
-			bombEmitter.x = Tiny.rnd(100, game.height - 100)
+		this.game.input.on("move", function(e) {
+			if (game.input.isDown) {
+				emmiter.x = e.x
+				emmiter.y = e.y
+			}
+		})
 
-			game.timer.add(100, function(argument) {
-				bombEmitter.explode(200, 80)
-			})
+		this.game.input.on("down", function(e) {
+			bombEmitter.fillStyle = "#" + Math.floor(Math.random() * 0xffffff).toString(16)
+			bombEmitter.x = e.x
+			bombEmitter.y = e.y
+			bombEmitter.explode(300, 80)
+		})
 
-			//bombEmitter.explode(600, 80)
+		var fireworkEmitter = this.fireworkEmitter = this.game.add.emitter(400, this.game.height - 400, 300)
+
+		fireworkEmitter.pattern = Tiny.FireworkParticle
+
+		fireworkEmitter.width = 40
+
+		fireworkEmitter.fillStyle = "#9416d4"
+
+		fireworkEmitter.makeParticles()
+
+		game.timer.loop(1000, function() {
+
+			fireworkEmitter.x = Tiny.rnd(100, game.width - 100)
+			fireworkEmitter.y = Tiny.rnd(100, 200)
+
+			fireworkEmitter.explode(800, 80)
 
 		})
+
 
 	}
 }

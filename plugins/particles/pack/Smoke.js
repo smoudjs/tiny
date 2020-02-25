@@ -18,7 +18,6 @@ Tiny.SmokeParticle.prototype.update = function( time, delta ) {
 }
 
 Tiny.SmokeParticle.prototype.onEmit = function(  ) {
-    this.y = 300
     this.xspeed = Tiny.rnd(-4, 4)
     this.yspeed = Tiny.rnd(2, 10)
     this.rotationsp = Math.random() * 0.02 - 0.01
@@ -27,9 +26,9 @@ Tiny.SmokeParticle.prototype.onEmit = function(  ) {
 Tiny.SmokeParticle.prototype.draw = function( context )
 {
 
-   context.fillRect(0, 0, this.scale.x * 150, this.scale.y * 150)
+   //context.fillRect(0, 0, 100, 100)
 
-    // renderSession.context.beginPath();
-    // renderSession.context.arc(0,0, this.scale.y * 100, 0, 2 * Math.PI, false);
-    // renderSession.context.fill();
+    context.beginPath();
+    context.arc(0, 0, 100, 0, 2 * Math.PI, false);
+    context.fill();
 };
