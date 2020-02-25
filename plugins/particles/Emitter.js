@@ -8,9 +8,9 @@ Tiny.Emitter = function( maxParticles )
 
     this.particles = []
 
-    this.patern = Tiny.Particle
+    this.pattern = Tiny.Particle
 
-    this.clearColor = "#f54545"
+    this.fillStyle = "#f54545"
 
     this.particleAnchor = new Tiny.Point(0.5, 0.5);
 
@@ -83,7 +83,7 @@ Tiny.Emitter.prototype.makeParticles = function(texture, quantity)
         //     rndFrame = this.game.rnd.pick(frames);
         // }
 
-        particle = new this.patern( this );
+        particle = new this.pattern( this );
 
         if (texture)
             particle.setTexture(texture)
@@ -341,7 +341,7 @@ Tiny.Emitter.prototype._renderCanvas = function(renderSession)
         renderSession.maskManager.pushMask(this._mask, renderSession);
     }
 
-    renderSession.context.fillStyle = this.clearColor
+    renderSession.context.fillStyle = this.fillStyle
 
     renderSession.context.setTransform(
             this.worldTransform.a,

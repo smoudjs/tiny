@@ -63,7 +63,7 @@
 					}
 				},
 				resize: function(width, height) {
-					console.log(width)
+					console.log(width, height)
 				}
 			});
 
@@ -72,6 +72,8 @@
 			pushTest(AnimatedSpriteSheetTest, game)
 			pushTest(GraphicsTest, game)
 			pushTest(InputTest, game)
+			pushTest(DragAndDropTest, game)
+
 
 
 			game.callbackContext = this

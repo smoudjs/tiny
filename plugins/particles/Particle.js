@@ -80,16 +80,15 @@ Tiny.Particle.prototype.reset = function( x, y ) {
     this.scale.set(1);
 }
 
-Tiny.Particle.prototype.update = function( time, delta ) {
+Tiny.Particle.prototype.update = function( time, delta )  {
 
-}
+};
 
-Tiny.Particle.prototype.onEmit = function(  ) {
+Tiny.Particle.prototype.onEmit = function(  )  {
 
-}
+};
 
-Tiny.Particle.prototype.draw = function(renderSession)
-{
+Tiny.Particle.prototype.draw = function(renderSession) {
 
 };
 

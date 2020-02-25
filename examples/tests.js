@@ -51,6 +51,79 @@ var BaseTest = {
 	}
 }
 
+var DragAndDropTest = {
+	preload: function(  ) {
+		
+	},
+	create: function(  ) {
+		this.graphics = this.game.add.graphics(100, 0)
+		this.graphics.beginFill(0x4545f1)
+		this.graphics.drawCircle(0, 0, 225)
+		this.graphics.beginFill(0x4545d1)
+		this.graphics.drawCircle(0, 0, 205)
+
+		for (var i = 0; i < 40; i++) {
+			this.graphics.beginFill(0xff4545, 0.06)
+			this.graphics.drawCircle(0, 0, i * 5)
+		}
+
+		var newTexture = this.graphics.generateTexture()
+
+		this.graphics.destroy()
+
+		this.game.stage.removeChild(this.graphics)
+
+		var sprite = this.sprite = this.game.add.sprite(200, 200, newTexture)
+
+		sprite.anchor.set(0.5)
+
+		var text = this.text = this.game.add.text(0, 0, "Drag me!", {fill: "#ffffff"})
+		text.anchor.set(0.5)
+
+		new TWEEN.Tween(text.scale).to({x: 1.3, y: 1.3}, 500).yoyo(true).easing(TWEEN.Easing.Sinusoidal.InOut).repeat(Infinity).start()
+
+		var pulseTween = new TWEEN.Tween(sprite.scale).to({x: 1.1, y: 1.1}, 100).yoyo(true).easing(TWEEN.Easing.Sinusoidal.InOut).repeat(Infinity).start()
+		pulseTween.pause()
+
+		sprite.addChild(text)
+
+		var dragging = false
+
+		var startOffsetX = 0
+		var startOffsetY = 0
+
+		this.game.input.on("up", function(e) {
+			dragging = false
+			pulseTween.pause()
+		})
+
+		this.game.input.on("move", function(e) {
+			if (dragging)
+				sprite.position.set(e.x + startOffsetX, e.y + startOffsetY)
+		})
+
+		sprite.inputEnabled = true
+		sprite.input.on("down", function(e) {
+			startOffsetX = sprite.x - e.x
+			startOffsetY = sprite.y - e.y
+			dragging = true
+			pulseTween.resume()
+		})
+
+	},
+	update: function( time, delta ) {
+		//this.text.scale.set(Math.sin(time / 500) * 0.5 + 0.7)
+		// this.testCoin.rotation += delta * 0.0001
+		// this.testCoin.anchor.x = Math.sin( time * 0.001 )
+
+		// this.rectangle.x = 500 + Math.sin(time / 500) * 100;
+		// this.rectangle.y = 200 + Math.cos(time / 500) * 100;
+
+		// this.rectangle.scale.x = Math.sin(time / 500);
+		// this.rectangle.scale.y = Math.cos(time / 500);
+	}
+}
+
 var InputTest = {
 	create: function() {
 		var game = this.game
@@ -103,8 +176,8 @@ var EmitterTest = {
 		this.emmiter = this.game.add.emitter(700, 200, 1200)
 		this.emmiter.width = 40
 
-		this.emmiter.patern = Tiny.SmokeParticle
-		this.emmiter.clearColor = "#666666"
+		this.emmiter.pattern = Tiny.SmokeParticle
+		this.emmiter.fillStyle = "#666666"
 
 		this.emmiter.makeParticles(Tiny.TextureCache["atlas_BR"])
 		this.emmiter.scale.set(0.7)
