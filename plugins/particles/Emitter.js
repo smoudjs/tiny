@@ -59,6 +59,7 @@ Object.defineProperty(Tiny.Emitter.prototype, 'height', {
 Tiny.Emitter.prototype.makeParticles = function(texture, quantity)
 {
 
+
     var particle;
 
     if (quantity === undefined) { quantity = this.maxParticles; }
@@ -82,7 +83,10 @@ Tiny.Emitter.prototype.makeParticles = function(texture, quantity)
         //     rndFrame = this.game.rnd.pick(frames);
         // }
 
-        particle = new this.patern( this, texture );
+        particle = new this.patern( this );
+
+        if (texture)
+            particle.setTexture(texture)
 
         particle.visible = false;
         particle.anchor.set(this.particleAnchor.x, this.particleAnchor.y)

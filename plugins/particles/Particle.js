@@ -1,5 +1,5 @@
 
-Tiny.Particle = function( emitter, texture )
+Tiny.Particle = function( emitter )
 {
     Tiny.DisplayObject.call( this );
 
@@ -7,9 +7,7 @@ Tiny.Particle = function( emitter, texture )
 
     this.anchor = new Tiny.Point()
 
-    texture = texture || { valid: false }
-
-    this.texture = texture
+    this.texture = { valid: false }
 
     this._frame = 0;
 

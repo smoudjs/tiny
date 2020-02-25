@@ -103,10 +103,10 @@ var EmitterTest = {
 		this.emmiter = this.game.add.emitter(700, 200, 1200)
 		this.emmiter.width = 40
 
-		this.emmiter.patern = Tiny.Smoke
+		this.emmiter.patern = Tiny.SmokeParticle
 		this.emmiter.clearColor = "#666666"
 
-		this.emmiter.makeParticles()
+		this.emmiter.makeParticles(Tiny.TextureCache["atlas_BR"])
 		this.emmiter.scale.set(0.7)
 
 		//this.emmiter.start(false, 1200, 0)
