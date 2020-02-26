@@ -59,16 +59,18 @@ Tiny.Particle.prototype.drawTexture = function(renderSession)
     var dx = this.anchor.x * -this.texture.frame.width;
     var dy = this.anchor.y * -this.texture.frame.height;
 
+    var resolution = this.texture.baseTexture.resolution / renderSession.resolution; 
+
     renderSession.context.drawImage(
                             this.texture.baseTexture.source,
                             this.texture.crop.x,
                             this.texture.crop.y,
                             this.texture.crop.width,
                             this.texture.crop.height,
-                            dx / renderSession.resolution,
-                            dy / renderSession.resolution,
-                            this.texture.crop.width / renderSession.resolution,
-                            this.texture.crop.height / renderSession.resolution);
+                            dx / resolution,
+                            dy / resolution,
+                            this.texture.crop.width / resolution,
+                            this.texture.crop.height / resolution);
 };
 
 Tiny.Particle.prototype.reset = function( x, y ) {
@@ -126,5 +128,5 @@ Tiny.Particle.prototype._renderCanvas = function(renderSession)
     if ( this.texture.valid )
         this.drawTexture( renderSession )
     else
-        this.draw( renderSession.context )
+        this.draw( renderSession.context, renderSession.resolution )
 };

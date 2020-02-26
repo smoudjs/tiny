@@ -20,9 +20,9 @@ export default class SmokeParticle extends Tiny.Particle {
         this.rotationsp = Math.random() * 0.02 - 0.01
     }
 
-    draw ( context ) {
+    draw ( context, resolution ) {
 
-        context.fillRect(0, 0, 100, 100)
+        context.fillRect(0, 0, 100 * resolution, 100 * resolution)
 
         // context.beginPath();
         // context.arc(0, 0, 100, 0, 2 * Math.PI, false);

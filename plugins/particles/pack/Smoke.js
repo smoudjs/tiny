@@ -23,12 +23,12 @@ Tiny.SmokeParticle.prototype.onEmit = function(  ) {
     this.rotationsp = Math.random() * 0.02 - 0.01
 }
 
-Tiny.SmokeParticle.prototype.draw = function( context )
+Tiny.SmokeParticle.prototype.draw = function( context, resolution )
 {
 
    //context.fillRect(0, 0, 100, 100)
 
     context.beginPath();
-    context.arc(0, 0, 100, 0, 2 * Math.PI, false);
+    context.arc(0, 0, 100 * resolution, 0, 2 * Math.PI, false);
     context.fill();
 };

@@ -32,9 +32,9 @@ Tiny.ExplodeParticle.prototype.onEmit = function(  ) {
     this.y = this.yspeed * Math.random() * 3
 }
 
-Tiny.ExplodeParticle.prototype.draw = function( context )
+Tiny.ExplodeParticle.prototype.draw = function( context, resolution )
 {
     context.beginPath();
-    context.arc(0, 0, 20, 0, 2 * Math.PI, false);
+    context.arc(0, 0, 20 * resolution, 0, 2 * Math.PI, false);
     context.fill();
 };

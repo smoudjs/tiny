@@ -33,9 +33,9 @@ Tiny.FireworkParticle.prototype.onEmit = function(  ) {
     this.yspeed = Math.cos(randAgle) * rand_speed * 0.05
 }
 
-Tiny.FireworkParticle.prototype.draw = function( context )
+Tiny.FireworkParticle.prototype.draw = function( context, resolution )
 {
     context.beginPath();
-    context.arc(0, 0, 20, 0, 2 * Math.PI, false);
+    context.arc(0, 0, 20 * resolution, 0, 2 * Math.PI, false);
     context.fill();
 };
