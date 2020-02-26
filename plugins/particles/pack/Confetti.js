@@ -61,21 +61,27 @@ Tiny.ConfettiParticle.prototype._update = function( delta ) {
     this.y += this.ySpeed * delta;
 }
 
+var _g, _res;
+
 Tiny.ConfettiParticle.prototype._renderCanvas = function(renderSession)
 {
     if (this.visible === false || this.alpha === 0) return;
 
+    _g = renderSession.context
+    _res = renderSession.resolution
+
+
     if (this.cosA > 0) {
-        renderSession.context.fillStyle = this.frontColor;
+        _g.fillStyle = this.frontColor;
     } else {
-        renderSession.context.fillStyle = this.backColor;
+        _g.fillStyle = this.backColor;
     }
-    renderSession.context.beginPath();
-    renderSession.context.moveTo((this.x + this.corners[0].x * this.size), (this.y + this.corners[0].y * this.size * this.cosA));
+    _g.beginPath();
+    _g.moveTo((this.x + this.corners[0].x * this.size) * _res, (this.y + this.corners[0].y * this.size * this.cosA) * _res);
     for (var i = 1; i < 4; i++) {
-        renderSession.context.lineTo((this.x + this.corners[i].x * this.size), (this.y + this.corners[i].y * this.size * this.cosA));
+        _g.lineTo((this.x + this.corners[i].x * this.size) * _res, (this.y + this.corners[i].y * this.size * this.cosA) * _res);
     }
-    renderSession.context.closePath();
-    renderSession.context.fill();
+    _g.closePath();
+    _g.fill();
 
 };

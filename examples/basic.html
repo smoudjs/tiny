@@ -21,7 +21,9 @@
 
 	var TESTS = [ ]
 
-	function pushTest(test, game) {
+	var CurrentGame;
+
+	function pushTest(test) {
 		var Test = {
 			preload: function(  ) {
 				
@@ -37,13 +39,18 @@
 			}
 		}
 
-		Object.assign(Test, test)
+		var PushedTest = window[test]
 
-		Test.game = game
+		if (PushedTest) {
 
-		Object.assign(test, Test)
+			Object.assign(Test, PushedTest)
 
-		TESTS.push(test)
+			Test.game = CurrentGame
+
+			Object.assign(PushedTest, Test)
+
+			TESTS.push(PushedTest)
+		}
 
 	}
 
@@ -75,16 +82,19 @@
 				}
 			});
 
+			CurrentGame = game
+
 			window.addEventListener("resize", function(argument) {
 				game.resize(window.innerWidth, window.innerHeight)
 			})
 
-			pushTest(BaseTest, game)
-			pushTest(EmitterTest, game)
-			pushTest(AnimatedSpriteSheetTest, game)
-			pushTest(GraphicsTest, game)
-			pushTest(InputTest, game)
-			pushTest(DragAndDropTest, game)
+			pushTest("BaseTest")
+			pushTest("EmitterTest")
+			pushTest("AnimatedSpriteSheetTest")
+			pushTest("GraphicsTest")
+			pushTest("InputTest")
+			pushTest("ConfettiTest")
+			pushTest("DragAndDropTest")
 
 
 

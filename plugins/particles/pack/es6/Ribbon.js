@@ -116,7 +116,7 @@ function Side(x1, y1, x2, y2, x3, y3) {
     return ((x1 - x2) * (y3 - y2) - (y1 - y2) * (x3 - x2));
 }
 
-var dX, dY, dt, dirP, rp2, p0, p1, _g
+var dX, dY, dt, dirP, rp2, p0, p1, _g, _res
 
 export default class RibbonParticle extends Tiny.Particle {
     constructor( emitter ) {
@@ -202,6 +202,7 @@ export default class RibbonParticle extends Tiny.Particle {
         if (this.visible === false || this.alpha === 0) return;
 
         _g = renderSession.context
+        _res = renderSession.resolution
 
         for (var i = 0; i < this.length - 1; i++) {
             p0 = {x: this.particles[i].position.x + this.xOff, y: this.particles[i].position.y + this.yOff};
@@ -216,40 +217,40 @@ export default class RibbonParticle extends Tiny.Particle {
             }
             if (i == 0) {
                 _g.beginPath();
-                _g.moveTo(this.particles[i].position.x, this.particles[i].position.y);
-                _g.lineTo(this.particles[i + 1].position.x, this.particles[i + 1].position.y);
-                _g.lineTo(((this.particles[i + 1].position.x + p1.x) * 0.5), ((this.particles[i + 1].position.y + p1.y) * 0.5));
+                _g.moveTo(this.particles[i].position.x * _res, this.particles[i].position.y * _res);
+                _g.lineTo(this.particles[i + 1].position.x * _res, this.particles[i + 1].position.y * _res);
+                _g.lineTo(((this.particles[i + 1].position.x + p1.x) * 0.5) * _res, ((this.particles[i + 1].position.y + p1.y) * 0.5) * _res);
                 _g.closePath();
                 _g.stroke();
                 _g.fill();
                 _g.beginPath();
-                _g.moveTo(p1.x, p1.y);
-                _g.lineTo(p0.x, p0.y);
-                _g.lineTo(((this.particles[i + 1].position.x + p1.x) * 0.5), ((this.particles[i + 1].position.y + p1.y) * 0.5));
+                _g.moveTo(p1.x * _res, p1.y * _res);
+                _g.lineTo(p0.x * _res, p0.y * _res);
+                _g.lineTo(((this.particles[i + 1].position.x + p1.x) * 0.5) * _res, ((this.particles[i + 1].position.y + p1.y) * 0.5) * _res);
                 _g.closePath();
                 _g.stroke();
                 _g.fill();
-            } else if (i == this.length - 2) {
+            } else if (i == this.particleCount - 2) {
                 _g.beginPath();
-                _g.moveTo(this.particles[i].position.x, this.particles[i].position.y);
-                _g.lineTo(this.particles[i + 1].position.x, this.particles[i + 1].position.y);
-                _g.lineTo(((this.particles[i].position.x + p0.x) * 0.5), ((this.particles[i].position.y + p0.y) * 0.5));
+                _g.moveTo(this.particles[i].position.x * _res, this.particles[i].position.y * _res);
+                _g.lineTo(this.particles[i + 1].position.x * _res, this.particles[i + 1].position.y * _res);
+                _g.lineTo(((this.particles[i].position.x + p0.x) * 0.5) * _res, ((this.particles[i].position.y + p0.y) * 0.5) * _res);
                 _g.closePath();
                 _g.stroke();
                 _g.fill();
                 _g.beginPath();
-                _g.moveTo(p1.x, p1.y);
-                _g.lineTo(p0.x, p0.y);
-                _g.lineTo(((this.particles[i].position.x + p0.x) * 0.5), ((this.particles[i].position.y + p0.y) * 0.5));
+                _g.moveTo(p1.x * _res, p1.y * _res);
+                _g.lineTo(p0.x * _res, p0.y * _res);
+                _g.lineTo(((this.particles[i].position.x + p0.x) * 0.5) * _res, ((this.particles[i].position.y + p0.y) * 0.5) * _res);
                 _g.closePath();
                 _g.stroke();
                 _g.fill();
             } else {
                 _g.beginPath();
-                _g.moveTo(this.particles[i].position.x, this.particles[i].position.y);
-                _g.lineTo(this.particles[i + 1].position.x, this.particles[i + 1].position.y);
-                _g.lineTo(p1.x, p1.y);
-                _g.lineTo(p0.x, p0.y);
+                _g.moveTo(this.particles[i].position.x * _res, this.particles[i].position.y * _res);
+                _g.lineTo(this.particles[i + 1].position.x * _res, this.particles[i + 1].position.y * _res);
+                _g.lineTo(p1.x * _res, p1.y * _res);
+                _g.lineTo(p0.x * _res, p0.y * _res);
                 _g.closePath();
                 _g.stroke();
                 _g.fill();
