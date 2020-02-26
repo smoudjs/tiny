@@ -177,59 +177,78 @@ var GraphicsTest = {
 var EmitterTest = {
 	create: function(  ) {
 
-		var emmiter = this.emmiter = this.game.add.emitter(700, 500, 1200)
-		this.emmiter.width = 40
+		// var emmiter = this.emmiter = this.game.add.emitter(700, 500, 1200)
+		// this.emmiter.width = 40
 
-		this.emmiter.pattern = Tiny.SmokeParticle
-		this.emmiter.fillStyle = "#666666"
+		// this.emmiter.pattern = Tiny.SmokeParticle
+		// this.emmiter.fillStyle = "#666666"
 
-		this.emmiter.makeParticles(Tiny.TextureCache["atlas_BR"])//Tiny.TextureCache["atlas_BR"])
-		this.emmiter.scale.set(0.7)
+		// this.emmiter.makeParticles(Tiny.TextureCache["atlas_BR"])//Tiny.TextureCache["atlas_BR"])
+		// this.emmiter.scale.set(0.7)
 
-		//this.emmiter.start(false, 1200, 0)
-		this.emmiter.flow(1000, 100, 5)
+		// //this.emmiter.start(false, 1200, 0)
+		// this.emmiter.flow(1000, 100, 5)
 
-		var bombEmitter = this.bombEmitter = this.game.add.emitter(400, this.game.height - 400, 300)
+		// var bombEmitter = this.bombEmitter = this.game.add.emitter(400, this.game.height - 400, 300)
 
-		bombEmitter.pattern = Tiny.ExplodeParticle
+		// bombEmitter.pattern = Tiny.ExplodeParticle
 
-		bombEmitter.makeParticles()
+		// bombEmitter.makeParticles()
 
-		var game = this.game
+		// var game = this.game
 
-		this.game.input.on("move", function(e) {
-			if (game.input.isDown) {
-				emmiter.x = e.x
-				emmiter.y = e.y
-			}
-		})
+		// this.game.input.on("move", function(e) {
+		// 	if (game.input.isDown) {
+		// 		emmiter.x = e.x
+		// 		emmiter.y = e.y
+		// 	}
+		// })
 
-		this.game.input.on("down", function(e) {
-			bombEmitter.fillStyle = "#" + Math.floor(Math.random() * 0xffffff).toString(16)
-			bombEmitter.x = e.x
-			bombEmitter.y = e.y
-			bombEmitter.explode(300, 80)
-		})
+		// this.game.input.on("down", function(e) {
+		// 	bombEmitter.fillStyle = "#" + Math.floor(Math.random() * 0xffffff).toString(16)
+		// 	bombEmitter.x = e.x
+		// 	bombEmitter.y = e.y
+		// 	bombEmitter.explode(300, 80)
+		// })
 
-		var fireworkEmitter = this.fireworkEmitter = this.game.add.emitter(400, this.game.height - 400, 300)
+		// var fireworkEmitter = this.fireworkEmitter = this.game.add.emitter(400, this.game.height - 400, 300)
 
-		fireworkEmitter.pattern = Tiny.FireworkParticle
+		// fireworkEmitter.pattern = Tiny.FireworkParticle
 
-		fireworkEmitter.width = 40
+		// fireworkEmitter.width = 40
 
-		fireworkEmitter.fillStyle = "#9416d4"
+		// fireworkEmitter.fillStyle = "#9416d4"
 
-		fireworkEmitter.makeParticles()
+		// fireworkEmitter.makeParticles()
 
-		game.timer.loop(1000, function() {
+		// game.timer.loop(1000, function() {
 
-			fireworkEmitter.x = Tiny.rnd(100, game.width - 100)
-			fireworkEmitter.y = Tiny.rnd(100, 200)
+		// 	fireworkEmitter.x = Tiny.rnd(100, game.width - 100)
+		// 	fireworkEmitter.y = Tiny.rnd(100, 200)
 
-			fireworkEmitter.explode(800, 80)
+		// 	fireworkEmitter.explode(800, 80)
 
-		})
+		// })
 
+		var confetti = this.confetti = this.game.add.emitter(500, 0, 100)
+		confetti.width = 800
 
+		confetti.pattern = Tiny.ConfettiParticle
+
+		confetti.makeParticles()
+		confetti.scale.set(0.7)
+
+		//confetti.start(false, 1200, 0)
+		confetti.flow(10000, 300, 5)
+
+		var ribbon = this.ribbon = this.game.add.emitter(500, 0, 18)
+		ribbon.width = 800
+
+		ribbon.pattern = Tiny.RibbonParticle
+		ribbon.makeParticles()
+		ribbon.scale.set(0.7)
+
+		//ribbon.start(false, 1200, 0)
+		ribbon.start(false, 5000, 300)
 	}
 }

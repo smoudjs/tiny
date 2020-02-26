@@ -47,11 +47,11 @@ Object.defineProperty(Tiny.Emitter.prototype, 'width', {
 Object.defineProperty(Tiny.Emitter.prototype, 'height', {
 
     get: function() {
-        this._width
+        this._height
     },
 
     set: function(value) {
-        this._width = value;
+        this._height = value;
     }
 });
 
@@ -344,6 +344,8 @@ Tiny.Emitter.prototype._renderCanvas = function(renderSession)
     }
 
     renderSession.context.fillStyle = this.fillStyle
+
+    renderSession.context.globalAlpha = this.worldAlpha;
 
     renderSession.context.setTransform(
             this.worldTransform.a,
