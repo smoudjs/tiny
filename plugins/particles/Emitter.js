@@ -36,7 +36,7 @@ Tiny.Emitter.prototype.constructor = Tiny.Emitter;
 Object.defineProperty(Tiny.Emitter.prototype, 'width', {
 
     get: function() {
-        this._width
+        return this._width
     },
 
     set: function(value) {
@@ -47,7 +47,7 @@ Object.defineProperty(Tiny.Emitter.prototype, 'width', {
 Object.defineProperty(Tiny.Emitter.prototype, 'height', {
 
     get: function() {
-        this._height
+        return this._height
     },
 
     set: function(value) {

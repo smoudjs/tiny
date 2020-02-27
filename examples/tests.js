@@ -31,7 +31,7 @@ var BaseTest = {
 
 		var group = this.game.add.group(0, 0) 
 
-		var ts = this.game.add.tileSprite(0, 0, 700, 800, "atlas", "BF")
+		var ts = this.game.add.tileSprite(0, 0, 700, 800, "atlas", "MM")
 		ts.scale.set(0.4)
 
 		group.addChild(ts)
@@ -116,17 +116,6 @@ var DragAndDropTest = {
 			pulseTween.resume()
 		})
 
-	},
-	update: function( time, delta ) {
-		//this.text.scale.set(Math.sin(time / 500) * 0.5 + 0.7)
-		// this.testCoin.rotation += delta * 0.0001
-		// this.testCoin.anchor.x = Math.sin( time * 0.001 )
-
-		// this.rectangle.x = 500 + Math.sin(time / 500) * 100;
-		// this.rectangle.y = 200 + Math.cos(time / 500) * 100;
-
-		// this.rectangle.scale.x = Math.sin(time / 500);
-		// this.rectangle.scale.y = Math.cos(time / 500);
 	}
 }
 
@@ -235,7 +224,7 @@ var EmitterTest = {
 var ConfettiTest = {
 	create: function(  ) {
 
-		var confetti = this.confetti = this.game.add.emitter(500, 0, 100)
+		var confetti = this.confetti = this.game.add.emitter(500, 0, 150)
 		confetti.width = 800
 
 		confetti.pattern = Tiny.ConfettiParticle

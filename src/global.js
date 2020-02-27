@@ -1,4 +1,4 @@
-Tiny.VERSION = "1.3.0" 
+Tiny.VERSION = "1.3.1" 
 
 Tiny.PI_2 = Math.PI * 2
 Tiny._UID = 0
