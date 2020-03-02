@@ -108,6 +108,8 @@ Tiny.prototype._update = function(time, delta) {
 				e.update(delta)
 			})
 
+		this.stage.updateTransform();
+
 		if (this.particles)
 			this.particles.update( delta )
 

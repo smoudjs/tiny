@@ -160,7 +160,7 @@ Tiny.Emitter.prototype.start = function (explode, lifespan, frequency, quantity)
     this.lifespan = lifespan;
     this.frequency = frequency;
 
-    this.updateTransform()
+    //this.updateTransform()
 
     if (explode)
     {

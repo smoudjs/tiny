@@ -18,7 +18,7 @@ export default class MoneyFallingParticle extends Tiny.Particle {
         this.scale.set((random() * 0.4 + 0.6) / 2) 
         this.angle = random() * 6.28;
 
-        this.speed = Math.random() * 1 + 0.5
+        this.speed = random() * 1 + 0.5
     }
 
     
