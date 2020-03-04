@@ -60,6 +60,9 @@ Tiny.DisplayObject.prototype.destroy = function()
         this.children = [];
     }
 
+    if (this.parent)
+        this.parent.removeChild( this )
+
     this.hitArea = null;
     this.parent = null;
     this.stage = null;
