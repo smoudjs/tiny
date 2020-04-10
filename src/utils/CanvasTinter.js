@@ -66,33 +66,6 @@ Tiny.CanvasTinter.tintWithMultiply = function(texture, color, canvas)
                            crop.height);
 };
 
-Tiny.CanvasTinter.tintWithOverlay = function(texture, color, canvas)
-{
-    var context = canvas.getContext( "2d" );
-
-    var crop = texture.crop;
-
-    canvas.width = crop.width;
-    canvas.height = crop.height;
-    
-    context.globalCompositeOperation = "copy";
-    context.fillStyle = "#" + ("00000" + ( color | 0).toString(16)).substr(-6);
-    context.fillRect(0, 0, crop.width, crop.height);
-
-    context.globalCompositeOperation = "destination-atop";
-    context.drawImage(texture.baseTexture.source,
-                           crop.x,
-                           crop.y,
-                           crop.width,
-                           crop.height,
-                           0,
-                           0,
-                           crop.width,
-                           crop.height);
-    
-    //context.globalCompositeOperation = "copy";
-};
-
 Tiny.CanvasTinter.tintWithPerPixel = function(texture, color, canvas)
 {
     var context = canvas.getContext("2d");
@@ -126,7 +99,7 @@ Tiny.CanvasTinter.tintWithPerPixel = function(texture, color, canvas)
       pixels[i+1] *= g;
       pixels[i+2] *= b;
 
-      if (!Tiny.CanvasTinter.canHandleAlpha)
+      if (!Tiny.canHandleAlpha)
       {
         var alpha = pixels[i+3];
 
@@ -139,20 +112,7 @@ Tiny.CanvasTinter.tintWithPerPixel = function(texture, color, canvas)
     context.putImageData(pixelData, 0, 0);
 };
 
-Tiny.CanvasTinter.roundColor = function(color)
-{
-    var step = Tiny.CanvasTinter.cacheStepsPerColorChannel;
-
-    var rgbValues = Tiny.hex2rgb(color);
-
-    rgbValues[0] = Math.min(255, (rgbValues[0] / step) * step);
-    rgbValues[1] = Math.min(255, (rgbValues[1] / step) * step);
-    rgbValues[2] = Math.min(255, (rgbValues[2] / step) * step);
-
-    return Tiny.rgb2hex(rgbValues);
-};
-
-Tiny.CanvasTinter.checkInverseAlpha = function()
+function checkInverseAlpha()
 {
     var canvas = new Tiny.CanvasBuffer(2, 1);
 
@@ -174,38 +134,52 @@ Tiny.CanvasTinter.checkInverseAlpha = function()
     return (s2.data[0] === s1.data[0] && s2.data[1] === s1.data[1] && s2.data[2] === s1.data[2] && s2.data[3] === s1.data[3]);
 };
 
-Tiny.CanvasTinter.cacheStepsPerColorChannel = 8;
-
-Tiny.CanvasTinter.convertTintToImage = false;
-
-Tiny.CanvasTinter.canHandleAlpha = Tiny.CanvasTinter.checkInverseAlpha();
-
-var canUseNewCanvasBlendModes = function()
+function checkBlendMode ()
 {
-    if (typeof document === 'undefined') return false;
-
     var pngHead = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABAQMAAADD8p2OAAAAA1BMVEX/';
     var pngEnd = 'AAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==';
 
     var magenta = new Image();
+
+    magenta.onload = function ()
+    {
+        var yellow = new Image();
+
+        yellow.onload = function ()
+        {
+            var canvas = document.createElement('canvas');
+            canvas.width = 6;
+            canvas.height = 1;
+            var context = canvas.getContext('2d');
+
+            context.globalCompositeOperation = 'multiply';
+
+            context.drawImage(magenta, 0, 0);
+            context.drawImage(yellow, 2, 0);
+
+            if (!context.getImageData(2, 0, 1, 1))
+            {
+                return false;
+            }
+
+            var data = context.getImageData(2, 0, 1, 1).data;
+
+            Tiny.supportNewBlendModes = (data[0] === 255 && data[1] === 0 && data[2] === 0);
+        };
+
+        yellow.src = pngHead + '/wCKxvRF' + pngEnd;
+    };
+
     magenta.src = pngHead + 'AP804Oa6' + pngEnd;
 
-    var yellow = new Image();
-    yellow.src = pngHead + '/wCKxvRF' + pngEnd;
+    return false;
+}
 
-    var canvas = document.createElement('canvas');
-    canvas.width = 6;
-    canvas.height = 1;
-    var context = canvas.getContext('2d');
-    context.globalCompositeOperation = 'multiply';
-    context.drawImage(magenta, 0, 0);
-    context.drawImage(yellow, 2, 0);
 
-    var data = context.getImageData(2,0,1,1).data;
+Tiny.CanvasTinter.convertTintToImage = false;
 
-    return (data[0] === 255 && data[1] === 0 && data[2] === 0);
-};
+Tiny.canHandleAlpha = checkInverseAlpha();
 
-Tiny.canUseMultiply = canUseNewCanvasBlendModes();
+Tiny.supportNewBlendModes = checkBlendMode();
 
-Tiny.CanvasTinter.tintMethod = Tiny.canUseMultiply ? Tiny.CanvasTinter.tintWithMultiply :  Tiny.CanvasTinter.tintWithPerPixel;
+Tiny.CanvasTinter.tintMethod = Tiny.supportNewBlendModes ? Tiny.CanvasTinter.tintWithMultiply :  Tiny.CanvasTinter.tintWithPerPixel;

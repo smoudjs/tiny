@@ -98,7 +98,8 @@ Tiny.prototype.resume = function() {
 };
 
 Tiny.prototype._update = function(time, delta) {
-	if (!this.paused) {
+	if (!this.paused) 
+	{
 		this.update.call(this.callbackContext, time, delta)
 		if (_tween_enabled)
 			TWEEN.update()
@@ -110,12 +111,18 @@ Tiny.prototype._update = function(time, delta) {
 
 		this.stage.updateTransform();
 
-		if (this.particles)
+		if (this.particles) 
+		{
 			this.particles.update( delta )
-
-		this._render()
-	} else
+		}
+	} 
+	else 
+	{
 		this.pauseDuration += delta
+		this.stage.updateTransform();
+	}
+
+	this._render()
 };
 
 Tiny.prototype._destroy = function() {

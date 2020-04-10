@@ -120,8 +120,6 @@ Tiny.prototype.resize = function(width, height, scale) {
 	this.ui_sprite.scale.set(this.width, this.height, 1);
 
 	this.trenderer.setSize(this.width, this.height);
-	
-	this._render()
 }
 
 module.exports = Tiny;
