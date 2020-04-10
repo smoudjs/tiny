@@ -43,8 +43,6 @@ Tiny.CanvasRenderer = function(width, height, options)
         roundPixels: false
     };
 
-    this.mapBlendModes();
-    
     this.resize(width, height);
 
     if("imageSmoothingEnabled" in this.context)
@@ -69,8 +67,8 @@ Tiny.CanvasRenderer.prototype.render = function(stage)
 
     this.context.globalAlpha = 1;
 
-    this.renderSession.currentBlendMode = Tiny.blendModes.NORMAL;
-    this.context.globalCompositeOperation = Tiny.blendModesCanvas[Tiny.blendModes.NORMAL];
+    this.renderSession.currentBlendMode = "source-over";
+    this.context.globalCompositeOperation = "source-over";
 
     if (navigator.isCocoonJS && this.view.screencanvas)
     {
@@ -130,30 +128,4 @@ Tiny.CanvasRenderer.prototype.renderDisplayObject = function(displayObject, cont
     this.renderSession.context = context || this.context;
     this.renderSession.resolution = this.resolution;
     displayObject._renderCanvas(this.renderSession);
-};
-
-Tiny.CanvasRenderer.prototype.mapBlendModes = function()
-{
-    if(!Tiny.blendModesCanvas)
-    {
-        Tiny.blendModesCanvas = [];
-
-        Tiny.blendModesCanvas[Tiny.blendModes.NORMAL]   = "source-over";
-        // Tiny.blendModesCanvas[Tiny.blendModes.ADD]      = "lighter"; //IS THIS OK???
-        // Tiny.blendModesCanvas[Tiny.blendModes.MULTIPLY] = "source-over";
-        // Tiny.blendModesCanvas[Tiny.blendModes.SCREEN]   = "source-over";
-        // Tiny.blendModesCanvas[Tiny.blendModes.OVERLAY]  = "source-over";
-        // Tiny.blendModesCanvas[Tiny.blendModes.DARKEN]   = "source-over";
-        // Tiny.blendModesCanvas[Tiny.blendModes.LIGHTEN]  = "source-over";
-        // Tiny.blendModesCanvas[Tiny.blendModes.COLOR_DODGE] = "source-over";
-        // Tiny.blendModesCanvas[Tiny.blendModes.COLOR_BURN] = "source-over";
-        // Tiny.blendModesCanvas[Tiny.blendModes.HARD_LIGHT] = "source-over";
-        // Tiny.blendModesCanvas[Tiny.blendModes.SOFT_LIGHT] = "source-over";
-        // Tiny.blendModesCanvas[Tiny.blendModes.DIFFERENCE] = "source-over";
-        // Tiny.blendModesCanvas[Tiny.blendModes.EXCLUSION] = "source-over";
-        // Tiny.blendModesCanvas[Tiny.blendModes.HUE]       = "source-over";
-        // Tiny.blendModesCanvas[Tiny.blendModes.SATURATION] = "source-over";
-        // Tiny.blendModesCanvas[Tiny.blendModes.COLOR]      = "source-over";
-        // Tiny.blendModesCanvas[Tiny.blendModes.LUMINOSITY] = "source-over";
-    }
 };

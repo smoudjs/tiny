@@ -180,7 +180,7 @@ Tiny.CanvasTinter.convertTintToImage = false;
 
 Tiny.CanvasTinter.canHandleAlpha = Tiny.CanvasTinter.checkInverseAlpha();
 
-Tiny.canUseNewCanvasBlendModes = function()
+var canUseNewCanvasBlendModes = function()
 {
     if (typeof document === 'undefined') return false;
 
@@ -206,6 +206,6 @@ Tiny.canUseNewCanvasBlendModes = function()
     return (data[0] === 255 && data[1] === 0 && data[2] === 0);
 };
 
-Tiny.CanvasTinter.canUseMultiply = Tiny.canUseNewCanvasBlendModes();
+Tiny.canUseMultiply = canUseNewCanvasBlendModes();
 
-Tiny.CanvasTinter.tintMethod = Tiny.CanvasTinter.canUseMultiply ? Tiny.CanvasTinter.tintWithMultiply :  Tiny.CanvasTinter.tintWithPerPixel;
+Tiny.CanvasTinter.tintMethod = Tiny.canUseMultiply ? Tiny.CanvasTinter.tintWithMultiply :  Tiny.CanvasTinter.tintWithPerPixel;

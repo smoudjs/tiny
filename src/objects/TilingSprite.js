@@ -79,9 +79,8 @@ Tiny.TilingSprite = function(texture, width, height)
      *
      * @property blendMode
      * @type Number
-     * @default Tiny.blendModes.NORMAL;
      */
-    this.blendMode = Tiny.blendModes.NORMAL;
+    this.blendMode = "source-over";
 
     
 
@@ -178,7 +177,7 @@ Tiny.TilingSprite.prototype._renderCanvas = function(renderSession)
     if (this.blendMode !== renderSession.currentBlendMode)
     {
         renderSession.currentBlendMode = this.blendMode;
-        context.globalCompositeOperation = Tiny.blendModesCanvas[renderSession.currentBlendMode];
+        context.globalCompositeOperation = renderSession.currentBlendMode;
     }
 
     var tilePosition = this.tilePosition;

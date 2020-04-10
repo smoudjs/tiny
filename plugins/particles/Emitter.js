@@ -26,7 +26,7 @@ Tiny.Emitter = function( maxParticles )
 
     this._flowTotal = 0;
 
-    this.blendMode = Tiny.blendModes.NORMAL;
+    this.blendMode = "source-over";
 };
 
 

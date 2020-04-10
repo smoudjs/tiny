@@ -15,7 +15,7 @@ Tiny.Sprite = function(texture)
 
     this.tint = 0xFFFFFF;
 
-    this.blendMode = Tiny.blendModes.NORMAL;
+    this.blendMode = "source-over";
 
     this.shader = null;
 
@@ -215,7 +215,7 @@ Tiny.Sprite.prototype._renderCanvas = function(renderSession)
     if (this.blendMode !== renderSession.currentBlendMode)
     {
         renderSession.currentBlendMode = this.blendMode;
-        renderSession.context.globalCompositeOperation = Tiny.blendModesCanvas[renderSession.currentBlendMode];
+        renderSession.context.globalCompositeOperation = renderSession.currentBlendMode;
     }
 
     if (this._mask)

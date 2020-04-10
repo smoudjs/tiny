@@ -38,7 +38,7 @@ Tiny.Graphics = function()
     this.lineColor = 0;
     this.graphicsData = [];
     this.tint = 0xFFFFFF;
-    this.blendMode = Tiny.blendModes.NORMAL;
+    this.blendMode = "source-over";
     this.currentPath = null;
     this._webGL = [];
     this.isMask = false;
@@ -499,7 +499,7 @@ Tiny.Graphics.prototype._renderCanvas = function(renderSession)
         if (this.blendMode !== renderSession.currentBlendMode)
         {
             renderSession.currentBlendMode = this.blendMode;
-            context.globalCompositeOperation = Tiny.blendModesCanvas[renderSession.currentBlendMode];
+            context.globalCompositeOperation = renderSession.currentBlendMode;
         }
 
         if (this._mask)

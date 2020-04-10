@@ -1,4 +1,4 @@
-Tiny.VERSION = "1.3.3" 
+Tiny.VERSION = "1.3.4" 
 
 Tiny.PI_2 = Math.PI * 2
 Tiny._UID = 0
@@ -13,10 +13,6 @@ Tiny.Primitives = {
     ELIP: 3,
     RREC: 4,
     RREC_LJOIN: 5
-}
-
-Tiny.blendModes = {
-    NORMAL: 0
 }
 
 Tiny.rnd = function(min, max) {
