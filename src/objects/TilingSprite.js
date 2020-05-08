@@ -12,9 +12,9 @@
  * @param width {Number}  the width of the tiling sprite
  * @param height {Number} the height of the tiling sprite
  */
-Tiny.TilingSprite = function(texture, width, height)
+Tiny.TilingSprite = function(texture, key, width, height)
 {
-    Tiny.Sprite.call( this, texture);
+    Tiny.Sprite.call( this, texture, key );
 
     /**
      * The with of the tiling sprite
@@ -56,34 +56,6 @@ Tiny.TilingSprite = function(texture, width, height)
      */
     this.tilePosition = new Tiny.Point(0,0);
 
-    /**
-     * Whether this sprite is renderable or not
-     *
-     * @property renderable
-     * @type Boolean
-     * @default true
-     */
-    this.renderable = true;
-
-    /**
-     * The tint applied to the sprite. This is a hex value
-     *
-     * @property tint
-     * @type Number
-     * @default 0xFFFFFF
-     */
-    this.tint = 0xFFFFFF;
-    
-    /**
-     * The blend mode to be applied to the sprite
-     *
-     * @property blendMode
-     * @type Number
-     */
-    this.blendMode = "source-over";
-
-    
-
 };
 
 // constructor
@@ -122,15 +94,11 @@ Object.defineProperty(Tiny.TilingSprite.prototype, 'height', {
     }
 });
 
-Tiny.TilingSprite.prototype.setTexture = function(texture)
+Tiny.TilingSprite.prototype.setTexture = function(texture, key)
 {
-    if (this.texture === texture) return;
+    var updated = Tiny.Sprite.prototype.setTexture.call(this, texture, key);
 
-    this.texture = texture;
-
-    this.refreshTexture = true;
-
-    this.cachedTint = 0xFFFFFF;
+    this.refreshTexture = updated;
 };
 
 Tiny.TilingSprite.prototype._renderCanvas = function(renderSession)
@@ -147,9 +115,7 @@ Tiny.TilingSprite.prototype._renderCanvas = function(renderSession)
     context.globalAlpha = this.worldAlpha;
     
     var transform = this.worldTransform;
-
-    var i,j;
-
+    
     var resolution = renderSession.resolution;
 
     context.setTransform(transform.a * resolution,
@@ -159,7 +125,7 @@ Tiny.TilingSprite.prototype._renderCanvas = function(renderSession)
                          transform.tx * resolution,
                          transform.ty * resolution);
 
-    if (!this.__tilePattern ||  this.refreshTexture)
+    if (!this.__tilePattern || this.refreshTexture)
     {
         this.generateTilingTexture(false);
     
@@ -205,7 +171,7 @@ Tiny.TilingSprite.prototype._renderCanvas = function(renderSession)
         renderSession.maskManager.popMask(renderSession);
     }
 
-    for (i=0,j=this.children.length; i<j; i++)
+    for (var i = 0; i < this.children.length; i++)
     {
         this.children[i]._renderCanvas(renderSession);
     }
@@ -299,11 +265,6 @@ Tiny.TilingSprite.prototype.getBounds = function()
  * @param event
  * @private
  */
-Tiny.TilingSprite.prototype.onTextureUpdate = function()
-{
-   // overriding the sprite version of this!
-};
-
 
 /**
 * 
@@ -315,7 +276,7 @@ Tiny.TilingSprite.prototype.generateTilingTexture = function(forcePowerOfTwo)
 {
     if (!this.texture.baseTexture.hasLoaded) return;
 
-    var texture = this.originalTexture || this.texture;
+    var texture = this.texture;
     var frame = texture.frame;
     var targetWidth, targetHeight;
 
@@ -326,21 +287,18 @@ Tiny.TilingSprite.prototype.generateTilingTexture = function(forcePowerOfTwo)
 
     if (!forcePowerOfTwo)
     {
-        if (isFrame)
+        if (texture.crop)
         {
-            if (texture.crop)
-            {
-                targetWidth = texture.crop.width;
-                targetHeight = texture.crop.height;
-            }
-            else
-            {
-                targetWidth = frame.width;
-                targetHeight = frame.height;
-            }
-           
-            newTextureRequired = true;
+            targetWidth = texture.crop.width;
+            targetHeight = texture.crop.height;
         }
+        else
+        {
+            targetWidth = frame.width;
+            targetHeight = frame.height;
+        }
+       
+        newTextureRequired = true;
     }
     else
     {
@@ -354,7 +312,8 @@ Tiny.TilingSprite.prototype.generateTilingTexture = function(forcePowerOfTwo)
             targetWidth = Tiny.getNextPowerOfTwo(frame.width);
             targetHeight = Tiny.getNextPowerOfTwo(frame.height);
         }
-            newTextureRequired = true;
+
+        newTextureRequired = true;
 
         //  If the BaseTexture dimensions don't match the texture frame then we need a new texture anyway because it's part of a texture atlas
         // if (frame.width !== targetWidth || frame.height !== targetHeight || texture.baseTexture.width !== targetWidth || texture.baseTexture.height || targetHeight) newTextureRequired = true;
@@ -394,25 +353,8 @@ Tiny.TilingSprite.prototype.generateTilingTexture = function(forcePowerOfTwo)
         this.tileScaleOffset.x = frame.width / targetWidth;
         this.tileScaleOffset.y = frame.height / targetHeight;
     }
-    else
-    {
-        //  TODO - switching?
-        if (this.tilingTexture && this.tilingTexture.isTiling)
-        {
-            // destroy the tiling texture!
-            // TODO could store this somewhere?
-            this.tilingTexture.destroy(true);
-        }
-
-        this.tileScaleOffset.x = 1;
-        this.tileScaleOffset.y = 1;
-        this.tilingTexture = texture;
-    }
 
     this.refreshTexture = false;
-    
-    this.originalTexture = this.texture;
-    this.texture = this.tilingTexture;
     
     this.tilingTexture.baseTexture._powerOf2 = true;
 };

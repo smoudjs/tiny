@@ -155,13 +155,7 @@ Tiny.Rectangle.prototype = {
 
     //     return Tiny.Rectangle.union(this, b, out);
 
-    // },
-
-    toString: function () {
-
-        return "[{Rectangle (x=" + this.x + " y=" + this.y + " width=" + this.width + " height=" + this.height + " empty=" + this.empty + ")}]";
-
-    }
+    // }
 
 };
 

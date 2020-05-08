@@ -1,4 +1,6 @@
 
+var pi2 = Math.PI * 2;
+
 Tiny.DisplayObject = function()
 {
     this.position = new Tiny.Point(0, 0);
@@ -148,7 +150,7 @@ Tiny.DisplayObject.prototype.updateTransform = function()
     var a, b, c, d, tx, ty;
 
     // so if rotation is between 0 then we can simplify the multiplication process..
-    if (this.rotation % Tiny.PI_2)
+    if (this.rotation % pi2)
     {
         // check to see if the rotation is the same as the previous render. This means we only need to use sin and cos when rotation actually changes
         if (this.rotation !== this.rotationCache)

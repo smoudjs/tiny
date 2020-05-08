@@ -1,7 +1,7 @@
 require('./base.js')
 
 
-require('../src/utils/renderer.js'); // 2 Kb
+require('../src/utils/RAF.js'); // 2 Kb
 
 require('../src/textures/BaseTexture.js');	//
 require('../src/textures/Texture.js');		// 4 Kb

@@ -14,4 +14,4 @@ require('../src/display/DisplayObject.js');             //
 require('../src/display/DisplayObjectContainer.js');    //
 require('../src/display/Stage.js');                     // 10 Kb
 
-require('../src/CanvasRenderer.js'); // 3 Kb
+require('../src/renderer/CanvasRenderer.js'); // 3 Kb

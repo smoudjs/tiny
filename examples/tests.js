@@ -32,11 +32,13 @@ var BaseTest = {
 		var group = this.game.add.group(0, 0) 
 
 		var ts = this.game.add.tileSprite(0, 0, 700, 800, "atlas", "MM")
-		ts.scale.set(0.4)
+		ts.scale.set(0.6)
+
+		this.tileSprite = ts;
 
 		group.addChild(ts)
 
-		group.cacheAsBitmap = true
+		//group.cacheAsBitmap = true
 
 
 	},
@@ -49,6 +51,11 @@ var BaseTest = {
 
 		this.rectangle.scale.x = Math.sin(time / 500);
 		this.rectangle.scale.y = Math.cos(time / 500);
+
+		this.tileSprite.tilePosition.x += 0.5 * delta;
+		this.tileSprite.tilePosition.y += Math.sin(time * 0.01) * 10;
+
+		this.tileSprite.tileScale.x = this.tileSprite.tileScale.y = Math.sin(time * 0.0007) * 1;
 	},
 	resize: function( width, height ) {
 		this.bottomRightSprite.x = width - 100

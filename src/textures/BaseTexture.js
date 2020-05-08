@@ -100,12 +100,6 @@ Tiny.BaseTexture.fromImage = function(key, imageUrl, crossorigin)
         baseTexture.imageUrl = imageUrl;
         baseTexture.key = key
         Tiny.BaseTextureCache[key] = baseTexture;
-
-        // if there is an @2x at the end of the url we are going to assume its a highres image
-        if( imageUrl.indexOf(Tiny.RETINA_PREFIX + '.') !== -1)
-        {
-            baseTexture.resolution = 2;
-        }
     }
 
     return baseTexture;

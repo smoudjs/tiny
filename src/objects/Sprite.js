@@ -1,11 +1,11 @@
 
-Tiny.Sprite = function(texture)
+Tiny.Sprite = function(texture, key)
 {
     Tiny.DisplayObjectContainer.call(this);
 
     this.anchor = new Tiny.Point();
 
-    this.texture = texture //|| PIXI.Texture.emptyTexture;
+    this.setTexture(texture, key, false);
 
     this._width = 0;
 
@@ -38,7 +38,8 @@ Object.defineProperty(Tiny.Sprite.prototype, 'frameName', {
     },
 
     set: function(value) {
-        if (this.texture.frame.name) {
+        if (this.texture.frame.name) 
+        {
             this.setTexture(Tiny.TextureCache[this.texture.key + "_" + value])
         }
     }
@@ -88,10 +89,36 @@ Object.defineProperty(Tiny.Sprite.prototype, 'height', {
 
 });
 
-Tiny.Sprite.prototype.setTexture = function(texture)
+Tiny.Sprite.prototype.setTexture = function(texture, key, updateDimension)
 {
+    if (typeof texture == "string") 
+    {
+        var imagePath = texture;
+
+        if (key != undefined) 
+        {
+            imagePath = imagePath + "_" + key;
+        }
+
+        texture = Tiny.TextureCache[imagePath]
+
+        if (!texture) 
+        {
+            throw new Error('Cache Error: image ' + imagePath + ' does`t found in cache');
+        }
+    }
+
+    if (this.texture === texture) return false;
+
     this.texture = texture;
     this.cachedTint = 0xFFFFFF;
+
+    if (updateDimension === true) 
+    {
+        this.onTextureUpdate();
+    }
+
+    return true;
 };
 
 Tiny.Sprite.prototype.onTextureUpdate = function()

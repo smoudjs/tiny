@@ -1,24 +1,13 @@
 const webpack = require('webpack');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-
-
-
-// const fs = require('fs');
-
-// const pkg = JSON.parse(fs.readFileSync('package.json'));
-// const license = fs.readFileSync('LICENSE');
-
-// const banner = `/*
-// ${pkg.name} - v${pkg.version}
-// [file]
-// ---
-
-// ${license}
-// */
-// `;
+const packageInfo = require('./package.json');
 
 const config = {
+
+	mode: 'production',
+
 	context: `${__dirname}/tiny`,
+
 	entry: {
 		
 		// 'asset-loader': './asset-loader/AssetLoader.js',
@@ -39,25 +28,41 @@ const config = {
 		// 'three/standard': './three/standard.js',
 		// 'three/tiny': './three/index.js',
 	},
+
 	output: {
 		path: `${__dirname}/lib/`,
 		filename: `[name].js`
 	},
-	plugins: [
-		new UglifyJSPlugin()
-		//new webpack.BannerPlugin({ banner: banner, raw: true }),
-	],
-	module: {
-        loaders: [
-            {
-                test: /\.js$/,
-                loader: 'babel-loader',
-                query: {
-                    presets: ['@babel/env']
-                }
-            }
+
+	performance: { hints: false },
+
+	optimization: {
+        minimizer: [
+            new UglifyJSPlugin({
+                include: /\.js$/,
+                parallel: true,
+                sourceMap: false,
+                uglifyOptions: {
+                    compress: true,
+                    ie8: false,
+                    ecma: 5,
+                    output: {comments: false},
+                    warnings: false
+                },
+                warningsFilter: () => false
+            })
         ]
     },
+
+	plugins: [
+		new webpack.DefinePlugin({
+	    	_VERSION_: '"' + packageInfo.version + '"',
+	    })
+
+		//new UglifyJSPlugin()
+		//new webpack.BannerPlugin({ banner: banner, raw: true }),
+	],
+
 	stats: {
         colors: true
     }

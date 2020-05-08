@@ -1,8 +1,6 @@
-Tiny.VERSION = "1.3.5" 
 
-Tiny.PI_2 = Math.PI * 2
-Tiny._UID = 0
-Tiny.RETINA_PREFIX = '@2x'
+Tiny.VERSION = _VERSION_;
+Tiny._UID = 0;
 
 Tiny.Polygon = function() {}
 

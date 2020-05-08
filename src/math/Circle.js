@@ -23,12 +23,6 @@ Tiny.Circle = function (x, y, diameter) {
 
 Tiny.Circle.prototype = {
 
-    circumference: function () {
-
-        return 2 * (Math.PI * this._radius);
-
-    },
-
     getBounds: function () {
 
         return new Tiny.Rectangle(this.x - this.radius, this.y - this.radius, this.diameter, this.diameter);
@@ -90,11 +84,6 @@ Tiny.Circle.prototype = {
 
     },
 
-    circumferencePoint: function (angle, asDegrees, out) {
-
-        return Tiny.Circle.circumferencePoint(this, angle, asDegrees, out);
-
-    },
     offset: function (dx, dy) {
 
         this.x += dx;
@@ -106,10 +95,6 @@ Tiny.Circle.prototype = {
 
     offsetPoint: function (point) {
         return this.offset(point.x, point.y);
-    },
-
-    toString: function () {
-        return "[{Tiny.Circle (x=" + this.x + " y=" + this.y + " diameter=" + this.diameter + " radius=" + this.radius + ")}]";
     }
 
 };
@@ -298,22 +283,6 @@ Tiny.Circle.intersects = function (a, b) {
     return (Tiny.Math.distance(a.x, a.y, b.x, b.y) <= (a.radius + b.radius));
 };
 
-Tiny.Circle.circumferencePoint = function (a, angle, asDegrees, out) {
-
-    if (typeof asDegrees === "undefined") { asDegrees = false; }
-    if (typeof out === "undefined") { out = new Tiny.Point(); }
-
-    if (asDegrees === true)
-    {
-        angle = Tiny.Math.degToRad(angle);
-    }
-
-    out.x = a.x + a.radius * Math.cos(angle);
-    out.y = a.y + a.radius * Math.sin(angle);
-
-    return out;
-
-};
 
 Tiny.Circle.intersectsRectangle = function (c, r) {
 
