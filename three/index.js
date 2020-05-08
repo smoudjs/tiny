@@ -1,6 +1,5 @@
 require('./standard.js')
 
-
 require('../src/math/RoundedRectangle.js');	//
 require('../src/math/Polygon.js');			//
 require('../src/math/Circle.js');			// 6 Kb
