@@ -3,30 +3,34 @@ const packageInfo = require('./package.json');
 
 const config = {
 
-	mode: 'development',
+    mode: 'development',
 
-	devtool: 'inline-sourcemap',
+    devtool: 'inline-sourcemap',
 
-	context: `${__dirname}/tiny`,
+    context: `${__dirname}/tiny`,
 
-	entry: {
-		'tiny': './index.js',
-		'plugins': './plugins.js',
-		'pack': './pack.js',
-	},
+    entry:
+    {
+        'tiny': './index.js',
+        'plugins': './plugins.js',
+        'pack': './pack.js',
+    },
 
-	output: {
-		path: `${__dirname}/examples/`,
-		filename: `[name].js`
-	},
+    output:
+    {
+        path: `${__dirname}/examples/`,
+        filename: `[name].js`
+    },
 
-	plugins: [
-		new webpack.DefinePlugin({
-	    	_VERSION_: '"' + packageInfo.version + '"',
-	    })
-	],
+    plugins: [
+        // new webpack.DefinePlugin(
+        // {
+        //     _VERSION_: '"' + packageInfo.version + '"',
+        // })
+    ],
 
-	stats: {
+    stats:
+    {
         colors: true
     }
 };
