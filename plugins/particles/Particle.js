@@ -17,8 +17,20 @@ Tiny.Particle = function( emitter )
 Tiny.Particle.prototype = Object.create( Tiny.DisplayObject.prototype );
 Tiny.Particle.prototype.constructor = Tiny.Particle;
 
-Tiny.Particle.prototype.setTexture = function(texture)
+Tiny.Particle.prototype.setTexture = function(texture, key)
 {
+    if (typeof texture == "string") 
+    {
+        var imagePath = texture;
+
+        if (key != undefined) 
+        {
+            imagePath = imagePath + "_" + key;
+        }
+
+        texture = Tiny.TextureCache[imagePath]
+    }
+
     this.texture = texture;
 };
 

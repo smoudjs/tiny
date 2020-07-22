@@ -1,6 +1,6 @@
 var Tiny = function(width, height, parentNode, enableRAF, states)
 {
-    parentNode = parentNode || document.body;
+    parentNode = parentNode ? document.getElementById(parentNode) : document.body;
     this._preboot(width, height, enableRAF, states);
 
     this.renderer = new Tiny.CanvasRenderer(this.width, this.height,

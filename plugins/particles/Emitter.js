@@ -85,8 +85,10 @@ Tiny.Emitter.prototype.makeParticles = function(texture, quantity)
 
         particle = new this.pattern( this );
 
-        if (texture)
-            particle.setTexture(texture)
+        if (texture) 
+        {
+            particle.setTexture(texture);
+        }
 
         particle.visible = false;
         particle.anchor.set(this.particleAnchor.x, this.particleAnchor.y)

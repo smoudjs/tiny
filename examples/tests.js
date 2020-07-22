@@ -179,7 +179,7 @@ var EmitterTest = {
 		this.emmiter.pattern = Tiny.SmokeParticle
 		this.emmiter.fillStyle = "#666666"
 
-		this.emmiter.makeParticles(Tiny.TextureCache["atlas_BR"])//Tiny.TextureCache["atlas_BR"])
+		this.emmiter.makeParticles("base")//Tiny.TextureCache["atlas_BR"])
 		this.emmiter.scale.set(0.7)
 
 		//this.emmiter.start(false, 1200, 0)

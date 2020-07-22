@@ -11,12 +11,135 @@ It is a fast, comfortable, lightweight and flexible framework, you can use for b
 Install via npm:
 
 ```sh
-$ cd toyourproject
+$ cd game
 $ npm install h5tiny
 ```
 
 Use CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/h5tiny@1.0.4/lib/tiny.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/h5tiny@1.4.3/lib/tiny.js"></script>
+```
+
+### Using
+
+ES6:
+
+```javascript
+import 'h5tiny';
+
+class Image extends Tiny.Sprite 
+{
+	constructor(game) 
+	{
+		super("icon");
+		game.stage.addChild(this);
+	}
+	
+	update(delta) 
+	{
+		this.rotation += delta * 0.02;
+	}
+}
+
+class Game extends Tiny 
+{
+	constructor(width, height) 
+	{
+		var parent = null; // document.body
+		var useBuildInRAF = true;
+
+		super(width, height, parent, useBuildInRAF)
+	}
+
+	preload() 
+	{
+		this.load.image("icon", "base64...");
+	}
+
+	create() 
+	{
+		this.icon = new Image(this);
+	}
+
+	update(time, delta) 
+	{
+		this.icon.update(delta);
+	}
+}
+
+```
+
+JavaScript:
+
+```javascript
+var states = {
+	preload: function() 
+	{
+		this.load.image("icon", "base64...");
+	},
+
+	create: function() 
+	{
+		this.icon = this.add.sprite(34, 34, "icon");
+	},
+
+	update: function(time, delta) 
+	{
+		this.icon.rotation += delta * 0.02;
+	},
+}
+
+var game = new Tiny(300, 450, null, true, states);
+
+```
+
+
+Tiny + ThreeJS:
+
+```javascript
+import 'h5tiny/three';
+
+class Image extends Tiny.Sprite 
+{
+	constructor(game) 
+	{
+		super("icon");
+		game.stage.addChild(this);
+	}
+
+	update(delta) 
+	{
+		this.rotation += delta * 0.02;
+	}
+}
+
+class Game extends Tiny
+{
+	constructor(width, height) 
+	{
+		var parent = null; // document.body
+		var useBuildInRAF = true;
+
+		super(width, height, parent, useBuildInRAF)
+
+		this.scene = new THREE.Scene();
+	}
+
+	preload() 
+	{
+		this.load.image("icon", "base64...");
+	}
+
+	create() 
+	{
+		this.icon = new Image(this);
+	}
+
+	update(time, delta) 
+	{
+		this.icon.update(delta);
+	}
+}
+
 ```
