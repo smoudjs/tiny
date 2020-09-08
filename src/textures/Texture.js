@@ -29,10 +29,6 @@ Tiny.Texture = function(baseTexture, frame, crop, trim)
 
     this.valid = false;
 
-    this.requiresUpdate = false;
-
-    this._uvs = null;
-
     this.width = 0;
 
     this.height = 0;
@@ -99,30 +95,6 @@ Tiny.Texture.prototype.setFrame = function(frame)
         this.frame.width = this.trim.width;
         this.frame.height = this.trim.height;
     }
-    
-    if (this.valid) this._updateUvs();
-
-};
-
-Tiny.Texture.prototype._updateUvs = function()
-{
-    if(!this._uvs)this._uvs = new Tiny.TextureUvs();
-
-    var frame = this.crop;
-    var tw = this.baseTexture.width;
-    var th = this.baseTexture.height;
-    
-    this._uvs.x0 = frame.x / tw;
-    this._uvs.y0 = frame.y / th;
-
-    this._uvs.x1 = (frame.x + frame.width) / tw;
-    this._uvs.y1 = frame.y / th;
-
-    this._uvs.x2 = (frame.x + frame.width) / tw;
-    this._uvs.y2 = (frame.y + frame.height) / th;
-
-    this._uvs.x3 = frame.x / tw;
-    this._uvs.y3 = (frame.y + frame.height) / th;
 };
 
 Tiny.Texture.fromImage = function(key, imageUrl, crossorigin)
@@ -166,19 +138,4 @@ Tiny.Texture.removeTextureFromCache = function(id)
     delete Tiny.TextureCache[id];
     delete Tiny.BaseTextureCache[id];
     return texture;
-};
-
-Tiny.TextureUvs = function()
-{
-    this.x0 = 0;
-    this.y0 = 0;
-
-    this.x1 = 0;
-    this.y1 = 0;
-
-    this.x2 = 0;
-    this.y2 = 0;
-
-    this.x3 = 0;
-    this.y3 = 0;
 };

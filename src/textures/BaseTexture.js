@@ -15,22 +15,15 @@ Tiny.BaseTexture = function(source)
 
     this.source = source;
 
-    this._UID = Tiny._UID++;
+    this.uid = Tiny._UID++;
 
-    this.premultipliedAlpha = true;
-
-    this.mipmap = false;
-
-    this._dirty = [true, true, true, true];
-
-    if(!source)return;
+    if(!source) return;
 
     if((this.source.complete || this.source.getContext) && this.source.width && this.source.height)
     {
         this.hasLoaded = true;
         this.width = this.source.naturalWidth || this.source.width;
         this.height = this.source.naturalHeight || this.source.height;
-        this.dirty();
     }
     else
     {
@@ -43,9 +36,6 @@ Tiny.BaseTexture = function(source)
     }
 
     this.imageUrl = null;
-
-    this._powerOf2 = false;
-
 };
 
 Tiny.BaseTexture.prototype.constructor = Tiny.BaseTexture;
@@ -64,18 +54,6 @@ Tiny.BaseTexture.prototype.destroy = function()
         delete Tiny.BaseTextureCache[this.source._pixiId];
     }
     this.source = null;
-};
-
-Tiny.BaseTexture.prototype.updateSourceImage = function(newSrc)
-{
-    this.hasLoaded = false;
-    this.source.src = null;
-    this.source.src = newSrc;
-};
-
-Tiny.BaseTexture.prototype.dirty = function()
-{
-
 };
 
 Tiny.BaseTexture.fromImage = function(key, imageUrl, crossorigin)
@@ -98,7 +76,7 @@ Tiny.BaseTexture.fromImage = function(key, imageUrl, crossorigin)
         image.src = imageUrl;
         baseTexture = new Tiny.BaseTexture(image);
         baseTexture.imageUrl = imageUrl;
-        baseTexture.key = key
+        baseTexture.key = key;
         Tiny.BaseTextureCache[key] = baseTexture;
     }
 

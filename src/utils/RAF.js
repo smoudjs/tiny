@@ -45,7 +45,7 @@ Tiny.RAF.prototype = {
     start: function ()
     {
 
-        _prevTime = now()
+        _prevTime = now();
 
         this.isRunning = true;
 
@@ -115,16 +115,5 @@ Tiny.RAF.prototype = {
         }
 
         this.isRunning = false;
-    },
-
-    isSetTimeOut: function ()
-    {
-        return _isSetTimeOut;
-    },
-
-    isRAF: function ()
-    {
-        return (_isSetTimeOut === false);
     }
-
 };

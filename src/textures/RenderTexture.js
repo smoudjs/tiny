@@ -30,8 +30,6 @@ Tiny.RenderTexture = function(width, height, renderer, resolution)
     this.baseTexture.source = this.textureBuffer.canvas;
 
     this.valid = true;
-
-    this._updateUvs();
 };
 
 Tiny.RenderTexture.prototype = Object.create(Tiny.Texture.prototype);

@@ -440,7 +440,7 @@ Tiny.Graphics.prototype.destroy = function (destroyChildren)
     this.clear();
 };
 
-Tiny.Graphics.prototype.generateTexture = function(resolution, scaleMode)
+Tiny.Graphics.prototype.generateTexture = function(resolution)
 {
     resolution = resolution || 1;
 
@@ -448,7 +448,7 @@ Tiny.Graphics.prototype.generateTexture = function(resolution, scaleMode)
    
     var canvasBuffer = new Tiny.CanvasBuffer(bounds.width * resolution, bounds.height * resolution);
     
-    var texture = Tiny.Texture.fromCanvas(canvasBuffer.canvas, scaleMode);
+    var texture = Tiny.Texture.fromCanvas(canvasBuffer.canvas);
     texture.baseTexture.resolution = resolution;
 
     canvasBuffer.context.scale(resolution, resolution);
@@ -800,9 +800,6 @@ Tiny.Graphics.prototype.updateCachedSpriteTexture = function()
 
     cachedSprite._width = canvas.width;
     cachedSprite._height = canvas.height;
-
-    // update the dirty base textures
-    texture.baseTexture.dirty();
 };
 
 /**

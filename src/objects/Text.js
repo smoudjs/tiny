@@ -209,9 +209,6 @@ Tiny.Text.prototype.updateTexture = function()
 
     this._width = this.canvas.width;
     this._height = this.canvas.height;
-
-    // update the dirty base textures
-    this.texture.baseTexture.dirty();
 };
 
 Tiny.Text.prototype._renderCanvas = function(renderSession)

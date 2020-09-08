@@ -21,7 +21,7 @@ Use CDN:
 <script src="https://cdn.jsdelivr.net/npm/h5tiny@1.4.3/lib/tiny.js"></script>
 ```
 
-### Using
+### Usages
 
 ES6:
 

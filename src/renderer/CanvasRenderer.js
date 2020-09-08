@@ -22,8 +22,6 @@ Tiny.CanvasRenderer = function(width, height, options)
 
     this.context = this.view.getContext( "2d", { alpha: this.transparent } );
 
-    this.refresh = true;
-
     this.view.width = this.width;
     this.view.height = this.height;
 
@@ -33,7 +31,6 @@ Tiny.CanvasRenderer = function(width, height, options)
     this.renderSession = {
         context: this.context,
         maskManager: this.maskManager,
-        scaleMode: 0,
         smoothProperty: null,
         /**
          * If true Pixi will Math.floor() x/y values when rendering, stopping pixel interpolation.

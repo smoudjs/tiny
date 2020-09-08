@@ -11,8 +11,7 @@ var COMMON = {
         this.width = width || 430;
 
         this.callbackContext = this;
-        states = states ||
-        {};
+        states = states || {};
         this.state = 0;
         this.preload = this.preload || states.preload || noop;
         this.create = this.create || states.create || noop;

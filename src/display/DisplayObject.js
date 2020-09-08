@@ -319,7 +319,7 @@ Tiny.DisplayObject.prototype._destroyCachedSprite = function()
 
 Tiny.DisplayObject.prototype._renderCanvas = function(renderSession)
 {
-    renderSession = renderSession;
+    
 };
 
 Object.defineProperty(Tiny.DisplayObject.prototype, 'x', {

@@ -355,8 +355,6 @@ Tiny.TilingSprite.prototype.generateTilingTexture = function(forcePowerOfTwo)
     }
 
     this.refreshTexture = false;
-    
-    this.tilingTexture.baseTexture._powerOf2 = true;
 };
 
 Tiny.TilingSprite.prototype.destroy = function () {

@@ -10,15 +10,15 @@
 // } from "three";
 
 
-var _require = require("three"),
-    WebGLRenderer = _require.WebGLRenderer,
-    Scene = _require.Scene,
-    OrthographicCamera = _require.OrthographicCamera,
-    SpriteMaterial = _require.SpriteMaterial,
-    CanvasTexture = _require.CanvasTexture,
-    Sprite = _require.Sprite,
-    LinearFilter = _require.LinearFilter,
-    sRGBEncoding = _require.sRGBEncoding;
+var Three = require("three"),
+    WebGLRenderer = Three.WebGLRenderer,
+    Scene = Three.Scene,
+    OrthographicCamera = Three.OrthographicCamera,
+    SpriteMaterial = Three.SpriteMaterial,
+    CanvasTexture = Three.CanvasTexture,
+    Sprite = Three.Sprite,
+    LinearFilter = Three.LinearFilter,
+    sRGBEncoding = Three.sRGBEncoding;
 
 
 var Tiny = function(width, height, parentNode, enableRAF, states)
