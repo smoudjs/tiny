@@ -1,5 +1,5 @@
 
-Tiny.VERSION = "1.4.4";
+Tiny.VERSION = "1.4.5";
 Tiny._UID = 0;
 
 Tiny.Polygon = function() {}
