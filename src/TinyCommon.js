@@ -106,6 +106,11 @@ var COMMON = {
 
     pause: function()
     {
+        if (this._raf) 
+        {
+            this.raf.reset();
+        }
+
         if (!this.paused)
         {
             if (_tween_enabled)
@@ -126,6 +131,11 @@ var COMMON = {
 
     resume: function()
     {
+        if (this._raf) 
+        {
+            this.raf.reset();
+        }
+        
         if (this.paused)
         {
             if (_tween_enabled)

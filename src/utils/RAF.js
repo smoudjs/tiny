@@ -103,6 +103,11 @@ Tiny.RAF.prototype = {
         _prevTime = _lastTime
     },
 
+    reset: function() 
+    {
+        _prevTime = now();
+    },
+
     stop: function ()
     {
         if (_isSetTimeOut)
