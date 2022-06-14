@@ -61,11 +61,11 @@ Tiny.Text.prototype.setStyle = function(style)
     style.strokeThickness = style.strokeThickness || 0;
     style.wordWrap = style.wordWrap || false;
     style.lineSpacing = style.lineSpacing || 0
-    style.wordWrapWidth = style.wordWrapWidth || 100;
+    style.wordWrapWidth = style.wordWrapWidth !== undefined ? style.wordWrapWidth : 100;
     
     style.dropShadow = style.dropShadow || false;
-    style.dropShadowAngle = style.dropShadowAngle || Math.PI / 6;
-    style.dropShadowDistance = style.dropShadowDistance || 4;
+    style.dropShadowAngle = style.dropShadowAngle !== undefined ? style.dropShadowAngle : Math.PI / 6;
+    style.dropShadowDistance = style.dropShadowDistance !== undefined ? style.dropShadowAngle : 4;
     style.dropShadowColor = style.dropShadowColor || 'black';
 
     this.style = style;
