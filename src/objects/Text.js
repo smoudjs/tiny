@@ -65,7 +65,7 @@ Tiny.Text.prototype.setStyle = function(style)
     
     style.dropShadow = style.dropShadow || false;
     style.dropShadowAngle = style.dropShadowAngle !== undefined ? style.dropShadowAngle : Math.PI / 6;
-    style.dropShadowDistance = style.dropShadowDistance !== undefined ? style.dropShadowAngle : 4;
+    style.dropShadowDistance = style.dropShadowDistance !== undefined ? style.dropShadowDistance : 4;
     style.dropShadowColor = style.dropShadowColor || 'black';
 
     this.style = style;
