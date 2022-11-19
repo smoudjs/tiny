@@ -1,14 +1,30 @@
 # HTML5 Tiny
 
+[![NPM Package][npm]][npm-url]
+[![Build Size][build-size]][build-size-url]
+[![Build Size][build-size-gziped]][build-size-url]
+[![NPM Downloads][npm-downloads]][npmtrends-url]
+[![DeepScan][deepscan]][deepscan-url]
 
-This is GPG product, based on the PIXI library.
-Syntax of Application component is similar to the Phaser framework.
+<p align="center">
+    <img src="https://peter-hutsul.github.io/h5tiny/examples/image2.png" width="450" alt="Tiny intro">
+</p>
 
-It is a fast, comfortable, lightweight and flexible framework, you can use for building 2D games and playable ads.
+<p align="center">
+    <a href="https://peter-hutsul.github.io/h5tiny/examples/index.html">Examples</a> |
+    <a href="https://peter-hutsul.github.io/h5tiny">Documentation</a>
+</p>
 
-Use our plugins to extend Tiny abilities.
+It is a fast, comfortable, lightweight and flexible html5 game framework, you can use for building 2D games and playable ads.
+The first version of this project was based on PIXI library.
+The syntax of application is pretty similar to the Phaser framework.
 
-[Examples](https://peter-hutsul.github.io/h5tiny/examples/index.html)
+Use our plugins to extend Tiny abilities:
+
+- [three 📦](https://github.com/peter-hutsul/h5tiny/tree/master/plugins/three)
+- [particles 🔥](https://github.com/peter-hutsul/h5tiny/tree/master/plugins/particles)
+- [sound 🎵](https://github.com/peter-hutsul/h5tiny/tree/master/plugins/sound)
+- [extra ❤️](https://github.com/peter-hutsul/h5tiny/tree/master/plugins/extra)
 
 ### Installation
 
@@ -450,3 +466,15 @@ new MyGame(640, 320);
 ### Demos
 
 Check the [examples](https://peter-hutsul.github.io/h5tiny/examples/index.html) to see more
+
+[<div align="center"><img alt="Tiny examples intro" width="550" src="https://peter-hutsul.github.io/h5tiny/examples/image.png" /></div>](https://peter-hutsul.github.io/h5tiny/examples/index.html)
+
+[npm]: https://img.shields.io/npm/v/h5tiny
+[npm-url]: https://www.npmjs.com/package/h5tiny
+[build-size]: https://badgen.net/bundlephobia/min/h5tiny
+[build-size-gziped]: https://badgen.net/bundlephobia/minzip/h5tiny
+[build-size-url]: https://bundlephobia.com/result?p=h5tiny
+[npm-downloads]: https://img.shields.io/npm/dw/h5tiny
+[npmtrends-url]: https://www.npmtrends.com/h5tiny
+[deepscan]: https://deepscan.io/api/teams/19616/projects/23076/branches/688845/badge/grade.svg
+[deepscan-url]: https://deepscan.io/dashboard/#view=project&tid=19616&pid=23076&bid=688845
