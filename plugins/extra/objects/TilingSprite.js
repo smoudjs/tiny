@@ -287,31 +287,31 @@ Tiny.TilingSprite.prototype.generateTilingTexture = function(forcePowerOfTwo)
 
     if (!forcePowerOfTwo)
     {
-        if (texture.crop)
-        {
+        // if (texture.crop) // commented becasue it always present
+        // {
             targetWidth = texture.crop.width;
             targetHeight = texture.crop.height;
-        }
-        else
-        {
-            targetWidth = frame.width;
-            targetHeight = frame.height;
-        }
+        // }
+        // else
+        // {
+        //     targetWidth = frame.width;
+        //     targetHeight = frame.height;
+        // }
        
         // newTextureRequired = true;
     }
     else
     {
-        if (texture.crop)
-        {
+        // if (texture.crop) // commented becasue it always present
+        // {
             targetWidth = Tiny.getNextPowerOfTwo(texture.crop.width);
             targetHeight = Tiny.getNextPowerOfTwo(texture.crop.height);
-        }
-        else
-        {
-            targetWidth = Tiny.getNextPowerOfTwo(frame.width);
-            targetHeight = Tiny.getNextPowerOfTwo(frame.height);
-        }
+        // }
+        // else
+        // {
+        //     targetWidth = Tiny.getNextPowerOfTwo(frame.width);
+        //     targetHeight = Tiny.getNextPowerOfTwo(frame.height);
+        // }
 
         // newTextureRequired = true;
 
