@@ -100,7 +100,7 @@ Tiny.Input.prototype = {
 
                 for (var i = this.candidates.length - 1; i >= 0; i--)
                 {
-                    var obj = this.candidates[i]
+                    obj = this.candidates[i]
                     obj.input["last_" + name] = {
                         x: coords.x,
                         y: coords.y

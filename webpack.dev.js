@@ -1,5 +1,4 @@
 const webpack = require('webpack');
-const packageInfo = require('./package.json');
 
 const config = {
 
@@ -21,7 +20,7 @@ const config = {
 
     output:
     {
-        path: `${__dirname}/examples/`,
+        path: `${__dirname}/examples/libs/`,
         filename: `[name].js`
     },
 

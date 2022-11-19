@@ -7,7 +7,7 @@
 [![DeepScan][deepscan]][deepscan-url]
 
 <p align="center">
-    <img src="https://peter-hutsul.github.io/h5tiny/examples/image2.png" width="450" alt="Tiny intro">
+    <img src="https://peter-hutsul.github.io/h5tiny/examples/res/image2.png" width="450" alt="Tiny intro">
 </p>
 
 <p align="center">
@@ -37,7 +37,7 @@ $ npm install h5tiny
 Use CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/h5tiny@2.0.0/build/tiny.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/h5tiny@2.0.3/build/tiny.js"></script>
 ```
 
 ### API Documentation
@@ -467,7 +467,7 @@ new MyGame(640, 320);
 
 Check the [examples](https://peter-hutsul.github.io/h5tiny/examples/index.html) to see more
 
-[<div align="center"><img alt="Tiny examples intro" width="550" src="https://peter-hutsul.github.io/h5tiny/examples/image.png" /></div>](https://peter-hutsul.github.io/h5tiny/examples/index.html)
+[<div align="center"><img alt="Tiny examples intro" width="550" src="https://peter-hutsul.github.io/h5tiny/examples/res/image.png" /></div>](https://peter-hutsul.github.io/h5tiny/examples/index.html)
 
 [npm]: https://img.shields.io/npm/v/h5tiny
 [npm-url]: https://www.npmjs.com/package/h5tiny

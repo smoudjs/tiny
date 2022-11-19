@@ -150,7 +150,7 @@ Tiny.BaseObject2D.prototype.displayObjectUpdateTransform = Tiny.BaseObject2D.pro
 
 Tiny.BaseObject2D.prototype.getBounds = function(matrix)
 {
-    matrix = matrix;//just to get passed js hinting (and preserve inheritance)
+    // matrix = matrix;//just to get passed js hinting (and preserve inheritance)
     return Tiny.EmptyRectangle;
 };
 

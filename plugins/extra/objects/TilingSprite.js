@@ -283,7 +283,7 @@ Tiny.TilingSprite.prototype.generateTilingTexture = function(forcePowerOfTwo)
     //  Check that the frame is the same size as the base texture.
     // var isFrame = frame.width !== texture.width || frame.height !== texture.height;
 
-    var newTextureRequired = false;
+    // var newTextureRequired = false;
 
     if (!forcePowerOfTwo)
     {
@@ -298,7 +298,7 @@ Tiny.TilingSprite.prototype.generateTilingTexture = function(forcePowerOfTwo)
             targetHeight = frame.height;
         }
        
-        newTextureRequired = true;
+        // newTextureRequired = true;
     }
     else
     {
@@ -313,14 +313,14 @@ Tiny.TilingSprite.prototype.generateTilingTexture = function(forcePowerOfTwo)
             targetHeight = Tiny.getNextPowerOfTwo(frame.height);
         }
 
-        newTextureRequired = true;
+        // newTextureRequired = true;
 
         //  If the BaseTexture dimensions don't match the texture frame then we need a new texture anyway because it's part of a texture atlas
         // if (frame.width !== targetWidth || frame.height !== targetHeight || texture.width !== targetWidth || texture.height || targetHeight) newTextureRequired = true;
     }
 
-    if (newTextureRequired)
-    {
+    // if (newTextureRequired)
+    // {
         var canvasBuffer;
 
         if (this.tilingTexture && this.tilingTexture.isTiling)
@@ -352,7 +352,7 @@ Tiny.TilingSprite.prototype.generateTilingTexture = function(forcePowerOfTwo)
 
         this.tileScaleOffset.x = frame.width / targetWidth;
         this.tileScaleOffset.y = frame.height / targetHeight;
-    }
+    // }
 
     this.refreshTexture = false;
 };

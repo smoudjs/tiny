@@ -138,10 +138,12 @@ Tiny.Loader.spritesheet = function(resource, cb)
 
     Tiny.Loader.image(resource, function(resource, image) {
         
+        var lastFrame;
+
         if (resource.data) {
 
             var frameData = resource.data;
-            var lastFrame = (frameData.length - 1);
+            lastFrame = (frameData.length - 1);
 
             for (var i = 0; i <= lastFrame; i++)
             {
@@ -187,7 +189,7 @@ Tiny.Loader.spritesheet = function(resource, cb)
 
             var x = 0;
             var y = 0;
-            var lastFrame = total - 1;
+            lastFrame = total - 1;
 
             for (var i = 0; i < total; i++)
             {

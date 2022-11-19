@@ -93,6 +93,11 @@ Tiny.Texture.prototype.setFrame = function(frame)
     this.noFrame = false;
 
     this.frame = frame;
+
+    this.valid = frame && frame.width && frame.height && this.source && this.hasLoaded;
+
+    if (!this.valid) return;
+
     // this.width = frame.width;
     // this.height = frame.height;
 
@@ -111,8 +116,6 @@ Tiny.Texture.prototype.setFrame = function(frame)
         this.valid = false;
         return;
     }
-
-    this.valid = frame && frame.width && frame.height && this.source && this.hasLoaded;
 
     if (this.trim)
     {

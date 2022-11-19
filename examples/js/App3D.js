@@ -43,12 +43,12 @@ class App3D extends Tiny.App {
 	}
 
 	setupCamera() {
-
-        var aspect = this.width / this.height;
-        var distance = this.camera.distance;
-
+		
         if (this.camera)
         {
+        	var aspect = this.width / this.height;
+        	var distance = this.camera.distance;
+
             if (this.camera.isOrthographicCamera)
             {
                 this.camera.left = -distance * aspect;
