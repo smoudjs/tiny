@@ -50,14 +50,14 @@ Tiny.CanvasGraphics.renderGraphics = function(graphics, context)
             if (data.fill)
             {
                 context.globalAlpha = data.fillAlpha * worldAlpha;
-                context.fillStyle = '#' + ('00000' + ( fillColor | 0).toString(16)).substr(-6);
+                context.fillStyle = Tiny.color2style(fillColor);
                 context.fill();
             }
 
             if (data.lineWidth)
             {
                 context.globalAlpha = data.lineAlpha * worldAlpha;
-                context.strokeStyle = '#' + ('00000' + ( lineColor | 0).toString(16)).substr(-6);
+                context.strokeStyle = Tiny.color2style(lineColor);
                 context.stroke();
             }
         }
@@ -66,14 +66,14 @@ Tiny.CanvasGraphics.renderGraphics = function(graphics, context)
             if (data.fillColor || data.fillColor === 0)
             {
                 context.globalAlpha = data.fillAlpha * worldAlpha;
-                context.fillStyle = '#' + ('00000' + ( fillColor | 0).toString(16)).substr(-6);
+                context.fillStyle = Tiny.color2style(fillColor);
                 context.fillRect(shape.x, shape.y, shape.width, shape.height);
             }
 
             if (data.lineWidth)
             {
                 context.globalAlpha = data.lineAlpha * worldAlpha;
-                context.strokeStyle = '#' + ('00000' + ( lineColor | 0).toString(16)).substr(-6);
+                context.strokeStyle = Tiny.color2style(lineColor);
                 context.strokeRect(shape.x, shape.y, shape.width, shape.height);
             }
         }
@@ -87,14 +87,14 @@ Tiny.CanvasGraphics.renderGraphics = function(graphics, context)
             if (data.fill)
             {
                 context.globalAlpha = data.fillAlpha * worldAlpha;
-                context.fillStyle = '#' + ('00000' + ( fillColor | 0).toString(16)).substr(-6);
+                context.fillStyle = Tiny.color2style(fillColor);
                 context.fill();
             }
 
             if (data.lineWidth)
             {
                 context.globalAlpha = data.lineAlpha * worldAlpha;
-                context.strokeStyle = '#' + ('00000' + ( lineColor | 0).toString(16)).substr(-6);
+                context.strokeStyle = Tiny.color2style(lineColor);
                 context.stroke();
             }
         }
@@ -129,14 +129,14 @@ Tiny.CanvasGraphics.renderGraphics = function(graphics, context)
             if (data.fill)
             {
                 context.globalAlpha = data.fillAlpha * worldAlpha;
-                context.fillStyle = '#' + ('00000' + ( fillColor | 0).toString(16)).substr(-6);
+                context.fillStyle = Tiny.color2style(fillColor);
                 context.fill();
             }
 
             if (data.lineWidth)
             {
                 context.globalAlpha = data.lineAlpha * worldAlpha;
-                context.strokeStyle = '#' + ('00000' + ( lineColor | 0).toString(16)).substr(-6);
+                context.strokeStyle = Tiny.color2style(lineColor);
                 context.stroke();
             }
         }
@@ -166,14 +166,14 @@ Tiny.CanvasGraphics.renderGraphics = function(graphics, context)
             if (data.fillColor || data.fillColor === 0)
             {
                 context.globalAlpha = data.fillAlpha * worldAlpha;
-                context.fillStyle = '#' + ('00000' + ( fillColor | 0).toString(16)).substr(-6);
+                context.fillStyle = Tiny.color2style(fillColor);
                 context.fill();
             }
 
             if (data.lineWidth)
             {
                 context.globalAlpha = data.lineAlpha * worldAlpha;
-                context.strokeStyle = '#' + ('00000' + ( lineColor | 0).toString(16)).substr(-6);
+                context.strokeStyle = Tiny.color2style(lineColor);
                 context.stroke();
             }
         }
@@ -188,8 +188,8 @@ Tiny.CanvasGraphics.renderGraphics = function(graphics, context)
             if (data.fillColor || data.fillColor === 0)
             {
                 context.globalAlpha = data.fillAlpha * worldAlpha;
-                context.fillStyle = '#' + ('00000' + ( fillColor | 0).toString(16)).substr(-6);
-                context.strokeStyle = '#' + ('00000' + ( fillColor | 0).toString(16)).substr(-6);
+                context.fillStyle = Tiny.color2style(fillColor);
+                context.strokeStyle = Tiny.color2style(fillColor);
             }
 
             context.lineJoin = "round";

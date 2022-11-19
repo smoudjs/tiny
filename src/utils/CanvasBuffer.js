@@ -1,4 +1,4 @@
-Tiny.CanvasBuffer = function(width, height)
+Tiny.CanvasBuffer = function(width, height, options)
 {
 
     this.width = width;
@@ -7,7 +7,7 @@ Tiny.CanvasBuffer = function(width, height)
 
     this.canvas = document.createElement("canvas");
 
-    this.context = this.canvas.getContext("2d");
+    this.context = this.canvas.getContext("2d", options);
 
     this.canvas.width = width;
     this.canvas.height = height;

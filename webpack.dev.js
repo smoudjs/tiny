@@ -7,13 +7,16 @@ const config = {
 
     devtool: 'inline-sourcemap',
 
-    context: `${__dirname}/tiny`,
+    context: `${__dirname}`,
 
     entry:
     {
-        'tiny': './index.js',
-        'plugins': './plugins.js',
-        'pack': './pack.js',
+        'tiny': './src/index.js',
+        'tiny.mini': './src/mini.js',
+        'plugins/extra': './plugins/extra',
+        'plugins/particles': './plugins/particles',
+        'plugins/three': './plugins/three',
+        // 'particles_pack': './particles_pack.js',
     },
 
     output:

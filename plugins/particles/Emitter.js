@@ -1,6 +1,6 @@
 Tiny.Emitter = function( maxParticles )
 {
-    Tiny.DisplayObjectContainer.call(this);
+    Tiny.Object2D.call(this);
 
     this.anchor = new Tiny.Point();
 
@@ -30,7 +30,7 @@ Tiny.Emitter = function( maxParticles )
 };
 
 
-Tiny.Emitter.prototype = Object.create(Tiny.DisplayObjectContainer.prototype);
+Tiny.Emitter.prototype = Object.create(Tiny.Object2D.prototype);
 Tiny.Emitter.prototype.constructor = Tiny.Emitter;
 
 Object.defineProperty(Tiny.Emitter.prototype, 'width', {
@@ -254,16 +254,15 @@ Tiny.Emitter.prototype.emitParticle = function (x, y) {
 
 Tiny.Emitter.prototype.destroy = function() {
 
-    this.game.particles.remove(this);
+    if (this.system) this.system.remove(this);
 
-    Tiny.DisplayObjectContainer.prototype.destroy.call(this);
-
+    Tiny.Object2D.prototype.destroy.call(this);
 }
 
 
 
 Tiny.Emitter.prototype.update = function( delta ) {
-
+    
     if (this.visible === false) return;
 
     if (this.on)
@@ -330,7 +329,7 @@ Tiny.Emitter.prototype.update = function( delta ) {
     //console.log(time)
 }
 
-Tiny.Emitter.prototype._renderCanvas = function(renderSession)
+Tiny.Emitter.prototype.render = function(renderSession)
 {
     if (this.visible === false || this.alpha === 0) return;
 
@@ -361,12 +360,12 @@ Tiny.Emitter.prototype._renderCanvas = function(renderSession)
 
     for (i = 0; i < this.particles.length; i++)
     {
-        this.particles[i]._renderCanvas(renderSession);
+        this.particles[i].render(renderSession);
     }
 
     for (i = 0; i < this.children.length; i++)
     {
-        this.children[i]._renderCanvas(renderSession);
+        this.children[i].render(renderSession);
     }
 
     if (this._mask)
@@ -376,12 +375,12 @@ Tiny.Emitter.prototype._renderCanvas = function(renderSession)
 };
 
 
-Tiny.ObjectCreator.prototype.emitter = function(x, y, maxParticles) {
-    var emitter = new Tiny.Emitter( maxParticles )
-    emitter.x = x || 0
-    emitter.y = y || 0
+// Tiny.ObjectCreator.prototype.emitter = function(x, y, maxParticles) {
+//     var emitter = new Tiny.Emitter( maxParticles )
+//     emitter.x = x || 0
+//     emitter.y = y || 0
 
-    this.game.stage.addChild(emitter)
+//     this.game.stage.add(emitter)
 
-    return this.game.particles.add(emitter)
-}
+//     return this.game.particles.add(emitter)
+// }

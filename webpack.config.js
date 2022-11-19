@@ -6,7 +6,7 @@ const config = {
 
     mode: 'production',
 
-    context: `${__dirname}/tiny`,
+    context: `${__dirname}/src`,
 
     entry:
     {
@@ -15,15 +15,10 @@ const config = {
         // 'three-ui': './three-ui/ThreeUI.js',
 
         'tiny': './index.js',
-        'mini': './mini.js',
-        'base': './base.js',
-        'standard': './standard.js',
-        'standard_tween': './standard_tween.js',
-        'full': './full.js',
-        'standard_graphics': './standard_graphics.js',
-        'standard_full': './standard_full.js',
-        'plugins': './plugins.js',
-        'pack': './pack.js',
+        'tiny.mini': './mini.js',
+        'tiny.base': './base.js',
+        // 'plugins': './plugins.js',
+        // 'particles_pack': './particles_pack.js',
         // 'three/base': './three/base.js',
         // 'three/mini': './three/mini.js',
         // 'three/standard': './three/standard.js',
@@ -32,7 +27,7 @@ const config = {
 
     output:
     {
-        path: `${__dirname}/lib/`,
+        path: `${__dirname}/build/`,
         filename: `[name].js`
     },
 

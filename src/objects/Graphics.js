@@ -30,17 +30,16 @@ Tiny.GraphicsData.prototype.clone = function() {
 
 Tiny.Graphics = function()
 {
-    Tiny.DisplayObjectContainer.call(this);
+    Tiny.Object2D.call(this);
 
     this.renderable = true;
     this.fillAlpha = 1;
     this.lineWidth = 0;
     this.lineColor = 0;
     this.graphicsData = [];
-    this.tint = 0xFFFFFF;
+    this.tint = "#FFFFFF";
     this.blendMode = "source-over";
     this.currentPath = null;
-    this._webGL = [];
     this.isMask = false;
     this.boundsPadding = 0;
 
@@ -51,14 +50,14 @@ Tiny.Graphics = function()
 };
 
 // constructor
-Tiny.Graphics.prototype = Object.create( Tiny.DisplayObjectContainer.prototype );
+Tiny.Graphics.prototype = Object.create( Tiny.Object2D.prototype );
 Tiny.Graphics.prototype.constructor = Tiny.Graphics;
 
 
 Tiny.Graphics.prototype.lineStyle = function(lineWidth, color, alpha)
 {
     this.lineWidth = lineWidth || 0;
-    this.lineColor = color || 0;
+    this.lineColor = color || "#000000";
     this.lineAlpha = (alpha === undefined) ? 1 : alpha;
 
     if (this.currentPath)
@@ -324,7 +323,7 @@ Tiny.Graphics.prototype.arc = function(cx, cy, radius, startAngle, endAngle, ant
 Tiny.Graphics.prototype.beginFill = function(color, alpha)
 {
     this.filling = true;
-    this.fillColor = color || 0;
+    this.fillColor = color || "#000000";
     this.fillAlpha = (alpha === undefined) ? 1 : alpha;
 
     if (this.currentPath)
@@ -425,17 +424,7 @@ Tiny.Graphics.prototype.clear = function()
 
 Tiny.Graphics.prototype.destroy = function (destroyChildren)
 {
-    if (this.children)
-    {
-        var i = this.children.length;
-
-        while (i--)
-        {
-            this.children[i].destroy();
-        }
-
-        this.children = [];
-    }
+    Tiny.Object2D.prototype.destroy.call(this);
 
     this.clear();
 };
@@ -449,7 +438,7 @@ Tiny.Graphics.prototype.generateTexture = function(resolution)
     var canvasBuffer = new Tiny.CanvasBuffer(bounds.width * resolution, bounds.height * resolution);
     
     var texture = Tiny.Texture.fromCanvas(canvasBuffer.canvas);
-    texture.baseTexture.resolution = resolution;
+    texture.resolution = resolution;
 
     canvasBuffer.context.scale(resolution, resolution);
 
@@ -460,7 +449,7 @@ Tiny.Graphics.prototype.generateTexture = function(resolution)
     return texture;
 };
 
-Tiny.Graphics.prototype._renderCanvas = function(renderSession)
+Tiny.Graphics.prototype.render = function(renderSession)
 {
     if (this.isMask === true)
     {
@@ -487,7 +476,7 @@ Tiny.Graphics.prototype._renderCanvas = function(renderSession)
         }
 
         this._cachedSprite.alpha = this.alpha;
-        Tiny.Sprite.prototype._renderCanvas.call(this._cachedSprite, renderSession);
+        Tiny.Sprite.prototype.render.call(this._cachedSprite, renderSession);
 
         return;
     }
@@ -521,7 +510,7 @@ Tiny.Graphics.prototype._renderCanvas = function(renderSession)
          // simple render children!
         for (var i = 0; i < this.children.length; i++)
         {
-            this.children[i]._renderCanvas(renderSession);
+            this.children[i].render(renderSession);
         }
 
         if (this._mask)
@@ -793,8 +782,8 @@ Tiny.Graphics.prototype.updateCachedSpriteTexture = function()
     var texture = cachedSprite.texture;
     var canvas = cachedSprite.buffer.canvas;
 
-    texture.baseTexture.width = canvas.width;
-    texture.baseTexture.height = canvas.height;
+    texture.width = canvas.width;
+    texture.height = canvas.height;
     texture.crop.width = texture.frame.width = canvas.width;
     texture.crop.height = texture.frame.height = canvas.height;
 

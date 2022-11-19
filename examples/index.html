@@ -1,0 +1,130 @@
+<!doctype HTML>
+<html>
+<head>
+	<title>Tiny Tests</title>
+	
+	<script type="text/javascript" src="tiny.js"></script>
+	<script type="text/javascript" src="libs/three.min.js"></script>
+	<script type="text/javascript" src="plugins/extra.js"></script>
+	<script type="text/javascript" src="plugins/particles.js"></script>
+	<script type="text/javascript" src="plugins/three.js"></script>
+	<script type="text/javascript" src="../plugins/sound/index.js"></script>
+	<script type="text/javascript" src="js/particles/Smoke.js"></script>
+	<script type="text/javascript" src="js/particles/Explode.js"></script>
+	<script type="text/javascript" src="js/particles/Firework.js"></script>
+	<script type="text/javascript" src="js/particles/Confetti.js"></script>
+	<script type="text/javascript" src="js/particles/Ribbon.js"></script>
+	<script type="text/javascript" src="libs/GLTFLoader.js"></script>
+	<script type="text/javascript" src="libs/howler.js"></script>
+	<script type="text/javascript" src="resources.js"> </script>
+	<script type="text/javascript" src="js/App2D.js"> </script>
+	<script type="text/javascript" src="js/App3D.js"> </script>
+
+	<link href="style.css" rel="stylesheet">
+	
+</head>
+<body>
+
+<script type="text/javascript"src="tests/Basic.js"> </script>
+<script type="text/javascript"src="tests/Graphics.js"> </script>
+<script type="text/javascript"src="tests/Input.js"> </script>
+<script type="text/javascript"src="tests/Particles1.js"> </script>
+<script type="text/javascript"src="tests/Particles2.js"> </script>
+<script type="text/javascript"src="tests/TilingSprite.js"> </script>
+<script type="text/javascript"src="tests/ThreeBasic.js"> </script>
+<script type="text/javascript"src="tests/ThreeCanvas.js"> </script>
+<script type="text/javascript"src="tests/ThreeScreen2D.js"> </script>
+<script type="text/javascript"src="tests/Sound.js"> </script>
+
+<script type="text/javascript">
+
+	window.config = {
+		width: 640,
+		height: 400
+	}
+
+	Tiny.GLTFLoader = THREE.GLTFLoader;
+
+	window.initTest = function(e, is3D) {
+		
+		destroyGame();
+
+		const container = document.getElementById("test-container");
+		container.innerHTML = "";
+
+		var game;
+
+		if (!is3D) {
+			game = window.game = new Tiny.App2D(config.width, config.height, "test-container", window["test." + e], );
+		}
+		else {
+			game = window.game = new Tiny.App3D(config.width, config.height, "test-container", window["test." + e], );
+		}
+
+
+		window.game = game;
+	}
+
+	window.destroyGame = function() {
+		if (window.game) {
+			window.game.destroy();
+			window.game = null;
+		}
+	}
+
+	window.resizeCanvas = function() {
+
+		const container = document.getElementById("test-container");
+		config.width = Math.floor(Math.random() * 400) + 400
+		config.height = Math.floor(Math.random() * 300) + 300
+
+		container.style.width = config.width + "px";
+		container.style.height = config.height + "px";
+
+		if (window.game) 
+		{
+			window.game.resize(config.width, config.height)
+		}
+	}
+
+</script>
+<div style="display: flex; height: 100vh">
+	<div style="width: 30%; text-align: center;">
+		<h3>TINY TEST</h3>
+		<div style="display: flex; flex-direction: column;">
+			<button onclick="initTest('Basic')" style="margin: 5px;">Basic</button>
+			<button onclick="initTest('Graphics')" style="margin: 5px;">Graphics</button>
+			<button onclick="initTest('Input')" style="margin: 5px;">Input</button>
+			<h3>PLUGINS</h3>
+			<h3>Particles</h3>
+			<button onclick="initTest('Particles1')" style="margin: 5px;">Particles 1</button>
+			<button onclick="initTest('Particles2')" style="margin: 5px;">Particles 2</button>
+			<h3>Three</h3>
+			<button onclick="initTest('ThreeBasic', true)" style="margin: 5px;">Three Basic</button>
+			<button onclick="initTest('ThreeCanvas', true)" style="margin: 5px;">Three - Canvas2D / Canvas3D</button>
+			<button onclick="initTest('ThreeScreen2D', true)" style="margin: 5px;">Three - Screen2D</button>
+			<h3>Extra</h3>
+			<button onclick="initTest('TilingSprite')" style="margin: 5px;">Tiling Sprite</button>
+			<h3>Sound</h3>
+			<button onclick="initTest('Sound')" style="margin: 5px;">Sound</button>
+
+		</div>
+	</div>
+	<div style="width: 70%; display: flex; align-items: center; justify-content: center; flex-direction: column; position: fixed; top: 50%; right: 0px; transform: translate(0, -50%); height: 100%;">
+		<div id="test-container" style="border: 2px solid black; width: 640px; height: 400px;">
+			
+		</div>
+
+		<div style="position: absolute; top: 10px;">
+			<button onclick="game.pause()" style="margin: 4px;">Pause</button>
+			<button onclick="game.resume()" style="margin: 4px;">Resume</button>
+			<button onclick="game.paused = false;game._update(Date.now(), 16);game.paused = true;" style="margin: 4px;">Step</button>
+			<button onclick="resizeCanvas()" style="margin: 4px;">Resize</button>
+			<button onclick="destroyGame()" style="margin: 4px;">Destroy</button>
+			<button onclick="game.setPixelRatio(Math.random())" style="margin: 4px;">setPixelRatio</button>
+		</div>
+		
+	</div>
+</div>
+</body>
+</html>

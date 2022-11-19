@@ -1,7 +1,7 @@
 
 Tiny.Sprite = function(texture, key)
 {
-    Tiny.DisplayObjectContainer.call(this);
+    Tiny.Object2D.call(this);
 
     this.anchor = new Tiny.Point();
 
@@ -13,13 +13,11 @@ Tiny.Sprite = function(texture, key)
 
     this._frame = 0;
 
-    this.tint = 0xFFFFFF;
+    this.tint = "#FFFFFF";
 
     this.blendMode = "source-over";
 
-    this.shader = null;
-
-    if (this.texture.baseTexture.hasLoaded)
+    if (this.texture.hasLoaded)
     {
         this.onTextureUpdate();
     }
@@ -28,7 +26,7 @@ Tiny.Sprite = function(texture, key)
 };
 
 
-Tiny.Sprite.prototype = Object.create(Tiny.DisplayObjectContainer.prototype);
+Tiny.Sprite.prototype = Object.create(Tiny.Object2D.prototype);
 Tiny.Sprite.prototype.constructor = Tiny.Sprite;
 
 Object.defineProperty(Tiny.Sprite.prototype, 'frameName', {
@@ -40,7 +38,7 @@ Object.defineProperty(Tiny.Sprite.prototype, 'frameName', {
     set: function(value) {
         if (this.texture.frame.name) 
         {
-            this.setTexture(Tiny.TextureCache[this.texture.key + "_" + value])
+            this.setTexture(Tiny.Cache.texture[this.texture.key + "." + value])
         }
     }
 
@@ -53,11 +51,11 @@ Object.defineProperty(Tiny.Sprite.prototype, 'frame', {
     },
 
     set: function(value) {
-        if (this.texture.max_no_frame) {
+        if (this.texture.lastFrame) {
             this._frame = value
-            if (this._frame > this.texture.max_no_frame)
+            if (this._frame > this.texture.lastFrame)
                 this._frame = 0
-            this.setTexture(Tiny.TextureCache[this.texture.key + "_" + this._frame])
+            this.setTexture(Tiny.Cache.texture[this.texture.key + "." + this._frame])
         }
     }
 
@@ -97,14 +95,15 @@ Tiny.Sprite.prototype.setTexture = function(texture, key, updateDimension)
 
         if (key != undefined) 
         {
-            imagePath = imagePath + "_" + key;
+            imagePath = imagePath + "." + key;
         }
 
-        texture = Tiny.TextureCache[imagePath]
+        texture = Tiny.Cache.texture[imagePath];
 
         if (!texture) 
         {
-            throw new Error('Cache Error: image ' + imagePath + ' does`t found in cache');
+            texture = new Tiny.Texture(imagePath);
+            // throw new Error('Cache Error: image ' + imagePath + ' does`t found in cache');
         }
     }
 
@@ -128,27 +127,33 @@ Tiny.Sprite.prototype.onTextureUpdate = function()
     if (this._height) this.scale.y = this._height / this.texture.frame.height;
 };
 
-Tiny.Sprite.prototype.animate = function(delay)
+Tiny.Sprite.prototype.animate = function(timer, delay)
 {
-    if (this.texture.max_no_frame && this.texture.frame.index != undefined) {
-        var o_delay = delay || (this.texture.frame.duration || 100)
-        if (!this.animation) {
-            this.animation = this.game.timer.loop(o_delay, function() {
-                this.frame += 1
-                this.animation.delay = delay || (this.texture.frame.duration || 100)
-            }.bind(this))
-            this.animation.start()
-        } else {
-            this.animation.delay = o_delay
-            this.animation.start()
+    if (this.texture.lastFrame && this.texture.frame.index != undefined) 
+    {
+        delay = delay || (this.texture.frame.duration || 100);
+
+        if (!this.animation) 
+        {
+            this.animation = timer.loop(delay, function() {
+                this.frame += 1;
+                this.animation.delay = delay || (this.texture.frame.duration || 100);
+            }.bind(this));
+            
+            this.animation.start();
+        }
+        else
+        {
+            this.animation.delay = delay;
+            this.animation.start();
         }
     }
 };
 
 Tiny.Sprite.prototype.getBounds = function(matrix)
 {
-    var width = this.texture.frame.width;
-    var height = this.texture.frame.height;
+    var width = this.texture.frame.width / this.texture.resolution;
+    var height = this.texture.frame.height / this.texture.resolution;
 
     var w0 = width * (1-this.anchor.x);
     var w1 = width * -this.anchor.x;
@@ -173,16 +178,32 @@ Tiny.Sprite.prototype.getBounds = function(matrix)
 
     if (b === 0 && c === 0)
     {
-        // scale may be negative!
-        if (a < 0) a *= -1;
-        if (d < 0) d *= -1;
+        // // scale may be negative!
+        // if (a < 0) a *= -1;
+        // if (d < 0) d *= -1;
 
-        // this means there is no rotation going on right? RIGHT?
-        // if thats the case then we can avoid checking the bound values! yay         
-        minX = a * w1 + tx;
-        maxX = a * w0 + tx;
-        minY = d * h1 + ty;
-        maxY = d * h0 + ty;
+        // // this means there is no rotation going on right? RIGHT?
+        // // if thats the case then we can avoid checking the bound values! yay         
+        // minX = a * w1 + tx;
+        // maxX = a * w0 + tx;
+        // minY = d * h1 + ty;
+        // maxY = d * h0 + ty;
+
+        if (a < 0) {
+            minX = a * w0 + tx;
+            maxX = a * w1 + tx;
+        } else {
+            minX = a * w1 + tx;
+            maxX = a * w0 + tx;
+        }
+
+        if (d < 0) {
+            minY = d * h0 + ty;
+            maxY = d * h1 + ty;
+        } else {
+            minY = d * h1 + ty;
+            maxY = d * h0 + ty;
+        }
     }
     else
     {
@@ -234,7 +255,7 @@ Tiny.Sprite.prototype.getBounds = function(matrix)
 };
 
 
-Tiny.Sprite.prototype._renderCanvas = function(renderSession)
+Tiny.Sprite.prototype.render = function(renderSession)
 {
     // If the sprite is not visible or the alpha is 0 then no need to render this element
     if (this.visible === false || this.alpha === 0 || this.renderable === false || this.texture.crop.width <= 0 || this.texture.crop.height <= 0) return;
@@ -253,7 +274,7 @@ Tiny.Sprite.prototype._renderCanvas = function(renderSession)
     //  Ignore null sources
     if (this.texture.valid)
     {
-        var resolution = this.texture.baseTexture.resolution / renderSession.resolution;
+        var resolution = this.texture.resolution / renderSession.resolution;
 
         renderSession.context.globalAlpha = this.worldAlpha;
 
@@ -286,7 +307,7 @@ Tiny.Sprite.prototype._renderCanvas = function(renderSession)
                 this.worldTransform.ty * renderSession.resolution);
         }
 
-        if (this.tint !== 0xFFFFFF)
+        if (this.tint !== "#FFFFFF")
         {
             if (this.cachedTint !== this.tint)
             {
@@ -308,7 +329,7 @@ Tiny.Sprite.prototype._renderCanvas = function(renderSession)
         else
         {
             renderSession.context.drawImage(
-                                this.texture.baseTexture.source,
+                                this.texture.source,
                                 this.texture.crop.x,
                                 this.texture.crop.y,
                                 this.texture.crop.width,
@@ -323,7 +344,7 @@ Tiny.Sprite.prototype._renderCanvas = function(renderSession)
     // OVERWRITE
     for (var i = 0; i < this.children.length; i++)
     {
-        this.children[i]._renderCanvas(renderSession);
+        this.children[i].render(renderSession);
     }
 
     if (this._mask)

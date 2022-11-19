@@ -11,19 +11,24 @@ Tiny.CanvasRenderer = function(width, height, options)
 
     this.autoResize = options.autoResize || false;
 
-    this.width = width || 800;
+    // this.width = width || 800;
+    // this.height = height || 600;
 
-    this.height = height || 600;
+    // this.width *= this.resolution;
+    // this.height *= this.resolution;
 
-    this.width *= this.resolution;
-    this.height *= this.resolution;
+    if (!Tiny.defaultRenderer) Tiny.defaultRenderer = this;
 
-    this.view = options.view || document.createElement( "canvas" );
+    var view = this.domElement = options.domElement || document.createElement( "canvas" );
 
-    this.context = this.view.getContext( "2d", { alpha: this.transparent } );
+    this.context = view.getContext( "2d", { alpha: this.transparent } );
 
-    this.view.width = this.width;
-    this.view.height = this.height;
+    // view.width = this.width * this.resolution;
+    // view.height = this.height * this.resolution;
+
+    this.setSize(width || 800, height || 600);
+
+    this.setClearColor("#ffffff");
 
     if (Tiny.CanvasMaskManager)
         this.maskManager = new Tiny.CanvasMaskManager();
@@ -40,7 +45,6 @@ Tiny.CanvasRenderer = function(width, height, options)
         roundPixels: false
     };
 
-    this.resize(width, height);
 
     if("imageSmoothingEnabled" in this.context)
         this.renderSession.smoothProperty = "imageSmoothingEnabled";
@@ -56,8 +60,39 @@ Tiny.CanvasRenderer = function(width, height, options)
 
 Tiny.CanvasRenderer.prototype.constructor = Tiny.CanvasRenderer;
 
+Tiny.CanvasRenderer.prototype.setClearColor = function(color)
+{   
+    this.clearColor = color;
+    
+    // if (color === null) {
+    //     this.clearColor = null;
+    //     return;
+    // }
 
-Tiny.CanvasRenderer.prototype.render = function(stage)
+    // this.clearColor = color || 0x000000;
+    // // this.backgroundColorSplit = Tiny.hex2rgb(this.backgroundColor);
+    // var hex = this.clearColor.toString(16);
+    // hex = '000000'.substr(0, 6 - hex.length) + hex;
+    // this._clearColor = '#' + hex;
+
+};
+
+// Tiny.CanvasRenderer.prototype.setPixelArt = function() {
+
+//     var canvas = this.domElement;
+    
+//     var types = [ 'optimizeSpeed', '-moz-crisp-edges', '-o-crisp-edges', '-webkit-optimize-contrast', 'optimize-contrast', 'crisp-edges', 'pixelated' ];
+
+//     types.forEach(function (type)
+//     {
+//         canvas.style['image-rendering'] = type;
+//     });
+
+//     canvas.style.msInterpolationMode = 'nearest-neighbor';
+//     this.renderSession.roundPixels = true;
+// }
+
+Tiny.CanvasRenderer.prototype.render = function(scene)
 {
     
     this.context.setTransform(1,0,0,1,0,0);
@@ -67,7 +102,7 @@ Tiny.CanvasRenderer.prototype.render = function(stage)
     this.renderSession.currentBlendMode = "source-over";
     this.context.globalCompositeOperation = "source-over";
 
-    if (navigator.isCocoonJS && this.view.screencanvas)
+    if (navigator.isCocoonJS && this.domElement.screencanvas)
     {
         this.context.fillStyle = "black";
         this.context.clear();
@@ -77,16 +112,16 @@ Tiny.CanvasRenderer.prototype.render = function(stage)
     {
         if (this.transparent)
         {
-            this.context.clearRect(0, 0, this.width, this.height);
+            this.context.clearRect(0, 0, this.width * this.resolution, this.height * this.resolution);
         }
         else
         {
-            this.context.fillStyle = stage.backgroundColorString;
-            this.context.fillRect(0, 0, this.width , this.height);
+            this.context.fillStyle = this.clearColor;
+            this.context.fillRect(0, 0, this.width * this.resolution, this.height * this.resolution);
         }
     }
     
-    this.renderDisplayObject(stage);
+    this.renderObject(scene);
 
 };
 
@@ -94,35 +129,50 @@ Tiny.CanvasRenderer.prototype.destroy = function(removeView)
 {   
     if (typeof removeView === "undefined") { removeView = true; }
 
-    if (removeView && this.view.parentNode)
+    if (removeView && this.domElement.parentNode)
     {
-        this.view.parentNode.removeChild(this.view);
+        this.domElement.parentNode.removeChild(this.domElement);
     }
 
-    this.view = null;
+    this.domElement = null;
     this.context = null;
     this.maskManager = null;
     this.renderSession = null;
 
+    if (Tiny.defaultRenderer === this) Tiny.defaultRenderer = null;
+
 };
 
-Tiny.CanvasRenderer.prototype.resize = function(width, height)
+Tiny.CanvasRenderer.prototype.setSize = function(width, height)
 {
-    this.width = width * this.resolution;
-    this.height = height * this.resolution;
+    this.width = width;
+    this.height = height;
 
-    this.view.width = this.width;
-    this.view.height = this.height;
+    var view = this.domElement;
+
+    view.width = Math.floor(this.width * this.resolution);
+    view.height = Math.floor(this.height * this.resolution);
 
     if (this.autoResize) {
-        this.view.style.width = this.width / this.resolution + "px";
-        this.view.style.height = this.height / this.resolution + "px";
+        view.style.width = width + "px";
+        view.style.height = height + "px";
     }
 };
 
-Tiny.CanvasRenderer.prototype.renderDisplayObject = function(displayObject, context)
+Tiny.CanvasRenderer.prototype.setPixelRatio = function(resolution)
 {
+    this.resolution = resolution;
+
+    var view = this.domElement;
+
+    view.width = Math.floor(this.width * this.resolution);
+    view.height = Math.floor(this.height * this.resolution);
+};
+
+Tiny.CanvasRenderer.prototype.renderObject = function(displayObject, context)
+{
+    displayObject.updateTransform();
     this.renderSession.context = context || this.context;
     this.renderSession.resolution = this.resolution;
-    displayObject._renderCanvas(this.renderSession);
+    displayObject.render(this.renderSession);
 };

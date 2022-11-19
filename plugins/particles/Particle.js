@@ -1,7 +1,7 @@
 
 Tiny.Particle = function( emitter )
 {
-    Tiny.DisplayObject.call( this );
+    Tiny.BaseObject2D.call( this );
 
     this.parent = emitter
 
@@ -14,7 +14,7 @@ Tiny.Particle = function( emitter )
     this.lifespan = 0
 };
 
-Tiny.Particle.prototype = Object.create( Tiny.DisplayObject.prototype );
+Tiny.Particle.prototype = Object.create( Tiny.BaseObject2D.prototype );
 Tiny.Particle.prototype.constructor = Tiny.Particle;
 
 Tiny.Particle.prototype.setTexture = function(texture, key)
@@ -28,7 +28,9 @@ Tiny.Particle.prototype.setTexture = function(texture, key)
             imagePath = imagePath + "_" + key;
         }
 
-        texture = Tiny.TextureCache[imagePath]
+        texture = Tiny.Cache.texture[imagePath];
+
+        if (!texture) texture = new Tiny.Texture(imagePath);
     }
 
     this.texture = texture;
@@ -71,10 +73,10 @@ Tiny.Particle.prototype.drawTexture = function(renderSession)
     var dx = this.anchor.x * -this.texture.frame.width;
     var dy = this.anchor.y * -this.texture.frame.height;
 
-    var resolution = this.texture.baseTexture.resolution / renderSession.resolution; 
+    var resolution = this.texture.resolution / renderSession.resolution; 
 
     renderSession.context.drawImage(
-                            this.texture.baseTexture.source,
+                            this.texture.source,
                             this.texture.crop.x,
                             this.texture.crop.y,
                             this.texture.crop.width,
@@ -117,15 +119,14 @@ Tiny.Particle.prototype._update = function( delta ) {
         return false;
     }
 
-    this.update( this.lifespan, delta )
-
-    this.updateTransform()
-
+    this.update( this.lifespan, delta );
 }
 
-Tiny.Particle.prototype._renderCanvas = function(renderSession)
+Tiny.Particle.prototype.render = function(renderSession)
 {
     if (this.visible === false || this.alpha === 0) return;
+
+    this.updateTransform();
 
     renderSession.context.globalAlpha = this.worldAlpha;
 

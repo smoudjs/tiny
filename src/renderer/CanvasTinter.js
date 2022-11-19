@@ -3,9 +3,13 @@ Tiny.CanvasTinter = function()
 {
 };
 
+Tiny.Texture.prototype.tintCache = {}
+
 Tiny.CanvasTinter.getTintedTexture = function(sprite, color)
 {
     var texture = sprite.texture;
+
+    if (texture.tintCache[color]) return texture.tintCache[color];
 
     var canvas = Tiny.CanvasTinter.canvas || document.createElement("canvas");
     
@@ -25,6 +29,8 @@ Tiny.CanvasTinter.getTintedTexture = function(sprite, color)
         Tiny.CanvasTinter.canvas = null;
     }
 
+    if (Tiny.CanvasTinter.cacheTint) texture.tintCache[color] = canvas;
+
     return canvas;
 };
 
@@ -37,13 +43,13 @@ Tiny.CanvasTinter.tintWithMultiply = function(texture, color, canvas)
     canvas.width = crop.width;
     canvas.height = crop.height;
 
-    context.fillStyle = "#" + ("00000" + ( color | 0).toString(16)).substr(-6);
+    context.fillStyle = Tiny.color2style(color);
     
     context.fillRect(0, 0, crop.width, crop.height);
     
     context.globalCompositeOperation = "multiply";
 
-    context.drawImage(texture.baseTexture.source,
+    context.drawImage(texture.source,
                            crop.x,
                            crop.y,
                            crop.width,
@@ -55,7 +61,7 @@ Tiny.CanvasTinter.tintWithMultiply = function(texture, color, canvas)
 
     context.globalCompositeOperation = "destination-atop";
 
-    context.drawImage(texture.baseTexture.source,
+    context.drawImage(texture.source,
                            crop.x,
                            crop.y,
                            crop.width,
@@ -76,7 +82,7 @@ Tiny.CanvasTinter.tintWithPerPixel = function(texture, color, canvas)
     canvas.height = crop.height;
   
     context.globalCompositeOperation = "copy";
-    context.drawImage(texture.baseTexture.source,
+    context.drawImage(texture.source,
                            crop.x,
                            crop.y,
                            crop.width,
@@ -86,7 +92,7 @@ Tiny.CanvasTinter.tintWithPerPixel = function(texture, color, canvas)
                            crop.width,
                            crop.height);
 
-    var rgbValues = Tiny.hex2rgb(color);
+    var rgbValues = Tiny.color2rgb(color);
     var r = rgbValues[0], g = rgbValues[1], b = rgbValues[2];
 
     var pixelData = context.getImageData(0, 0, crop.width, crop.height);
@@ -114,7 +120,7 @@ Tiny.CanvasTinter.tintWithPerPixel = function(texture, color, canvas)
 
 function checkInverseAlpha()
 {
-    var canvas = new Tiny.CanvasBuffer(2, 1);
+    var canvas = new Tiny.CanvasBuffer(2, 1, {willReadFrequently: true});
 
     canvas.context.fillStyle = "rgba(10, 20, 30, 0.5)";
 
@@ -150,7 +156,7 @@ function checkBlendMode ()
             var canvas = document.createElement('canvas');
             canvas.width = 6;
             canvas.height = 1;
-            var context = canvas.getContext('2d');
+            var context = canvas.getContext('2d', {willReadFrequently: true});
 
             context.globalCompositeOperation = 'multiply';
 
@@ -165,6 +171,7 @@ function checkBlendMode ()
             var data = context.getImageData(2, 0, 1, 1).data;
 
             Tiny.supportNewBlendModes = (data[0] === 255 && data[1] === 0 && data[2] === 0);
+            Tiny.CanvasTinter.tintMethod = Tiny.CanvasTinter.tintWithMultiply;
         };
 
         yellow.src = pngHead + '/wCKxvRF' + pngEnd;
@@ -177,6 +184,8 @@ function checkBlendMode ()
 
 
 Tiny.CanvasTinter.convertTintToImage = false;
+
+Tiny.CanvasTinter.cacheTint = true;
 
 Tiny.canHandleAlpha = checkInverseAlpha();
 

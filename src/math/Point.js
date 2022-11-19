@@ -9,9 +9,5 @@ Tiny.Point.prototype = {
         this.y = y || ( (y !== 0) ? this.x : 0 );
 
         return this;
-    },
-
-    setTo: function (x, y) {
-    	this.set(x, y)
     }
 };

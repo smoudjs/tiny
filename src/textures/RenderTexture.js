@@ -4,30 +4,31 @@ Tiny.RenderTexture = function(width, height, renderer, resolution)
     this.width = width || 100;
     this.height = height || 100;
 
-    this.resolution = resolution || 1;
+    // console.log(this);
+    resolution = resolution || 1;
 
-    this.frame = new Tiny.Rectangle(0, 0, this.width * this.resolution, this.height * this.resolution);
+    // this.frame = new Tiny.Rectangle(0, 0, this.width * this.resolution, this.height * this.resolution);
 
-    this.crop = new Tiny.Rectangle(0, 0, this.width * this.resolution, this.height * this.resolution);
+    // this.crop = new Tiny.Rectangle(0, 0, this.width * this.resolution, this.height * this.resolution);
 
-    this.baseTexture = new Tiny.BaseTexture();
-    this.baseTexture.width = this.width * this.resolution;
-    this.baseTexture.height = this.height * this.resolution;
-    this.baseTexture._glTextures = [];
-    this.baseTexture.resolution = this.resolution;
+    // this.baseTexture = new Tiny.BaseTexture();
+    // this.baseTexture.width = this.width * this.resolution;
+    // this.baseTexture.height = this.height * this.resolution;
+    // this.baseTexture.resolution = this.resolution;
 
-    this.baseTexture.hasLoaded = true;
+    // this.baseTexture.hasLoaded = true;
+    this.textureBuffer = new Tiny.CanvasBuffer(this.width * resolution, this.height * resolution);
 
     Tiny.Texture.call(this,
-        this.baseTexture,
-        new Tiny.Rectangle(0, 0, this.width * this.resolution, this.height * this.resolution)
+        this.textureBuffer.canvas,
+        new Tiny.Rectangle(0, 0, this.width * resolution, this.height * resolution)
     );
 
-    this.renderer = renderer || Tiny.defaultRenderer;
+    this.resolution = resolution || 1;
 
-    this.render = this.renderCanvas;
-    this.textureBuffer = new Tiny.CanvasBuffer(this.width* this.resolution, this.height* this.resolution);
-    this.baseTexture.source = this.textureBuffer.canvas;
+    // this.hasLoaded = true;
+
+    this.renderer = renderer || Tiny.defaultRenderer;
 
     this.valid = true;
 };
@@ -48,8 +49,8 @@ Tiny.RenderTexture.prototype.resize = function(width, height, updateBase)
 
     if (updateBase)
     {
-        this.baseTexture.width = this.width * this.resolution;
-        this.baseTexture.height = this.height * this.resolution;
+        // this.baseTexture.width = this.width * this.resolution;
+        // this.baseTexture.height = this.height * this.resolution;
     }
 
     if(!this.valid)return;
@@ -64,7 +65,7 @@ Tiny.RenderTexture.prototype.clear = function()
     this.textureBuffer.clear();
 };
 
-Tiny.RenderTexture.prototype.renderCanvas = function(displayObject, matrix, clear)
+Tiny.RenderTexture.prototype.render = function(displayObject, matrix, clear)
 {
     if(!this.valid)return;
 
@@ -91,7 +92,7 @@ Tiny.RenderTexture.prototype.renderCanvas = function(displayObject, matrix, clea
 
     this.renderer.resolution = this.resolution;
 
-    this.renderer.renderDisplayObject(displayObject, context);
+    this.renderer.renderObject(displayObject, context);
 
     this.renderer.resolution = realResolution;
 };

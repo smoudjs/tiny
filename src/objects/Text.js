@@ -80,7 +80,7 @@ Tiny.Text.prototype.setText = function(text)
 
 Tiny.Text.prototype.updateText = function()
 {
-    this.texture.baseTexture.resolution = this.resolution;
+    this.texture.resolution = this.resolution;
 
     this.context.font = this.style.font;
 
@@ -202,8 +202,8 @@ Tiny.Text.prototype.updateText = function()
 
 Tiny.Text.prototype.updateTexture = function()
 {
-    this.texture.baseTexture.width = this.canvas.width;
-    this.texture.baseTexture.height = this.canvas.height;
+    this.texture.width = this.canvas.width;
+    this.texture.height = this.canvas.height;
     this.texture.crop.width = this.texture.frame.width = this.canvas.width;
     this.texture.crop.height = this.texture.frame.height = this.canvas.height;
 
@@ -211,7 +211,7 @@ Tiny.Text.prototype.updateTexture = function()
     this._height = this.canvas.height;
 };
 
-Tiny.Text.prototype._renderCanvas = function(renderSession)
+Tiny.Text.prototype.render = function(renderSession)
 {
     if(this.dirty)
     {
@@ -221,7 +221,7 @@ Tiny.Text.prototype._renderCanvas = function(renderSession)
         this.dirty = false;
     }
      
-    Tiny.Sprite.prototype._renderCanvas.call(this, renderSession);
+    Tiny.Sprite.prototype.render.call(this, renderSession);
 };
 
 Tiny.Text.prototype.determineFontProperties = function(fontStyle)
@@ -373,13 +373,15 @@ Tiny.Text.prototype.getBounds = function(matrix)
     return Tiny.Sprite.prototype.getBounds.call(this, matrix);
 };
 
-Tiny.Text.prototype.destroy = function(destroyBaseTexture)
+Tiny.Text.prototype.destroy = function()
 {
     // make sure to reset the the context and canvas.. dont want this hanging around in memory!
     this.context = null;
     this.canvas = null;
 
-    this.texture.destroy(destroyBaseTexture === undefined ? true : destroyBaseTexture);
+    this.texture.destroy();
+
+    Tiny.Sprite.prototype.destroy.call(this);
 };
 
 Tiny.Text.fontPropertiesCache = {};
