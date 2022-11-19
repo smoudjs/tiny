@@ -26,7 +26,7 @@ Tiny.CanvasRenderer = function(width, height, options)
     // view.width = this.width * this.resolution;
     // view.height = this.height * this.resolution;
 
-    this.setSize(width || 800, height || 600);
+    this.resize(width || 800, height || 600);
 
     this.setClearColor("#ffffff");
 
@@ -94,7 +94,8 @@ Tiny.CanvasRenderer.prototype.setClearColor = function(color)
 
 Tiny.CanvasRenderer.prototype.render = function(scene)
 {
-    
+    scene.updateTransform();
+
     this.context.setTransform(1,0,0,1,0,0);
 
     this.context.globalAlpha = 1;
@@ -143,7 +144,7 @@ Tiny.CanvasRenderer.prototype.destroy = function(removeView)
 
 };
 
-Tiny.CanvasRenderer.prototype.setSize = function(width, height)
+Tiny.CanvasRenderer.prototype.resize = function(width, height)
 {
     this.width = width;
     this.height = height;
@@ -171,7 +172,6 @@ Tiny.CanvasRenderer.prototype.setPixelRatio = function(resolution)
 
 Tiny.CanvasRenderer.prototype.renderObject = function(displayObject, context)
 {
-    displayObject.updateTransform();
     this.renderSession.context = context || this.context;
     this.renderSession.resolution = this.resolution;
     displayObject.render(this.renderSession);

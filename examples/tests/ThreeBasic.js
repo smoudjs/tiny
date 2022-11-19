@@ -13,7 +13,7 @@ window["test.ThreeBasic"]  = {
 		this.load.gltf("gltfTest", gltf, true, function(gltf) {
 			gltf.scene.traverse(function(obj) {
 				if (obj.isMesh) obj.geometry.computeVertexNormals();
-			})
+			});
 		});
 
 		this.load.texture3d("base", baseImage);
@@ -89,14 +89,14 @@ window["test.ThreeBasic"]  = {
 		/**
 		 * Getting ang clonning mesh from cache
 		 */
-		this.scene.add(game.cache.mesh3d["gltfTest.cabin"].clone())
+		this.scene.add(game.cache.mesh3d["gltfTest.cabin"].clone());
 
 
 		/**
 		 * Creating new Tiny.Text3D object which is avaiable on three plugin
 		 */
 		var text = new Tiny.Text3D("Hello World", {
-            font: 'bold 30pt Arial',
+            font: 'bold 30pt Courier',
             fill: '#ffffff',
             wordWrap: true,
             wordWrapWidth: 100,

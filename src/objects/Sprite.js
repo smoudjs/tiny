@@ -110,7 +110,7 @@ Tiny.Sprite.prototype.setTexture = function(texture, key, updateDimension)
     if (this.texture === texture) return false;
 
     this.texture = texture;
-    this.cachedTint = 0xFFFFFF;
+    this.cachedTint = "#FFFFFF";
 
     if (updateDimension === true) 
     {

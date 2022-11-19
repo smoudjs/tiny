@@ -133,7 +133,7 @@ Tiny.Object2D.prototype.addChildAt = function(child, index)
 
         child.parent = this;
 
-        child.game = this.game;
+        if (this.game) child.game = this.game;
 
         this.children.splice(index, 0, child);
 

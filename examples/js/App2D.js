@@ -1,4 +1,6 @@
 
+Tiny.CanvasTinter.cacheTint = false;
+
 class App2D extends Tiny.App {
 
 	constructor(width, height, parentNode, states) {
@@ -43,7 +45,7 @@ class App2D extends Tiny.App {
 		
 		super.resize(width, height);
 
-		this.renderer.setSize(width, height);
+		this.renderer.resize(width, height);
 	}
 
 	destroy(clearCache) {

@@ -13,4 +13,4 @@ require('./objects/BaseObject2D.js');             //
 require('./objects/Object2D.js');    //
 require('./objects/Scene.js');                     // 10 Kb
 
-require('./renderer/CanvasRenderer.js'); // 3 Kb
+require('./renderers/CanvasRenderer.js'); // 3 Kb

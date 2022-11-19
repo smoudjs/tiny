@@ -21,10 +21,10 @@ Tiny.RenderTexture = function(width, height, renderer, resolution)
 
     Tiny.Texture.call(this,
         this.textureBuffer.canvas,
-        new Tiny.Rectangle(0, 0, this.width * resolution, this.height * resolution)
+        new Tiny.Rectangle(0, 0, Math.floor(this.width * resolution), Math.floor(this.height * resolution))
     );
 
-    this.resolution = resolution || 1;
+    this.resolution = resolution;
 
     // this.hasLoaded = true;
 
@@ -55,7 +55,7 @@ Tiny.RenderTexture.prototype.resize = function(width, height, updateBase)
 
     if(!this.valid)return;
 
-    this.textureBuffer.resize(this.width, this.height);
+    this.textureBuffer.resize(this.width * this.resolution, this.height * this.resolution);
 };
 
 Tiny.RenderTexture.prototype.clear = function()

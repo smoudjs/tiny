@@ -1,36 +1,27 @@
-window["test.Particles1"]  = {
+window["test.RendererTexture"]  = {
 
 	preload: function() {
 
 		this.load.image("base", baseImage);
+		this.load.atlas("atlas", atlas, atlas_data);
 	},
 
 	create: function() {
 
 		var emitter = this.emitter = new Tiny.Emitter(300);
-		emitter.x = 200;
+		emitter.x = this.width / 2;
 		emitter.y = 300;
-		emitter.width = 40
+		emitter.width = 400
 
 		emitter.pattern = Tiny.SmokeParticle;
 		emitter.fillStyle = "#666666";
 
-		emitter.makeParticles("base");//Tiny.TextureCache["atlas_BR"])
+		emitter.makeParticles(this.cache.texture["atlas.IH"]);
 		emitter.scale.set(0.7);
 
-		emitter.start(false, 500, 0)
+		emitter.flow(500, 10, 5);
 
 		// emitter.flow(1000, 10, 3);
-
-		this.timer.loop(5000, function() {
-			if (Math.random() > 0.5) {
-				emitter.width = 300;
-				emitter.flow(500, 10, 5);
-			} else {
-				emitter.width = 40;
-				emitter.flow(1000, 100, 8);
-			}
-		})
 
 		this.particles.add(emitter);
 		this.scene.add(emitter);
@@ -38,16 +29,6 @@ window["test.Particles1"]  = {
 		var bombEmitter = this.bombEmitter = new Tiny.Emitter(300);
 		bombEmitter.pattern = Tiny.ExplodeParticle;
 		bombEmitter.makeParticles();
-
-		var clickMe = new Tiny.Text("Click me !");
-		clickMe.anchor.set(0.5);
-		clickMe.position.set(this.width / 2, this.height / 2);
-		this.scene.add(clickMe);
-
-		this.input.once("down", function(e) {
-			clickMe.destroy();
-		});
-
 
 		this.input.on("down", function(e) {
 			bombEmitter.fillStyle = "#" + Math.floor(Math.random() * 0xffffff).toString(16);
@@ -60,18 +41,48 @@ window["test.Particles1"]  = {
 		this.particles.add(bombEmitter);
 		this.scene.add(bombEmitter);
 
+		var text = this.text = new Tiny.Text("Tiny", {
+            font: 'bold 40pt Courier',
+            fill: '#4e73df',
+            wordWrap: true,
+            wordWrapWidth: 150,
+            align: 'center'
+        });
+
+        this.timer.loop(100, function(argument) {
+        	text.rotation = Math.random() * Math.PI;
+        	game.text.pivot.x = Tiny.rnd(-100, 100);
+        	game.text.pivot.y = Tiny.rnd(-100, 100);
+        })
+
+		text.anchor.set(0.5);
+
+        text.x = this.width / 2;
+        text.y = this.height * 0.3;
+
+        this.scene.add(text);
+
 		this.recusrive = new Tiny.RecursiveSprite(this);
-		this.recusrive.delay = 1;
 		this.recusrive.setCenter(0.5, 0.7);
+		this.recusrive.scale.set(0.5);
+		this.recusrive.clearAlpha = 0.01;
+		this.recusrive.alpha = 0.8;
+		this.recusrive.updateFrames();
 		this.scene.add(this.recusrive);
+
+		this.miniMap = new Tiny.MiniMap(this, 0.5);
+		this.miniMap.delay = 1;
+		this.scene.add(this.miniMap);
 	},
 
 	update: function(time, delta) {
 		this.recusrive.update(delta);
+		this.miniMap.update(delta);
 	},
 
 	resize: function(width, height) {
 
 		this.recusrive.resize(width, height);
+		this.miniMap.resize(width, height);
 	}
 }

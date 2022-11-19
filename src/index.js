@@ -10,7 +10,7 @@ require('./math/RoundedRectangle.js');	//
 require('./math/Polygon.js');			//
 require('./math/Circle.js');			// 6 Kb
 
-require('./renderer/GraphicsRenderer.js'); // 4Kb
+require('./renderers/GraphicsRenderer.js'); // 4Kb
 
 require('./objects/Graphics.js'); // 10 Kb
 // require('./objects/TilingSprite.js'); // 4 Kb   ############### TilingSprite  game.add.tilesprite
@@ -18,5 +18,5 @@ require('./objects/Graphics.js'); // 10 Kb
 require('./textures/RenderTexture.js'); // 2 Kb
 
 require('./utils/CanvasBuffer.js'); // 1 Kb
-require('./renderer/CanvasMaskManager.js'); // 1Kb
-require('./renderer/CanvasTinter.js'); // 3 Kb ################ tint function
+require('./renderers/CanvasMaskManager.js'); // 1Kb
+require('./renderers/CanvasTinter.js'); // 3 Kb ################ tint function

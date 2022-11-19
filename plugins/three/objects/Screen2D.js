@@ -51,7 +51,7 @@ class Screen2D extends Tiny.Canvas2D {
 
     setSize(width, height) 
     {
-        this.renderer.setSize(width, height)
+        this.renderer.resize(width, height)
         
         this.width = width;
         this.height = height;

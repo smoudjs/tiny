@@ -213,7 +213,7 @@ Tiny.Text.prototype.updateTexture = function()
 
 Tiny.Text.prototype.render = function(renderSession)
 {
-    if(this.dirty)
+    if(this.dirty || this.resolution !== renderSession.resolution)
     {
         this.resolution = renderSession.resolution;
 

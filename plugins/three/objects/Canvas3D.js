@@ -15,7 +15,7 @@ class Canvas3D extends Mesh {
     constructor(width, height) {
 
         const renderer = new Tiny.CanvasRenderer(width, height, { transparent: true });
-        // renderer.setClearColor(0xffffff, 0.1);
+        // renderer.setClearColor("#ffffff");
 
         const canvasTexture = new CanvasTexture(renderer.domElement);
         canvasTexture.encoding = sRGBEncoding;

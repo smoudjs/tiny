@@ -209,7 +209,7 @@ Tiny.BaseObject2D.prototype._renderCachedSprite = function(renderSession)
 
 Tiny.BaseObject2D.prototype._generateCachedSprite = function()
 {
-    this._cachedSprite = null
+    this._cachedSprite = null;
     this._cacheAsBitmap = false;
 
     var bounds = this.getLocalBounds();
