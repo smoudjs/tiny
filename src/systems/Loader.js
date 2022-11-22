@@ -138,7 +138,7 @@ Tiny.Loader.spritesheet = function(resource, cb)
 
     Tiny.Loader.image(resource, function(resource, image) {
         
-        var lastFrame;
+        var lastFrame, uuid, texture;
 
         if (resource.data) {
 
@@ -147,9 +147,9 @@ Tiny.Loader.spritesheet = function(resource, cb)
 
             for (var i = 0; i <= lastFrame; i++)
             {
-                var uuid = key + "." + i;
+                uuid = key + "." + i;
 
-                var texture = new Tiny.Texture(image, {
+                texture = new Tiny.Texture(image, {
                     index: i,
                     x: Math.floor(frameData[i].x),
                     y: Math.floor(frameData[i].y),
@@ -193,8 +193,8 @@ Tiny.Loader.spritesheet = function(resource, cb)
 
             for (var i = 0; i < total; i++)
             {
-                var uuid = key + "." + i;
-                var texture = new Tiny.Texture(image, {
+                uuid = key + "." + i;
+                texture = new Tiny.Texture(image, {
                     index: i,
                     x: x,
                     y: y,

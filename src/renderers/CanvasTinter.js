@@ -3,13 +3,13 @@ Tiny.CanvasTinter = function()
 {
 };
 
-Tiny.Texture.prototype.tintCache = {}
-
 Tiny.CanvasTinter.getTintedTexture = function(sprite, color)
 {
     var texture = sprite.texture;
 
-    if (texture.tintCache[color]) return texture.tintCache[color];
+    if (!texture._tintCache) texture._tintCache = {};
+
+    if (texture._tintCache[color]) return texture._tintCache[color];
 
     var canvas = Tiny.CanvasTinter.canvas || document.createElement("canvas");
     
@@ -21,7 +21,7 @@ Tiny.CanvasTinter.getTintedTexture = function(sprite, color)
         var tintImage = new Image();
         tintImage.src = canvas.toDataURL();
 
-        // texture.tintCache[stringColor] = tintImage;
+        // texture._tintCache[stringColor] = tintImage;
     }
     else
     {
@@ -29,7 +29,7 @@ Tiny.CanvasTinter.getTintedTexture = function(sprite, color)
         Tiny.CanvasTinter.canvas = null;
     }
 
-    if (Tiny.CanvasTinter.cacheTint) texture.tintCache[color] = canvas;
+    if (Tiny.CanvasTinter.cacheTint) texture._tintCache[color] = canvas;
 
     return canvas;
 };
@@ -185,7 +185,7 @@ function checkBlendMode ()
 
 Tiny.CanvasTinter.convertTintToImage = false;
 
-Tiny.CanvasTinter.cacheTint = true;
+Tiny.CanvasTinter.cacheTint = false;
 
 Tiny.canHandleAlpha = checkInverseAlpha();
 
