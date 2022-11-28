@@ -125,22 +125,16 @@ window["test.Input"]  = {
 
 
 		/**
-		 * Creating scene mini-map
+		 * Creating scene recursive sprite
 		 */
-		var recusrive = this.recusrive = new Tiny.RecursiveSprite(this);
+		this.recusrive = new Tiny.RecursiveSprite(this);
 		this.scene.add(this.recusrive);
 
 		coin2.input.on("down", function() {
 
 			this.dragging = true;
 
-		}, coin2)
-
-		coin2.input.on("click", function() {
-
-			// recusrive.setCenter(Math.random(), Math.random());
-
-		}, coin2)
+		}, coin2);
 	},
 
 	resize: function(width, height) {

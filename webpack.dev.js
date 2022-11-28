@@ -1,4 +1,3 @@
-const webpack = require('webpack');
 
 const config = {
 
@@ -20,7 +19,7 @@ const config = {
 
     output:
     {
-        path: `${__dirname}/examples/libs/`,
+        path: `${__dirname}/examples/libs/tiny`,
         filename: `[name].js`
     },
 

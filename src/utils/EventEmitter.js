@@ -91,23 +91,33 @@ Tiny.EventEmitter = {
             listeners.n = 0;
 
             var len = arguments.length;
+            var fn, ctx;
 
             for (var i = 0; i < fnArray.length - listeners.n; i += 3)
             {
-                if (len <= 1)
-                    fnArray[i].call(fnArray[i + 1]);
-                else if (len == 2)
-                    fnArray[i].call(fnArray[i + 1], a1);
-                else if (len == 3)
-                    fnArray[i].call(fnArray[i + 1], a1, a2);
-                else
-                    fnArray[i].call(fnArray[i + 1], a1, a2, a3);
-
+                fn = fnArray[i];
+                ctx = fnArray[i + 1];
+                
                 if (fnArray[i + 2])
                 {
                     fnArray.splice(i, 3);
                     i -= 3;
                 }
+
+                if (len <= 1)
+                    fn.call(ctx);
+                else if (len == 2)
+                    fn.call(ctx, a1);
+                else if (len == 3)
+                    fn.call(ctx, a1, a2);
+                else
+                    fn.call(ctx, a1, a2, a3);
+
+                // if (fnArray[i + 2])
+                // {
+                //     fnArray.splice(i, 3);
+                //     i -= 3;
+                // }
             }
 
             if (fnArray.length == 0) 
