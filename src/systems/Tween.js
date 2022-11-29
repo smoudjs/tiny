@@ -42,7 +42,7 @@ _Group.prototype = {
 
 	},
 
-	update: function (time, preserve) {
+	update: function (delta, preserve) {
 
 		var tweenIds = Object.keys(this._tweens);
 
@@ -50,7 +50,7 @@ _Group.prototype = {
 			return false;
 		}
 
-		time = time !== undefined ? time : TWEEN.now();
+		// time = time !== undefined ? time : TWEEN.now();
 
 		// Tweens are updated in "batches". If you add a new tween during an
 		// update, then the new tween will be updated in the next batch.
@@ -64,7 +64,7 @@ _Group.prototype = {
 
 				var tween = this._tweens[tweenIds[i]];
 
-				if (tween && tween.update(time) === false) {
+				if (tween && tween.update(delta) === false) {
 					tween._isPlaying = false;
 
 					if (!preserve) {
@@ -90,39 +90,39 @@ TWEEN.nextId = function () {
 };
 
 
-// Include a performance.now polyfill.
-// In node.js, use process.hrtime.
-if (typeof (self) === 'undefined' && typeof (process) !== 'undefined' && process.hrtime) {
-	TWEEN.now = function () {
-		var time = process.hrtime();
+// // Include a performance.now polyfill.
+// // In node.js, use process.hrtime.
+// if (typeof (self) === 'undefined' && typeof (process) !== 'undefined' && process.hrtime) {
+// 	TWEEN.now = function () {
+// 		var time = process.hrtime();
 
-		// Convert [seconds, nanoseconds] to milliseconds.
-		return time[0] * 1000 + time[1] / 1000000;
-	};
-}
-// In a browser, use self.performance.now if it is available.
-else if (typeof (self) !== 'undefined' &&
-         self.performance !== undefined &&
-		 self.performance.now !== undefined) {
-	// This must be bound, because directly assigning this function
-	// leads to an invocation exception in Chrome.
-	TWEEN.now = self.performance.now.bind(self.performance);
-}
-// Use Date.now if it is available.
-else if (Date.now !== undefined) {
-	TWEEN.now = Date.now;
-}
-// Otherwise, use 'new Date().getTime()'.
-else {
-	TWEEN.now = function () {
-		return new Date().getTime();
-	};
-}
+// 		// Convert [seconds, nanoseconds] to milliseconds.
+// 		return time[0] * 1000 + time[1] / 1000000;
+// 	};
+// }
+// // In a browser, use self.performance.now if it is available.
+// else if (typeof (self) !== 'undefined' &&
+//          self.performance !== undefined &&
+// 		 self.performance.now !== undefined) {
+// 	// This must be bound, because directly assigning this function
+// 	// leads to an invocation exception in Chrome.
+// 	TWEEN.now = self.performance.now.bind(self.performance);
+// }
+// // Use Date.now if it is available.
+// else if (Date.now !== undefined) {
+// 	TWEEN.now = Date.now;
+// }
+// // Otherwise, use 'new Date().getTime()'.
+// else {
+// 	TWEEN.now = function () {
+// 		return new Date().getTime();
+// 	};
+// }
 
 
 TWEEN.Tween = function (object, group) {
 	this._isPaused = false;
-	this._pauseStart = null;
+	// this._pauseStart = null;
 	this._object = object;
 	this._valuesStart = {};
 	this._valuesEnd = {};
@@ -135,6 +135,7 @@ TWEEN.Tween = function (object, group) {
 	this._reversed = false;
 	this._delayTime = 0;
 	this._startTime = null;
+	this._time = 0;
 	this._easingFunction = TWEEN.Easing.Linear.None;
 	this._interpolationFunction = TWEEN.Interpolation.Linear;
 	this._chainedTweens = [];
@@ -186,11 +187,11 @@ TWEEN.Tween.prototype = {
 		this._isPlaying = true;
 
 		this._isPaused = false;
+		this._time = 0;
 
 		this._onStartCallbackFired = false;
 
-		this._startTime = time !== undefined ? typeof time === 'string' ? TWEEN.now() + parseFloat(time) : time : TWEEN.now();
-		this._startTime += this._delayTime;
+		this._startTime = this._delayTime;
 
 		for (var property in this._valuesEnd) {
 
@@ -252,12 +253,12 @@ TWEEN.Tween.prototype = {
 
 	end: function () {
 
-		this.update(Infinity);
+		this.update(Infinity, Infinity);
 		return this;
 
 	},
 
-	pause: function(time) {
+	pause: function() {
 
 		if (this._isPaused || !this._isPlaying) {
 			return this;
@@ -265,7 +266,7 @@ TWEEN.Tween.prototype = {
 
 		this._isPaused = true;
 
-		this._pauseStart = time === undefined ? TWEEN.now() : time;
+		// this._pauseStart = time === undefined ? TWEEN.now() : time;
 
 		this._group.remove(this);
 
@@ -273,7 +274,7 @@ TWEEN.Tween.prototype = {
 
 	},
 
-	resume: function(time) {
+	resume: function() {
 
 		if (!this._isPaused || !this._isPlaying) {
 			return this;
@@ -281,10 +282,10 @@ TWEEN.Tween.prototype = {
 
 		this._isPaused = false;
 
-		this._startTime += (time === undefined ? TWEEN.now() : time)
-			- this._pauseStart;
+		// this._startTime += (time === undefined ? TWEEN.now() : time)
+		// 	- this._pauseStart;
 
-		this._pauseStart = 0;
+		// this._pauseStart = 0;
 
 		this._group.add(this);
 
@@ -389,13 +390,15 @@ TWEEN.Tween.prototype = {
 
 	},
 
-	update: function (time) {
+	update: function (delta) {
 
 		var property;
 		var elapsed;
 		var value;
 
-		if (time < this._startTime) {
+		this._time += delta;
+
+		if (this._time < this._startTime) {
 			return true;
 		}
 
@@ -408,7 +411,7 @@ TWEEN.Tween.prototype = {
 			this._onStartCallbackFired = true;
 		}
 
-		elapsed = (time - this._startTime) / this._duration;
+		elapsed = (this._time - this._startTime) / this._duration;
 		elapsed = (this._duration === 0 || elapsed > 1) ? 1 : elapsed;
 
 		value = this._easingFunction(elapsed);
@@ -454,6 +457,8 @@ TWEEN.Tween.prototype = {
 
 		if (elapsed === 1) {
 
+			this._time = 0;
+
 			if (this._repeat > 0) {
 
 				if (isFinite(this._repeat)) {
@@ -483,9 +488,9 @@ TWEEN.Tween.prototype = {
 				}
 
 				if (this._repeatDelayTime !== undefined) {
-					this._startTime = time + this._repeatDelayTime;
+					this._startTime = this._repeatDelayTime;
 				} else {
-					this._startTime = time + this._delayTime;
+					this._startTime = this._delayTime;
 				}
 
 				if (this._onRepeatCallback !== null) {
@@ -504,7 +509,7 @@ TWEEN.Tween.prototype = {
 				for (var i = 0, numChainedTweens = this._chainedTweens.length; i < numChainedTweens; i++) {
 					// Make the chained tweens start exactly at the time they should,
 					// even if the `update()` method was called way past the duration of the tween
-					this._chainedTweens[i].start(this._startTime + this._duration);
+					this._chainedTweens[i].start();
 				}
 
 				return false;
@@ -960,27 +965,27 @@ TWEEN.Interpolation = {
 
 window.TWEEN = TWEEN
 
-
 Tiny.TweenManager = function(game)
 {
 	this.game = game;
 	this.bufferList = [];
+	this.group = new _Group();
 };
 
 Tiny.TweenManager.prototype = {
 
 	add: function(obj) {
-		return new TWEEN.Tween(obj);
+		return new TWEEN.Tween(obj, this.group);
 	},
 
 	pause: function() {
 
         this.bufferList.length = 0;
 
-        for (var k in TWEEN._tweens)
+        for (var k in this.group._tweens)
         {
-            this.bufferList.push(TWEEN._tweens[k]);
-            TWEEN._tweens[k].pause();
+            this.bufferList.push(this.group._tweens[k]);
+            this.group._tweens[k].pause();
         }
         
 	},
@@ -997,12 +1002,13 @@ Tiny.TweenManager.prototype = {
 	},
 
     update: function(delta) {
-        TWEEN.update();
+        this.group.update(delta);
     },
 
     destroy: function() {
     	this.bufferList.length = 0;
-    	TWEEN.removeAll();
+    	this.group.removeAll();
+    	this.group = null;
     }
 }
 

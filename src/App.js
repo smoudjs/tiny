@@ -119,6 +119,7 @@ Tiny.App.prototype._update = function(time, delta)
 {
     if (!this.paused)
     {
+        delta *= this.timeScale;
         this.update.call(this.callbackContext, time, delta);
 
         for (var i = 0; i < this.updatable.length; i++)
