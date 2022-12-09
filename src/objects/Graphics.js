@@ -362,14 +362,14 @@ Tiny.Graphics.prototype.drawRoundedRect = function(x, y, width, height, radius)
     return this;
 };
 
-Tiny.Graphics.prototype.drawRoundedRect2 = function(x, y, width, height, radius)
-{   
-    var shape = new Tiny.RoundedRectangle(x, y, width, height, radius)
-    shape.type = Tiny.Primitives.RREC_LJOIN;
-    this.drawShape(shape);
+// Tiny.Graphics.prototype.drawRoundedRect2 = function(x, y, width, height, radius)
+// {   
+//     var shape = new Tiny.RoundedRectangle(x, y, width, height, radius)
+//     shape.type = Tiny.Primitives.RREC_LJOIN;
+//     this.drawShape(shape);
 
-    return this;
-};
+//     return this;
+// };
 
 
 Tiny.Graphics.prototype.drawCircle = function(x, y, diameter)
@@ -379,12 +379,13 @@ Tiny.Graphics.prototype.drawCircle = function(x, y, diameter)
     return this;
 };
 
-Tiny.Graphics.prototype.drawEllipse = function(x, y, width, height)
-{
-    this.drawShape(new Tiny.Ellipse(x, y, width, height));
+// Moved to extra Ellipse
+// Tiny.Graphics.prototype.drawEllipse = function(x, y, width, height)
+// {
+//     this.drawShape(new Tiny.Ellipse(x, y, width, height));
 
-    return this;
-};
+//     return this;
+// };
 
 Tiny.Graphics.prototype.drawPolygon = function(path)
 {

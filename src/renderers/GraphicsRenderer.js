@@ -177,27 +177,27 @@ Tiny.CanvasGraphics.renderGraphics = function(graphics, context)
                 context.stroke();
             }
         }
-        else if (data.type === Tiny.Primitives.RREC_LJOIN)
-        {
-            var rx = shape.x;
-            var ry = shape.y;
-            var width = shape.width;
-            var height = shape.height;
-            var radius = shape.radius;
+        // else if (data.type === Tiny.Primitives.RREC_LJOIN)
+        // {
+        //     var rx = shape.x;
+        //     var ry = shape.y;
+        //     var width = shape.width;
+        //     var height = shape.height;
+        //     var radius = shape.radius;
 
-            if (data.fillColor || data.fillColor === 0)
-            {
-                context.globalAlpha = data.fillAlpha * worldAlpha;
-                context.fillStyle = Tiny.color2style(fillColor);
-                context.strokeStyle = Tiny.color2style(fillColor);
-            }
+        //     if (data.fillColor || data.fillColor === 0)
+        //     {
+        //         context.globalAlpha = data.fillAlpha * worldAlpha;
+        //         context.fillStyle = Tiny.color2style(fillColor);
+        //         context.strokeStyle = Tiny.color2style(fillColor);
+        //     }
 
-            context.lineJoin = "round";
-            context.lineWidth = radius;
+        //     context.lineJoin = "round";
+        //     context.lineWidth = radius;
 
-            context.strokeRect(rx + (radius / 2), ry + (radius / 2), width - radius, height - radius);
-            context.fillRect(rx + (radius / 2), ry + (radius / 2), width - radius, height - radius);
-        }
+        //     context.strokeRect(rx + (radius / 2), ry + (radius / 2), width - radius, height - radius);
+        //     context.fillRect(rx + (radius / 2), ry + (radius / 2), width - radius, height - radius);
+        // }
     }
 };
 

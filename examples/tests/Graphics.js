@@ -2,59 +2,98 @@ window["test.Graphics"] = {
 
 	create: function() {
 
-		this.graphics = new Tiny.Graphics();
-		this.graphics.x = 100;
-		this.graphics.y = 100;
-		this.graphics.beginFill("#0a6dc1");
-		this.graphics.drawCircle(0, 0, 182);
-		this.graphics.beginFill("#04589e");
-		this.graphics.drawCircle(0, 0, 170);
+		const graphics = new Tiny.Graphics();
 
-		for (var i = 0; i < 40; i++) {
-			this.graphics.beginFill("#5500c5", 0.06);
-			this.graphics.drawCircle(0, 0, i * 4);
-		}
+		// Rectangle
+		graphics.beginFill("#DE3249");
+		graphics.drawRect(20, 20, 100, 100);
+		graphics.endFill();
 
-		// this.scene.add(this.graphics);
+		// Rectangle + line style 1
+		graphics.lineStyle(2, "#FEEB77", 1);
+		graphics.beginFill("#650A5A");
+		graphics.drawRect(140, 20, 100, 100);
+		graphics.endFill();
 
-		const texture1 = this.graphics.generateTexture();
+		// Rectangle + line style 2
+		graphics.lineStyle(10, "#FFBD01", 1);
+		graphics.beginFill("#C34288");
+		graphics.drawRect(260, 20, 100, 100);
+		graphics.endFill();
 
-		const sprite = new Tiny.Sprite(texture1);
-		this.scene.add(sprite);
+		// Rectangle 2
+		graphics.lineStyle(2, "#000000", 1);
+		graphics.beginFill("#AA4F08");
+		graphics.drawRect(410, 20, 140, 100);
+		graphics.endFill();
 
-		this.graphics.destroy();
+		// Circle
+		graphics.lineStyle(0); // draw a circle, set the lineStyle to zero so the circle doesn't have an outline
+		graphics.beginFill("#DE3249", 1);
+		graphics.drawCircle(70, 190, 100);
+		graphics.endFill();
 
+		// Circle + line style 1
+		graphics.lineStyle(2, "#FEEB77", 1);
+		graphics.beginFill("#650A5A", 1);
+		graphics.drawCircle(190, 190, 100);
+		graphics.endFill();
 
-		this.graphics = new Tiny.Graphics();
-		this.graphics.position.set(100, 100);
-		this.graphics.beginFill("#45a187")
-		this.graphics.drawCircle(34, 100, 125)
-		this.graphics.beginFill("#ff4545")
-		this.graphics.drawRect(120, 45, 50, 50)
-		this.graphics.scale.set(2, 1)
-		this.graphics.rotation = 0.3
+		// Circle + line style 2
+		graphics.lineStyle(10, "#FFBD01", 1);
+		graphics.beginFill("#C34288", 1);
+		graphics.drawCircle(310, 190, 100);
+		graphics.endFill();
 
-		var texture2 = this.graphics.generateTexture(0.5);
+		// Ellipse + line style 2
+		graphics.lineStyle(2, "#000000", 1);
+		graphics.beginFill("#AA4F08", 1);
+		graphics.drawEllipse(250, 350, 70, 40);
+		graphics.endFill();
 
-		const sprite2 = new Tiny.Sprite(texture2);
-		this.scene.add(sprite2);
+		// draw a shape
+		graphics.beginFill("#FF3300");
+		graphics.lineStyle(4, "#ffd900", 1);
+		graphics.moveTo(50, 270);
+		graphics.lineTo(250, 270);
+		graphics.lineTo(100, 320);
+		graphics.lineTo(50, 270);
+		//graphics.closePath();
+		graphics.endFill();
 
-		this.scene.add(this.graphics);
+		// draw a rounded rectangle
+		graphics.lineStyle(2, "#FF00FF", 1);
+		graphics.beginFill("#f1f1f1", 0.25);
+		graphics.drawRoundedRect(330, 270, 100, 100, 16);
+		graphics.endFill();
 
-		this.graphics.lineStyle(4, "#232323", 0.5);
-		this.graphics.moveTo(23, 100);
-		this.graphics.lineTo(150, 150);
+		// draw star
+		// graphics.lineStyle(2, "#FFFFFF");
+		// graphics.beginFill("#35CC5A", 1);
+		// graphics.drawStar(360, 370, 5, 50);
+		// graphics.endFill();
 
-		this.graphics.moveTo(200, 30);
+		// draw star 2
+		// graphics.lineStyle(2, "#FFFFFF");
+		// graphics.beginFill("#FFCC5A", 1);
+		// graphics.drawStar(280, 510, 7, 50);
+		// graphics.endFill();
 
-		this.graphics.quadraticCurveTo(100, 134, 220, 145);
-		this.graphics.bezierCurveTo(30, 5, 140, 10, 100, 50);
-		this.graphics.arcTo(200, -0, 250, -120, 150);
+		// draw star 3
+		// graphics.lineStyle(4, "#FFFFFF");
+		// graphics.beginFill("#55335A", 1);
+		// graphics.drawStar(470, 450, 4, 50);
+		// graphics.endFill();
 
-		this.graphics.beginFill("#f4a187", 0.5);
+		// draw polygon
+		const path = [450, 170, 550, 260, 630, 220, 580, 370, 440, 320];
 
-		this.graphics.drawRoundedRect(120, 0, 100, 60, 15);
-		this.graphics.drawRoundedRect2(120, 70, 100, 60, 15);
+		graphics.lineStyle(0);
+		graphics.beginFill("#3500FA", 1);
+		graphics.drawPolygon(path);
+		graphics.endFill();
+
+		this.scene.add(graphics);
 	}
 
 }

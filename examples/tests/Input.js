@@ -43,7 +43,7 @@ window["test.Input"]  = {
 
 		}, coin)
 
-		var coin2 = this.coin2= new Tiny.Sprite("base");
+		var coin2 = this.coin2 = new Tiny.Sprite("base");
 		coin2.x = 100;
 		coin2.y = 300;
 		coin2.anchor.set(0.5);
