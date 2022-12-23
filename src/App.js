@@ -14,6 +14,8 @@ Tiny.App = function(states)
     this.pauseDuration = 0;
     this.inputView = document.body;
 
+    if (Tiny.EventEmitter) Tiny.EventEmitter.mixin(this);
+
     states = states || {};
     this.boot = states.boot || this.boot || noop;
     this.preload = states.preload || this.preload || noop;
@@ -121,6 +123,7 @@ Tiny.App.prototype._update = function(time, delta)
     {
         delta *= this.timeScale;
         this.update.call(this.callbackContext, time, delta);
+        this.emit("update", delta);
 
         for (var i = 0; i < this.updatable.length; i++)
         {
@@ -133,6 +136,7 @@ Tiny.App.prototype._update = function(time, delta)
     }
 
     this.render();
+    this.emit("postrender");
 }
 
 

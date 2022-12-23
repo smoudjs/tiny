@@ -1,6 +1,6 @@
 {
   "name": "h5tiny",
-  "version": "2.0.9",
+  "version": "2.1.0",
   "description": "Fast and tiny JavaScript library for HTML5 game and creatives developing.",
   "main": "./build/tiny.js",
   "files": [
@@ -32,12 +32,12 @@
     "playable",
     "three"
   ],
-  "author": "Green Panda Games",
+  "author": "Peter Hutsul",
   "license": "ISC",
   "devDependencies": {
-    "uglifyjs-webpack-plugin": "^2.2.0",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11",
-    "three": "^0.112.1"
+    "terser-webpack-plugin": "^5.3.6",
+    "three": "^0.112.1",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
   }
 }

@@ -37,7 +37,7 @@ $ npm install h5tiny
 Use CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/h5tiny@2.0.3/build/tiny.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/h5tiny@2.0.10/build/tiny.js"></script>
 ```
 
 ### API Documentation

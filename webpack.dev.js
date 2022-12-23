@@ -3,12 +3,11 @@ const config = {
 
     mode: 'development',
 
-    devtool: 'inline-sourcemap',
+    devtool: 'inline-source-map',
 
     context: `${__dirname}`,
 
-    entry:
-    {
+    entry: {
         'tiny': './src/index.js',
         'tiny.mini': './src/mini.js',
         'plugins/extra': './plugins/extra',
@@ -17,21 +16,14 @@ const config = {
         // 'particles_pack': './particles_pack.js',
     },
 
-    output:
-    {
+    output: {
         path: `${__dirname}/examples/libs/tiny`,
         filename: `[name].js`
     },
 
-    plugins: [
-        // new webpack.DefinePlugin(
-        // {
-        //     _VERSION_: '"' + packageInfo.version + '"',
-        // })
-    ],
+    plugins: [],
 
-    stats:
-    {
+    stats: {
         colors: true
     }
 };

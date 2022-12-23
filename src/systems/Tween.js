@@ -29,16 +29,16 @@ _Group.prototype = {
 	},
 
 	add: function (tween) {
-
-		this._tweens[tween.getId()] = tween;
-		this._tweensAddedDuringUpdate[tween.getId()] = tween;
+		var id = tween.getId();
+		this._tweens[id] = tween;
+		this._tweensAddedDuringUpdate[id] = tween;
 
 	},
 
 	remove: function (tween) {
-
-		delete this._tweens[tween.getId()];
-		delete this._tweensAddedDuringUpdate[tween.getId()];
+		var id = tween.getId();
+		delete this._tweens[id];
+		delete this._tweensAddedDuringUpdate[id];
 
 	},
 
@@ -974,6 +974,10 @@ Tiny.TweenManager = function(game)
 
 Tiny.TweenManager.prototype = {
 
+	remove: function(tween) {
+		this.group.remove(tween);
+	},
+
 	add: function(obj) {
 		return new TWEEN.Tween(obj, this.group);
 	},
@@ -992,10 +996,10 @@ Tiny.TweenManager.prototype = {
 
 	resume() {
 
-        this.bufferList.forEach(function(tween)
+		for (var i = 0; i < this.bufferList.length; i++)
         {
-            tween.resume();
-        })
+            this.bufferList[i].resume();
+        }
 
         this.bufferList.length = 0;
         

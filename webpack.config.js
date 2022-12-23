@@ -1,5 +1,5 @@
 
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require("terser-webpack-plugin");
 
 const config = {
 
@@ -7,70 +7,47 @@ const config = {
 
     context: `${__dirname}/src`,
 
-    entry:
-    {
-
-        // 'asset-loader': './asset-loader/AssetLoader.js',
-        // 'three-ui': './three-ui/ThreeUI.js',
-
+    entry: {
         'tiny': './index.js',
         'tiny.mini': './mini.js',
-        'tiny.base': './base.js',
-        // 'plugins': './plugins.js',
-        // 'particles_pack': './particles_pack.js',
-        // 'three/base': './three/base.js',
-        // 'three/mini': './three/mini.js',
-        // 'three/standard': './three/standard.js',
-        // 'three/tiny': './three/index.js',
+        'tiny.base': './base.js'
     },
 
-    output:
-    {
+    output: {
         path: `${__dirname}/build/`,
-        filename: `[name].js`
+        filename: `[name].js`,
+        environment: {
+            arrowFunction: false,
+        }
     },
 
-    performance:
-    {
+    performance: {
         hints: false
     },
 
-    optimization:
-    {
-        minimizer: [
-            new UglifyJSPlugin(
+    optimization: {
+        minimize: true,
+        minimizer: [new TerserPlugin({
+            include: /\.js$/,
+            parallel: true,
+            terserOptions:
             {
-                include: /\.js$/,
-                parallel: true,
                 sourceMap: false,
-                uglifyOptions:
+                compress: true,
+                ie8: false,
+                ecma: 5,
+                output:
                 {
-                    compress: true,
-                    ie8: false,
-                    ecma: 5,
-                    output:
-                    {
-                        comments: false
-                    },
-                    warnings: false
+                    comments: false
                 },
-                warningsFilter: () => false
-            })
-        ]
+                warnings: false
+            }
+        })],
     },
 
-    plugins: [
-        // new webpack.DefinePlugin(
-        // {
-        //     _VERSION_: '"' + packageInfo.version + '"',
-        // })
+    plugins: [],
 
-        //new UglifyJSPlugin()
-        //new webpack.BannerPlugin({ banner: banner, raw: true }),
-    ],
-
-    stats:
-    {
+    stats: {
         colors: true
     }
 };

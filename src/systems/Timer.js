@@ -71,17 +71,17 @@ Tiny.TimerCreator.prototype = {
 
     update: function(delta) 
     {
-        this.list.forEach(function(tm)
+        for (var i = 0; i < this.list.length; i++)
         {
-            tm.update(delta);
-        })
+            this.list[i].update(delta);
+        }
     },
     removeAll: function()
     {
-        this.list.forEach(function(tm)
+        for (var i = 0; i < this.list.length; i++)
         {
-            tm.stop();
-        });
+            this.list[i].stop();
+        }
 
         this.list = [];
     },
