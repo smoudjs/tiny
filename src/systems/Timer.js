@@ -1,55 +1,56 @@
 var noop = function() {};
 
-var Timer = function(status, autoRemove, game, cb, delay, loop, n, oncomplete)
+var Timer = function(autoStart, autoRemove, game, cb, ctx, delay, loop, n, oncomplete)
 {
     this.game = game;
-    this._cb_ = cb || noop;
+    this.cb = cb || noop;
+    this.ctx = ctx || this;
     this.delay = (delay == undefined ? 1000 : delay);
     this.loop = loop;
-    this._count = n || 0;
-    this._repeat = (this._count > 0);
-    this.status = status;
+    this.count = n || 0;
+    this.repeat = (this.count > 0);
+    this.running = !!autoStart;
     this._lastFrame = 0;
     this.autoRemove = autoRemove;
-    this._oncomplete = oncomplete || noop;
+    this.onComplete = oncomplete || noop;
 }
 
 Timer.prototype = {
     start: function()
     {
-        this.status = 1;
+        this.running = true;
     },
     pause: function()
     {
-        this.status = 0;
+        this.running = false;
     },
     stop: function()
     {
-        this.status = 0;
+        this.running = false;
         this._lastFrame = 0;
     },
     update: function(deltaTime)
     {
-        if (this.status)
+        if (this.running)
         {
             this._lastFrame += deltaTime
             if (this._lastFrame >= this.delay)
             {
-                this._cb_();
+                this.cb.call(this.ctx);
                 this._lastFrame = 0;
-                if (this._repeat)
+                if (this.repeat)
                 {
-                    this._count--;
-                    if (this._count === 0)
+                    this.count--;
+                    if (this.count === 0)
                     {
-                        this.status = 0;
+                        this.running = false;
                         this.autoRemove && this.game.timer.remove(this);
-                        this._oncomplete();
+                        this.onComplete();
                     }
                 }
                 else if (!this.loop)
                 {
-                    this.status = 0;
+                    this.running = false;
                     this.autoRemove && this.game.timer.remove(this);
                 }
             }
@@ -94,29 +95,30 @@ Tiny.TimerCreator.prototype = {
             this.list.splice(indexOf, 1);
         }
     },
-    add: function(delay, cb, autostart, autoremove)
+    add: function(delay, cb, ctx, autostart, autoremove)
     {
-        if (autostart == undefined) 
-        {
-            autostart = this.autoStart;
-        }
-        var timer = new Timer((autostart ? 1 : 0), (autoremove != undefined ? autoremove : this.autoRemove), this.game, cb, delay);
+        autostart = autostart != undefined ? autostart : this.autoStart;
+        autoremove = autoremove != undefined ? autoremove : this.autoRemove;
+
+        var timer = new Timer(autostart, autoremove, this.game, cb, ctx, delay);
         this.list.push(timer);
         return timer;
     },
-    loop: function(delay, cb, autostart, autoremove)
+    loop: function(delay, cb, ctx, autostart, autoremove)
     {
-        if (autostart == undefined) 
-        {
-            autostart = this.autoStart;
-        }
-        var timer = new Timer((autostart ? 1 : 0), (autoremove != undefined ? autoremove : this.autoRemove), this.game, cb, delay, true);
+        autostart = autostart != undefined ? autostart : this.autoStart;
+        autoremove = autoremove != undefined ? autoremove : this.autoRemove;
+
+        var timer = new Timer(autostart, autoremove, this.game, cb, ctx, delay, true);
         this.list.push(timer);
         return timer;
     },
-    repeat: function(delay, n, cb, complete)
+    repeat: function(delay, n, cb, ctx, autostart, autoremove, complete)
     {
-        var timer = new Timer((this.autoStart ? 1 : 0), this.autoRemove, this.game, cb, delay, false, n, complete);
+        autostart = autostart != undefined ? autostart : this.autoStart;
+        autoremove = autoremove != undefined ? autoremove : this.autoRemove;
+
+        var timer = new Timer(autostart, autoremove, this.game, cb, ctx, delay, false, n, complete);
         this.list.push(timer);
         return timer;
     },

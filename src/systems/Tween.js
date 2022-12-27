@@ -180,7 +180,7 @@ TWEEN.Tween.prototype = {
 		return this;
 	},
 
-	start: function (time) {
+	start: function (reset) {
 
 		this._group.add(this);
 
@@ -213,8 +213,8 @@ TWEEN.Tween.prototype = {
 				continue;
 			}
 
-			// Save the starting value, but only once.
-			if (typeof(this._valuesStart[property]) === 'undefined') {
+			// Save the starting value, only once - if reset set to false.
+			if (reset == true || typeof(this._valuesStart[property]) === 'undefined') {
 				this._valuesStart[property] = this._object[property];
 			}
 
