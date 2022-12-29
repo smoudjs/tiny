@@ -120,7 +120,7 @@ TWEEN.nextId = function () {
 // }
 
 
-TWEEN.Tween = function (object, group) {
+Tiny.Tween = function (object, group) {
 	this._isPaused = false;
 	// this._pauseStart = null;
 	this._object = object;
@@ -136,8 +136,8 @@ TWEEN.Tween = function (object, group) {
 	this._delayTime = 0;
 	this._startTime = null;
 	this._time = 0;
-	this._easingFunction = TWEEN.Easing.Linear.None;
-	this._interpolationFunction = TWEEN.Interpolation.Linear;
+	this._easingFunction = Tiny.Easing.Linear.None;
+	this._interpolationFunction = Tiny.Interpolation.Linear;
 	this._chainedTweens = [];
 	this._onStartCallback = null;
 	this._onStartCallbackFired = false;
@@ -150,7 +150,7 @@ TWEEN.Tween = function (object, group) {
 
 };
 
-TWEEN.Tween.prototype = {
+Tiny.Tween.prototype = {
 	getId: function () {
 		return this._id;
 	},
@@ -524,7 +524,7 @@ TWEEN.Tween.prototype = {
 };
 
 
-TWEEN.Easing = {
+Tiny.Easing = {
 
 	Linear: {
 
@@ -810,7 +810,7 @@ TWEEN.Easing = {
 
 		In: function (k) {
 
-			return 1 - TWEEN.Easing.Bounce.Out(1 - k);
+			return 1 - Tiny.Easing.Bounce.Out(1 - k);
 
 		},
 
@@ -831,10 +831,10 @@ TWEEN.Easing = {
 		InOut: function (k) {
 
 			if (k < 0.5) {
-				return TWEEN.Easing.Bounce.In(k * 2) * 0.5;
+				return Tiny.Easing.Bounce.In(k * 2) * 0.5;
 			}
 
-			return TWEEN.Easing.Bounce.Out(k * 2 - 1) * 0.5 + 0.5;
+			return Tiny.Easing.Bounce.Out(k * 2 - 1) * 0.5 + 0.5;
 
 		}
 
@@ -842,14 +842,14 @@ TWEEN.Easing = {
 
 };
 
-TWEEN.Interpolation = {
+Tiny.Interpolation = {
 
 	Linear: function (v, k) {
 
 		var m = v.length - 1;
 		var f = m * k;
 		var i = Math.floor(f);
-		var fn = TWEEN.Interpolation.Utils.Linear;
+		var fn = Tiny.Interpolation.Utils.Linear;
 
 		if (k < 0) {
 			return fn(v[0], v[1], f);
@@ -868,7 +868,7 @@ TWEEN.Interpolation = {
 		var b = 0;
 		var n = v.length - 1;
 		var pw = Math.pow;
-		var bn = TWEEN.Interpolation.Utils.Bernstein;
+		var bn = Tiny.Interpolation.Utils.Bernstein;
 
 		for (var i = 0; i <= n; i++) {
 			b += pw(1 - k, n - i) * pw(k, i) * v[i] * bn(n, i);
@@ -883,7 +883,7 @@ TWEEN.Interpolation = {
 		var m = v.length - 1;
 		var f = m * k;
 		var i = Math.floor(f);
-		var fn = TWEEN.Interpolation.Utils.CatmullRom;
+		var fn = Tiny.Interpolation.Utils.CatmullRom;
 
 		if (v[0] === v[m]) {
 
@@ -919,7 +919,7 @@ TWEEN.Interpolation = {
 
 		Bernstein: function (n, i) {
 
-			var fc = TWEEN.Interpolation.Utils.Factorial;
+			var fc = Tiny.Interpolation.Utils.Factorial;
 
 			return fc(n) / fc(i) / fc(n - i);
 
@@ -979,7 +979,7 @@ Tiny.TweenManager.prototype = {
 	},
 
 	add: function(obj) {
-		return new TWEEN.Tween(obj, this.group);
+		return new Tiny.Tween(obj, this.group);
 	},
 
 	pause: function() {

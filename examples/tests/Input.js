@@ -73,9 +73,9 @@ window["test.Input"]  = {
 		var text = this.text = new Tiny.Text("Drag me!", {fill: "#ffffff"});
 		text.anchor.set(0.5);
 
-		this.tweens.add(text.scale).to({x: 1.1, y: 1.1}, 500).yoyo(true).easing(TWEEN.Easing.Sinusoidal.InOut).repeat(Infinity).start();
+		this.tweens.add(text.scale).to({x: 1.1, y: 1.1}, 500).yoyo(true).easing(Tiny.Easing.Sinusoidal.InOut).repeat(Infinity).start();
 
-		var pulseTween = this.tweens.add(sprite.scale).to({x: 1.1, y: 1.1}, 100).yoyo(true).easing(TWEEN.Easing.Sinusoidal.InOut).repeat(Infinity).start();
+		var pulseTween = this.tweens.add(sprite.scale).to({x: 1.1, y: 1.1}, 100).yoyo(true).easing(Tiny.Easing.Sinusoidal.InOut).repeat(Infinity).start();
 		pulseTween.pause();
 
 		sprite.add(text);

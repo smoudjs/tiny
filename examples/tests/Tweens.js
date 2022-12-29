@@ -28,8 +28,8 @@ window["test.Tweens"]  = {
 
 		this.tweens.add(sprite1).to({x: 200}, 1400).start();
 		this.tweens.add(sprite2).to({x: 200}, 1000).delay(1400).repeatDelay(100).repeat(5).start();
-		this.tweens.add(sprite3).to({x: 200}, 500).yoyo(true).easing(TWEEN.Easing.Sinusoidal.InOut).repeat(Infinity).start();
-		var tween = this.tweens.add(sprite4).to({x: 200}, 500).yoyo(true).easing(TWEEN.Easing.Sinusoidal.InOut).repeat(Infinity).start();
+		this.tweens.add(sprite3).to({x: 200}, 500).yoyo(true).easing(Tiny.Easing.Sinusoidal.InOut).repeat(Infinity).start();
+		var tween = this.tweens.add(sprite4).to({x: 200}, 500).yoyo(true).easing(Tiny.Easing.Sinusoidal.InOut).repeat(Infinity).start();
 		
 		this.timer.loop(2000, function() {
 
@@ -43,12 +43,12 @@ window["test.Tweens"]  = {
 		 */
 		let y = 15;
 
-		for (let easeName in TWEEN.Easing) 
+		for (let easeName in Tiny.Easing) 
 		{
-			for (let fun in TWEEN.Easing[easeName]) 
+			for (let fun in Tiny.Easing[easeName]) 
 			{
 				let name = easeName + "." + fun;
-				let ease = TWEEN.Easing[easeName][fun];
+				let ease = Tiny.Easing[easeName][fun];
 
 				let sprite = new Tiny.Sprite("base");
 				sprite.scale.set(0.1);

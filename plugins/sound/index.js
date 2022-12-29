@@ -90,12 +90,14 @@ class SoundManager {
 Tiny.Cache.sound = {};
 
 Tiny.Loader.prototype.sound = function(key, src) {
-
-    this.list.push({
-        key: key,
-        src: src,
-        type: "sound"
-    });
+    
+    if (src) {
+        this.list.push({
+            key: key,
+            src: src,
+            type: "sound"
+        });
+    }
 }
 
 Tiny.Loader.sound = function(resource, cb) 
@@ -104,9 +106,10 @@ Tiny.Loader.sound = function(resource, cb)
         "src": [resource.src]
     });
 
-    Tiny.Cache.sound[resource.key] = sound;
-
-    cb();
+    sound.once('load', function() {
+        Tiny.Cache.sound[resource.key] = sound;
+        cb();
+    });
 }
 
 // Tiny.SoundManager = SoundManager;
