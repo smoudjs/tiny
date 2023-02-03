@@ -1,22 +1,22 @@
-require('./mini.js')
+require("./mini.js");
 
 // require('./systems/ObjectCreator.js'); // 1 Kb
 // require('./systems/Loader.js'); // 3 Kb
 // require('./systems/Input.js'); // 1 Kb
 // require('./systems/Timer.js'); // 1 Kb
-require('./systems/Tween.js');
+require("./systems/Tween.js");
 
-require('./math/RoundedRectangle.js');	//
-require('./math/Polygon.js');			//
-require('./math/Circle.js');			// 6 Kb
+require("./math/RoundedRectangle.js"); //
+require("./math/Polygon.js"); //
+require("./math/Circle.js"); // 6 Kb
 
-require('./renderers/GraphicsRenderer.js'); // 4Kb
+require("./renderers/GraphicsRenderer.js"); // 4Kb
 
-require('./objects/Graphics.js'); // 10 Kb
+require("./objects/Graphics.js"); // 10 Kb
 // require('./objects/TilingSprite.js'); // 4 Kb   ############### TilingSprite  game.add.tilesprite
 
-require('./textures/RenderTexture.js'); // 2 Kb
+require("./textures/RenderTexture.js"); // 2 Kb
 
-require('./utils/CanvasBuffer.js'); // 1 Kb
-require('./renderers/CanvasMaskManager.js'); // 1Kb
-require('./renderers/CanvasTinter.js'); // 3 Kb ################ tint function
+require("./utils/CanvasBuffer.js"); // 1 Kb
+require("./renderers/CanvasMaskManager.js"); // 1Kb
+require("./renderers/CanvasTinter.js"); // 3 Kb ################ tint function

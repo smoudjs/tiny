@@ -1,5 +1,4 @@
-
-var THREE = require('three'),
+var THREE = require("three"),
     Sprite = THREE.Sprite,
     SpriteMaterial = THREE.SpriteMaterial,
     CanvasTexture = THREE.CanvasTexture,
@@ -7,9 +6,7 @@ var THREE = require('three'),
     LinearFilter = THREE.LinearFilter;
 
 class Canvas2D extends Sprite {
-
     constructor(width, height) {
-
         const renderer = new Tiny.CanvasRenderer(width, height, { transparent: true });
         // renderer.setClearColor("#ffffff");
 
@@ -18,7 +15,7 @@ class Canvas2D extends Sprite {
         canvasTexture.minFilter = LinearFilter;
 
         const material = new SpriteMaterial({
-            map: canvasTexture,
+            map: canvasTexture
             // color: 0x00ffff,
             // depthWrite: false
         });
@@ -29,20 +26,18 @@ class Canvas2D extends Sprite {
         this.height = height;
         this.autoUpdate = false;
         this.renderer = renderer;
-        const container = this.container = new Tiny.Scene();
+        const container = (this.container = new Tiny.Scene());
         this.texture = canvasTexture;
 
         this.add = container.add.bind(container);
         this.remove = container.remove.bind(container);
     }
 
-    onBeforeRender() 
-    {
+    onBeforeRender() {
         this.autoUpdate && this.update();
     }
 
-    update() 
-    {
+    update() {
         this.renderer.render(this.container);
 
         this.texture.needsUpdate = true;

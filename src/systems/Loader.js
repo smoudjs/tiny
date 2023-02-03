@@ -1,11 +1,9 @@
-
 Tiny.Cache = {
     image: {},
     texture: {}
 };
 
-Tiny.Loader = function(game)
-{
+Tiny.Loader = function (game) {
     game.cache = Tiny.Cache;
 
     this.game = game;
@@ -13,56 +11,45 @@ Tiny.Loader = function(game)
 };
 
 Tiny.Loader.prototype = {
-
-    clearCache: function() {
-
+    clearCache: function () {
         for (var y in Tiny.Cache.texture) Tiny.Cache.texture[y].destroy();
 
         for (var y in Tiny.Cache) Tiny.Cache[y] = {};
     },
 
-    all: function(array) {
-
-        this.list = this.list.concat(array); 
+    all: function (array) {
+        this.list = this.list.concat(array);
     },
 
-    image: function(key, source)
-    {
-        this.list.push(
-        {
+    image: function (key, source) {
+        this.list.push({
             src: source,
             key: key,
             type: "image"
         });
     },
 
-    spritesheet: function(key, source, arg_1, arg_2, totalFrames, duration)
-    {
+    spritesheet: function (key, source, arg_1, arg_2, totalFrames, duration) {
         var res = {
             src: source,
             key: key,
             type: "spritesheet"
         };
 
-        if (typeof arg_1 == "number")
-        {
+        if (typeof arg_1 == "number") {
             res.width = arg_1;
             res.height = arg_2;
             res.total = totalFrames;
             res.duration = duration;
-        }
-        else if (arg_1.length > 0)
-        {
+        } else if (arg_1.length > 0) {
             res.data = arg_1;
         }
 
         this.list.push(res);
     },
 
-    atlas: function(key, source, atlasData)
-    {
-        this.list.push(
-        {
+    atlas: function (key, source, atlasData) {
+        this.list.push({
             src: source,
             key: key,
             data: atlasData,
@@ -70,19 +57,16 @@ Tiny.Loader.prototype = {
         });
     },
 
-    start: function(callback)
-    {
+    start: function (callback) {
         var game = this.game;
         var list = this.list;
 
-        if (list.length == 0)
-        {
+        if (list.length == 0) {
             callback.call(game);
             return;
         }
 
-        function loadNext()
-        {
+        function loadNext() {
             // var done = false;
             var resource = list.shift();
 
@@ -90,21 +74,16 @@ Tiny.Loader.prototype = {
 
             if (loader) {
                 loader(resource, loaded);
-            }
-            else {
+            } else {
                 console.warn("Cannot find loader for " + resource.type);
                 loaded();
             }
         }
 
-        function loaded(resource, data) 
-        {
-            if (list.length != 0) 
-            {
+        function loaded(resource, data) {
+            if (list.length != 0) {
                 loadNext();
-            }
-            else 
-            {
+            } else {
                 callback.call(game);
             }
         }
@@ -113,14 +92,11 @@ Tiny.Loader.prototype = {
     }
 };
 
-Tiny.Loader.atlas = function(resource, cb)
-{
+Tiny.Loader.atlas = function (resource, cb) {
     var key = resource.key;
 
-    Tiny.Loader.image(resource, function(resource, image) {
-        
-        for (var i = 0; i < resource.data.length; i++)
-        {
+    Tiny.Loader.image(resource, function (resource, image) {
+        for (var i = 0; i < resource.data.length; i++) {
             var uuid = key + "." + resource.data[i].name;
             var texture = new Tiny.Texture(image, resource.data[i]);
             texture.key = key;
@@ -130,23 +106,19 @@ Tiny.Loader.atlas = function(resource, cb)
 
         cb();
     });
-}
+};
 
-Tiny.Loader.spritesheet = function(resource, cb)
-{
+Tiny.Loader.spritesheet = function (resource, cb) {
     var key = resource.key;
 
-    Tiny.Loader.image(resource, function(resource, image) {
-        
+    Tiny.Loader.image(resource, function (resource, image) {
         var lastFrame, uuid, texture;
 
         if (resource.data) {
-
             var frameData = resource.data;
-            lastFrame = (frameData.length - 1);
+            lastFrame = frameData.length - 1;
 
-            for (var i = 0; i <= lastFrame; i++)
-            {
+            for (var i = 0; i <= lastFrame; i++) {
                 uuid = key + "." + i;
 
                 texture = new Tiny.Texture(image, {
@@ -163,9 +135,7 @@ Tiny.Loader.spritesheet = function(resource, cb)
 
                 Tiny.Cache.texture[uuid] = texture;
             }
-        }
-        else 
-        {
+        } else {
             var width = image.naturalWidth || image.width;
             var height = image.naturalHeight || image.height;
 
@@ -180,8 +150,7 @@ Tiny.Loader.spritesheet = function(resource, cb)
 
             var total = cols * rows;
 
-            if (total === 0) 
-            {
+            if (total === 0) {
                 return cb();
             }
 
@@ -191,8 +160,7 @@ Tiny.Loader.spritesheet = function(resource, cb)
             var y = 0;
             lastFrame = total - 1;
 
-            for (var i = 0; i < total; i++)
-            {
+            for (var i = 0; i < total; i++) {
                 uuid = key + "." + i;
                 texture = new Tiny.Texture(image, {
                     index: i,
@@ -208,8 +176,7 @@ Tiny.Loader.spritesheet = function(resource, cb)
 
                 x += frameWidth;
 
-                if (x + frameWidth > width)
-                {
+                if (x + frameWidth > width) {
                     x = 0;
                     y += frameHeight;
                 }
@@ -218,19 +185,16 @@ Tiny.Loader.spritesheet = function(resource, cb)
 
         cb();
     });
-}
+};
 
-
-Tiny.Loader.image = function(resource, cb) 
-{
+Tiny.Loader.image = function (resource, cb) {
     // if (Tiny.Cache["image"][resource.key]) return cb(resource, Tiny.Cache["image"][resource.key]);
 
     const image = new Image();
 
-    image.addEventListener('load', function()
-    {
+    image.addEventListener("load", function () {
         Tiny.Cache.image[resource.key] = image;
-        
+
         cb(resource, image);
     });
 
@@ -240,6 +204,6 @@ Tiny.Loader.image = function(resource, cb)
     // })
 
     image.src = resource.src;
-}
+};
 
 Tiny.registerSystem("load", Tiny.Loader);

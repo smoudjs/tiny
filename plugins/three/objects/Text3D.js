@@ -1,5 +1,4 @@
-
-var THREE = require('three'),
+var THREE = require("three"),
     Mesh = THREE.Mesh,
     MeshBasicMaterial = THREE.MeshBasicMaterial,
     CanvasTexture = THREE.CanvasTexture,
@@ -7,11 +6,8 @@ var THREE = require('three'),
     LinearFilter = THREE.LinearFilter,
     PlaneBufferGeometry = THREE.PlaneBufferGeometry;
 
-
 class Text3D extends Mesh {
-
     constructor(text, options) {
-
         options = options || {};
         options.size = options.size || 1;
 
@@ -32,7 +28,7 @@ class Text3D extends Mesh {
         super(geometry, material);
 
         const max = Math.max(_text.width, _text.height);
-        this.scale.set(options.size * _text.width / max, options.size * _text.height / max, 1)
+        this.scale.set((options.size * _text.width) / max, (options.size * _text.height) / max, 1);
 
         this.size = options.size;
         this.text = _text;
@@ -41,19 +37,17 @@ class Text3D extends Mesh {
         // this.text.updateCanvas();
     }
 
-    setText(text) 
-    {
+    setText(text) {
         const _text = this.text;
         _text.setText(text);
         _text.updateText();
 
         const max = Math.max(_text.width, _text.height);
 
-        this.scale.set(this.size * _text.width / max, this.size * _text.height / max, 1);
+        this.scale.set((this.size * _text.width) / max, (this.size * _text.height) / max, 1);
 
         this.texture.needsUpdate = true;
     }
-
 }
 
 Tiny.Text3D = Text3D;

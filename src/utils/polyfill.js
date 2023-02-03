@@ -4,7 +4,6 @@ if (!Date.now) {
   };
 }
 
-if (typeof(Float32Array) == 'undefined')
-{
-	window.Float32Array = Array
+if (typeof Float32Array == "undefined") {
+  window.Float32Array = Array;
 }

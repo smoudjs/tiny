@@ -1,149 +1,162 @@
-window["test.Input"]  = {
+window["test.Input"] = {
+    preload: function () {
+        this.load.image("base", baseImage);
+        this.load.atlas("atlas", atlas, atlas_data);
+    },
 
-	preload: function() {
+    create: function () {
+        const debugText = (this.debugText = new Tiny.Text("0:0", { fill: "#3434f3" }));
+        this.scene.add(debugText);
 
-		this.load.image("base", baseImage);
-		this.load.atlas("atlas", atlas, atlas_data);
-	},
+        this.input.on("down", function (e) {
+            console.log("Mouse down: " + e.x + ":" + e.y);
+        }, this);
 
-	create: function() {
+        this.input.on("up", function (e) {
+            console.log("Mouse up: " + e.x + ":" + e.y);
+        }, this);
 
-		const debugText = this.debugText = new Tiny.Text("0:0", {fill: "#3434f3"});
-		this.scene.add(debugText);
+        this.input.on("move", function (e) {
+            console.log("Mouse move: ", this.input.isDown);
+            debugText.setText(Math.floor(e.x) + " : " + Math.floor(e.y));
+        }, this);
 
-		this.input.on("down", function(e) {
-			console.log("Mouse down: " + e.x + ":" + e.y);
-		}, this)
+        var coin = (this.coin = new Tiny.Sprite("base"));
+        coin.x = 300;
+        coin.y = 200;
+        coin.anchor.set(0.5);
+        coin.scale.set(0.9);
+        this.scene.add(coin);
 
-		this.input.on("up", function(e) {
-			console.log("Mouse up: " + e.x + ":" + e.y);
-		}, this)
+        this.input.add(coin);
+        coin.input.on("click", function () {
+            console.log("Coin 2 clicked");
+            coin.tint = Tiny.hex2style(Math.floor(Math.random() * 162000));
+        }, this);
 
-		this.input.on("move", function(e) {
-			console.log("Mouse move: ", this.input.isDown);
-			debugText.setText(Math.floor(e.x) + " : " + Math.floor(e.y))
-		}, this)
+        coin.input.on("down", function () {
+            this.dragging = true;
+        }, coin);
 
-		var coin = this.coin = new Tiny.Sprite("base");
-		coin.x = 300;
-		coin.y = 200;
-		coin.anchor.set(0.5);
-		coin.scale.set(0.9);
-		this.scene.add(coin);
+        var coin2 = (this.coin2 = new Tiny.Sprite("base"));
+        coin2.x = 100;
+        coin2.y = 300;
+        coin2.anchor.set(0.5);
+        coin2.scale.set(0.9);
+        this.scene.add(coin2);
+        this.input.add(coin2);
 
-		this.input.add(coin);
-		coin.input.on("click", function() {
-			console.log("Coin 2 clicked");
-			coin.tint = Tiny.hex2style(Math.floor(Math.random() * 162000));
-		}, this)
+        this.graphics = new Tiny.Graphics();
+        this.graphics.x = 100;
+        this.graphics.beginFill("#0a6dc1");
+        this.graphics.drawCircle(0, 0, 182);
+        this.graphics.beginFill("#04589e");
+        this.graphics.drawCircle(0, 0, 170);
+        for (var i = 0; i < 40; i++) {
+            this.graphics.beginFill("#5500c5", 0.06);
+            this.graphics.drawCircle(0, 0, i * 4);
+        }
+        var newTexture = this.graphics.generateTexture();
+        this.graphics.destroy();
 
-		coin.input.on("down", function() {
+        var sprite = (this.sprite = new Tiny.Sprite(newTexture));
+        sprite.position.set(560, 120);
+        sprite.anchor.set(0.5);
 
-			this.dragging = true;
+        var text = (this.text = new Tiny.Text("Drag me!", { fill: "#ffffff" }));
+        text.anchor.set(0.5);
 
-		}, coin)
+        this.tweens
+            .add(text.scale)
+            .to({ x: 1.1, y: 1.1 }, 500)
+            .yoyo(true)
+            .easing(Tiny.Easing.Sinusoidal.InOut)
+            .repeat(Infinity)
+            .start();
 
-		var coin2 = this.coin2 = new Tiny.Sprite("base");
-		coin2.x = 100;
-		coin2.y = 300;
-		coin2.anchor.set(0.5);
-		coin2.scale.set(0.9);
-		this.scene.add(coin2);
-		this.input.add(coin2);
+        var pulseTween = this.tweens
+            .add(sprite.scale)
+            .to({ x: 1.1, y: 1.1 }, 100)
+            .yoyo(true)
+            .easing(Tiny.Easing.Sinusoidal.InOut)
+            .repeat(Infinity)
+            .start();
 
+        pulseTween.pause();
 
+        sprite.add(text);
 
-		this.graphics = new Tiny.Graphics();
-		this.graphics.x = 100;
-		this.graphics.beginFill("#0a6dc1");
-		this.graphics.drawCircle(0, 0, 182);
-		this.graphics.beginFill("#04589e");
-		this.graphics.drawCircle(0, 0, 170);
-		for (var i = 0; i < 40; i++) {
-			this.graphics.beginFill("#5500c5", 0.06);
-			this.graphics.drawCircle(0, 0, i * 4);
-		}
-		var newTexture = this.graphics.generateTexture();
-		this.graphics.destroy();
+        var dragging = false;
 
-		var sprite = this.sprite = new Tiny.Sprite(newTexture);
-		sprite.position.set(560, 120);
-		sprite.anchor.set(0.5);
+        var startOffsetX = 0;
+        var startOffsetY = 0;
 
-		var text = this.text = new Tiny.Text("Drag me!", {fill: "#ffffff"});
-		text.anchor.set(0.5);
+        this.input.on(
+            "up",
+            function (e) {
+                dragging = false;
+                this.coin2.dragging = false;
+                this.coin.dragging = false;
+                pulseTween.pause();
+                sprite.scale.set(1);
+            },
+            this
+        );
 
-		this.tweens.add(text.scale).to({x: 1.1, y: 1.1}, 500).yoyo(true).easing(Tiny.Easing.Sinusoidal.InOut).repeat(Infinity).start();
+        this.input.on(
+            "move",
+            function (e) {
+                if (dragging) {
+                    sprite.position.set(e.x + startOffsetX, e.y + startOffsetY);
+                }
 
-		var pulseTween = this.tweens.add(sprite.scale).to({x: 1.1, y: 1.1}, 100).yoyo(true).easing(Tiny.Easing.Sinusoidal.InOut).repeat(Infinity).start();
-		pulseTween.pause();
+                if (this.coin2.dragging) {
+                    this.coin2.position.set(e.x, e.y);
+                    this.recusrive.setCenter(this.coin2.x / game.width, this.coin2.y / game.height);
+                }
 
-		sprite.add(text);
+                if (this.coin.dragging) {
+                    this.coin.position.set(e.x, e.y);
+                    this.recusrive.alpha = this.coin.x / game.width;
+                    this.recusrive.clearAlpha = this.coin.y / game.height;
+                    this.recusrive.clearAlpha *= this.recusrive.clearAlpha * this.recusrive.clearAlpha;
+                    this.recusrive.updateFrames();
+                }
+            },
+            this
+        );
 
-		var dragging = false;
+        this.input.add(sprite);
 
-		var startOffsetX = 0;
-		var startOffsetY = 0;
+        sprite.input.on("down", function (e) {
+            startOffsetX = sprite.x - e.x;
+            startOffsetY = sprite.y - e.y;
+            dragging = true;
+            pulseTween.resume();
+        });
 
-		this.input.on("up", function(e) {
-			dragging = false;
-			this.coin2.dragging = false;
-			this.coin.dragging = false;
-			pulseTween.pause();
-			sprite.scale.set(1);
-		}, this)
+        this.scene.add(sprite);
 
-		this.input.on("move", function(e) {
-			if (dragging) {
-				sprite.position.set(e.x + startOffsetX, e.y + startOffsetY);
-			}
+        /**
+         * Creating scene recursive sprite
+         */
+        this.recusrive = new Tiny.RecursiveSprite(this);
+        this.scene.add(this.recusrive);
 
-			if (this.coin2.dragging) {
-				this.coin2.position.set(e.x, e.y);
-				this.recusrive.setCenter(this.coin2.x / game.width, this.coin2.y / game.height);
-			}
+        coin2.input.on(
+            "down",
+            function () {
+                this.dragging = true;
+            },
+            coin2
+        );
+    },
 
-			if (this.coin.dragging) {
-				this.coin.position.set(e.x, e.y);
-				this.recusrive.alpha = this.coin.x / game.width;
-				this.recusrive.clearAlpha = this.coin.y / game.height;
-				this.recusrive.clearAlpha *= this.recusrive.clearAlpha * this.recusrive.clearAlpha;
-				this.recusrive.updateFrames();
-			}
-		}, this)
+    resize: function (width, height) {
+        this.recusrive.resize(width, height);
+    },
 
-		this.input.add(sprite);
-
-		sprite.input.on("down", function(e) {
-			startOffsetX = sprite.x - e.x;
-			startOffsetY = sprite.y - e.y;
-			dragging = true;
-			pulseTween.resume();
-		});
-
-		this.scene.add(sprite);
-
-
-		/**
-		 * Creating scene recursive sprite
-		 */
-		this.recusrive = new Tiny.RecursiveSprite(this);
-		this.scene.add(this.recusrive);
-
-		coin2.input.on("down", function() {
-
-			this.dragging = true;
-
-		}, coin2);
-	},
-
-	resize: function(width, height) {
-
-		this.recusrive.resize(width, height);
-	},
-
-	update: function(time, delta) {
-
-		this.recusrive.update(delta);
-	}
-}
+    update: function (time, delta) {
+        this.recusrive.update(delta);
+    }
+};

@@ -1,29 +1,21 @@
 var context = window;
 
 class SoundManager {
-
-    constructor (game) {
-
+    constructor(game) {
         this.game = game;
-
     }
 
     volume(vol) {
-
         if (context.Howler) {
             context.Howler.volume(vol);
         }
-
     }
 
-    loop (audio, volume) {
-
+    loop(audio, volume) {
         var sound = Tiny.Cache.sound[audio];
 
         if (sound) {
-
             if (context.Howler.state === "running") {
-
                 if (volume !== undefined) {
                     sound.volume(volume);
                 }
@@ -36,15 +28,11 @@ class SoundManager {
         return sound;
     }
 
-
-    play (audio, volume) {
-
+    play(audio, volume) {
         var sound = Tiny.Cache.sound[audio];
 
         if (sound) {
-
             if (context.Howler.state === "running") {
-
                 if (volume !== undefined) {
                     sound.volume(volume);
                 }
@@ -56,17 +44,14 @@ class SoundManager {
         return sound;
     }
 
-    fade (audio, volume, duration) 
-    {
+    fade(audio, volume, duration) {
         var sound = Tiny.Cache.sound[audio];
 
         if (volume == undefined) volume = 1;
         if (duration == undefined) duration = 600;
 
         if (sound) {
-
             if (context.Howler.state === "running") {
-
                 sound.fade(volume, 0, duration);
 
                 sound.play();
@@ -77,11 +62,9 @@ class SoundManager {
     }
 
     destroy(clearCache) {
-
         for (var y in Tiny.Cache.sound) Tiny.Cache.sound[y].stop();
-            
-        if (clearCache) 
-        {
+
+        if (clearCache) {
             for (var y in Tiny.Cache.sound) Tiny.Cache.sound[y].unload();
         }
     }
@@ -89,8 +72,7 @@ class SoundManager {
 
 Tiny.Cache.sound = {};
 
-Tiny.Loader.prototype.sound = function(key, src) {
-    
+Tiny.Loader.prototype.sound = function (key, src) {
     if (src) {
         this.list.push({
             key: key,
@@ -98,19 +80,18 @@ Tiny.Loader.prototype.sound = function(key, src) {
             type: "sound"
         });
     }
-}
+};
 
-Tiny.Loader.sound = function(resource, cb) 
-{
+Tiny.Loader.sound = function (resource, cb) {
     var sound = new context.Howl({
-        "src": [resource.src]
+        src: [resource.src]
     });
 
-    sound.once('load', function() {
+    sound.once("load", function () {
         Tiny.Cache.sound[resource.key] = sound;
         cb();
     });
-}
+};
 
 // Tiny.SoundManager = SoundManager;
 Tiny.registerSystem("sound", SoundManager);

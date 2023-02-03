@@ -1,6 +1,4 @@
-
-Tiny.RenderTexture = function(width, height, renderer, resolution)
-{
+Tiny.RenderTexture = function (width, height, renderer, resolution) {
     this.width = width || 100;
     this.height = height || 100;
 
@@ -19,7 +17,8 @@ Tiny.RenderTexture = function(width, height, renderer, resolution)
     // this.baseTexture.hasLoaded = true;
     this.textureBuffer = new Tiny.CanvasBuffer(this.width * resolution, this.height * resolution);
 
-    Tiny.Texture.call(this,
+    Tiny.Texture.call(
+        this,
         this.textureBuffer.canvas,
         new Tiny.Rectangle(0, 0, Math.floor(this.width * resolution), Math.floor(this.height * resolution))
     );
@@ -36,55 +35,50 @@ Tiny.RenderTexture = function(width, height, renderer, resolution)
 Tiny.RenderTexture.prototype = Object.create(Tiny.Texture.prototype);
 Tiny.RenderTexture.prototype.constructor = Tiny.RenderTexture;
 
-Tiny.RenderTexture.prototype.resize = function(width, height, updateBase)
-{
-    if (width === this.width && height === this.height)return;
+Tiny.RenderTexture.prototype.resize = function (width, height, updateBase) {
+    if (width === this.width && height === this.height) return;
 
-    this.valid = (width > 0 && height > 0);
+    this.valid = width > 0 && height > 0;
 
     this.width = width;
     this.height = height;
     this.frame.width = this.crop.width = width * this.resolution;
     this.frame.height = this.crop.height = height * this.resolution;
 
-    if (updateBase)
-    {
+    if (updateBase) {
         // this.baseTexture.width = this.width * this.resolution;
         // this.baseTexture.height = this.height * this.resolution;
     }
 
-    if(!this.valid)return;
+    if (!this.valid) return;
 
     this.textureBuffer.resize(this.width * this.resolution, this.height * this.resolution);
 };
 
-Tiny.RenderTexture.prototype.clear = function()
-{
-    if(!this.valid)return;
+Tiny.RenderTexture.prototype.clear = function () {
+    if (!this.valid) return;
 
     this.textureBuffer.clear();
 };
 
-Tiny.RenderTexture.prototype.render = function(displayObject, matrix, clear)
-{
-    if(!this.valid)return;
+Tiny.RenderTexture.prototype.render = function (displayObject, matrix, clear) {
+    if (!this.valid) return;
 
     var wt = displayObject.worldTransform;
     wt.identity();
-    if(matrix)wt.append(matrix);
-    
+    if (matrix) wt.append(matrix);
+
     // setWorld Alpha to ensure that the object is renderer at full opacity
     displayObject.worldAlpha = 1;
 
-    // Time to update all the children of the displayObject with the new matrix..    
+    // Time to update all the children of the displayObject with the new matrix..
     var children = displayObject.children;
 
-    for(var i = 0, j = children.length; i < j; i++)
-    {
+    for (var i = 0, j = children.length; i < j; i++) {
         children[i].updateTransform();
     }
 
-    if(clear)this.textureBuffer.clear();
+    if (clear) this.textureBuffer.clear();
 
     var context = this.textureBuffer.context;
 
@@ -97,19 +91,16 @@ Tiny.RenderTexture.prototype.render = function(displayObject, matrix, clear)
     this.renderer.resolution = realResolution;
 };
 
-Tiny.RenderTexture.prototype.getImage = function()
-{
+Tiny.RenderTexture.prototype.getImage = function () {
     var image = new Image();
     image.src = this.getBase64();
     return image;
 };
 
-Tiny.RenderTexture.prototype.getBase64 = function()
-{
+Tiny.RenderTexture.prototype.getBase64 = function () {
     return this.getCanvas().toDataURL();
 };
 
-Tiny.RenderTexture.prototype.getCanvas = function()
-{
+Tiny.RenderTexture.prototype.getCanvas = function () {
     return this.textureBuffer.canvas;
 };

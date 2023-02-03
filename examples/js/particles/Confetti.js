@@ -1,7 +1,7 @@
 var PI = Math.PI,
-random = Math.random,
-cos = Math.cos,
-sin = Math.sin;
+    random = Math.random,
+    cos = Math.cos,
+    sin = Math.sin;
 
 var DEG_TO_RAD = PI / 180,
     colors = [
@@ -11,19 +11,17 @@ var DEG_TO_RAD = PI / 180,
         ["#ffd200", "#b06c00"]
     ];
 
+Tiny.ConfettiParticle = function (emitter) {
+    Tiny.Particle.call(this, emitter);
 
-Tiny.ConfettiParticle = function( emitter )
-{
-    Tiny.Particle.call(this, emitter );
-
-    this.rotationSpeed = (random() * 600 + 800);
+    this.rotationSpeed = random() * 600 + 800;
     var angle = DEG_TO_RAD * random() * 360;
     this.rotationpart = DEG_TO_RAD * random() * 360;
     this.cosA = 1.0;
     this.size = 10.0;
-    this.oscillationSpeed = (random() * 1.5 + 0.5);
+    this.oscillationSpeed = random() * 1.5 + 0.5;
     this.xSpeed = 80.0;
-    this.ySpeed = (random() * 60 + 50.0);
+    this.ySpeed = random() * 60 + 50.0;
     this.corners = new Array();
     this.time = random();
     var ci = Math.round(random() * (colors.length - 1));
@@ -32,44 +30,39 @@ Tiny.ConfettiParticle = function( emitter )
     for (var i = 0; i < 4; i++) {
         var dx = cos(angle + DEG_TO_RAD * (i * 90 + 45));
         var dy = sin(angle + DEG_TO_RAD * (i * 90 + 45));
-        this.corners[i] = {x: dx, y: dy}
+        this.corners[i] = { x: dx, y: dy };
     }
-
 };
 
-Tiny.ConfettiParticle.prototype = Object.create( Tiny.Particle.prototype );
+Tiny.ConfettiParticle.prototype = Object.create(Tiny.Particle.prototype);
 Tiny.ConfettiParticle.prototype.constructor = Tiny.ConfettiParticle;
 
-
-Tiny.ConfettiParticle.prototype._update = function( delta ) {
-    if (this.visible === false) return false
+Tiny.ConfettiParticle.prototype._update = function (delta) {
+    if (this.visible === false) return false;
 
     this.lifespan -= delta;
 
-    if (this.lifespan <= 0)
-    {
-        this.visible = false
+    if (this.lifespan <= 0) {
+        this.visible = false;
         return false;
     }
 
-    delta = delta * 0.001
+    delta = delta * 0.001;
 
     this.time += delta;
     this.rotationpart += this.rotationSpeed * delta;
     this.cosA = cos(DEG_TO_RAD * this.rotationpart);
-    this.x += cos(this.time * this.oscillationSpeed) * this.xSpeed * delta
+    this.x += cos(this.time * this.oscillationSpeed) * this.xSpeed * delta;
     this.y += this.ySpeed * delta;
-}
+};
 
 var _g, _res;
 
-Tiny.ConfettiParticle.prototype.render = function(renderSession)
-{
+Tiny.ConfettiParticle.prototype.render = function (renderSession) {
     if (this.visible === false || this.alpha === 0) return;
 
-    _g = renderSession.context
-    _res = renderSession.resolution
-
+    _g = renderSession.context;
+    _res = renderSession.resolution;
 
     if (this.cosA > 0) {
         _g.fillStyle = this.frontColor;
@@ -77,11 +70,16 @@ Tiny.ConfettiParticle.prototype.render = function(renderSession)
         _g.fillStyle = this.backColor;
     }
     _g.beginPath();
-    _g.moveTo((this.x + this.corners[0].x * this.size) * _res, (this.y + this.corners[0].y * this.size * this.cosA) * _res);
+    _g.moveTo(
+        (this.x + this.corners[0].x * this.size) * _res,
+        (this.y + this.corners[0].y * this.size * this.cosA) * _res
+    );
     for (var i = 1; i < 4; i++) {
-        _g.lineTo((this.x + this.corners[i].x * this.size) * _res, (this.y + this.corners[i].y * this.size * this.cosA) * _res);
+        _g.lineTo(
+            (this.x + this.corners[i].x * this.size) * _res,
+            (this.y + this.corners[i].y * this.size * this.cosA) * _res
+        );
     }
     _g.closePath();
     _g.fill();
-
 };

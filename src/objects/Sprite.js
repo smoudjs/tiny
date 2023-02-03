@@ -1,6 +1,4 @@
-
-Tiny.Sprite = function(texture, key)
-{
+Tiny.Sprite = function (texture, key) {
     Tiny.Object2D.call(this);
 
     this.anchor = new Tiny.Point();
@@ -17,91 +15,75 @@ Tiny.Sprite = function(texture, key)
 
     this.blendMode = "source-over";
 
-    if (this.texture.hasLoaded)
-    {
+    if (this.texture.hasLoaded) {
         this.onTextureUpdate();
     }
 
     this.renderable = true;
 };
 
-
 Tiny.Sprite.prototype = Object.create(Tiny.Object2D.prototype);
 Tiny.Sprite.prototype.constructor = Tiny.Sprite;
 
-Object.defineProperty(Tiny.Sprite.prototype, 'frameName', {
-
-    get: function() {
-        return this.texture.frame.name
+Object.defineProperty(Tiny.Sprite.prototype, "frameName", {
+    get: function () {
+        return this.texture.frame.name;
     },
 
-    set: function(value) {
-        if (this.texture.frame.name) 
-        {
-            this.setTexture(Tiny.Cache.texture[this.texture.key + "." + value])
+    set: function (value) {
+        if (this.texture.frame.name) {
+            this.setTexture(Tiny.Cache.texture[this.texture.key + "." + value]);
         }
     }
-
 });
 
-Object.defineProperty(Tiny.Sprite.prototype, 'frame', {
-
-    get: function() {
-        return this._frame
+Object.defineProperty(Tiny.Sprite.prototype, "frame", {
+    get: function () {
+        return this._frame;
     },
 
-    set: function(value) {
+    set: function (value) {
         if (this.texture.lastFrame) {
-            this._frame = value
-            if (this._frame > this.texture.lastFrame)
-                this._frame = 0
-            this.setTexture(Tiny.Cache.texture[this.texture.key + "." + this._frame])
+            this._frame = value;
+            if (this._frame > this.texture.lastFrame) this._frame = 0;
+            this.setTexture(Tiny.Cache.texture[this.texture.key + "." + this._frame]);
         }
     }
-
 });
 
-Object.defineProperty(Tiny.Sprite.prototype, 'width', {
-
-    get: function() {
+Object.defineProperty(Tiny.Sprite.prototype, "width", {
+    get: function () {
         return this.scale.x * this.texture.frame.width;
     },
 
-    set: function(value) {
+    set: function (value) {
         this.scale.x = value / this.texture.frame.width;
         this._width = value;
     }
-
 });
 
-Object.defineProperty(Tiny.Sprite.prototype, 'height', {
-
-    get: function() {
-        return  this.scale.y * this.texture.frame.height;
+Object.defineProperty(Tiny.Sprite.prototype, "height", {
+    get: function () {
+        return this.scale.y * this.texture.frame.height;
     },
 
-    set: function(value) {
+    set: function (value) {
         this.scale.y = value / this.texture.frame.height;
         this._height = value;
     }
-
 });
 
-Tiny.Sprite.prototype.setTexture = function(texture, key, updateDimension)
-{
-    if (typeof texture == "string") 
-    {
+Tiny.Sprite.prototype.setTexture = function (texture, key, updateDimension) {
+    if (typeof texture == "string") {
         var imagePath = texture;
 
-        if (key != undefined) 
-        {
+        if (key != undefined) {
             imagePath = imagePath + "." + key;
         }
 
         texture = Tiny.Cache.texture[imagePath];
 
-        if (!texture) 
-        {
+        if (!texture) {
             texture = new Tiny.Texture(imagePath);
             // throw new Error('Cache Error: image ' + imagePath + ' does`t found in cache');
         }
@@ -112,53 +94,48 @@ Tiny.Sprite.prototype.setTexture = function(texture, key, updateDimension)
     this.texture = texture;
     this.cachedTint = "#FFFFFF";
 
-    if (updateDimension === true) 
-    {
+    if (updateDimension === true) {
         this.onTextureUpdate();
     }
 
     return true;
 };
 
-Tiny.Sprite.prototype.onTextureUpdate = function()
-{
+Tiny.Sprite.prototype.onTextureUpdate = function () {
     // so if _width is 0 then width was not set..
     if (this._width) this.scale.x = this._width / this.texture.frame.width;
     if (this._height) this.scale.y = this._height / this.texture.frame.height;
 };
 
-Tiny.Sprite.prototype.animate = function(timer, delay)
-{
-    if (this.texture.lastFrame && this.texture.frame.index != undefined) 
-    {
-        delay = delay || (this.texture.frame.duration || 100);
+Tiny.Sprite.prototype.animate = function (timer, delay) {
+    if (this.texture.lastFrame && this.texture.frame.index != undefined) {
+        delay = delay || this.texture.frame.duration || 100;
 
-        if (!this.animation) 
-        {
-            this.animation = timer.loop(delay, function() {
-                this.frame += 1;
-                this.animation.delay = delay || (this.texture.frame.duration || 100);
-            }.bind(this));
-            
+        if (!this.animation) {
+            this.animation = timer.loop(
+                delay,
+                function () {
+                    this.frame += 1;
+                    this.animation.delay = delay || this.texture.frame.duration || 100;
+                }.bind(this)
+            );
+
             this.animation.start();
-        }
-        else
-        {
+        } else {
             this.animation.delay = delay;
             this.animation.start();
         }
     }
 };
 
-Tiny.Sprite.prototype.getBounds = function(matrix)
-{
+Tiny.Sprite.prototype.getBounds = function (matrix) {
     var width = this.texture.frame.width / this.texture.resolution;
     var height = this.texture.frame.height / this.texture.resolution;
 
-    var w0 = width * (1-this.anchor.x);
+    var w0 = width * (1 - this.anchor.x);
     var w1 = width * -this.anchor.x;
 
-    var h0 = height * (1-this.anchor.y);
+    var h0 = height * (1 - this.anchor.y);
     var h1 = height * -this.anchor.y;
 
     var worldTransform = matrix || this.worldTransform;
@@ -176,14 +153,13 @@ Tiny.Sprite.prototype.getBounds = function(matrix)
     var minX = Infinity;
     var minY = Infinity;
 
-    if (b === 0 && c === 0)
-    {
+    if (b === 0 && c === 0) {
         // // scale may be negative!
         // if (a < 0) a *= -1;
         // if (d < 0) d *= -1;
 
         // // this means there is no rotation going on right? RIGHT?
-        // // if thats the case then we can avoid checking the bound values! yay         
+        // // if thats the case then we can avoid checking the bound values! yay
         // minX = a * w1 + tx;
         // maxX = a * w0 + tx;
         // minY = d * h1 + ty;
@@ -204,9 +180,7 @@ Tiny.Sprite.prototype.getBounds = function(matrix)
             minY = d * h1 + ty;
             maxY = d * h0 + ty;
         }
-    }
-    else
-    {
+    } else {
         var x1 = a * w1 + c * h1 + tx;
         var y1 = d * h1 + b * w1 + ty;
 
@@ -216,8 +190,8 @@ Tiny.Sprite.prototype.getBounds = function(matrix)
         var x3 = a * w0 + c * h0 + tx;
         var y3 = d * h0 + b * w0 + ty;
 
-        var x4 =  a * w1 + c * h0 + tx;
-        var y4 =  d * h0 + b * w1 + ty;
+        var x4 = a * w1 + c * h0 + tx;
+        var y4 = d * h0 + b * w1 + ty;
 
         minX = x1 < minX ? x1 : minX;
         minX = x2 < minX ? x2 : minX;
@@ -254,101 +228,101 @@ Tiny.Sprite.prototype.getBounds = function(matrix)
     return bounds;
 };
 
-
-Tiny.Sprite.prototype.render = function(renderSession)
-{
+Tiny.Sprite.prototype.render = function (renderSession) {
     // If the sprite is not visible or the alpha is 0 then no need to render this element
-    if (this.visible === false || this.alpha === 0 || this.renderable === false || this.texture.crop.width <= 0 || this.texture.crop.height <= 0) return;
+    if (
+        this.visible === false ||
+        this.alpha === 0 ||
+        this.renderable === false ||
+        this.texture.crop.width <= 0 ||
+        this.texture.crop.height <= 0
+    )
+        return;
 
-    if (this.blendMode !== renderSession.currentBlendMode)
-    {
+    if (this.blendMode !== renderSession.currentBlendMode) {
         renderSession.currentBlendMode = this.blendMode;
         renderSession.context.globalCompositeOperation = renderSession.currentBlendMode;
     }
 
-    if (this._mask)
-    {
+    if (this._mask) {
         renderSession.maskManager.pushMask(this._mask, renderSession);
     }
 
     //  Ignore null sources
-    if (this.texture.valid)
-    {
+    if (this.texture.valid) {
         var resolution = this.texture.resolution / renderSession.resolution;
 
         renderSession.context.globalAlpha = this.worldAlpha;
 
-
         //  If the texture is trimmed we offset by the trim x/y, otherwise we use the frame dimensions
-        var dx = (this.texture.trim) ? this.texture.trim.x - this.anchor.x * this.texture.trim.width : this.anchor.x * -this.texture.frame.width;
-        var dy = (this.texture.trim) ? this.texture.trim.y - this.anchor.y * this.texture.trim.height : this.anchor.y * -this.texture.frame.height;
+        var dx = this.texture.trim
+            ? this.texture.trim.x - this.anchor.x * this.texture.trim.width
+            : this.anchor.x * -this.texture.frame.width;
+        var dy = this.texture.trim
+            ? this.texture.trim.y - this.anchor.y * this.texture.trim.height
+            : this.anchor.y * -this.texture.frame.height;
 
         //  Allow for pixel rounding
-        if (renderSession.roundPixels)
-        {
+        if (renderSession.roundPixels) {
             renderSession.context.setTransform(
                 this.worldTransform.a,
                 this.worldTransform.b,
                 this.worldTransform.c,
                 this.worldTransform.d,
                 (this.worldTransform.tx * renderSession.resolution) | 0,
-                (this.worldTransform.ty * renderSession.resolution) | 0);
+                (this.worldTransform.ty * renderSession.resolution) | 0
+            );
             dx = dx | 0;
             dy = dy | 0;
-        }
-        else
-        {
+        } else {
             renderSession.context.setTransform(
                 this.worldTransform.a,
                 this.worldTransform.b,
                 this.worldTransform.c,
                 this.worldTransform.d,
                 this.worldTransform.tx * renderSession.resolution,
-                this.worldTransform.ty * renderSession.resolution);
+                this.worldTransform.ty * renderSession.resolution
+            );
         }
 
-        if (this.tint !== "#FFFFFF")
-        {
-            if (this.cachedTint !== this.tint)
-            {
+        if (this.tint !== "#FFFFFF") {
+            if (this.cachedTint !== this.tint) {
                 this.cachedTint = this.tint;
                 this.tintedTexture = Tiny.CanvasTinter.getTintedTexture(this, this.tint);
             }
 
             renderSession.context.drawImage(
-                                this.tintedTexture,
-                                0,
-                                0,
-                                this.texture.crop.width,
-                                this.texture.crop.height,
-                                dx / resolution,
-                                dy / resolution,
-                                this.texture.crop.width / resolution,
-                                this.texture.crop.height / resolution);
-        }
-        else
-        {
+                this.tintedTexture,
+                0,
+                0,
+                this.texture.crop.width,
+                this.texture.crop.height,
+                dx / resolution,
+                dy / resolution,
+                this.texture.crop.width / resolution,
+                this.texture.crop.height / resolution
+            );
+        } else {
             renderSession.context.drawImage(
-                                this.texture.source,
-                                this.texture.crop.x,
-                                this.texture.crop.y,
-                                this.texture.crop.width,
-                                this.texture.crop.height,
-                                dx / resolution,
-                                dy / resolution,
-                                this.texture.crop.width / resolution,
-                                this.texture.crop.height / resolution);
+                this.texture.source,
+                this.texture.crop.x,
+                this.texture.crop.y,
+                this.texture.crop.width,
+                this.texture.crop.height,
+                dx / resolution,
+                dy / resolution,
+                this.texture.crop.width / resolution,
+                this.texture.crop.height / resolution
+            );
         }
     }
 
     // OVERWRITE
-    for (var i = 0; i < this.children.length; i++)
-    {
+    for (var i = 0; i < this.children.length; i++) {
         this.children[i].render(renderSession);
     }
 
-    if (this._mask)
-    {
+    if (this._mask) {
         renderSession.maskManager.popMask(renderSession);
     }
 };

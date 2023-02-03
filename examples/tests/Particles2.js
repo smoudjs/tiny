@@ -1,32 +1,30 @@
-window["test.Particles2"]  = {
+window["test.Particles2"] = {
+    create: function () {
+        var confetti = (this.confetti = new Tiny.Emitter(150));
+        confetti.x = 350;
+        confetti.width = 800;
 
-	create: function() {
+        confetti.pattern = Tiny.ConfettiParticle;
 
-		var confetti = this.confetti = new Tiny.Emitter(150);
-		confetti.x = 350;
-		confetti.width = 800;
+        confetti.makeParticles();
+        confetti.scale.set(0.7);
 
-		confetti.pattern = Tiny.ConfettiParticle;
+        confetti.flow(10000, 300, 5);
 
-		confetti.makeParticles();
-		confetti.scale.set(0.7);
+        this.particles.add(confetti);
+        this.scene.add(confetti);
 
-		confetti.flow(10000, 300, 5);
+        var ribbon = (this.ribbon = new Tiny.Emitter(18));
+        ribbon.x = 350;
+        ribbon.width = 800;
 
-		this.particles.add(confetti);
-		this.scene.add(confetti);
+        ribbon.pattern = Tiny.RibbonParticle;
+        ribbon.makeParticles();
+        ribbon.scale.set(0.7);
 
-		var ribbon = this.ribbon = new Tiny.Emitter(18);
-		ribbon.x = 350;
-		ribbon.width = 800;
+        ribbon.start(false, 5000, 300);
 
-		ribbon.pattern = Tiny.RibbonParticle;
-		ribbon.makeParticles();
-		ribbon.scale.set(0.7);
-
-		ribbon.start(false, 5000, 300);
-
-		this.particles.add(ribbon);
-		this.scene.add(ribbon);
-	}
-}
+        this.particles.add(ribbon);
+        this.scene.add(ribbon);
+    }
+};

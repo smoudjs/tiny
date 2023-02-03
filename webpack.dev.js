@@ -1,18 +1,16 @@
-
 const config = {
+    mode: "development",
 
-    mode: 'development',
-
-    devtool: 'inline-source-map',
+    devtool: "inline-source-map",
 
     context: `${__dirname}`,
 
     entry: {
-        'tiny': './src/index.js',
-        'tiny.mini': './src/mini.js',
-        'plugins/extra': './plugins/extra',
-        'plugins/particles': './plugins/particles',
-        'plugins/three': './plugins/three',
+        "tiny": "./src/index.js",
+        "tiny.mini": "./src/mini.js",
+        "plugins/extra": "./plugins/extra",
+        "plugins/particles": "./plugins/particles",
+        "plugins/three": "./plugins/three"
         // 'particles_pack': './particles_pack.js',
     },
 

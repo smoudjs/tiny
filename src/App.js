@@ -1,8 +1,6 @@
+var noop = function () {};
 
-var noop = function() {};
-
-Tiny.App = function(states)
-{
+Tiny.App = function (states) {
     this.callbackContext = this;
     this.state = 0;
     this.timeScale = 1;
@@ -26,17 +24,13 @@ Tiny.App = function(states)
     this._destroy_cb = states.destroy || noop;
 
     var self = this;
-    setTimeout(function()
-    {
+    setTimeout(function () {
         self._boot();
     }, 0);
-}
+};
 
-Tiny.App.prototype._boot = function()
-{
-
-    for (var i = 0; i < Tiny.systems.length; i++)
-    {
+Tiny.App.prototype._boot = function () {
+    for (var i = 0; i < Tiny.systems.length; i++) {
         var system = Tiny.systems[i];
 
         var _sys_ = new system._class_(this);
@@ -46,135 +40,108 @@ Tiny.App.prototype._boot = function()
         if (system.name) this[system.name] = _sys_;
     }
 
-    if (Tiny.RAF) 
-    {
+    if (Tiny.RAF) {
         this.raf = new Tiny.RAF(this);
     }
 
     this.boot.call(this.callbackContext);
 
     var self = this;
-    setTimeout(function()
-    {
+    setTimeout(function () {
         if (self.load) self._preload();
         else self._create();
-    }, 0)
-}
+    }, 0);
+};
 
-Tiny.App.prototype._preload = function()
-{
+Tiny.App.prototype._preload = function () {
     this.preload.call(this.callbackContext);
     this.state = 1;
     this.load.start(this._create);
 };
 
-Tiny.App.prototype._create = function() 
-{
+Tiny.App.prototype._create = function () {
     this.create.call(this.callbackContext);
 
-    if (this.raf) 
-    {
+    if (this.raf) {
         this.raf.start();
     }
 
     this.state = 2;
-}
+};
 
-
-Tiny.App.prototype.pause = function() 
-{
-    if (this.raf) 
-    {
+Tiny.App.prototype.pause = function () {
+    if (this.raf) {
         this.raf.reset();
     }
 
-    if (!this.paused)
-    {
-        for (var i = 0; i < this.systems.length; i++)
-        {
+    if (!this.paused) {
+        for (var i = 0; i < this.systems.length; i++) {
             if (this.systems[i].pause) this.systems[i].pause();
         }
 
         this.paused = true;
     }
-}
+};
 
-Tiny.App.prototype.resume = function()
-{
-    if (this.raf) 
-    {
+Tiny.App.prototype.resume = function () {
+    if (this.raf) {
         this.raf.reset();
     }
-    
-    if (this.paused)
-    {
-        for (var i = 0; i < this.systems.length; i++)
-        {
+
+    if (this.paused) {
+        for (var i = 0; i < this.systems.length; i++) {
             if (this.systems[i].resume) this.systems[i].resume();
         }
 
         this.paused = false;
     }
-}
+};
 
-Tiny.App.prototype._update = function(time, delta)
-{
-    if (!this.paused)
-    {
+Tiny.App.prototype._update = function (time, delta) {
+    if (!this.paused) {
         delta *= this.timeScale;
         this.update.call(this.callbackContext, time, delta);
         this.emit("update", delta);
 
-        for (var i = 0; i < this.updatable.length; i++)
-        {
+        for (var i = 0; i < this.updatable.length; i++) {
             this.updatable[i].update(delta);
         }
-    }
-    else
-    {
-        this.pauseDuration += delta
+    } else {
+        this.pauseDuration += delta;
     }
 
     this.render();
     this.emit("postrender");
-}
+};
 
-
-Tiny.App.prototype.resize = function(width, height)
-{
+Tiny.App.prototype.resize = function (width, height) {
     this.width = width || this.width;
     this.height = height || this.height;
 
-    if (this.state > 0) 
-    {
+    if (this.state > 0) {
         this._resize_cb.call(this.callbackContext, this.width, this.height);
     }
 
     var self = this;
-    setTimeout(function()
-    {
+    setTimeout(function () {
         if (self.input) self.input.updateBounds();
-    }, 0)
-}
+    }, 0);
+};
 
-Tiny.App.prototype.destroy = function(clearCache)
-{
-    for (var i = 0; i < this.systems.length; i++)
-    {
+Tiny.App.prototype.destroy = function (clearCache) {
+    for (var i = 0; i < this.systems.length; i++) {
         if (this.systems[i].destroy) this.systems[i].destroy(clearCache);
     }
 
     this.paused = true;
 
-    if (clearCache) 
-    {
+    if (clearCache) {
         this.load.clearCache();
     }
 
-    if (this.raf) 
-    {
+    if (this.raf) {
         this.raf.stop();
     }
 
     this._destroy_cb.call(this.callbackContext);
-}
+};

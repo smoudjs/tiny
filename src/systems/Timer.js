@@ -1,67 +1,55 @@
-var noop = function() {};
+var noop = function () {};
 
-var Timer = function(autoStart, autoRemove, game, cb, ctx, delay, loop, n, oncomplete)
-{
+var Timer = function (autoStart, autoRemove, game, cb, ctx, delay, loop, n, oncomplete) {
     this.game = game;
     this.cb = cb || noop;
     this.ctx = ctx || this;
-    this.delay = (delay == undefined ? 1000 : delay);
+    this.delay = delay == undefined ? 1000 : delay;
     this.loop = loop;
     this.count = n || 0;
-    this.repeat = (this.count > 0);
+    this.repeat = this.count > 0;
     this.running = !!autoStart;
     this._lastFrame = 0;
     this.autoRemove = autoRemove;
     this.onComplete = oncomplete || noop;
-}
+};
 
 Timer.prototype = {
-    start: function()
-    {
+    start: function () {
         this.running = true;
     },
-    pause: function()
-    {
+    pause: function () {
         this.running = false;
     },
-    stop: function()
-    {
+    stop: function () {
         this.running = false;
         this._lastFrame = 0;
     },
-    update: function(deltaTime)
-    {
-        if (this.running)
-        {
-            this._lastFrame += deltaTime
-            if (this._lastFrame >= this.delay)
-            {
+    update: function (deltaTime) {
+        if (this.running) {
+            this._lastFrame += deltaTime;
+            if (this._lastFrame >= this.delay) {
                 this.cb.call(this.ctx);
                 this._lastFrame = 0;
-                if (this.repeat)
-                {
+                if (this.repeat) {
                     this.count--;
-                    if (this.count === 0)
-                    {
+                    if (this.count === 0) {
                         this.running = false;
                         this.autoRemove && this.game.timer.remove(this);
                         this.onComplete();
                     }
-                }
-                else if (!this.loop)
-                {
+                } else if (!this.loop) {
                     this.running = false;
                     this.autoRemove && this.game.timer.remove(this);
                 }
             }
         }
     }
-}
+};
 
 Tiny.Timer = Timer;
 
-Tiny.TimerCreator = function(game)
-{
+Tiny.TimerCreator = function (game) {
     this.game = game;
     this.list = [];
     this.autoStart = true;
@@ -69,34 +57,26 @@ Tiny.TimerCreator = function(game)
 };
 
 Tiny.TimerCreator.prototype = {
-
-    update: function(delta) 
-    {
-        for (var i = 0; i < this.list.length; i++)
-        {
+    update: function (delta) {
+        for (var i = 0; i < this.list.length; i++) {
             this.list[i].update(delta);
         }
     },
-    removeAll: function()
-    {
-        for (var i = 0; i < this.list.length; i++)
-        {
+    removeAll: function () {
+        for (var i = 0; i < this.list.length; i++) {
             this.list[i].stop();
         }
 
         this.list = [];
     },
-    remove: function(tm)
-    {
+    remove: function (tm) {
         var indexOf = this.list.indexOf(tm);
-        if (indexOf > -1)
-        {
+        if (indexOf > -1) {
             tm.stop();
             this.list.splice(indexOf, 1);
         }
     },
-    add: function(delay, cb, ctx, autostart, autoremove)
-    {
+    add: function (delay, cb, ctx, autostart, autoremove) {
         autostart = autostart != undefined ? autostart : this.autoStart;
         autoremove = autoremove != undefined ? autoremove : this.autoRemove;
 
@@ -104,8 +84,7 @@ Tiny.TimerCreator.prototype = {
         this.list.push(timer);
         return timer;
     },
-    loop: function(delay, cb, ctx, autostart, autoremove)
-    {
+    loop: function (delay, cb, ctx, autostart, autoremove) {
         autostart = autostart != undefined ? autostart : this.autoStart;
         autoremove = autoremove != undefined ? autoremove : this.autoRemove;
 
@@ -113,8 +92,7 @@ Tiny.TimerCreator.prototype = {
         this.list.push(timer);
         return timer;
     },
-    repeat: function(delay, n, cb, ctx, autostart, autoremove, complete)
-    {
+    repeat: function (delay, n, cb, ctx, autostart, autoremove, complete) {
         autostart = autostart != undefined ? autostart : this.autoStart;
         autoremove = autoremove != undefined ? autoremove : this.autoRemove;
 
@@ -122,7 +100,7 @@ Tiny.TimerCreator.prototype = {
         this.list.push(timer);
         return timer;
     },
-    destroy: function() {
+    destroy: function () {
         this.removeAll();
     }
 };

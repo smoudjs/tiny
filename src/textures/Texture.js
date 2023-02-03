@@ -1,11 +1,9 @@
-
 // Tiny.TextureCache = {};
 // Tiny.FrameCache = {};
 Tiny.TextureCacheIdGenerator = 0;
 Tiny.TextureSilentFail = false;
 
-Tiny.Texture = function(source, frame, crop, trim)
-{
+Tiny.Texture = function (source, frame, crop, trim) {
     // console.log(this);
     this.noFrame = false;
 
@@ -13,22 +11,20 @@ Tiny.Texture = function(source, frame, crop, trim)
 
     this.hasLoaded = false;
 
-    if (!frame)
-    {
+    if (!frame) {
         this.noFrame = true;
-        frame = new Tiny.Rectangle(0,0,1,1);
+        frame = new Tiny.Rectangle(0, 0, 1, 1);
     }
 
-    if (typeof source == "string") 
-    {
+    if (typeof source == "string") {
         var key = source;
 
         source = Tiny.Cache.image[key];
 
-        if (!source) throw new Error('Cache Error: image ' + key + ' does`t found in cache');
+        if (!source) throw new Error("Cache Error: image " + key + " does`t found in cache");
 
         Tiny.Cache.texture[key] = this;
-    
+
         this.key = key;
     }
 
@@ -46,14 +42,11 @@ Tiny.Texture = function(source, frame, crop, trim)
 
     this.crop = crop || new Tiny.Rectangle(0, 0, 1, 1);
 
-    if((this.source.complete || this.source.getContext) && this.source.width && this.source.height)
-    {
+    if ((this.source.complete || this.source.getContext) && this.source.width && this.source.height) {
         this.onSourceLoaded();
-    }
-    else
-    {
+    } else {
         var scope = this;
-        this.source.onload = function() {
+        this.source.onload = function () {
             scope.onSourceLoaded();
         };
     }
@@ -61,8 +54,7 @@ Tiny.Texture = function(source, frame, crop, trim)
 
 Tiny.Texture.prototype.constructor = Tiny.Texture;
 
-Tiny.Texture.prototype.onSourceLoaded = function()
-{
+Tiny.Texture.prototype.onSourceLoaded = function () {
     this.hasLoaded = true;
     this.width = this.source.naturalWidth || this.source.width;
     this.height = this.source.naturalHeight || this.source.height;
@@ -72,14 +64,12 @@ Tiny.Texture.prototype.onSourceLoaded = function()
     this.setFrame(this.frame);
 };
 
-Tiny.Texture.prototype.addToCache = function(key)
-{
+Tiny.Texture.prototype.addToCache = function (key) {
     Tiny.Cache.texture[key] = this;
     this.key = key;
 };
 
-Tiny.Texture.prototype.destroy = function()
-{
+Tiny.Texture.prototype.destroy = function () {
     if (this.key) {
         delete Tiny.Cache.texture[this.key];
     }
@@ -88,8 +78,7 @@ Tiny.Texture.prototype.destroy = function()
     this.valid = false;
 };
 
-Tiny.Texture.prototype.setFrame = function(frame)
-{
+Tiny.Texture.prototype.setFrame = function (frame) {
     this.noFrame = false;
 
     this.frame = frame;
@@ -106,19 +95,16 @@ Tiny.Texture.prototype.setFrame = function(frame)
     this.crop.width = frame.width;
     this.crop.height = frame.height;
 
-    if (!this.trim && (frame.x + frame.width > this.width || frame.y + frame.height > this.height))
-    {
-        if (!Tiny.TextureSilentFail)
-        {
-            throw new Error('Texture Error: frame does not fit inside the base Texture dimensions ' + this);
+    if (!this.trim && (frame.x + frame.width > this.width || frame.y + frame.height > this.height)) {
+        if (!Tiny.TextureSilentFail) {
+            throw new Error("Texture Error: frame does not fit inside the base Texture dimensions " + this);
         }
 
         this.valid = false;
         return;
     }
 
-    if (this.trim)
-    {
+    if (this.trim) {
         // this.width = this.trim.width;
         // this.height = this.trim.height;
         this.frame.width = this.trim.width;
@@ -147,8 +133,7 @@ Tiny.Texture.prototype.setFrame = function(frame)
 //     return texture;
 // };
 
-Tiny.Texture.fromCanvas = function(canvas)
-{
+Tiny.Texture.fromCanvas = function (canvas) {
     // if(!canvas._tinyId)
     // {
     //     canvas._tinyId = '_from_canvas_' + Tiny.TextureCacheIdGenerator++;
@@ -163,14 +148,13 @@ Tiny.Texture.fromCanvas = function(canvas)
     // }
 
     // return texture;
-    return new Tiny.Texture( canvas );
+    return new Tiny.Texture(canvas);
 };
 
 // Tiny.Texture.addTextureToCache = function(texture, id)
 // {
 //     Tiny.TextureCache[id] = texture;
 // };
-
 
 // Tiny.Texture.removeTextureFromCache = function(id)
 // {

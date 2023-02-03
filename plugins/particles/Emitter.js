@@ -1,22 +1,21 @@
-Tiny.Emitter = function( maxParticles )
-{
+Tiny.Emitter = function (maxParticles) {
     Tiny.Object2D.call(this);
 
     this.anchor = new Tiny.Point();
 
-    this.maxParticles = maxParticles
+    this.maxParticles = maxParticles;
 
-    this.particles = []
+    this.particles = [];
 
-    this.pattern = Tiny.Particle
+    this.pattern = Tiny.Particle;
 
-    this.fillStyle = "#f54545"
+    this.fillStyle = "#f54545";
 
     this.particleAnchor = new Tiny.Point(0.5, 0.5);
 
     this.on = false;
 
-    this._timer = 0
+    this._timer = 0;
 
     this._quantity = 0;
 
@@ -29,50 +28,43 @@ Tiny.Emitter = function( maxParticles )
     this.blendMode = "source-over";
 };
 
-
 Tiny.Emitter.prototype = Object.create(Tiny.Object2D.prototype);
 Tiny.Emitter.prototype.constructor = Tiny.Emitter;
 
-Object.defineProperty(Tiny.Emitter.prototype, 'width', {
-
-    get: function() {
-        return this._width
+Object.defineProperty(Tiny.Emitter.prototype, "width", {
+    get: function () {
+        return this._width;
     },
 
-    set: function(value) {
+    set: function (value) {
         this._width = value;
     }
 });
 
-Object.defineProperty(Tiny.Emitter.prototype, 'height', {
-
-    get: function() {
-        return this._height
+Object.defineProperty(Tiny.Emitter.prototype, "height", {
+    get: function () {
+        return this._height;
     },
 
-    set: function(value) {
+    set: function (value) {
         this._height = value;
     }
 });
 
-
-Tiny.Emitter.prototype.makeParticles = function(texture, quantity)
-{
-
-
+Tiny.Emitter.prototype.makeParticles = function (texture, quantity) {
     var particle;
 
-    if (quantity === undefined) { quantity = this.maxParticles; }
+    if (quantity === undefined) {
+        quantity = this.maxParticles;
+    }
 
     var i = this.particles.length;
 
-    if (quantity > this.maxParticles)
-    {
+    if (quantity > this.maxParticles) {
         this.maxParticles = quantity;
     }
 
-    while (i < quantity)
-    {
+    while (i < quantity) {
         // if (Array.isArray(keys))
         // {
         //     rndKey = this.game.rnd.pick(keys);
@@ -83,31 +75,33 @@ Tiny.Emitter.prototype.makeParticles = function(texture, quantity)
         //     rndFrame = this.game.rnd.pick(frames);
         // }
 
-        particle = new this.pattern( this );
+        particle = new this.pattern(this);
 
-        if (texture) 
-        {
+        if (texture) {
             particle.setTexture(texture);
         }
 
         particle.visible = false;
-        particle.anchor.set(this.particleAnchor.x, this.particleAnchor.y)
+        particle.anchor.set(this.particleAnchor.x, this.particleAnchor.y);
 
         this.particles.push(particle);
 
         i++;
     }
-
 };
 
 Tiny.Emitter.prototype.flow = function (lifespan, frequency, quantity, total, immediate) {
+    if (quantity === undefined || quantity === 0) {
+        quantity = 1;
+    }
+    if (total === undefined) {
+        total = -1;
+    }
+    if (immediate === undefined) {
+        immediate = true;
+    }
 
-    if (quantity === undefined || quantity === 0) { quantity = 1; }
-    if (total === undefined) { total = -1; }
-    if (immediate === undefined) { immediate = true; }
-
-    if (quantity > this.maxParticles)
-    {
+    if (quantity > this.maxParticles) {
         quantity = this.maxParticles;
     }
 
@@ -115,45 +109,46 @@ Tiny.Emitter.prototype.flow = function (lifespan, frequency, quantity, total, im
     this._flowQuantity = quantity;
     this._flowTotal = total;
 
-    if (immediate)
-    {
+    if (immediate) {
         this.start(true, lifespan, frequency, quantity);
 
         this._counter += quantity;
         this.on = true;
-        this._timer = frequency
-    }
-    else
-    {
+        this._timer = frequency;
+    } else {
         this.start(false, lifespan, frequency, quantity);
     }
 
     return this;
-
 };
 
 Tiny.Emitter.prototype.explode = function (lifespan, quantity) {
-
     this._flowTotal = 0;
 
-    if (quantity === undefined) { quantity = this.particles.length }
+    if (quantity === undefined) {
+        quantity = this.particles.length;
+    }
 
     this.start(true, lifespan, 0, quantity, false);
 
     return this;
-
 };
 
-
 Tiny.Emitter.prototype.start = function (explode, lifespan, frequency, quantity) {
+    if (explode === undefined) {
+        explode = true;
+    }
+    if (lifespan === undefined) {
+        lifespan = 0;
+    }
+    if (frequency === undefined || frequency === null) {
+        frequency = 250;
+    }
+    if (quantity === undefined) {
+        quantity = 0;
+    }
 
-    if (explode === undefined) { explode = true; }
-    if (lifespan === undefined) { lifespan = 0; }
-    if (frequency === undefined || frequency === null) { frequency = 250; }
-    if (quantity === undefined) { quantity = 0; }
-
-    if (quantity > this.maxParticles)
-    {
+    if (quantity > this.maxParticles) {
         quantity = this.maxParticles;
     }
 
@@ -164,74 +159,60 @@ Tiny.Emitter.prototype.start = function (explode, lifespan, frequency, quantity)
 
     //this.updateTransform()
 
-    if (explode)
-    {
-        for (var i = 0; i < quantity; i++)
-        {
+    if (explode) {
+        for (var i = 0; i < quantity; i++) {
             this.emitParticle();
         }
-    }
-    else
-    {
+    } else {
         this.on = true;
         this._quantity = quantity;
         this._counter = 0;
-        this._timer = frequency
+        this._timer = frequency;
     }
 
     return this;
-
 };
 
-
 Tiny.Emitter.prototype.emitParticle = function (x, y) {
+    if (x === undefined) {
+        x = null;
+    }
+    if (y === undefined) {
+        y = null;
+    }
 
-    if (x === undefined) { x = null; }
-    if (y === undefined) { y = null; }
-
-    var particle = null
+    var particle = null;
 
     var i = this.particles.length;
 
-    while (i--)
-    {
+    while (i--) {
         if (!this.particles[i].visible) {
-            particle = this.particles[i]
+            particle = this.particles[i];
             break;
         }
     }
 
-
-    if (particle === null)
-    {
+    if (particle === null) {
         return false;
     }
-
-
 
     var halfSize;
 
     var emitX = 0;
     var emitY = 0;
 
-    if (x !== null)
-    {
+    if (x !== null) {
         emitX = x;
-    }
-    else if (this._width > 1)
-    {
-        halfSize = this._width / 2
-        emitX = Tiny.rnd(-halfSize, halfSize)
+    } else if (this._width > 1) {
+        halfSize = this._width / 2;
+        emitX = Tiny.rnd(-halfSize, halfSize);
     }
 
-    if (y !== null)
-    {
+    if (y !== null) {
         emitY = y;
-    }
-    else if (this._height > 1)
-    {
-        halfSize = this._height / 2
-        emitY = Tiny.rnd(-halfSize, halfSize)
+    } else if (this._height > 1) {
+        halfSize = this._height / 2;
+        emitY = Tiny.rnd(-halfSize, halfSize);
     }
 
     particle.reset(emitX, emitY);
@@ -239,79 +220,56 @@ Tiny.Emitter.prototype.emitParticle = function (x, y) {
     particle.rotation = 0;
     particle.lifespan = this.lifespan;
 
-
     //particle.blendMode = this.blendMode;
 
     particle.onEmit();
 
-    particle.visible = true
+    particle.visible = true;
 
     return true;
-
 };
 
-
-
-Tiny.Emitter.prototype.destroy = function() {
-
+Tiny.Emitter.prototype.destroy = function () {
     if (this.system) this.system.remove(this);
 
     Tiny.Object2D.prototype.destroy.call(this);
-}
+};
 
-
-
-Tiny.Emitter.prototype.update = function( delta ) {
-    
+Tiny.Emitter.prototype.update = function (delta) {
     if (this.visible === false) return;
 
-    if (this.on)
-    {
-        this._timer -= delta
+    if (this.on) {
+        this._timer -= delta;
 
         if (this._timer <= 0) {
-
             this._timer = this.frequency;
 
-            if (this._flowTotal !== 0)
-            {
-                if (this._flowQuantity > 0)
-                {
-                    for (var i = 0; i < this._flowQuantity; i++)
-                    {
-                        if (this.emitParticle())
-                        {
+            if (this._flowTotal !== 0) {
+                if (this._flowQuantity > 0) {
+                    for (var i = 0; i < this._flowQuantity; i++) {
+                        if (this.emitParticle()) {
                             this._counter++;
 
-                            if (this._flowTotal !== -1 && this._counter >= this._flowTotal)
-                            {
+                            if (this._flowTotal !== -1 && this._counter >= this._flowTotal) {
                                 this.on = false;
                                 break;
                             }
                         }
                     }
-                }
-                else
-                {
-                    if (this.emitParticle())
-                    {
+                } else {
+                    if (this.emitParticle()) {
                         this._counter++;
 
-                        if (this._flowTotal !== -1 && this._counter >= this._flowTotal)
-                        {
+                        if (this._flowTotal !== -1 && this._counter >= this._flowTotal) {
                             this.on = false;
                         }
                     }
                 }
-            }
-            else
-            {
-                if (this.emitParticle())
-                {
+            } else {
+                if (this.emitParticle()) {
                     this._counter++;
 
-                    if (this._quantity > 0 && this._counter >= this._quantity)
-                    {
+                    if (this._quantity > 0 && this._counter >= this._quantity) {
                         this.on = false;
                     }
                 }
@@ -321,59 +279,52 @@ Tiny.Emitter.prototype.update = function( delta ) {
 
     var i = this.particles.length;
 
-    while (i--)
-    {
-        this.particles[i]._update( delta );
+    while (i--) {
+        this.particles[i]._update(delta);
     }
 
     //console.log(time)
-}
+};
 
-Tiny.Emitter.prototype.render = function(renderSession)
-{
+Tiny.Emitter.prototype.render = function (renderSession) {
     if (this.visible === false || this.alpha === 0) return;
 
-    if (this._cacheAsBitmap)
-    {
+    if (this._cacheAsBitmap) {
         this._renderCachedSprite(renderSession);
         return;
     }
 
-    if (this._mask)
-    {
+    if (this._mask) {
         renderSession.maskManager.pushMask(this._mask, renderSession);
     }
 
-    renderSession.context.fillStyle = this.fillStyle
+    renderSession.context.fillStyle = this.fillStyle;
 
     renderSession.context.globalAlpha = this.worldAlpha;
 
     renderSession.context.setTransform(
-            this.worldTransform.a,
-            this.worldTransform.b,
-            this.worldTransform.c,
-            this.worldTransform.d,
-            this.worldTransform.tx * renderSession.resolution,
-            this.worldTransform.ty * renderSession.resolution);
+        this.worldTransform.a,
+        this.worldTransform.b,
+        this.worldTransform.c,
+        this.worldTransform.d,
+        this.worldTransform.tx * renderSession.resolution,
+        this.worldTransform.ty * renderSession.resolution
+    );
 
     var i = 0;
 
-    for (i = 0; i < this.particles.length; i++)
-    {
+    for (i = 0; i < this.particles.length; i++) {
         this.particles[i].render(renderSession);
     }
 
-    for (i = 0; i < this.children.length; i++)
-    {
+    for (i = 0; i < this.children.length; i++) {
         this.children[i].render(renderSession);
     }
 
-    if (this._mask)
-    {
+    if (this._mask) {
         renderSession.maskManager.popMask(renderSession);
     }
 };
-
 
 // Tiny.ObjectCreator.prototype.emitter = function(x, y, maxParticles) {
 //     var emitter = new Tiny.Emitter( maxParticles )

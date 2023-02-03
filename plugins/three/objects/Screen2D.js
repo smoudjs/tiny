@@ -1,24 +1,26 @@
-
-var THREE = require('three'),
+var THREE = require("three"),
     Scene = THREE.Scene,
     OrthographicCamera = THREE.OrthographicCamera;
 
 class Screen2D extends Tiny.Canvas2D {
-
     constructor(width, height) {
-
         super(width, height);
 
         this.autoUpdate = true;
 
         this.scene = new Scene();
-        this.camera = new OrthographicCamera(-this.width / 2, this.width / 2, this.height / 2, -this.height / 2, 1, 10);
-        
+        this.camera = new OrthographicCamera(
+            -this.width / 2,
+            this.width / 2,
+            this.height / 2,
+            -this.height / 2,
+            1,
+            10
+        );
+
         this.scale.set(this.width, this.height, 1);
         this.camera.position.z = 1;
         this.scene.add(this);
-
-
 
         // this.setSize(this.width, this.height)
         // const renderer = new Tiny.CanvasRenderer(width, height, { transparent: true });
@@ -49,10 +51,9 @@ class Screen2D extends Tiny.Canvas2D {
         // this.remove = scene.remove.bind(scene);
     }
 
-    setSize(width, height) 
-    {
-        this.renderer.resize(width, height)
-        
+    setSize(width, height) {
+        this.renderer.resize(width, height);
+
         this.width = width;
         this.height = height;
 

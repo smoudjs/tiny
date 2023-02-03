@@ -1,5 +1,4 @@
-
-var THREE = require('three'),
+var THREE = require("three"),
     Mesh = THREE.Mesh,
     MeshBasicMaterial = THREE.MeshBasicMaterial,
     CanvasTexture = THREE.CanvasTexture,
@@ -7,13 +6,10 @@ var THREE = require('three'),
     LinearFilter = THREE.LinearFilter,
     PlaneBufferGeometry = THREE.PlaneBufferGeometry;
 
-
 var geometry = null;
 
 class Canvas3D extends Mesh {
-
     constructor(width, height) {
-
         const renderer = new Tiny.CanvasRenderer(width, height, { transparent: true });
         // renderer.setClearColor("#ffffff");
 
@@ -34,21 +30,18 @@ class Canvas3D extends Mesh {
         this.height = height;
         this.autoUpdate = false;
         this.renderer = renderer;
-        const container = this.container = new Tiny.Scene();
+        const container = (this.container = new Tiny.Scene());
         this.texture = canvasTexture;
 
         this.add = container.add.bind(container);
         this.remove = container.remove.bind(container);
     }
 
-    onBeforeRender() 
-    {
+    onBeforeRender() {
         this.autoUpdate && this.update();
     }
 
-
-    update() 
-    {
+    update() {
         this.renderer.render(this.container);
 
         this.texture.needsUpdate = true;

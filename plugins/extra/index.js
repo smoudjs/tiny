@@ -1,4 +1,3 @@
-
-require('./systems/Tween');
-require('./math/Ellipse');
-require('./objects/TilingSprite');
+require("./systems/Tween");
+require("./math/Ellipse");
+require("./objects/TilingSprite");

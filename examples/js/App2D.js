@@ -1,61 +1,54 @@
-
 Tiny.CanvasTinter.cacheTint = false;
 
 class App2D extends Tiny.App {
+    constructor(width, height, parentNode, states) {
+        super(states);
 
-	constructor(width, height, parentNode, states) {
+        this.width = width;
+        this.height = height;
 
-		super(states);
+        this.renderer = new Tiny.CanvasRenderer(this.width, this.height, {
+            resolution: 1.25,
+            autoResize: true
+        });
 
-		this.width = width;
-		this.height = height;
+        this.renderer.setClearColor("#f4f4f4");
 
-		this.renderer = new Tiny.CanvasRenderer(this.width, this.height,
-	    {
-	    	resolution: 1.25,
-	        autoResize: true
-	    });
+        var view = (this.inputView = this.renderer.domElement);
 
-	    this.renderer.setClearColor("#f4f4f4");
+        parentNode = parentNode ? document.getElementById(parentNode) : document.body;
+        parentNode.appendChild(view);
+        // view.style.position = 'absolute';
 
-	    var view = this.inputView = this.renderer.domElement;
+        // view.style.top = "0px";
+        // view.style.left = "0px";
 
-	    parentNode = parentNode ? document.getElementById(parentNode) : document.body;
-	    parentNode.appendChild(view);
-	    // view.style.position = 'absolute';
+        // view.style.transformOrigin = '0% 0%';
+        view.style.perspective = "1000px";
 
-	    // view.style.top = "0px";
-	    // view.style.left = "0px";
+        this.scene = new Tiny.Scene();
+    }
 
-	    // view.style.transformOrigin = '0% 0%';
-	    view.style.perspective = '1000px';
+    setPixelRatio(dpr) {
+        this.renderer.setPixelRatio(dpr);
+    }
 
-	    this.scene = new Tiny.Scene();
-	}
+    render() {
+        this.renderer.render(this.scene);
+    }
 
-	setPixelRatio(dpr) {
-		this.renderer.setPixelRatio(dpr);
-	}
+    resize(width, height) {
+        super.resize(width, height);
 
-	render() {
-		this.renderer.render(this.scene);
-	}
+        this.renderer.resize(width, height);
+    }
 
-	resize(width, height) {
-		
-		super.resize(width, height);
+    destroy(clearCache) {
+        super.destroy(clearCache);
 
-		this.renderer.resize(width, height);
-	}
-
-	destroy(clearCache) {
-
-		super.destroy(clearCache);
-
-		this.scene.destroy();
-	    this.renderer.destroy(true);
-	}
-
+        this.scene.destroy();
+        this.renderer.destroy(true);
+    }
 }
 
 Tiny.App2D = App2D;
