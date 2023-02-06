@@ -15,14 +15,12 @@ class SoundManager {
         var sound = Tiny.Cache.sound[audio];
 
         if (sound) {
-            if (context.Howler.state === "running") {
-                if (volume !== undefined) {
-                    sound.volume(volume);
-                }
-
-                sound.loop(true);
-                sound.play();
+            if (volume !== undefined) {
+                sound.volume(volume);
             }
+
+            sound.loop(true);
+            sound.play();
         }
 
         return sound;
