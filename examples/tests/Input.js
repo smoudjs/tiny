@@ -1,3 +1,7 @@
+/**
+ * import "h5tiny";
+ */
+
 window["test.Input"] = {
     preload: function () {
         this.load.image("base", baseImage);

@@ -1,3 +1,8 @@
+/**
+ * import "h5tiny";
+ * import "h5tiny/plugins/three";
+ */
+
 window["test.ThreeScreen2D"] = {
     preload: function () {
         this.load.image("base", baseImage);

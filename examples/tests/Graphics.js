@@ -1,3 +1,7 @@
+/**
+ * import "h5tiny";
+ */
+
 window["test.Graphics"] = {
     create: function () {
         const graphics = new Tiny.Graphics();

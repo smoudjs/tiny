@@ -1,3 +1,13 @@
+/**
+ * import "h5tiny";
+ * 
+ * import "h5tiny/plugins/particles";
+ * to use particles
+ * 
+ * import "h5tiny/examples/js/objects/MiniMap";
+ * to use RecursiveSprite and MiniMap
+ */
+
 window["test.RendererTexture"] = {
     preload: function () {
         this.load.image("base", baseImage);

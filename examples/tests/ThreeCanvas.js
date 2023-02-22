@@ -1,3 +1,8 @@
+/**
+ * import "h5tiny";
+ * import "h5tiny/plugins/three";
+ */
+
 window["test.ThreeCanvas"] = {
     preload: function () {
         this.load.image("base", baseImage);

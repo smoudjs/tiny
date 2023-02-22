@@ -3,7 +3,7 @@ Tiny.RoundedRectangle = function (x, y, width, height, radius) {
     this.y = y || 0;
     this.width = width || 0;
     this.height = height || 0;
-    this.radius = radius || 20;
+    this.radius = radius || 0;
     this.type = Tiny.Primitives.RREC;
 };
 

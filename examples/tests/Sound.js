@@ -1,3 +1,8 @@
+/**
+ * import "h5tiny";
+ * import "h5tiny/plugins/sound";
+ */
+
 window["test.Sound"] = {
     preload: function () {
         this.load.image("base", baseImage);

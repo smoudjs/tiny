@@ -1,3 +1,15 @@
+/**
+ * import "h5tiny";
+ * import "h5tiny/plugins/particles";
+ *
+ * import "h5tiny/examples/js/particles/Confetti";
+ * to use ConfettiParticle pattern
+ *
+ * import "h5tiny/examples/js/particles/Ribbon";
+ * to use RibbonParticle pattern
+ *
+ */
+
 window["test.Particles2"] = {
     create: function () {
         var confetti = (this.confetti = new Tiny.Emitter(150));

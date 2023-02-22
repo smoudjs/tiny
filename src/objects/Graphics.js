@@ -307,7 +307,8 @@ Tiny.Graphics.prototype.drawRect = function (x, y, width, height) {
 };
 
 Tiny.Graphics.prototype.drawRoundedRect = function (x, y, width, height, radius) {
-    this.drawShape(new Tiny.RoundedRectangle(x, y, width, height, radius));
+    if (radius > 0) this.drawShape(new Tiny.RoundedRectangle(x, y, width, height, radius));
+    else this.drawRect(x, y, width, height);
 
     return this;
 };

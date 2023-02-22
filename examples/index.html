@@ -28,9 +28,12 @@
         <script type="text/javascript" src="tests/Graphics.js"></script>
         <script type="text/javascript" src="tests/Graphics2.js"></script>
         <script type="text/javascript" src="tests/Input.js"></script>
+        <script type="text/javascript" src="tests/BlendMode.js"></script>
         <script type="text/javascript" src="tests/Particles1.js"></script>
         <script type="text/javascript" src="tests/Particles2.js"></script>
         <script type="text/javascript" src="tests/TilingSprite.js"></script>
+        <script type="text/javascript" src="tests/RenderLayer.js"></script>
+        <script type="text/javascript" src="tests/ProgressBar.js"></script>
         <script type="text/javascript" src="tests/ThreeBasic.js"></script>
         <script type="text/javascript" src="tests/ThreeCanvas.js"></script>
         <script type="text/javascript" src="tests/ThreeScreen2D.js"></script>
@@ -80,10 +83,10 @@
                 }
             };
 
-            window.resizeCanvas = function () {
+            window.resizeCanvas = function (width, height) {
                 const container = document.getElementById("test-container");
-                config.width = Math.floor(Math.random() * 400) + 400;
-                config.height = Math.floor(Math.random() * 300) + 300;
+                config.width = width || Math.floor(Math.random() * 400) + 400;
+                config.height = height || Math.floor(Math.random() * 300) + 300;
 
                 container.style.width = config.width + "px";
                 container.style.height = config.height + "px";
@@ -103,6 +106,7 @@
                     <button onclick="initTest('Input')" style="margin: 5px">Input</button>
                     <button onclick="initTest('Tweens')" style="margin: 5px">Tweens</button>
                     <button onclick="initTest('RendererTexture')" style="margin: 5px">RendererTexture</button>
+                    <button onclick="initTest('BlendMode')" style="margin: 5px">Blend Modes</button>
                     <h3>PLUGINS</h3>
                     <h3>Particles</h3>
                     <button onclick="initTest('Particles1')" style="margin: 5px">Particles 1</button>
@@ -116,7 +120,9 @@
                         Three - Screen2D
                     </button>
                     <h3>Extra</h3>
-                    <button onclick="initTest('TilingSprite')" style="margin: 5px">Tiling Sprite</button>
+                    <button onclick="initTest('TilingSprite')" style="margin: 5px">TilingSprite</button>
+                    <button onclick="initTest('RenderLayer')" style="margin: 5px">RenderLayer</button>
+                    <button onclick="initTest('ProgressBar')" style="margin: 5px">ProgressBar</button>
                     <h3>Sound</h3>
                     <button onclick="initTest('Sound')" style="margin: 5px">Sound</button>
                 </div>

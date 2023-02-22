@@ -1,3 +1,15 @@
+/**
+ * import "h5tiny";
+ * import "h5tiny/plugins/extra"
+ * 
+ * or
+ * 
+ * import "h5tiny/plugins/extra/objects/TilingSprite"
+ * 
+ * To ignore unnecessary extra components
+ * 
+ */
+
 window["test.TilingSprite"] = {
     preload: function () {
         this.load.atlas("atlas", atlas, atlas_data);

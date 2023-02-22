@@ -1,3 +1,17 @@
+/**
+ * import "h5tiny";
+ * import "h5tiny/plugins/particles";
+ * 
+ * import "h5tiny/examples/js/particles/Smoke";
+ * to use SmokeParticle pattern
+ * 
+ * import "h5tiny/examples/js/particles/Explode";
+ * to use ExplodeParticle pattern
+ * 
+ * import "h5tiny/examples/js/objects/MiniMap";
+ * to use RecursiveSprite
+ */
+
 window["test.Particles1"] = {
     preload: function () {
         this.load.image("base", baseImage);
