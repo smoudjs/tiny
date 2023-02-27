@@ -1,5 +1,8 @@
 /**
  * import "h5tiny";
+ * 
+ * import "h5tiny/examples/js/objects/MiniMap";
+ * to use RecursiveSprite
  */
 
 window["test.Input"] = {

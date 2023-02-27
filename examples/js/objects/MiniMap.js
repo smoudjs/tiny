@@ -110,7 +110,7 @@ class RecursiveSprite extends Tiny.Sprite {
     _update() {
         // this.visible = false;
         this.texture.render(this.scene);
-        this.texture.render(this.frames);
+        this.frames && this.texture.render(this.frames);
         // this.visible = true;
     }
 

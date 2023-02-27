@@ -81,6 +81,9 @@ Tiny.Loader.prototype.sound = function (key, src) {
 };
 
 Tiny.Loader.sound = function (resource, cb) {
+    
+    if (Tiny.Cache.sound[resource.key]) return cb();
+
     var sound = new context.Howl({
         src: [resource.src]
     });
