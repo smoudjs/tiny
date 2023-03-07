@@ -289,6 +289,11 @@ Tiny.Emitter.prototype.update = function (delta) {
 Tiny.Emitter.prototype.render = function (renderSession) {
     if (this.visible === false || this.alpha === 0) return;
 
+    if (this.blendMode !== renderSession.currentBlendMode) {
+        renderSession.currentBlendMode = this.blendMode;
+        renderSession.context.globalCompositeOperation = renderSession.currentBlendMode;
+    }
+
     if (this._cacheAsBitmap) {
         this._renderCachedSprite(renderSession);
         return;

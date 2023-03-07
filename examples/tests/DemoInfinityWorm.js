@@ -213,15 +213,15 @@ window["test.DemoInfinityWorm"] = {
         bombEmitter.pattern = Tiny.ExplodeParticle;
         bombEmitter.makeParticles();
 
-        this.timer.loop(6000, function() {
-            if (Math.random() > 0.5) {
-                bombEmitter.fillStyle = "#439d42";
-                if (Math.random() > 0.5) bombEmitter.x = this.width - 70;
-                else bombEmitter.x = 70;
-                bombEmitter.y = this.height - 70;
-                bombEmitter.explode(300, 80);
-            }
-        }, this)
+        // this.timer.loop(6000, function() {
+        //     if (Math.random() > 0.5) {
+        //         bombEmitter.fillStyle = "#439d42";
+        //         if (Math.random() > 0.5) bombEmitter.x = this.width - 70;
+        //         else bombEmitter.x = 70;
+        //         bombEmitter.y = this.height - 70;
+        //         bombEmitter.explode(300, 80);
+        //     }
+        // }, this)
 
         this.particles.add(bombEmitter);
         this.scene.add(bombEmitter);

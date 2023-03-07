@@ -60,6 +60,7 @@ Tiny.App.prototype._preload = function () {
 };
 
 Tiny.App.prototype._create = function () {
+    this.emit("load");
     this.create.call(this.callbackContext);
 
     if (this.raf) {
@@ -120,6 +121,7 @@ Tiny.App.prototype.resize = function (width, height) {
 
     if (this.state > 0) {
         this._resize_cb.call(this.callbackContext, this.width, this.height);
+        this.emit("resize", width, height);
     }
 
     var self = this;
