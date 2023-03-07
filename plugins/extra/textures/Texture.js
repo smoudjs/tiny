@@ -1,0 +1,1 @@
+Tiny.Texture.EMPTY = new Tiny.Texture({}, new Tiny.Rectangle(), new Tiny.Rectangle());

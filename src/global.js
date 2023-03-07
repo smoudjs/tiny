@@ -1,4 +1,4 @@
-Tiny.VERSION = "2.1.10";
+Tiny.VERSION = "2.1.11";
 
 Tiny.systems = [];
 
