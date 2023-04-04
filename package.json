@@ -1,6 +1,6 @@
 {
   "name": "h5tiny",
-  "version": "2.1.11",
+  "version": "2.1.12",
   "description": "Fast and tiny JavaScript library for HTML5 game and creatives developing.",
   "main": "./build/tiny.js",
   "files": [
