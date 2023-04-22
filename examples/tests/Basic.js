@@ -2,118 +2,59 @@
  * import "h5tiny";
  */
 
-window["test.Basic"] = {
-    preload: function () {
-        this.load.image("base", baseImage);
-        this.load.atlas("atlas", atlas, atlas_data);
-        // this.load.spritesheet("gifsprite", spritesheet, 222, 222);
-        // this.load.spritesheet("gifsprite", spritesheet, spritesheet_data);
+class MyGame extends Tiny.App {
+    constructor(width, height) {
+        super();
 
-        this.load.all([
-            // { key: "base", src: baseImage, type: "image" },
-            // { key: "atlas", src: atlas, data: atlas_data, type: "atlas" },
-            // { key: "gifsprite", src: spritesheet, cols: 12, rows: 1, total: 15, duration: 40, type: "spritesheet" },
-            // { key: "gifsprite", src: spritesheet, width: 222, height: 222, duration: 40, type: "spritesheet" },
-            { key: "gifsprite", src: spritesheet, cols: 6, rows: 1, duration: 90, type: "spritesheet" }
-            // { key: "gifsprite", src: spritesheet, data: spritesheet_data, type: "spritesheet" }
-        ]);
-    },
+        this.width = width;
+        this.height = height;
 
-    create: function () {
-        this.group = new Tiny.Object2D();
-        this.group.x = 200;
-        this.group.y = 200;
-
-        this.group.add(new Tiny.Text("Hello World"));
-        this.group.add(new Tiny.Sprite("base"));
-        this.group.add(new Tiny.Text("Hello World", { fill: "#ff0000" }));
-        this.group.cacheAsBitmap = true;
-        this.group.children[2].y = 70;
-        this.group.updateCache();
-
-        var texture1 = (this.texture1 = this.group.generateTexture());
-        var spriteFromGenerated = new Tiny.Sprite(texture1);
-
-        spriteFromGenerated.x = this.group.x;
-        spriteFromGenerated.y = this.group.y;
-        spriteFromGenerated.alpha = 0.3;
-        spriteFromGenerated.scale.set(0.7);
-
-        this.scene.add(spriteFromGenerated);
-        this.scene.add(this.group);
-
-        var spriteFromGenerated2 = new Tiny.Sprite(texture1);
-        spriteFromGenerated2.x = 70;
-        spriteFromGenerated2.y = 70;
-        spriteFromGenerated2.rotation = 0.5;
-        spriteFromGenerated2.alpha = 0.3;
-        spriteFromGenerated2.scale.set(0.7);
-
-        this.group.add(spriteFromGenerated2);
-        this.group.updateCache();
-
-        this.input.add(this.group);
-        this.group.input.on("click", function () {
-            alert("Oup, you catched me !");
+        this.renderer = new Tiny.CanvasRenderer(this.width, this.height, {
+            resolution: 1.25,
+            autoResize: true
         });
 
-        this.bottomRightSprite = new Tiny.Sprite("base");
-        this.bottomRightSprite.anchor.set(0.5);
-        this.scene.add(this.bottomRightSprite);
-        this.bottomRightSprite.position.set(this.width - 100, this.height - 100);
+        this.renderer.setClearColor('#f4f4f4');
 
-        this.testCoin = new Tiny.Sprite("base");
-        this.testCoin.x = 350;
-        this.testCoin.y = 200;
-        this.testCoin.scale.set(0.5);
-        this.scene.add(this.testCoin);
+        var view = (this.inputView = this.renderer.domElement);
 
-        this.icon = new Tiny.Sprite("atlas", "IH");
-        this.icon.tint = "#23f423";
-        this.icon.scale.set(0.5);
-        this.scene.add(this.icon);
+        document.getElementById('game-container').appendChild(view);
 
-        const animatedSprite = new Tiny.Sprite("gifsprite", 0);
-        animatedSprite.anchor.set(0.5);
-        animatedSprite.position.set(450, 120);
-        animatedSprite.scale.set(0.7);
-        animatedSprite.animate(this.timer);
-
-        this.interval = setInterval(function () {
-            console.log("Rotate sprite!");
-            // animatedSprite.rotation = Math.random() * 3.14;
-        }, 1000);
-
-        this.scene.add(animatedSprite);
-
-        /**
-         * Creating scene mini-map
-         */
-        this.miniMap = new Tiny.MiniMap(this);
-        this.scene.add(this.miniMap);
-    },
-
-    update: function (time, delta) {
-        this.testCoin.rotation += delta * 0.0001;
-        this.testCoin.anchor.x = Math.sin(time * 0.001);
-
-        this.group.scale.x = Math.sin(time / 500);
-        this.group.scale.y = Math.cos(time / 500);
-
-        this.group.x = Math.sin(time / 100) * 10 + 200;
-        this.group.y = Math.cos(time / 100) * 10 + 200;
-
-        this.miniMap.update(delta);
-    },
-
-    resize: function (width, height) {
-        this.bottomRightSprite.x = width - 100;
-        this.bottomRightSprite.y = height - 100;
-
-        this.miniMap.resize(width, height);
-    },
-
-    destroy: function () {
-        clearInterval(this.interval);
+        this.scene = new Tiny.Scene();
     }
-};
+
+    preload() {
+        this.load.image('coin', resources.baseImage);
+    }
+
+    create() {
+        var text = new Tiny.Text('Hello Tiny!');
+        text.anchor.set(0.5);
+        text.x = 320;
+        text.y = 200;
+        this.text = text;
+
+        var sprite = new Tiny.Sprite('coin');
+
+        this.scene.add(sprite);
+        this.scene.add(text);
+    }
+
+    update(time, delta) {
+        this.text.rotation += delta * 0.001;
+    }
+
+    setPixelRatio(dpr) {
+        this.renderer.setPixelRatio(dpr);
+    }
+
+    render() {
+        this.renderer.render(this.scene);
+    }
+
+    resize(width, height) {
+        super.resize(width, height);
+
+        this.renderer.resize(width, height);
+    }
+}

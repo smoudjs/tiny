@@ -12,6 +12,8 @@ Tiny.App = function (states) {
     this.pauseDuration = 0;
     this.inputView = document.body;
 
+    if (!Tiny.app) Tiny.app = this;
+
     if (Tiny.EventEmitter) Tiny.EventEmitter.mixin(this);
 
     states = states || {};
@@ -131,6 +133,7 @@ Tiny.App.prototype.resize = function (width, height) {
 };
 
 Tiny.App.prototype.destroy = function (clearCache) {
+
     for (var i = 0; i < this.systems.length; i++) {
         if (this.systems[i].destroy) this.systems[i].destroy(clearCache);
     }
@@ -146,4 +149,6 @@ Tiny.App.prototype.destroy = function (clearCache) {
     }
 
     this._destroy_cb.call(this.callbackContext);
+
+    if (Tiny.app === this) Tiny.app = null;
 };

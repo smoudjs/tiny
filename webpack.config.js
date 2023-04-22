@@ -1,14 +1,15 @@
-const TerserPlugin = require("terser-webpack-plugin");
+const TerserPlugin = require('terser-webpack-plugin'),
+    Webpack = require('webpack');
 
 const config = {
-    mode: "production",
+    mode: 'production',
 
     context: `${__dirname}/src`,
 
     entry: {
-        "tiny": "./index.js",
-        "tiny.mini": "./mini.js",
-        "tiny.base": "./base.js"
+        'tiny': './index.js',
+        'tiny.mini': './mini.js',
+        'tiny.base': './base.js'
     },
 
     output: {
@@ -43,7 +44,11 @@ const config = {
         ]
     },
 
-    plugins: [],
+    plugins: [
+        new Webpack.DefinePlugin({
+            __DEBUG__: 'false'
+        })
+    ],
 
     stats: {
         colors: true

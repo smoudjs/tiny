@@ -24,6 +24,7 @@ Use our plugins to extend Tiny abilities:
 - [three 📦](https://github.com/peter-hutsul/h5tiny/tree/master/plugins/three)
 - [particles 🔥](https://github.com/peter-hutsul/h5tiny/tree/master/plugins/particles)
 - [sound 🎵](https://github.com/peter-hutsul/h5tiny/tree/master/plugins/sound)
+- [create 🛠](https://github.com/peter-hutsul/h5tiny/tree/master/plugins/create)
 - [extra ❤️](https://github.com/peter-hutsul/h5tiny/tree/master/plugins/extra)
 
 ### Installation
@@ -181,7 +182,7 @@ class MyGame extends Tiny.App {
         this.tweens.add(text.scale).to({
             x: 1.1,
             y: 1.1
-        }, 500).yoyo(true).easing(TWEEN.Easing.Sinusoidal.InOut).repeat(Infinity).start();
+        }, 500).yoyo(true).easing(Tiny.Easing.Sinusoidal.InOut).repeat(Infinity).start();
     }
 
     update(time, delta) {
@@ -279,7 +280,7 @@ class MyGame extends Tiny.App {
         this.tweens.add(text.scale).to({
             x: 1.1,
             y: 1.1
-        }, 500).yoyo(true).easing(TWEEN.Easing.Sinusoidal.InOut).repeat(Infinity).start();
+        }, 500).yoyo(true).easing(Tiny.Easing.Sinusoidal.InOut).repeat(Infinity).start();
 
         var mesh = new THREE.Mesh(new THREE.BoxBufferGeometry(1, 1, 1), new THREE.MeshLambertMaterial({
             color: "#ff4534"

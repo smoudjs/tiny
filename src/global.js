@@ -1,4 +1,4 @@
-Tiny.VERSION = "2.1.12";
+Tiny.VERSION = '2.1.12';
 
 Tiny.systems = [];
 
@@ -22,20 +22,12 @@ Tiny.rnd = function (min, max) {
     return min + Math.floor(Math.random() * (max - min + 1));
 };
 
-Tiny.color2rgb = function (style) {
-    return Tiny.hex2rgb(Tiny.style2hex(style));
-};
-
-Tiny.color2style = function (style) {
-    return style;
-};
-
-Tiny.style2hex = function (style) {
-    return +style.replace("#", "0x");
+Tiny.style2hex = function (color) {
+    return +color.replace('#', '0x');
 };
 
 Tiny.hex2style = function (hex) {
-    return "#" + ("00000" + (hex | 0).toString(16)).substr(-6);
+    return '#' + ('00000' + (hex | 0).toString(16)).substr(-6);
 };
 
 Tiny.hex2rgb = function (hex) {

@@ -1,5 +1,6 @@
 /**
  * import "h5tiny";
+ * import "h5tiny/examples/js/App2D";
  * import "h5tiny/plugins/particles";
  *
  * import "h5tiny/examples/js/particles/Confetti";
@@ -10,8 +11,12 @@
  *
  */
 
-window["test.Particles2"] = {
-    create: function () {
+class MyGame extends Tiny.App2D {
+    constructor(width, height) {
+        super(width, height, 'game-container');
+    }
+
+    create() {
         var confetti = (this.confetti = new Tiny.Emitter(150));
         confetti.x = 350;
         confetti.width = 800;
@@ -39,4 +44,4 @@ window["test.Particles2"] = {
         this.particles.add(ribbon);
         this.scene.add(ribbon);
     }
-};
+}

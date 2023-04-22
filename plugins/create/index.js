@@ -1,0 +1,3 @@
+Tiny.Create = {};
+
+require('./spritesheet');

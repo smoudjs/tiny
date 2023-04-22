@@ -39,25 +39,25 @@ Tiny.CanvasGraphics.renderGraphics = function (graphics, context) {
 
             if (data.fill) {
                 context.globalAlpha = data.fillAlpha * worldAlpha;
-                context.fillStyle = Tiny.color2style(fillColor);
+                context.fillStyle = fillColor;
                 context.fill();
             }
 
             if (data.lineWidth) {
                 context.globalAlpha = data.lineAlpha * worldAlpha;
-                context.strokeStyle = Tiny.color2style(lineColor);
+                context.strokeStyle = lineColor;
                 context.stroke();
             }
         } else if (data.type === Tiny.Primitives.RECT) {
-            if (data.fillColor || data.fillColor === 0) {
+            if (data.fillColor) {
                 context.globalAlpha = data.fillAlpha * worldAlpha;
-                context.fillStyle = Tiny.color2style(fillColor);
+                context.fillStyle = fillColor;
                 context.fillRect(shape.x, shape.y, shape.width, shape.height);
             }
 
             if (data.lineWidth) {
                 context.globalAlpha = data.lineAlpha * worldAlpha;
-                context.strokeStyle = Tiny.color2style(lineColor);
+                context.strokeStyle = lineColor;
                 context.strokeRect(shape.x, shape.y, shape.width, shape.height);
             }
         } else if (data.type === Tiny.Primitives.CIRC) {
@@ -68,13 +68,13 @@ Tiny.CanvasGraphics.renderGraphics = function (graphics, context) {
 
             if (data.fill) {
                 context.globalAlpha = data.fillAlpha * worldAlpha;
-                context.fillStyle = Tiny.color2style(fillColor);
+                context.fillStyle = fillColor;
                 context.fill();
             }
 
             if (data.lineWidth) {
                 context.globalAlpha = data.lineAlpha * worldAlpha;
-                context.strokeStyle = Tiny.color2style(lineColor);
+                context.strokeStyle = lineColor;
                 context.stroke();
             }
         } else if (data.type === Tiny.Primitives.ELIP) {
@@ -106,13 +106,13 @@ Tiny.CanvasGraphics.renderGraphics = function (graphics, context) {
 
             if (data.fill) {
                 context.globalAlpha = data.fillAlpha * worldAlpha;
-                context.fillStyle = Tiny.color2style(fillColor);
+                context.fillStyle = fillColor;
                 context.fill();
             }
 
             if (data.lineWidth) {
                 context.globalAlpha = data.lineAlpha * worldAlpha;
-                context.strokeStyle = Tiny.color2style(lineColor);
+                context.strokeStyle = lineColor;
                 context.stroke();
             }
         } else if (data.type === Tiny.Primitives.RREC) {
@@ -137,15 +137,15 @@ Tiny.CanvasGraphics.renderGraphics = function (graphics, context) {
             context.quadraticCurveTo(rx, ry, rx, ry + radius);
             context.closePath();
 
-            if (data.fillColor || data.fillColor === 0) {
+            if (data.fillColor) {
                 context.globalAlpha = data.fillAlpha * worldAlpha;
-                context.fillStyle = Tiny.color2style(fillColor);
+                context.fillStyle = fillColor;
                 context.fill();
             }
 
             if (data.lineWidth) {
                 context.globalAlpha = data.lineAlpha * worldAlpha;
-                context.strokeStyle = Tiny.color2style(lineColor);
+                context.strokeStyle = lineColor;
                 context.stroke();
             }
         }
@@ -157,11 +157,11 @@ Tiny.CanvasGraphics.renderGraphics = function (graphics, context) {
         //     var height = shape.height;
         //     var radius = shape.radius;
 
-        //     if (data.fillColor || data.fillColor === 0)
+        //     if (data.fillColor)
         //     {
         //         context.globalAlpha = data.fillAlpha * worldAlpha;
-        //         context.fillStyle = Tiny.color2style(fillColor);
-        //         context.strokeStyle = Tiny.color2style(fillColor);
+        //         context.fillStyle = fillColor;
+        //         context.strokeStyle = fillColor;
         //     }
 
         //     context.lineJoin = "round";
@@ -254,19 +254,23 @@ Tiny.CanvasGraphics.renderGraphicsMask = function (graphics, context) {
 };
 
 Tiny.CanvasGraphics.updateGraphicsTint = function (graphics) {
-    if (graphics.tint === 0xffffff) {
+    console.log(graphics.tint);
+
+    if (graphics.tint === "#ffffff") {
         return;
     }
 
-    var tintR = ((graphics.tint >> 16) & 0xff) / 255;
-    var tintG = ((graphics.tint >> 8) & 0xff) / 255;
-    var tintB = (graphics.tint & 0xff) / 255;
+    var tintHex = Tiny.style2hex(graphics.tint);
+    
+    var tintR = ((tintHex >> 16) & 0xff) / 255;
+    var tintG = ((tintHex >> 8) & 0xff) / 255;
+    var tintB = (tintHex & 0xff) / 255;
 
     for (var i = 0; i < graphics.graphicsData.length; i++) {
         var data = graphics.graphicsData[i];
 
-        var fillColor = data.fillColor | 0;
-        var lineColor = data.lineColor | 0;
+        var fillColor = Tiny.style2hex(data.fillColor);
+        var lineColor = Tiny.style2hex(data.lineColor);
 
         /*
         var colorR = (fillColor >> 16 & 0xFF) / 255;
@@ -293,5 +297,8 @@ Tiny.CanvasGraphics.updateGraphicsTint = function (graphics) {
             (((((lineColor >> 16) & 0xff) / 255) * tintR * 255) << 16) +
             (((((lineColor >> 8) & 0xff) / 255) * tintG * 255) << 8) +
             ((lineColor & 0xff) / 255) * tintB * 255;
+
+        data._fillTint = Tiny.hex2style(data._fillTint);
+        data._lineTint = Tiny.hex2style(data._lineTint);
     }
 };

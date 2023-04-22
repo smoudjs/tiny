@@ -84,7 +84,7 @@ Tiny.Loader.sound = function (resource, cb) {
     
     if (Tiny.Cache.sound[resource.key]) return cb();
 
-    var sound = new context.Howl({
+    var sound = new window.Howl({
         src: [resource.src]
     });
 

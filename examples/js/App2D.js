@@ -1,5 +1,3 @@
-Tiny.CanvasTinter.cacheTint = false;
-
 class App2D extends Tiny.App {
     constructor(width, height, parentNode, states) {
         super(states);

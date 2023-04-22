@@ -1,18 +1,23 @@
 /**
  * import "h5tiny";
+ * import "h5tiny/examples/js/App2D";
  */
 
-window["test.BlendMode"] = {
-    preload: function () {
-        this.load.image("base", baseImage);
+class MyGame extends Tiny.App2D {
+    constructor(width, height) {
+        super(width, height, 'game-container');
+    }
+
+    preload() {
+        this.load.image('base', resources.baseImage);
 
         resizeCanvas(640, 600);
 
         this.addLabel = (_x, _y, text, color) => {
             var text = new Tiny.Text(text, {
-                fill: color || "#ffffff",
-                font: "300 9pt Courier",
-                align: "center"
+                fill: color || '#ffffff',
+                font: '300 9pt Courier',
+                align: 'center'
             });
             text.position.set(_x, _y);
             text.anchor.set(0.5, 3.2);
@@ -20,32 +25,32 @@ window["test.BlendMode"] = {
         };
 
         this.addSprite = (x, y, mode, anchorX, anchorY) => {
-            var sprite = new Tiny.Sprite("base");
+            var sprite = new Tiny.Sprite('base');
             sprite.position.set(x, y);
             sprite.anchor.set(anchorX, anchorY);
             sprite.scale.set(0.4);
             sprite.blendMode = mode;
             this.scene.add(sprite);
         };
-    },
+    }
 
-    create: function () {
+    create() {
         const blendModes = [
-            "source-over",
-            "screen",
-            "lighter",
-            "xor",
-            "multiply",
-            "overlay",
-            "darken",
-            "lighten",
-            "color-dodge",
-            "color-burn",
-            "hard-light",
-            "soft-light",
-            "difference",
-            "exclusion",
-            "luminosity"
+            'source-over',
+            'screen',
+            'lighter',
+            'xor',
+            'multiply',
+            'overlay',
+            'darken',
+            'lighten',
+            'color-dodge',
+            'color-burn',
+            'hard-light',
+            'soft-light',
+            'difference',
+            'exclusion',
+            'luminosity'
         ];
 
         let x = 0;
@@ -55,22 +60,22 @@ window["test.BlendMode"] = {
 
         const background = new Tiny.Graphics();
 
-        background.beginFill("#232323");
-        background.blendMode = "source-over";
+        background.beginFill('#232323');
+        background.blendMode = 'source-over';
         background.drawRect(0, 0, this.width / 2, this.height);
         this.scene.add(background);
 
-        this.input.on("down", function() {
+        this.input.on('down', function () {
             background.clear();
-            background.beginFill(Tiny.hex2style(Math.floor(Math.random()*16777215)));
+            background.beginFill(Tiny.hex2style(Math.floor(Math.random() * 16777215)));
             background.drawRect(0, 0, game.width / 2, game.height);
-        })
+        });
 
         for (let mode of blendModes) {
             const _x = x * (this.width / 6) + start;
             const _y = y * offset + 70;
 
-            this.addLabel(_x, _y, mode, "#ffffff");
+            this.addLabel(_x, _y, mode, '#ffffff');
             this.addSprite(_x, _y, mode, 0.2, 0.2);
             this.addSprite(_x, _y, mode, 0.7, 0.2);
             this.addSprite(_x, _y, mode, 0.5, 0.7);
@@ -89,7 +94,7 @@ window["test.BlendMode"] = {
             const _x = this.width / 2 + x * (this.width / 6) + start;
             const _y = y * offset + 70;
 
-            this.addLabel(_x, _y, mode, "#232323");
+            this.addLabel(_x, _y, mode, '#232323');
             this.addSprite(_x, _y, mode, 0.2, 0.2);
             this.addSprite(_x, _y, mode, 0.7, 0.2);
             this.addSprite(_x, _y, mode, 0.5, 0.7);
@@ -101,4 +106,4 @@ window["test.BlendMode"] = {
             }
         }
     }
-};
+}

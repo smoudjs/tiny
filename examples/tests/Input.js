@@ -1,17 +1,23 @@
 /**
  * import "h5tiny";
+ * import "h5tiny/examples/js/App2D";
  * 
  * import "h5tiny/examples/js/objects/MiniMap";
  * to use RecursiveSprite
  */
 
-window["test.Input"] = {
-    preload: function () {
-        this.load.image("base", baseImage);
-        this.load.atlas("atlas", atlas, atlas_data);
-    },
+class MyGame extends Tiny.App2D {
+    
+    constructor(width, height) {
+        super(width, height, "game-container");
+    }
 
-    create: function () {
+    preload () {
+        this.load.image("base", resources.baseImage);
+        this.load.atlas("atlas", resources.atlas, resources.atlas_data);
+    }
+
+    create () {
         const debugText = (this.debugText = new Tiny.Text("0:0", { fill: "#3434f3" }));
         this.scene.add(debugText);
 
@@ -150,20 +156,17 @@ window["test.Input"] = {
         this.recusrive = new Tiny.RecursiveSprite(this);
         this.scene.add(this.recusrive);
 
-        coin2.input.on(
-            "down",
-            function () {
-                this.dragging = true;
-            },
-            coin2
-        );
-    },
+        coin2.input.on("down", function () {
+            this.dragging = true;
+        }, coin2);
+    }
 
-    resize: function (width, height) {
+    resize (width, height) {
+        super.resize(width, height);
         this.recusrive.resize(width, height);
-    },
+    }
 
-    update: function (time, delta) {
+    update (time, delta) {
         this.recusrive.update(delta);
     }
-};
+}

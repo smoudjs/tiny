@@ -1,17 +1,22 @@
 /**
  * import "h5tiny";
+ * import "h5tiny/examples/js/App2D";
  */
 
-window["test.Tweens"] = {
-    preload: function () {
-        this.load.image("base", baseImage);
-    },
+class MyGame extends Tiny.App2D {
+    constructor(width, height) {
+        super(width, height, 'game-container');
+    }
 
-    create: function () {
-        var sprite1 = new Tiny.Sprite("base");
-        var sprite2 = new Tiny.Sprite("base");
-        var sprite3 = new Tiny.Sprite("base");
-        var sprite4 = new Tiny.Sprite("base");
+    preload() {
+        this.load.image('base', resources.baseImage);
+    }
+
+    create() {
+        var sprite1 = new Tiny.Sprite('base');
+        var sprite2 = new Tiny.Sprite('base');
+        var sprite3 = new Tiny.Sprite('base');
+        var sprite4 = new Tiny.Sprite('base');
 
         sprite1.scale.set(0.5);
         sprite2.scale.set(0.5);
@@ -56,17 +61,17 @@ window["test.Tweens"] = {
 
         for (let easeName in Tiny.Easing) {
             for (let fun in Tiny.Easing[easeName]) {
-                let name = easeName + "." + fun;
+                let name = easeName + '.' + fun;
                 let ease = Tiny.Easing[easeName][fun];
 
-                let sprite = new Tiny.Sprite("base");
+                let sprite = new Tiny.Sprite('base');
                 sprite.scale.set(0.1);
                 sprite.x = 400;
                 sprite.y = y;
                 y += 12;
                 this.scene.add(sprite);
 
-                var nameText = new Tiny.Text(name, { font: "300 7pt Courier" });
+                var nameText = new Tiny.Text(name, { font: '300 7pt Courier' });
                 nameText.x = sprite.x - 10;
                 nameText.y = sprite.y;
                 nameText.anchor.x = 1;
@@ -84,4 +89,4 @@ window["test.Tweens"] = {
             }
         }
     }
-};
+}

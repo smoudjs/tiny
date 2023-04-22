@@ -1,32 +1,37 @@
 /**
  * import "h5tiny";
+ * import "h5tiny/examples/js/App2D";
  * import "h5tiny/plugins/particles";
- * 
+ *
  * import "h5tiny/examples/js/particles/Smoke";
  * to use SmokeParticle pattern
- * 
+ *
  * import "h5tiny/examples/js/particles/Explode";
  * to use ExplodeParticle pattern
- * 
+ *
  * import "h5tiny/examples/js/objects/MiniMap";
  * to use RecursiveSprite
  */
 
-window["test.Particles1"] = {
-    preload: function () {
-        this.load.image("base", baseImage);
-    },
+class MyGame extends Tiny.App2D {
+    constructor(width, height) {
+        super(width, height, 'game-container');
+    }
 
-    create: function () {
+    preload() {
+        this.load.image('base', resources.baseImage);
+    }
+
+    create() {
         var emitter = (this.emitter = new Tiny.Emitter(300));
         emitter.x = 200;
         emitter.y = 300;
         emitter.width = 40;
 
         emitter.pattern = Tiny.SmokeParticle;
-        emitter.fillStyle = "#666666";
+        emitter.fillStyle = '#666666';
 
-        emitter.makeParticles("base"); //Tiny.TextureCache["atlas_BR"])
+        emitter.makeParticles('base'); //Tiny.TextureCache["atlas_BR"])
         emitter.scale.set(0.7);
 
         emitter.start(false, 500, 0);
@@ -50,20 +55,20 @@ window["test.Particles1"] = {
         bombEmitter.pattern = Tiny.ExplodeParticle;
         bombEmitter.makeParticles();
 
-        var clickMe = new Tiny.Text("Click me !");
+        var clickMe = new Tiny.Text('Click me !');
         clickMe.anchor.set(0.5);
         clickMe.position.set(this.width / 2, this.height / 2);
         this.scene.add(clickMe);
 
-        this.input.once("down", function (e) {
+        this.input.once('down', function (e) {
             clickMe.destroy();
         });
 
-        this.input.on("down", function (e) {
-            bombEmitter.fillStyle = "#" + Math.floor(Math.random() * 0xffffff).toString(16);
+        this.input.on('down', function (e) {
+            bombEmitter.fillStyle = '#' + Math.floor(Math.random() * 0xffffff).toString(16);
             bombEmitter.x = e.x;
             bombEmitter.y = e.y;
-            console.log("Explode");
+            console.log('Explode');
             bombEmitter.explode(300, 80);
         });
 
@@ -74,13 +79,14 @@ window["test.Particles1"] = {
         this.recusrive.delay = 1;
         this.recusrive.setCenter(0.5, 0.7);
         this.scene.add(this.recusrive);
-    },
+    }
 
-    update: function (time, delta) {
+    update(time, delta) {
         this.recusrive.update(delta);
-    },
+    }
 
-    resize: function (width, height) {
+    resize(width, height) {
+        super.resize(width, height);
         this.recusrive.resize(width, height);
     }
-};
+}

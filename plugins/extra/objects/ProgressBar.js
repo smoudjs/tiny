@@ -87,9 +87,8 @@ Tiny.ProgressBar.prototype = Object.create(Tiny.Sprite.prototype);
 Tiny.ProgressBar.prototype.constructor = Tiny.ProgressBar;
 
 Tiny.ProgressBar.prototype._setValue = function (value) {
-    value = Math.min(1, Math.max(0, value));
 
-    if (value == undefined) value = this._value;
+    value = Math.min(1, Math.max(0, value));
 
     if (value == this._value) return;
 
@@ -103,10 +102,11 @@ Tiny.ProgressBar.prototype._setValue = function (value) {
         return;
     }
 
+    var step;
     if (this._sprites.length == 2) {
         this._sprites[1].alpha = value;
     } else if (this._sprites.length == 3) {
-        var step = 0.5;
+        step = 0.5;
         var lerp;
 
         if (value >= step) {
@@ -120,7 +120,7 @@ Tiny.ProgressBar.prototype._setValue = function (value) {
         }
     } else {
         var mixes = this._sprites.length - 1;
-        var step = 1 / mixes;
+        step = 1 / mixes;
 
         var index = Math.floor(value * mixes) + 1;
         var alpha = (value - step * (index - 1)) / step;

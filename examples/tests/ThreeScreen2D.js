@@ -1,35 +1,40 @@
 /**
  * import "h5tiny";
+ * import "h5tiny/examples/js/App3D";
  * import "h5tiny/plugins/three";
  */
 
-window["test.ThreeScreen2D"] = {
-    preload: function () {
-        this.load.image("base", baseImage);
-        this.load.atlas("atlas", atlas, atlas_data);
-    },
+class MyGame extends Tiny.App3D {
+    constructor(width, height) {
+        super(width, height, 'game-container');
+    }
 
-    create: function () {
-        var debugText = new Tiny.Text("", {
-            font: "bold 30pt Arial",
-            fill: "#ffffff",
+    preload() {
+        this.load.image('base', resources.baseImage);
+        this.load.atlas('atlas', resources.atlas, resources.atlas_data);
+    }
+
+    create() {
+        var debugText = new Tiny.Text('', {
+            font: 'bold 30pt Arial',
+            fill: '#ffffff',
             wordWrap: true,
             wordWrapWidth: 200,
-            align: "center"
+            align: 'center'
         });
 
         debugText.x = 200;
         debugText.y = 20;
         this.screen2d.add(debugText);
 
-        const button = (this.button = new Tiny.Sprite("base"));
+        const button = (this.button = new Tiny.Sprite('base'));
         button.x = 200;
         button.y = 100;
 
         this.input.add(button);
-        button.input.on("click", function () {
-            debugText.setText("Clicked Button");
-            console.log("Clicked Button");
+        button.input.on('click', function () {
+            debugText.setText('Clicked Button');
+            console.log('Clicked Button');
         });
 
         // this.input.attach(button);
@@ -42,7 +47,7 @@ window["test.ThreeScreen2D"] = {
 
         this.screen2d.add(button);
 
-        button.add(new Tiny.Text("Button"));
+        button.add(new Tiny.Text('Button'));
 
         // this.screen2d.canvas.autoUpdate = true;
         // this.screen2d.canvas.update();
@@ -61,19 +66,19 @@ window["test.ThreeScreen2D"] = {
 
         const mesh = (this.mesh = new THREE.Mesh(
             new THREE.BoxBufferGeometry(1, 1, 1),
-            new THREE.MeshLambertMaterial({ color: "#ff4534" })
+            new THREE.MeshLambertMaterial({ color: '#ff4534' })
         ));
 
-        var clickMeT = new Tiny.Text3D("Click Me");
+        var clickMeT = new Tiny.Text3D('Click Me');
         clickMeT.position.z = 0.51;
         mesh.add(clickMeT);
 
-        var clickMeF = new Tiny.Text3D("Click Me");
+        var clickMeF = new Tiny.Text3D('Click Me');
         clickMeF.position.y = 0.51;
         clickMeF.rotation.x = -Math.PI / 2;
         mesh.add(clickMeF);
 
-        var clickMeB = new Tiny.Text3D("Click Me");
+        var clickMeB = new Tiny.Text3D('Click Me');
         clickMeB.position.y = -0.51;
         clickMeB.rotation.x = Math.PI / 2;
         mesh.add(clickMeB);
@@ -91,9 +96,9 @@ window["test.ThreeScreen2D"] = {
             transparent: true
         });
 
-        mesh.input.on("click", function () {
-            debugText.setText("Click from raycaster");
-            console.log("Click from raycaster");
+        mesh.input.on('click', function () {
+            debugText.setText('Click from raycaster');
+            console.log('Click from raycaster');
         });
 
         this.scene.add(mesh);
@@ -125,11 +130,11 @@ window["test.ThreeScreen2D"] = {
         this.particles.add(ribbon);
         this.screen2d.add(ribbon);
 
-        this.bottomRightSprite = new Tiny.Sprite("base");
+        this.bottomRightSprite = new Tiny.Sprite('base');
         this.bottomRightSprite.anchor.set(0.5);
 
         this.input.add(this.bottomRightSprite, { transparent: true });
-        this.bottomRightSprite.input.on("click", function () {
+        this.bottomRightSprite.input.on('click', function () {
             mesh.scale.set(Math.random() * 2 + 1, Math.random() * 2 + 1, Math.random() * 2 + 1);
         });
 
@@ -138,33 +143,26 @@ window["test.ThreeScreen2D"] = {
         this.bottomRightSprite.position.set(this.width - 100, this.height - 100);
 
         this.input.on(
-            "move",
+            'move',
             function (e) {
-                debugText.setText(Math.floor(e.x) + " : " + Math.floor(e.y));
+                debugText.setText(Math.floor(e.x) + ' : ' + Math.floor(e.y));
             },
             this
         );
 
         // this.screen2d.scene.add(mesh);
-    },
+    }
 
-    update: function (time, delta) {
+    update(time, delta) {
         this.button.scale.x = Math.sin(time * 0.001);
         this.mesh.rotation.x += delta * 0.005;
         this.mesh.position.x = Math.sin(time * 0.001);
         this.mesh.position.z = 1 + Math.sin(time * 0.001);
-    },
+    }
 
-    // update: function(time, delta) {
-
-    //  this.sprite.tilePosition.x += 0.5 * delta;
-    //  this.sprite.tilePosition.y += Math.sin(time * 0.01) * 10;
-
-    //  this.sprite.tileScale.x = this.sprite.tileScale.y = Math.sin(time * 0.0007) * 1;
-    // },
-
-    resize: function (width, height) {
+    resize(width, height) {
+        super.resize(width, height);
         this.bottomRightSprite.x = width - 100;
         this.bottomRightSprite.y = height - 100;
     }
-};
+}

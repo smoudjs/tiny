@@ -1,16 +1,21 @@
 /**
  * import "h5tiny";
+ * import "h5tiny/examples/js/App2D";
  * import "h5tiny/plugins/sound";
  */
 
-window["test.Sound"] = {
-    preload: function () {
-        this.load.image("base", baseImage);
-        this.load.sound("theme", theme);
-        this.load.sound("click", sound);
-    },
+class MyGame extends Tiny.App2D {
+    constructor(width, height) {
+        super(width, height, 'game-container');
+    }
 
-    create: function () {
+    preload() {
+        this.load.image("base", resources.baseImage);
+        this.load.sound("theme", resources.theme);
+        this.load.sound("click", resources.sound);
+    }
+
+    create() {
         this.sound.loop("theme");
 
         var sprite = new Tiny.Sprite("base");
@@ -23,4 +28,4 @@ window["test.Sound"] = {
             this.sound.play("click");
         }, this);
     }
-};
+}

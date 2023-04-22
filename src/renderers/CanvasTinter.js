@@ -34,7 +34,7 @@ Tiny.CanvasTinter.tintWithMultiply = function (texture, color, canvas) {
     canvas.width = crop.width;
     canvas.height = crop.height;
 
-    context.fillStyle = Tiny.color2style(color);
+    context.fillStyle = color;
 
     context.fillRect(0, 0, crop.width, crop.height);
 
@@ -58,7 +58,7 @@ Tiny.CanvasTinter.tintWithPerPixel = function (texture, color, canvas) {
     context.globalCompositeOperation = "copy";
     context.drawImage(texture.source, crop.x, crop.y, crop.width, crop.height, 0, 0, crop.width, crop.height);
 
-    var rgbValues = Tiny.color2rgb(color);
+    var rgbValues = Tiny.hex2rgb(Tiny.style2hex(color));
     var r = rgbValues[0],
         g = rgbValues[1],
         b = rgbValues[2];

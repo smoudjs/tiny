@@ -11,9 +11,9 @@ Tiny.Sprite = function (texture, key) {
 
     this._frame = 0;
 
-    this.tint = "#FFFFFF";
+    this.tint = '#ffffff';
 
-    this.blendMode = "source-over";
+    this.blendMode = 'source-over';
 
     if (this.texture.hasLoaded) {
         this.onTextureUpdate();
@@ -25,19 +25,19 @@ Tiny.Sprite = function (texture, key) {
 Tiny.Sprite.prototype = Object.create(Tiny.Object2D.prototype);
 Tiny.Sprite.prototype.constructor = Tiny.Sprite;
 
-Object.defineProperty(Tiny.Sprite.prototype, "frameName", {
+Object.defineProperty(Tiny.Sprite.prototype, 'frameName', {
     get: function () {
         return this.texture.frame.name;
     },
 
     set: function (value) {
         if (this.texture.frame.name) {
-            this.setTexture(Tiny.Cache.texture[this.texture.key + "." + value]);
+            this.setTexture(Tiny.Cache.texture[this.texture.key + '.' + value]);
         }
     }
 });
 
-Object.defineProperty(Tiny.Sprite.prototype, "frame", {
+Object.defineProperty(Tiny.Sprite.prototype, 'frame', {
     get: function () {
         return this._frame;
     },
@@ -46,12 +46,13 @@ Object.defineProperty(Tiny.Sprite.prototype, "frame", {
         if (this.texture.lastFrame) {
             this._frame = value;
             if (this._frame > this.texture.lastFrame) this._frame = 0;
-            this.setTexture(Tiny.Cache.texture[this.texture.key + "." + this._frame]);
+            else if (this._frame < 0) this._frame = this.texture.lastFrame;
+            this.setTexture(Tiny.Cache.texture[this.texture.key + '.' + this._frame]);
         }
     }
 });
 
-Object.defineProperty(Tiny.Sprite.prototype, "width", {
+Object.defineProperty(Tiny.Sprite.prototype, 'width', {
     get: function () {
         return this.scale.x * this.texture.frame.width;
     },
@@ -62,7 +63,7 @@ Object.defineProperty(Tiny.Sprite.prototype, "width", {
     }
 });
 
-Object.defineProperty(Tiny.Sprite.prototype, "height", {
+Object.defineProperty(Tiny.Sprite.prototype, 'height', {
     get: function () {
         return this.scale.y * this.texture.frame.height;
     },
@@ -74,11 +75,11 @@ Object.defineProperty(Tiny.Sprite.prototype, "height", {
 });
 
 Tiny.Sprite.prototype.setTexture = function (texture, key, updateDimension) {
-    if (typeof texture == "string") {
+    if (typeof texture == 'string') {
         var imagePath = texture;
 
         if (key != undefined) {
-            imagePath = imagePath + "." + key;
+            imagePath = imagePath + '.' + key;
         }
 
         texture = Tiny.Cache.texture[imagePath];
@@ -92,7 +93,7 @@ Tiny.Sprite.prototype.setTexture = function (texture, key, updateDimension) {
     if (this.texture === texture) return false;
 
     this.texture = texture;
-    this.cachedTint = "#FFFFFF";
+    this.cachedTint = '#ffffff';
 
     if (updateDimension === true) {
         this.onTextureUpdate();
@@ -107,17 +108,26 @@ Tiny.Sprite.prototype.onTextureUpdate = function () {
     if (this._height) this.scale.y = this._height / this.texture.frame.height;
 };
 
-Tiny.Sprite.prototype.animate = function (timer, delay) {
-    if (this.texture.lastFrame && this.texture.frame.index != undefined) {
+Tiny.Sprite.prototype.animate = function (delay, yoyo) {
+    this.reverse = false;
+    this.yoyo = yoyo;
+
+    if (this.texture.lastFrame) {
         delay = delay || this.texture.frame.duration || 100;
 
         if (!this.animation) {
-            this.animation = timer.loop(
+            this.animation = this.game.timer.loop(
                 delay,
                 function () {
-                    this.frame += 1;
+                    if (this.yoyo) {
+                        if (this.frame === 0) this.reverse = false;
+                        else if (this.frame === this.texture.lastFrame) this.reverse = true;
+                    }
+
+                    this.frame += this.reverse ? -1 : 1;
                     this.animation.delay = delay || this.texture.frame.duration || 100;
-                }.bind(this)
+                },
+                this
             );
 
             this.animation.start();
@@ -285,7 +295,7 @@ Tiny.Sprite.prototype.render = function (renderSession) {
             );
         }
 
-        if (this.tint !== "#FFFFFF") {
+        if (this.tint !== '#ffffff') {
             if (this.cachedTint !== this.tint) {
                 this.cachedTint = this.tint;
                 this.tintedTexture = Tiny.CanvasTinter.getTintedTexture(this, this.tint);

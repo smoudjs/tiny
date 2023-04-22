@@ -1,5 +1,6 @@
 /**
  * import "h5tiny";
+ * import "h5tiny/examples/js/App2D";
  * import "h5tiny/plugins/extra"
  *
  * or
@@ -10,13 +11,17 @@
  *
  */
 
-window["test.RenderLayer"] = {
-    preload: function () {
-        this.load.image("base", baseImage);
-        this.load.atlas("atlas", atlas, atlas_data);
-    },
+class MyGame extends Tiny.App2D {
+    constructor(width, height) {
+        super(width, height, 'game-container');
+    }
 
-    create: function () {
+    preload() {
+        this.load.image("base", resources.baseImage);
+        this.load.atlas("atlas", resources.atlas, resources.atlas_data);
+    }
+
+    create() {
         const bottomLayer = new Tiny.Object2D();
         bottomLayer.position.set(this.width / 2, this.height / 2);
         const topLayer = new Tiny.RenderLayer();
@@ -81,4 +86,4 @@ window["test.RenderLayer"] = {
         tip.y = 30;
         this.scene.add(tip);
     }
-};
+}

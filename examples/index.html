@@ -8,7 +8,8 @@
         <script type="text/javascript" src="libs/tiny/plugins/extra.js"></script>
         <script type="text/javascript" src="libs/tiny/plugins/particles.js"></script>
         <script type="text/javascript" src="libs/tiny/plugins/three.js"></script>
-        <script type="text/javascript" src="../plugins/sound/index.js"></script>
+        <script type="text/javascript" src="libs/tiny/plugins/create.js"></script>
+        <script type="text/javascript" src="libs/tiny/plugins/sound.js"></script>
         <script type="text/javascript" src="js/particles/Smoke.js"></script>
         <script type="text/javascript" src="js/particles/Explode.js"></script>
         <script type="text/javascript" src="js/particles/Firework.js"></script>
@@ -21,145 +22,78 @@
         <script type="text/javascript" src="js/App2D.js"></script>
         <script type="text/javascript" src="js/App3D.js"></script>
 
-        <link href="style.css" rel="stylesheet" />
+        <script src="libs/ace/ace.js" type="text/javascript"></script>
+        <script src="libs/ace/ext-language_tools.js" type="text/javascript"></script>
+        <script src="libs/ace/ext-searchbox.js" type="text/javascript"></script>
+        <script src="libs/ace/mode-javascript.js" type="text/javascript"></script>
+        <script src="libs/ace/theme-monokai.js" type="text/javascript"></script>
+        <link href="res/style.css" rel="stylesheet" />
+        <script type="text/javascript" src="res/script.js"></script>
     </head>
     <body>
-        <script type="text/javascript" src="tests/Basic.js"></script>
-        <script type="text/javascript" src="tests/Graphics.js"></script>
-        <script type="text/javascript" src="tests/Graphics2.js"></script>
-        <script type="text/javascript" src="tests/Input.js"></script>
-        <script type="text/javascript" src="tests/BlendMode.js"></script>
-        <script type="text/javascript" src="tests/Particles1.js"></script>
-        <script type="text/javascript" src="tests/Particles2.js"></script>
-        <script type="text/javascript" src="tests/TilingSprite.js"></script>
-        <script type="text/javascript" src="tests/RenderLayer.js"></script>
-        <script type="text/javascript" src="tests/ProgressBar.js"></script>
-        <script type="text/javascript" src="tests/ThreeBasic.js"></script>
-        <script type="text/javascript" src="tests/ThreeCanvas.js"></script>
-        <script type="text/javascript" src="tests/ThreeScreen2D.js"></script>
-        <script type="text/javascript" src="tests/Sound.js"></script>
-        <script type="text/javascript" src="tests/RendererTexture.js"></script>
-        <script type="text/javascript" src="tests/Tweens.js"></script>
-        <script type="text/javascript" src="tests/DemoInfinityWorm.js"></script>
 
-        <script type="text/javascript">
-            window.config = {
-                width: 640,
-                height: 400
-            };
-
-            Tiny.GLTFLoader = THREE.GLTFLoader;
-
-            window.initTest = function (e, is3D) {
-                destroyGame();
-
-                const container = document.getElementById("test-container");
-                container.innerHTML = "";
-
-                var game;
-
-                if (!is3D) {
-                    game = window.game = new Tiny.App2D(
-                        config.width,
-                        config.height,
-                        "test-container",
-                        window["test." + e]
-                    );
-                } else {
-                    game = window.game = new Tiny.App3D(
-                        config.width,
-                        config.height,
-                        "test-container",
-                        window["test." + e]
-                    );
-                }
-
-                window.game = game;
-            };
-
-            window.destroyGame = function () {
-                if (window.game) {
-                    window.game.destroy();
-                    window.game = null;
-                }
-            };
-
-            window.resizeCanvas = function (width, height) {
-                const container = document.getElementById("test-container");
-                config.width = width || Math.floor(Math.random() * 400) + 400;
-                config.height = height || Math.floor(Math.random() * 300) + 300;
-
-                container.style.width = config.width + "px";
-                container.style.height = config.height + "px";
-
-                if (window.game) {
-                    window.game.resize(config.width, config.height);
-                }
-            };
-        </script>
-        <div style="display: flex; height: 100vh">
-            <div style="width: 30%; text-align: center">
+        <div style="display: flex">
+            <div class="left-panel">
                 <h3>TINY</h3>
-                <div style="display: flex; flex-direction: column">
-                    <button onclick="initTest('Basic')" style="margin: 5px">Basic</button>
-                    <button onclick="initTest('Graphics')" style="margin: 5px">Graphics</button>
-                    <button onclick="initTest('Graphics2')" style="margin: 5px">Graphics 2</button>
-                    <button onclick="initTest('Input')" style="margin: 5px">Input</button>
-                    <button onclick="initTest('Tweens')" style="margin: 5px">Tweens</button>
-                    <button onclick="initTest('RendererTexture')" style="margin: 5px">RendererTexture</button>
-                    <button onclick="initTest('BlendMode')" style="margin: 5px">Blend Modes</button>
-                    <h3>PLUGINS</h3>
-                    <h3>Particles</h3>
-                    <button onclick="initTest('Particles1')" style="margin: 5px">Particles 1</button>
-                    <button onclick="initTest('Particles2')" style="margin: 5px">Particles 2</button>
-                    <h3>Three</h3>
-                    <button onclick="initTest('ThreeBasic', true)" style="margin: 5px">Three Basic</button>
-                    <button onclick="initTest('ThreeCanvas', true)" style="margin: 5px">
-                        Three - Canvas2D / Canvas3D
-                    </button>
-                    <button onclick="initTest('ThreeScreen2D', true)" style="margin: 5px">
-                        Three - Screen2D
-                    </button>
-                    <h3>Extra</h3>
-                    <button onclick="initTest('TilingSprite')" style="margin: 5px">TilingSprite</button>
-                    <button onclick="initTest('RenderLayer')" style="margin: 5px">RenderLayer</button>
-                    <button onclick="initTest('ProgressBar')" style="margin: 5px">ProgressBar</button>
-                    <h3>Sound</h3>
-                    <button onclick="initTest('Sound')" style="margin: 5px">Sound</button>
-                    <h3>DEMOS</h3>
-                    <button onclick="initTest('DemoInfinityWorm')" style="margin: 5px">Infinity Worm</button>
-                </div>
+                <button class="btn" onclick="initCode('Basic')">Basic</button>
+                <button class="btn" onclick="initCode('Extended')">Extended</button>
+                <button class="btn" onclick="initCode('Graphics')">Graphics</button>
+                <button class="btn" onclick="initCode('Graphics2')">Graphics 2</button>
+                <button class="btn" onclick="initCode('Input')">Input</button>
+                <button class="btn" onclick="initCode('Tweens')">Tweens</button>
+                <button class="btn" onclick="initCode('RendererTexture')">RendererTexture</button>
+                <button class="btn" onclick="initCode('BlendMode')">Blend Modes</button>
+                <hr />
+                <h3>PLUGINS</h3>
+                <h3>Particles</h3>
+                <button class="btn" onclick="initCode('Particles1')">Particles 1</button>
+                <button class="btn" onclick="initCode('Particles2')">Particles 2</button>
+                <h3>Three</h3>
+                <button class="btn" onclick="initCode('ThreeBasic', true)">Three Basic</button>
+                <button class="btn" onclick="initCode('ThreeCanvas', true)">Three - Canvas2D / Canvas3D</button>
+                <button class="btn" onclick="initCode('ThreeScreen2D', true)">Three - Screen2D</button>
+                <h3>Extra</h3>
+                <button class="btn" onclick="initCode('TilingSprite')">TilingSprite</button>
+                <button class="btn" onclick="initCode('RenderLayer')">RenderLayer</button>
+                <button class="btn" onclick="initCode('ProgressBar')">ProgressBar</button>
+                <h3>Sound</h3>
+                <button class="btn" onclick="initCode('Sound')">Sound</button>
+                <h3>Create</h3>
+                <button class="btn" onclick="initCode('CreateSpritesheet')">Spritesheet</button>
+                <button class="btn" onclick="initCode('CreatePixelArt')">Pixel Art</button>
+                <h3>DEMOS</h3>
+                <button class="btn" onclick="initCode('DemoInfinityWorm')">Infinity Worm</button>
             </div>
-            <div
-                style="
-                    width: 70%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    flex-direction: column;
-                    position: fixed;
-                    top: 50%;
-                    right: 0px;
-                    transform: translate(0, -50%);
-                    height: 100%;
-                "
-            >
-                <div id="test-container" style="border: 2px solid black; width: 640px; height: 400px"></div>
-
-                <div style="position: absolute; top: 10px">
-                    <button onclick="game.pause()" style="margin: 4px">Pause</button>
-                    <button onclick="game.resume()" style="margin: 4px">Resume</button>
-                    <button
-                        onclick="game.paused = false;game._update(Date.now(), 16);game.paused = true;"
-                        style="margin: 4px"
-                    >
+            <div class="right-panel">
+                <div class="controll">
+                    <button class="btn" onclick="game.pause()">Pause</button>
+                    <button class="btn" onclick="game.resume()">Resume</button>
+                    <button class="btn" onclick="game.paused = false;game._update(Date.now(), 16);game.paused = true;">
                         Step
                     </button>
-                    <button onclick="resizeCanvas()" style="margin: 4px">Resize</button>
-                    <button onclick="destroyGame()" style="margin: 4px">Destroy</button>
-                    <button onclick="game.setPixelRatio(Math.random())" style="margin: 4px">
-                        setPixelRatio
-                    </button>
+                    <button class="btn" onclick="resizeCanvas()">Resize</button>
+                    <button class="btn" onclick="destroyGame()">Destroy</button>
+                    <button class="btn" onclick="game.setPixelRatio(Math.random())">setPixelRatio</button>
+                </div>
+
+                <div
+                    id="game-container"
+                    class="canvas-container"
+                    style="min-width: 640px; min-height: 400px"
+                ></div>
+
+                <div class="source-container">
+                    <div class="controll">
+                        <button class="btn" onclick="runCode()">Run</button>
+                        <button class="btn" onclick="saveCode()">Save</button>
+                        <button style="margin-left: auto;" class="btn" onclick="window.open('https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts')">Shortcuts</button>
+                    </div>
+                    <div id="code-el"><div id="editor">Code is coming...</div></div>
+                    <a target="_blank" rel="noreferrer" id="url-el" href=""></a>
+                    <div style="margin-top: 20px;">
+                        <b>Available resources at <code style="color: #4e23db;">resources.&lt;res-name&gt;</code></b>
+                        <div style="font-family: monospace;" id="resources-list"></div>
+                    </div>
                 </div>
             </div>
         </div>

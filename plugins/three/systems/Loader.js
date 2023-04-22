@@ -32,11 +32,9 @@ Tiny.Loader.prototype.texture3d = function (key, src, cb) {
 Tiny.Loader.gltf = function (resource, cb) {
     var key = resource.key;
 
-    if (!Tiny.GLTFLoader) throw new Error("Tiny.GLTFLoader should be defined for gltf loader");
-
     if (gltfLoader == null) {
         var manager = new LoadingManager();
-        gltfLoader = new Tiny.GLTFLoader(manager);
+        gltfLoader = new window.GLTFLoader(manager);
     }
 
     function loaded(gltf) {

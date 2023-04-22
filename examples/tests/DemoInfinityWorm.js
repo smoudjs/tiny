@@ -1,5 +1,6 @@
 /**
  * import "h5tiny";
+ * import "h5tiny/examples/js/App2D";
  *
  * import "h5tiny/plugins/sound";
  * import "h5tiny/plugins/particles";
@@ -191,23 +192,27 @@ class Worm extends Tiny.Object2D {
     }
 }
 
-window["test.DemoInfinityWorm"] = {
+class MyGame extends Tiny.App2D {
+    
+    constructor(width, height) {
+        super(width, height, "game-container");
+    }
 
-    preload: function () {
-        this.load.sound("theme2", theme2);
-        this.load.sound("click", sound);
-    },
+    preload () {
+        this.load.sound("theme2", resources.theme2);
+        this.load.sound("click", resources.sound);
+    }
 
-    create: function () {
+    create () {
         this.sound.loop("theme2", 0.2);
 
         let world = (this.world = new World(this));
         let worm = (this.worm = new Worm(this));
-        this.worm.x = this.width / 2;
-        this.worm.y = this.height / 2;
+        worm.x = this.width / 2;
+        worm.y = this.height / 2;
 
         this.scene.add(this.world);
-        this.scene.add(this.worm);
+        this.scene.add(worm);
 
          var bombEmitter = (this.bombEmitter = new Tiny.Emitter(300));
         bombEmitter.pattern = Tiny.ExplodeParticle;
@@ -290,18 +295,20 @@ window["test.DemoInfinityWorm"] = {
                 this.sound.play("click");
             }
         }, this);
-    },
+    }
 
-    update: function (time, delta) {
+    update (time, delta) {
         this.world.update(delta);
         this.worm.update(time, delta);
         this.recusrive.update(delta);
-    },
+    }
 
-    resize: function (width, height) {
+    resize (width, height) {
+        super.resize(width, height);
         this.world.resize();
         this.recusrive.resize(width, height);
         this.frames.clear();
+        this.frames.lineStyle(30, "#ffffff", 1);
         this.frames.drawRect(0, 0, this.width, this.height);
     }
-};
+}
