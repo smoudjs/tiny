@@ -1,6 +1,6 @@
 {
   "name": "h5tiny",
-  "version": "2.1.12",
+  "version": "2.2.0",
   "description": "Fast and tiny JavaScript library for HTML5 game and creatives developing.",
   "main": "./build/tiny.js",
   "files": [
@@ -19,8 +19,10 @@
     "url": "https://github.com/peter-hutsul/h5tiny"
   },
   "scripts": {
-    "dev": "webpack --config webpack.dev.js --watch",
-    "build": "webpack"
+    "serve": "webpack-dev-server --port 3000 --open --live-reload --mode development --watch-files examples --static-directory examples",
+    "watch": "webpack --config webpack.dev.js --watch",
+    "dev": "start npm run watch && npm run serve",
+    "build": "webpack --config webpack.build.js"
   },
   "keywords": [
     "2d",
@@ -38,6 +40,7 @@
     "terser-webpack-plugin": "^5.3.6",
     "three": "^0.112.1",
     "webpack": "^5.75.0",
-    "webpack-cli": "^5.0.1"
+    "webpack-cli": "^5.0.1",
+    "webpack-dev-server": "^4.13.3"
   }
 }

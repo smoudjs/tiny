@@ -25,6 +25,20 @@ class MyGame extends Tiny.App2D {
     }
 
     create() {
+
+        this.anim.create({
+            key: "idle",
+            type: "spritesheet",
+            data: {
+                key: "gifsprite",
+                // from: 0,
+                // to: 3
+            },
+            repeat: -1,
+            yoyo: true,
+            fps: 16
+        });
+
         this.group = new Tiny.Object2D();
         this.group.x = 200;
         this.group.y = 200;
@@ -83,16 +97,20 @@ class MyGame extends Tiny.App2D {
         animatedSprite.position.set(450, 120);
         animatedSprite.scale.set(0.7);
         animatedSprite.game = this;
-        animatedSprite.animate(60, true);
+        // animatedSprite.animate(60, true);
 
+        this.anim.add(animatedSprite);
         this.input.add(animatedSprite);
+
+
+        animatedSprite.play('idle');
         animatedSprite.input.once('down', function () {
-            animatedSprite.animate(60, false);
+            animatedSprite.play({key: 'idle', yoyo: false, fps: 30});
         });
 
         this.interval = setInterval(function () {
-            console.log('Rotate sprite!');
-            // animatedSprite.rotation = Math.random() * 3.14;
+            // console.log('Rotate sprite!');
+            // animatedSprite.rotation = 1 - Math.random() * 2;
         }, 1000);
 
         this.scene.add(animatedSprite);
@@ -118,6 +136,7 @@ class MyGame extends Tiny.App2D {
     }
 
     resize(width, height) {
+        super.resize(width, height);
         this.bottomRightSprite.x = width - 100;
         this.bottomRightSprite.y = height - 100;
 

@@ -182,26 +182,50 @@ function drawFrame(progress, ctx, frame) {
     // return obj;
 }
 
-const texture = Tiny.Create.spritesheet({
+const texture = this.create.spritesheet({
     width: 300,
     height: 300,
     frames: 100,
     position: 'center'
     draw: drawFrame
+});
+
+
+
+
+
+
+
+this.anim.create({
+    key: "idle",
+    type: "spritesheet",
+    data: {},
+    repeat: -1,
+    yoyo: true
+})
+
+this.anim.create({
+    key: "idle",
+    type: "spritesheet",
+    data: "sprtImg"
 })
 
 
 
 
+this.game.anim.add(this);
+
+this.play('idle', {
+    fps: 50,
+    repeat: 2,
+    delay: 1000,
+    repeatDelay: 2000,
+    yoyo: false
+});
 
 
-
-
-
-
-
-
-
+this.pause();
+this.stop();
 
 
 const sprite = new Tiny.Sprite(texture.key, 0);

@@ -231,7 +231,7 @@ Tiny.Tween.prototype = {
     },
 
     end: function () {
-        this.update(Infinity, Infinity);
+        this.update(Infinity);
         return this;
     },
 

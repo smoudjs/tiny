@@ -122,7 +122,7 @@ Tiny.Loader.spritesheet = function (resource, cb) {
                 uuid = key + "." + i;
 
                 texture = new Tiny.Texture(image, {
-                    index: i,
+                    name: i,
                     x: Math.floor(frameData[i].x),
                     y: Math.floor(frameData[i].y),
                     width: Math.floor(frameData[i].width),
@@ -163,7 +163,7 @@ Tiny.Loader.spritesheet = function (resource, cb) {
             for (var i = 0; i < total; i++) {
                 uuid = key + "." + i;
                 texture = new Tiny.Texture(image, {
-                    index: i,
+                    name: i,
                     x: x,
                     y: y,
                     width: frameWidth,

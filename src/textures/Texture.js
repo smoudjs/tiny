@@ -16,12 +16,12 @@ Tiny.Texture = function (source, frame, crop, trim) {
         frame = new Tiny.Rectangle(0, 0, 1, 1);
     }
 
-    if (typeof source == "string") {
+    if (typeof source == 'string') {
         var key = source;
 
         source = Tiny.Cache.image[key];
 
-        if (!source) throw new Error("Cache Error: image " + key + " does`t found in cache");
+        if (!source) throw new Error('Cache Error: image ' + key + ' does`t found in cache');
 
         Tiny.Cache.texture[key] = this;
 
@@ -64,9 +64,13 @@ Tiny.Texture.prototype.onSourceLoaded = function () {
     this.setFrame(this.frame);
 };
 
-Tiny.Texture.prototype.addToCache = function (key) {
+Tiny.Texture.prototype.addToCache = function (key, frameName) {
+    this.key = this.key || key;
+    this.frame.name = this.frame.name || frameName;
+
+    if (this.frame.name) key += '.' + this.frame.name;
+
     Tiny.Cache.texture[key] = this;
-    this.key = key;
 };
 
 Tiny.Texture.prototype.destroy = function () {
@@ -97,7 +101,7 @@ Tiny.Texture.prototype.setFrame = function (frame) {
 
     if (!this.trim && (frame.x + frame.width > this.width || frame.y + frame.height > this.height)) {
         if (!Tiny.TextureSilentFail) {
-            throw new Error("Texture Error: frame does not fit inside the base Texture dimensions " + this);
+            throw new Error('Texture Error: frame does not fit inside the base Texture dimensions ' + this);
         }
 
         this.valid = false;

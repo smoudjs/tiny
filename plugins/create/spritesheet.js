@@ -8,7 +8,6 @@ Tiny.Create.spritesheet = function spritesheet(options) {
 
     var totalWidth = frameWidth * options.frames;
     var renderer = Tiny.defaultRenderer;
-    console.log(totalWidth, frames, lastFrame);
 
     var textureBuffer = new Tiny.CanvasBuffer(totalWidth, frameHeight);
 
@@ -16,7 +15,7 @@ Tiny.Create.spritesheet = function spritesheet(options) {
     // var scale = 
     // tmpMatrix.scale(0.5, 0.5);
 
-    var uid, texture, frame, displayObject, bounds, wt, context;
+    var uuid, texture, frame, displayObject, bounds, wt, context;
 
     for (var index = 0; index < frames; index++) {
         frame = new Tiny.Rectangle(frameWidth * index, 0, frameWidth, frameHeight);

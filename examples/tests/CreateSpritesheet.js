@@ -67,6 +67,13 @@ class MyGame extends Tiny.App2D {
             }
         });
 
+        this.anim.create({
+            key: "run",
+            data: "spritesheetAnimation",
+            fps: 30,
+            repeat: -1
+        });
+
         const debugSprite = new Tiny.Sprite('spritesheetAnimation');
         debugSprite.anchor.set(0.5);
         debugSprite.y = 280;
@@ -90,11 +97,11 @@ class MyGame extends Tiny.App2D {
 
         this.sprites = [];
 
-        this.addSprites = function (amount, delta) {
+        this.addSprites = function (amount, fps) {
             for (let i = 0; i < amount; i++) {
                 const sprite = new Tiny.Sprite('spritesheetAnimation', 0);
                 sprite.game = game;
-                sprite.animate(delta || Tiny.rnd(10, 40));
+                // sprite.animate(delta || Tiny.rnd(10, 40));
                 sprite.anchor.set(0.5);
                 sprite.x = Tiny.rnd(-520, -500);
                 sprite.y = Tiny.rnd(-280, 280);
@@ -104,6 +111,11 @@ class MyGame extends Tiny.App2D {
                 //     sprite.alpha = 0.1 + Math.random() * 0.4;
                 //     sprite.scale.set(1 / sprite.alpha);
                 // }
+                this.anim.add(sprite);
+                sprite.play({
+                    key: "run",
+                    fps: fps || Tiny.rnd(25, 100)
+                });
                 game.world.add(sprite);
                 this.sprites.push(sprite);
             }
@@ -114,13 +126,14 @@ class MyGame extends Tiny.App2D {
 
         const sprite = new Tiny.Sprite('spritesheetAnimation', 0);
         sprite.game = game;
-        sprite.animate(20);
+        this.anim.add(sprite);
+        sprite.play("run");
         sprite.anchor.set(0.5);
         sprite.scale.set(5);
         sprite.alpha = 0.2;
         game.world.add(sprite);
 
-        this.addSprites(1, 10);
+        this.addSprites(1, 60);
     }
 
     update(time, delta) {

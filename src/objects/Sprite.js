@@ -37,20 +37,20 @@ Object.defineProperty(Tiny.Sprite.prototype, 'frameName', {
     }
 });
 
-Object.defineProperty(Tiny.Sprite.prototype, 'frame', {
-    get: function () {
-        return this._frame;
-    },
+// Object.defineProperty(Tiny.Sprite.prototype, 'frame', {
+//     get: function () {
+//         return this._frame;
+//     },
 
-    set: function (value) {
-        if (this.texture.lastFrame) {
-            this._frame = value;
-            if (this._frame > this.texture.lastFrame) this._frame = 0;
-            else if (this._frame < 0) this._frame = this.texture.lastFrame;
-            this.setTexture(Tiny.Cache.texture[this.texture.key + '.' + this._frame]);
-        }
-    }
-});
+//     set: function (value) {
+//         if (this.texture.lastFrame) {
+//             this._frame = value;
+//             if (this._frame > this.texture.lastFrame) this._frame = 0;
+//             else if (this._frame < 0) this._frame = this.texture.lastFrame;
+//             this.setTexture(Tiny.Cache.texture[this.texture.key + '.' + this._frame]);
+//         }
+//     }
+// });
 
 Object.defineProperty(Tiny.Sprite.prototype, 'width', {
     get: function () {
@@ -74,12 +74,12 @@ Object.defineProperty(Tiny.Sprite.prototype, 'height', {
     }
 });
 
-Tiny.Sprite.prototype.setTexture = function (texture, key, updateDimension) {
+Tiny.Sprite.prototype.setTexture = function (texture, frameName, updateDimension) {
     if (typeof texture == 'string') {
         var imagePath = texture;
 
-        if (key != undefined) {
-            imagePath = imagePath + '.' + key;
+        if (frameName != undefined) {
+            imagePath = imagePath + '.' + frameName;
         }
 
         texture = Tiny.Cache.texture[imagePath];
@@ -108,35 +108,35 @@ Tiny.Sprite.prototype.onTextureUpdate = function () {
     if (this._height) this.scale.y = this._height / this.texture.frame.height;
 };
 
-Tiny.Sprite.prototype.animate = function (delay, yoyo) {
-    this.reverse = false;
-    this.yoyo = yoyo;
+// Tiny.Sprite.prototype.animate = function (delay, yoyo) {
+//     this.reverse = false;
+//     this.yoyo = yoyo;
 
-    if (this.texture.lastFrame) {
-        delay = delay || this.texture.frame.duration || 100;
+//     if (this.texture.lastFrame) {
+//         delay = delay || this.texture.frame.duration || 100;
 
-        if (!this.animation) {
-            this.animation = this.game.timer.loop(
-                delay,
-                function () {
-                    if (this.yoyo) {
-                        if (this.frame === 0) this.reverse = false;
-                        else if (this.frame === this.texture.lastFrame) this.reverse = true;
-                    }
+//         if (!this.animation) {
+//             this.animation = this.game.timer.loop(
+//                 delay,
+//                 function () {
+//                     if (this.yoyo) {
+//                         if (this.frame === 0) this.reverse = false;
+//                         else if (this.frame === this.texture.lastFrame) this.reverse = true;
+//                     }
 
-                    this.frame += this.reverse ? -1 : 1;
-                    this.animation.delay = delay || this.texture.frame.duration || 100;
-                },
-                this
-            );
+//                     this.frame += this.reverse ? -1 : 1;
+//                     this.animation.delay = delay || this.texture.frame.duration || 100;
+//                 },
+//                 this
+//             );
 
-            this.animation.start();
-        } else {
-            this.animation.delay = delay;
-            this.animation.start();
-        }
-    }
-};
+//             this.animation.start();
+//         } else {
+//             this.animation.delay = delay;
+//             this.animation.start();
+//         }
+//     }
+// };
 
 Tiny.Sprite.prototype.getBounds = function (matrix) {
     var width = this.texture.frame.width / this.texture.resolution;
