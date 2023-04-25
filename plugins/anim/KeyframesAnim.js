@@ -46,7 +46,7 @@ class KeyframesAnim extends Tiny.Anim {
 
             var paths = [];
 
-            var prevDelta = 1;
+            var prevDelta;
 
             if (index === 0) {
                 prevDelta = trigger;
@@ -67,6 +67,7 @@ class KeyframesAnim extends Tiny.Anim {
                 var name = params.name;
 
                 var obj = parent;
+                var key, prev;
                 if (name) obj = skeleton[name];
                 else name = '__default__';
 
@@ -77,9 +78,9 @@ class KeyframesAnim extends Tiny.Anim {
 
                     if (typeof params[prop] == 'object') {
                         for (var p in params[prop]) {
-                            var prev = prevs[name + prop + p];
+                            prev = prevs[name + prop + p];
                             if (prev == null) {
-                                var key = name + '.' + prop;
+                                key = name + '.' + prop;
                                 pose[key] = pose[key] || {};
                                 prev = pose[key][p];
                                 if (prev == null) {
@@ -91,9 +92,9 @@ class KeyframesAnim extends Tiny.Anim {
                             prevs[name + prop + p] = params[prop][p];
                         }
                     } else {
-                        var prev = prevs[name + prop];
+                        prev = prevs[name + prop];
                         if (prev == null) {
-                            var key = name + '.' + prop;
+                            key = name + '.' + prop;
                             prev = pose[key];
                             if (prev == null) {
                                 prev = obj[prop];
@@ -107,7 +108,7 @@ class KeyframesAnim extends Tiny.Anim {
             }
         }
 
-        if (Object.keys(prevs) === 0) return;
+        if (Object.keys(prevs).length === 0) return;
 
         // for (var index = 0; index < this.frames.length; index++) {
         //     var frame = this.frames[index];

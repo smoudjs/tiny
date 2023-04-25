@@ -29,7 +29,7 @@ window.config = {
 
 window.GLTFLoader = THREE.GLTFLoader;
 
-window.initTest = function (states, is3D) {
+window.initTest = function (states) {
 	destroyGame();
 
 	const container = document.getElementById('game-container');
@@ -105,12 +105,9 @@ window.addEventListener('load', function (argument) {
 
 	window.editor = editor;
 
-	var is3D;
 
-	window.initCode = function (name, _is3D) {
-		is3D = _is3D;
+	window.initCode = function (name) {
 
-		var codeEl = document.getElementById('code-el');
 		var urlEl = document.getElementById('url-el');
 
 		var url = 'https://github.com/peter-hutsul/h5tiny/blob/master/examples/tests/' + name + '.js';

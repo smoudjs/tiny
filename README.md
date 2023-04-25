@@ -25,6 +25,7 @@ Use our plugins to extend Tiny abilities:
 - [particles 🔥](https://github.com/peter-hutsul/h5tiny/tree/master/plugins/particles)
 - [sound 🎵](https://github.com/peter-hutsul/h5tiny/tree/master/plugins/sound)
 - [create 🛠](https://github.com/peter-hutsul/h5tiny/tree/master/plugins/create)
+- [anim 🎬](https://github.com/peter-hutsul/h5tiny/tree/master/plugins/anim)
 - [extra ❤️](https://github.com/peter-hutsul/h5tiny/tree/master/plugins/extra)
 
 ### Installation
