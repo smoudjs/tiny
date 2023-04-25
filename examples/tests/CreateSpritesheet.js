@@ -2,6 +2,7 @@
  * import "h5tiny";
  * import "h5tiny/examples/js/App2D";
  * import "h5tiny/plugins/create"
+ * import "h5tiny/plugins/anim"
  *
  * or
  *
@@ -50,13 +51,17 @@ class MyGame extends Tiny.App2D {
         group.add(rleg);
         body.add(head);
 
-        const texture = Tiny.Create.spritesheet({
+        Tiny.Create.spritesheet({
             width: 400,
             height: 400,
             frames: 30,
             resolution: 0.2,
             key: 'spritesheetAnimation',
             draw(progress, ctx, frame) {
+                // ctx.resetTransform();
+                // ctx.rect(frame.x, frame.y, frame.width, frame.height);
+                // ctx.stroke();
+
                 body.y = Math.sin(progress * Math.PI * 4) * 30;
                 lleg.rotation = Math.sin(progress * Math.PI * 2);
                 rleg.rotation = -Math.sin(progress * Math.PI * 2);

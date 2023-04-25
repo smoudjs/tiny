@@ -11,6 +11,6 @@ Tiny.Loader.prototype.keyframes = function (key, src) {
 };
 
 Tiny.Loader.keyframes = function (resource, cb) {
-    Tiny.Cache.sound[resource.key] = resource.src;
+    Tiny.Cache.keyframes[resource.key] = resource.src;
     cb();
 };

@@ -4,6 +4,7 @@ const Webpack = require('webpack'),
 
 const webpackConfig = {
     mode: 'development',
+    // mode: 'production',
     // watch: true,
 
     devtool: 'inline-source-map',

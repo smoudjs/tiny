@@ -24,52 +24,55 @@ Tiny.Create.spritesheet = function spritesheet(options) {
 
         displayObject = options.draw((index + 1) / frames, context, frame);
 
-        bounds = displayObject.getBounds();
-        // console.log(bounds.x, bounds.y, bounds.width, bounds.height);
+        if(displayObject) {
 
-        // tmpMatrix.translate()
-        tmpMatrix.tx = -bounds.x + frame.x;
-        tmpMatrix.ty = -bounds.y;
+            bounds = displayObject.getBounds();
+            // console.log(bounds.x, bounds.y, bounds.width, bounds.height);
 
-        wt = displayObject.worldTransform;
-        wt.tx = options.width * index + options.width / 2;
-        wt.ty = options.height / 2;
-        // wt.identity();
-        // wt.scale(0.5, 0.5);
-        // wt.a = 0.5;
-        // wt.d = 0.5;
+            // tmpMatrix.translate()
+            tmpMatrix.tx = -bounds.x + frame.x;
+            tmpMatrix.ty = -bounds.y;
 
-        // console.log(wt.a, wt.d)
+            wt = displayObject.worldTransform;
+            wt.tx = options.width * index + options.width / 2;
+            wt.ty = options.height / 2;
+            // wt.identity();
+            // wt.scale(0.5, 0.5);
+            // wt.a = 0.5;
+            // wt.d = 0.5;
 
-        // wt.append(tmpMatrix);
-        // console.log(wt.a, wt.d)
-            
-        // displayObject.width = 50;
-        // displayObject.height = 50;
+            // console.log(wt.a, wt.d)
 
-        // setWorld Alpha to ensure that the object is renderer at full opacity
-        displayObject.worldAlpha = 1;
+            // wt.append(tmpMatrix);
+            // console.log(wt.a, wt.d)
+                
+            // displayObject.width = 50;
+            // displayObject.height = 50;
 
-        // Time to update all the children of the displayObject with the new matrix..
-        var children = displayObject.children;
+            // setWorld Alpha to ensure that the object is renderer at full opacity
+            displayObject.worldAlpha = 1;
 
-        for (var i = 0, j = children.length; i < j; i++) {
-            children[i].updateTransform();
+            // Time to update all the children of the displayObject with the new matrix..
+            var children = displayObject.children;
+
+            for (var i = 0, j = children.length; i < j; i++) {
+                children[i].updateTransform();
+            }
+
+            var realResolution = renderer.resolution;
+
+            renderer.resolution = resolution;
+
+            renderer.renderObject(displayObject, context);
+
+            // if (__DEBUG__) {
+            //     context.resetTransform();
+            //     context.rect(frame.x, frame.y, frame.width, frame.height);
+            //     context.stroke();
+            // }
+
+            renderer.resolution = realResolution;
         }
-
-        var realResolution = renderer.resolution;
-
-        renderer.resolution = resolution;
-
-        renderer.renderObject(displayObject, context);
-
-        // if (__DEBUG__) {
-        //     context.resetTransform();
-        //     context.rect(frame.x, frame.y, frame.width, frame.height);
-        //     context.stroke();
-        // }
-
-        renderer.resolution = realResolution;
 
         uuid = key + '.' + index;
 

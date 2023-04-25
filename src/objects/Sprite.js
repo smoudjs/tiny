@@ -9,7 +9,7 @@ Tiny.Sprite = function (texture, key) {
 
     this._height = 0;
 
-    this._frame = 0;
+    // this._frame = 0;
 
     this.tint = '#ffffff';
 

@@ -23,7 +23,7 @@ class MyGame extends Tiny.App2D {
     }
 
     create() {
-        var emitter = (this.emitter = new Tiny.Emitter(300));
+        var emitter = (this.emitter = new Tiny.Emitter(60));
         emitter.x = 200;
         emitter.y = 300;
         emitter.width = 40;
@@ -51,7 +51,7 @@ class MyGame extends Tiny.App2D {
         this.particles.add(emitter);
         this.scene.add(emitter);
 
-        var bombEmitter = (this.bombEmitter = new Tiny.Emitter(300));
+        var bombEmitter = (this.bombEmitter = new Tiny.Emitter(30));
         bombEmitter.pattern = Tiny.ExplodeParticle;
         bombEmitter.makeParticles();
 
