@@ -6,6 +6,7 @@
  * or
  *
  * import "h5tiny/plugins/extra/objects/RenderLayer"
+ * import "h5tiny/plugins/extra/objects/Opaque"
  *
  * To ignore unnecessary extra components
  *
@@ -26,10 +27,7 @@ class MyGame extends Tiny.App2D {
         bottomLayer.position.set(this.width / 2, this.height / 2);
         const topLayer = new Tiny.RenderLayer();
         topLayer.position.set(this.width / 2, this.height / 2);
-        const opaque = new Tiny.Graphics();
-        opaque.beginFill("#000000");
-        opaque.alpha = 0.7;
-        opaque.drawRect(0, 0, this.width, this.height);
+        const opaque = new Tiny.Opaque({game: this, alpha: 0.7});
 
         this.scene.add(bottomLayer);
         this.scene.add(opaque);
