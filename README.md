@@ -7,12 +7,12 @@
 [![DeepScan][deepscan]][deepscan-url]
 
 <p align="center">
-    <img src="https://peter-hutsul.github.io/h5tiny/examples/res/image2.png" width="450" alt="Tiny intro">
+    <img src="https://smoudjs.github.io/tiny/examples/res/image2.png" width="450" alt="Tiny intro">
 </p>
 
 <p align="center">
-    <a href="https://peter-hutsul.github.io/h5tiny/examples/index.html">Examples</a> |
-    <a href="https://peter-hutsul.github.io/h5tiny">Documentation</a>
+    <a href="https://smoudjs.github.io/tiny/examples/index.html">Examples</a> |
+    <a href="https://smoudjs.github.io/tiny">Documentation</a>
 </p>
 
 It is a fast, comfortable, lightweight and flexible html5 game framework, you can use for building 2D games and playable ads.
@@ -21,25 +21,25 @@ The syntax of application is pretty similar to the Phaser framework.
 
 Use our plugins to extend Tiny abilities:
 
-- [three 📦](https://github.com/peter-hutsul/h5tiny/tree/master/plugins/three)
-- [particles 🔥](https://github.com/peter-hutsul/h5tiny/tree/master/plugins/particles)
-- [sound 🎵](https://github.com/peter-hutsul/h5tiny/tree/master/plugins/sound)
-- [create 🛠](https://github.com/peter-hutsul/h5tiny/tree/master/plugins/create)
-- [anim 🎬](https://github.com/peter-hutsul/h5tiny/tree/master/plugins/anim)
-- [extra ❤️](https://github.com/peter-hutsul/h5tiny/tree/master/plugins/extra)
+- [three 📦](https://github.com/smoudjs/tiny/tree/master/plugins/three)
+- [particles 🔥](https://github.com/smoudjs/tiny/tree/master/plugins/particles)
+- [sound 🎵](https://github.com/smoudjs/tiny/tree/master/plugins/sound)
+- [create 🛠](https://github.com/smoudjs/tiny/tree/master/plugins/create)
+- [anim 🎬](https://github.com/smoudjs/tiny/tree/master/plugins/anim)
+- [extra ❤️](https://github.com/smoudjs/tiny/tree/master/plugins/extra)
 
 ### Installation
 
 Install via npm:
 
 ```sh
-$ npm install h5tiny
+$ npm install tiny
 ```
 
 Use CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/h5tiny@2.0.10/build/tiny.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tiny@2.0.10/build/tiny.js"></script>
 ```
 
 ### API Documentation
@@ -103,7 +103,7 @@ new Tiny.App(states);
 Tiny application with class (full example)
 
 ```javascript
-import 'h5tiny';
+import 'tiny';
 
 class MyGame extends Tiny.App {
 
@@ -220,8 +220,8 @@ new MyGame(640, 320);
 Three.js plugin (three):
 
 ```javascript
-import 'h5tiny';
-import 'h5tiny/plugins/three';
+import 'tiny';
+import 'tiny/plugins/three';
 
 class MyGame extends Tiny.App {
 
@@ -364,8 +364,8 @@ new MyGame(640, 320);
 Particles plugin (particles)
 
 ```javascript
-import 'h5tiny';
-import 'h5tiny/plugins/particles';
+import 'tiny';
+import 'tiny/plugins/particles';
 
 class SmokeParticle extends Tiny.Particle {
 
@@ -467,16 +467,16 @@ new MyGame(640, 320);
 
 ### Demos
 
-Check the [examples](https://peter-hutsul.github.io/h5tiny/examples/index.html) to see more
+Check the [examples](https://smoudjs.github.io/tiny/examples/index.html) to see more
 
-[<div align="center"><img alt="Tiny examples intro" width="550" src="https://peter-hutsul.github.io/h5tiny/examples/res/image.png" /></div>](https://peter-hutsul.github.io/h5tiny/examples/index.html)
+[<div align="center"><img alt="Tiny examples intro" width="550" src="https://smoudjs.github.io/tiny/examples/res/image.png" /></div>](https://smoudjs.github.io/tiny/examples/index.html)
 
-[npm]: https://img.shields.io/npm/v/h5tiny
-[npm-url]: https://www.npmjs.com/package/h5tiny
-[build-size]: https://badgen.net/bundlephobia/min/h5tiny
-[build-size-gziped]: https://badgen.net/bundlephobia/minzip/h5tiny
-[build-size-url]: https://bundlephobia.com/result?p=h5tiny
-[npm-downloads]: https://img.shields.io/npm/dw/h5tiny
-[npmtrends-url]: https://www.npmtrends.com/h5tiny
+[npm]: https://img.shields.io/npm/v/tiny
+[npm-url]: https://www.npmjs.com/package/tiny
+[build-size]: https://badgen.net/bundlephobia/min/tiny
+[build-size-gziped]: https://badgen.net/bundlephobia/minzip/tiny
+[build-size-url]: https://bundlephobia.com/result?p=tiny
+[npm-downloads]: https://img.shields.io/npm/dw/tiny
+[npmtrends-url]: https://www.npmtrends.com/tiny
 [deepscan]: https://deepscan.io/api/teams/19616/projects/23076/branches/688845/badge/grade.svg
 [deepscan-url]: https://deepscan.io/dashboard/#view=project&tid=19616&pid=23076&bid=688845
