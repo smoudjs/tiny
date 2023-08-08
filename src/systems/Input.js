@@ -1,5 +1,6 @@
 import { registerSystem } from './registrar';
 import { EventEmitter } from '../utils/EventEmitter';
+import { _Math } from '../math/Math';
 
 var listeningToTouchEvents;
 
@@ -109,7 +110,7 @@ Input.prototype = {
 
                     if (name == 'up') {
                         var point = obj.input['last_down'];
-                        if (point && Tiny.Math.distance(point.x, point.y, coords.x, coords.y) < 30)
+                        if (point && _Math.distance(point.x, point.y, coords.x, coords.y) < 30)
                             obj.input.emit('click', {
                                 x: coords.x,
                                 y: coords.y
@@ -129,7 +130,7 @@ Input.prototype = {
 
                 //     if (name == "up") {
                 //         var point = obj.input["last_down"]
-                //         if (point && Tiny.Math.distance(point.x, point.y, coords.x, coords.y) < 30)
+                //         if (point && _Math.distance(point.x, point.y, coords.x, coords.y) < 30)
                 //             obj.input.emit("click", {x: coords.x, y: coords.y})
                 //     }
                 // }

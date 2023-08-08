@@ -244,101 +244,49 @@ Sprite.prototype.getBounds = function (matrix) {
 };
 
 Sprite.prototype.render = function (renderSession) {
-    // If the sprite is not visible or the alpha is 0 then no need to render this element
-    if (
-        this.visible === false ||
-        this.alpha === 0 ||
-        this.renderable === false ||
-        this.texture.crop.width <= 0 ||
-        this.texture.crop.height <= 0
-    )
-        return;
+    // if the sprite is not visible or the alpha is 0 then no need to render this element
+    if (!this.visible || this.alpha <= 0) return;
 
-    if (this.blendMode !== renderSession.currentBlendMode) {
-        renderSession.currentBlendMode = this.blendMode;
-        renderSession.context.globalCompositeOperation = renderSession.currentBlendMode;
-    }
+    var i, j;
 
-    if (this._mask) {
-        renderSession.maskManager.pushMask(this._mask, renderSession);
-    }
+    // do a quick check to see if this element has a mask or a filter.
+    if (this._mask || this._filters) {
+        var spriteBatch = renderSession.spriteBatch;
 
-    //  Ignore null sources
-    if (this.texture.valid) {
-        var resolution = this.texture.resolution / renderSession.resolution;
-
-        renderSession.context.globalAlpha = this.worldAlpha;
-
-        //  If the texture is trimmed we offset by the trim x/y, otherwise we use the frame dimensions
-        var dx = this.texture.trim
-            ? this.texture.trim.x - this.anchor.x * this.texture.trim.width
-            : this.anchor.x * -this.texture.frame.width;
-        var dy = this.texture.trim
-            ? this.texture.trim.y - this.anchor.y * this.texture.trim.height
-            : this.anchor.y * -this.texture.frame.height;
-
-        //  Allow for pixel rounding
-        if (renderSession.roundPixels) {
-            renderSession.context.setTransform(
-                this.worldTransform.a,
-                this.worldTransform.b,
-                this.worldTransform.c,
-                this.worldTransform.d,
-                (this.worldTransform.tx * renderSession.resolution) | 0,
-                (this.worldTransform.ty * renderSession.resolution) | 0
-            );
-            dx = dx | 0;
-            dy = dy | 0;
-        } else {
-            renderSession.context.setTransform(
-                this.worldTransform.a,
-                this.worldTransform.b,
-                this.worldTransform.c,
-                this.worldTransform.d,
-                this.worldTransform.tx * renderSession.resolution,
-                this.worldTransform.ty * renderSession.resolution
-            );
+        // push filter first as we need to ensure the stencil buffer is correct for any masking
+        if (this._filters) {
+            spriteBatch.flush();
+            renderSession.filterManager.pushFilter(this._filterBlock);
         }
 
-        if (this.tint !== '#ffffff') {
-            if (this.cachedTint !== this.tint) {
-                this.cachedTint = this.tint;
-                this.tintedTexture = Tiny.CanvasTinter.getTintedTexture(this, this.tint);
-            }
-
-            renderSession.context.drawImage(
-                this.tintedTexture,
-                0,
-                0,
-                this.texture.crop.width,
-                this.texture.crop.height,
-                dx / resolution,
-                dy / resolution,
-                this.texture.crop.width / resolution,
-                this.texture.crop.height / resolution
-            );
-        } else {
-            renderSession.context.drawImage(
-                this.texture.source,
-                this.texture.crop.x,
-                this.texture.crop.y,
-                this.texture.crop.width,
-                this.texture.crop.height,
-                dx / resolution,
-                dy / resolution,
-                this.texture.crop.width / resolution,
-                this.texture.crop.height / resolution
-            );
+        if (this._mask) {
+            spriteBatch.stop();
+            renderSession.maskManager.pushMask(this.mask, renderSession);
+            spriteBatch.start();
         }
-    }
 
-    // OVERWRITE
-    for (var i = 0; i < this.children.length; i++) {
-        this.children[i].render(renderSession);
-    }
+        // add this sprite to the batch
+        spriteBatch.render(this);
 
-    if (this._mask) {
-        renderSession.maskManager.popMask(renderSession);
+        // now loop through the children and make sure they get rendered
+        for (i = 0, j = this.children.length; i < j; i++) {
+            this.children[i].render(renderSession);
+        }
+
+        // time to stop the sprite batch as either a mask element or a filter draw will happen next
+        spriteBatch.stop();
+
+        if (this._mask) renderSession.maskManager.popMask(this._mask, renderSession);
+        if (this._filters) renderSession.filterManager.popFilter();
+
+        spriteBatch.start();
+    } else {
+        renderSession.spriteBatch.render(this);
+
+        // simple render children!
+        for (i = 0, j = this.children.length; i < j; i++) {
+            this.children[i].render(renderSession);
+        }
     }
 };
 

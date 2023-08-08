@@ -268,23 +268,44 @@ Object2D.prototype.getLocalBounds = function () {
 };
 
 Object2D.prototype.render = function (renderSession) {
-    if (this.visible === false || this.alpha === 0) return;
+    if (!this.visible || this.alpha <= 0) return;
 
     if (this._cacheAsBitmap) {
         this._renderCachedSprite(renderSession);
         return;
     }
 
-    if (this._mask) {
-        renderSession.maskManager.pushMask(this._mask, renderSession);
-    }
+    var i, j;
 
-    for (var i = 0; i < this.children.length; i++) {
-        this.children[i].render(renderSession);
-    }
+    if (this._mask || this._filters) {
+        // push filter first as we need to ensure the stencil buffer is correct for any masking
+        if (this._filters) {
+            renderSession.spriteBatch.flush();
+            renderSession.filterManager.pushFilter(this._filterBlock);
+        }
 
-    if (this._mask) {
-        renderSession.maskManager.popMask(renderSession);
+        if (this._mask) {
+            renderSession.spriteBatch.stop();
+            renderSession.maskManager.pushMask(this.mask, renderSession);
+            renderSession.spriteBatch.start();
+        }
+
+        // simple render children!
+        for (i = 0, j = this.children.length; i < j; i++) {
+            this.children[i].render(renderSession);
+        }
+
+        renderSession.spriteBatch.stop();
+
+        if (this._mask) renderSession.maskManager.popMask(this._mask, renderSession);
+        if (this._filters) renderSession.filterManager.popFilter();
+
+        renderSession.spriteBatch.start();
+    } else {
+        // simple render children!
+        for (i = 0, j = this.children.length; i < j; i++) {
+            this.children[i].render(renderSession);
+        }
     }
 };
 

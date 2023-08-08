@@ -1,5 +1,6 @@
 import './app';
 import './2d';
+import './3d';
 import '../extras/renderers/canvas';
 
 // import './utils/polyfills.js';

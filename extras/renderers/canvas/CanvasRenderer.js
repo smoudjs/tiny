@@ -156,7 +156,7 @@ CanvasRenderer.prototype.setPixelRatio = function (resolution) {
 CanvasRenderer.prototype.renderObject = function (displayObject, context) {
     this.renderSession.context = context || this.context;
     this.renderSession.resolution = this.resolution;
-    displayObject.render(this.renderSession);
+    displayObject.renderCanvas(this.renderSession);
 };
 
 export { CanvasRenderer };
