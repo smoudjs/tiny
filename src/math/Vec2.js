@@ -1,9 +1,9 @@
-Tiny.Point = function (x, y) {
+var Vec2 = function (x, y) {
     this.x = x || 0;
     this.y = y || 0;
 };
 
-Tiny.Point.prototype = {
+Vec2.prototype = {
     set: function (x, y) {
         this.x = x || 0;
         this.y = y || (y !== 0 ? this.x : 0);
@@ -11,3 +11,5 @@ Tiny.Point.prototype = {
         return this;
     }
 };
+
+export { Vec2 };

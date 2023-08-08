@@ -1,4 +1,4 @@
-Tiny.RoundedRectangle = function (x, y, width, height, radius) {
+var RoundedRectangle = function (x, y, width, height, radius) {
     this.x = x || 0;
     this.y = y || 0;
     this.width = width || 0;
@@ -7,11 +7,11 @@ Tiny.RoundedRectangle = function (x, y, width, height, radius) {
     this.type = Tiny.Primitives.RREC;
 };
 
-Tiny.RoundedRectangle.prototype.clone = function () {
-    return new Tiny.RoundedRectangle(this.x, this.y, this.width, this.height, this.radius);
+RoundedRectangle.prototype.clone = function () {
+    return new RoundedRectangle(this.x, this.y, this.width, this.height, this.radius);
 };
 
-Tiny.RoundedRectangle.prototype.contains = function (x, y) {
+RoundedRectangle.prototype.contains = function (x, y) {
     if (this.width <= 0 || this.height <= 0) {
         return false;
     }
@@ -29,4 +29,6 @@ Tiny.RoundedRectangle.prototype.contains = function (x, y) {
     return false;
 };
 
-Tiny.RoundedRectangle.prototype.constructor = Tiny.RoundedRectangle;
+RoundedRectangle.prototype.constructor = RoundedRectangle;
+
+export { RoundedRectangle };

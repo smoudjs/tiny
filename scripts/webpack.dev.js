@@ -21,17 +21,19 @@ const webpackConfig = {
 
     resolve: {
         alias: {
-            '@smoud/tiny': path.resolve('src')
+            '@smoud/tiny/app': path.resolve('src/app.js'),
+            '@smoud/tiny/2d': path.resolve('src/2d.js'),
+            '@smoud/tiny/extras': path.resolve('extras')
         }
     },
 
     watch: true,
 
-    entry: path.resolve(__dirname, '../dev/bunny-mark/index.js'),
+    entry: path.resolve('dev/basic/index.js'),
 
     output: {
         filename: '[name].js',
-        path: path.resolve(__dirname, '../dist')
+        path: path.resolve('dist')
     },
 
     devServer: {

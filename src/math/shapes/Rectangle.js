@@ -1,4 +1,4 @@
-Tiny.Rectangle = function (x, y, width, height) {
+var Rectangle = function (x, y, width, height) {
     x = x || 0;
     y = y || 0;
     width = width || 0;
@@ -13,7 +13,7 @@ Tiny.Rectangle = function (x, y, width, height) {
     this.type = Tiny.Primitives.RECT;
 };
 
-Tiny.Rectangle.prototype = {
+Rectangle.prototype = {
     setTo: function (x, y, width, height) {
         this.x = x;
         this.y = y;
@@ -24,15 +24,15 @@ Tiny.Rectangle.prototype = {
     },
 
     contains: function (x, y) {
-        return Tiny.Rectangle.contains(this, x, y);
+        return Rectangle.contains(this, x, y);
     },
 
     intersects: function (b) {
-        return Tiny.Rectangle.intersects(this, b);
+        return Rectangle.intersects(this, b);
     }
 };
 
-Object.defineProperty(Tiny.Rectangle.prototype, "bottom", {
+Object.defineProperty(Rectangle.prototype, 'bottom', {
     get: function () {
         return this.y + this.height;
     },
@@ -46,7 +46,7 @@ Object.defineProperty(Tiny.Rectangle.prototype, "bottom", {
     }
 });
 
-Object.defineProperty(Tiny.Rectangle.prototype, "right", {
+Object.defineProperty(Rectangle.prototype, 'right', {
     get: function () {
         return this.x + this.width;
     },
@@ -60,15 +60,15 @@ Object.defineProperty(Tiny.Rectangle.prototype, "right", {
     }
 });
 
-Object.defineProperty(Tiny.Rectangle.prototype, "volume", {
+Object.defineProperty(Rectangle.prototype, 'volume', {
     get: function () {
         return this.width * this.height;
     }
 });
 
-Tiny.Rectangle.prototype.constructor = Tiny.Rectangle;
+Rectangle.prototype.constructor = Rectangle;
 
-Tiny.Rectangle.contains = function (a, x, y) {
+Rectangle.contains = function (a, x, y) {
     if (a.width <= 0 || a.height <= 0) {
         return false;
     }
@@ -76,11 +76,11 @@ Tiny.Rectangle.contains = function (a, x, y) {
     return x >= a.x && x < a.right && y >= a.y && y < a.bottom;
 };
 
-Tiny.Rectangle.containsPoint = function (a, point) {
-    return Tiny.Rectangle.contains(a, point.x, point.y);
+Rectangle.containsPoint = function (a, point) {
+    return Rectangle.contains(a, point.x, point.y);
 };
 
-Tiny.Rectangle.containsRect = function (a, b) {
+Rectangle.containsRect = function (a, b) {
     //  If the given rect has a larger volume than this one then it can never contain it
     if (a.volume > b.volume) {
         return false;
@@ -89,7 +89,7 @@ Tiny.Rectangle.containsRect = function (a, b) {
     return a.x >= b.x && a.y >= b.y && a.right < b.right && a.bottom < b.bottom;
 };
 
-Tiny.Rectangle.intersects = function (a, b) {
+Rectangle.intersects = function (a, b) {
     if (a.width <= 0 || a.height <= 0 || b.width <= 0 || b.height <= 0) {
         return false;
     }
@@ -97,4 +97,5 @@ Tiny.Rectangle.intersects = function (a, b) {
     return !(a.right < b.x || a.bottom < b.y || a.x > b.right || a.y > b.bottom);
 };
 
-Tiny.EmptyRectangle = new Tiny.Rectangle(0, 0, 0, 0);
+var EmptyRectangle = new Rectangle(0, 0, 0, 0);
+export { Rectangle, EmptyRectangle };

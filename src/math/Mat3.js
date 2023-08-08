@@ -1,4 +1,6 @@
-Tiny.Matrix = function () {
+import { Vec2 } from './Vec2';
+
+var Mat3 = function () {
     this.a = 1;
 
     this.b = 0;
@@ -10,11 +12,9 @@ Tiny.Matrix = function () {
     this.tx = 0;
 
     this.ty = 0;
-
-    this.type = Tiny.MATRIX;
 };
 
-Tiny.Matrix.prototype.fromArray = function (array) {
+Mat3.prototype.fromArray = function (array) {
     this.a = array[0];
     this.b = array[1];
     this.c = array[3];
@@ -23,7 +23,7 @@ Tiny.Matrix.prototype.fromArray = function (array) {
     this.ty = array[5];
 };
 
-Tiny.Matrix.prototype.toArray = function (transpose) {
+Mat3.prototype.toArray = function (transpose) {
     if (!this.array) {
         this.array = new Float32Array(9);
     }
@@ -55,8 +55,8 @@ Tiny.Matrix.prototype.toArray = function (transpose) {
     return array;
 };
 
-Tiny.Matrix.prototype.apply = function (pos, newPos) {
-    newPos = newPos || new Tiny.Point();
+Mat3.prototype.apply = function (pos, newPos) {
+    newPos = newPos || new Vec2();
 
     var x = pos.x;
     var y = pos.y;
@@ -67,8 +67,8 @@ Tiny.Matrix.prototype.apply = function (pos, newPos) {
     return newPos;
 };
 
-Tiny.Matrix.prototype.applyInverse = function (pos, newPos) {
-    newPos = newPos || new Tiny.Point();
+Mat3.prototype.applyInverse = function (pos, newPos) {
+    newPos = newPos || new Vec2();
 
     var id = 1 / (this.a * this.d + this.c * -this.b);
     var x = pos.x;
@@ -80,14 +80,14 @@ Tiny.Matrix.prototype.applyInverse = function (pos, newPos) {
     return newPos;
 };
 
-Tiny.Matrix.prototype.translate = function (x, y) {
+Mat3.prototype.translate = function (x, y) {
     this.tx += x;
     this.ty += y;
 
     return this;
 };
 
-Tiny.Matrix.prototype.scale = function (x, y) {
+Mat3.prototype.scale = function (x, y) {
     this.a *= x;
     this.d *= y;
     this.c *= x;
@@ -98,7 +98,7 @@ Tiny.Matrix.prototype.scale = function (x, y) {
     return this;
 };
 
-Tiny.Matrix.prototype.rotate = function (angle) {
+Mat3.prototype.rotate = function (angle) {
     var cos = Math.cos(angle);
     var sin = Math.sin(angle);
 
@@ -116,7 +116,7 @@ Tiny.Matrix.prototype.rotate = function (angle) {
     return this;
 };
 
-Tiny.Matrix.prototype.append = function (matrix) {
+Mat3.prototype.append = function (matrix) {
     var a1 = this.a;
     var b1 = this.b;
     var c1 = this.c;
@@ -133,7 +133,7 @@ Tiny.Matrix.prototype.append = function (matrix) {
     return this;
 };
 
-Tiny.Matrix.prototype.identity = function () {
+Mat3.prototype.identity = function () {
     this.a = 1;
     this.b = 0;
     this.c = 0;
@@ -144,4 +144,6 @@ Tiny.Matrix.prototype.identity = function () {
     return this;
 };
 
-Tiny.identityMatrix = new Tiny.Matrix();
+var identityMatrix = new Mat3();
+
+export { Mat3, identityMatrix };

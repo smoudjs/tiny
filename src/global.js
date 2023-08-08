@@ -1,21 +1,13 @@
+window.Tiny = {};
+
 Tiny.VERSION = '2.2.2';
-
-Tiny.systems = [];
-
-Tiny.registerSystem = function (name, system) {
-    Tiny.systems.push({
-        name: name,
-        _class_: system
-    });
-};
 
 Tiny.Primitives = {
     POLY: 0,
     RECT: 1,
     CIRC: 2,
     ELIP: 3,
-    RREC: 4,
-    RREC_LJOIN: 5
+    RREC: 4
 };
 
 Tiny.rnd = function (min, max) {

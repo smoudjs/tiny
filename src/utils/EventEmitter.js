@@ -3,11 +3,11 @@ function EventListeners() {
     this.n = 0;
 }
 
-Tiny.EventEmitter = {
+var EventEmitter = {
     call: function (obj) {
         if (obj) {
             obj = obj.prototype || obj;
-            Tiny.EventEmitter.mixin(obj);
+            EventEmitter.mixin(obj);
         }
     },
 
@@ -99,3 +99,5 @@ Tiny.EventEmitter = {
         };
     }
 };
+
+export { EventEmitter };

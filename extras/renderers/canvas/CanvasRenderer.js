@@ -1,4 +1,4 @@
-Tiny.CanvasRenderer = function (width, height, options) {
+var CanvasRenderer = function (width, height, options) {
     options = options || {};
 
     this.resolution = options.resolution != undefined ? options.resolution : 1;
@@ -17,16 +17,16 @@ Tiny.CanvasRenderer = function (width, height, options) {
 
     if (!Tiny.defaultRenderer) Tiny.defaultRenderer = this;
 
-    var view = (this.domElement = options.domElement || document.createElement("canvas"));
+    var view = (this.domElement = options.domElement || document.createElement('canvas'));
 
-    this.context = view.getContext("2d", { alpha: this.transparent });
+    this.context = view.getContext('2d', { alpha: this.transparent });
 
     // view.width = this.width * this.resolution;
     // view.height = this.height * this.resolution;
 
     this.resize(width || 800, height || 600);
 
-    this.setClearColor("#ffffff");
+    this.setClearColor('#ffffff');
 
     if (Tiny.CanvasMaskManager) this.maskManager = new Tiny.CanvasMaskManager();
 
@@ -42,20 +42,20 @@ Tiny.CanvasRenderer = function (width, height, options) {
         roundPixels: false
     };
 
-    if ("imageSmoothingEnabled" in this.context) this.renderSession.smoothProperty = "imageSmoothingEnabled";
-    else if ("webkitImageSmoothingEnabled" in this.context)
-        this.renderSession.smoothProperty = "webkitImageSmoothingEnabled";
-    else if ("mozImageSmoothingEnabled" in this.context)
-        this.renderSession.smoothProperty = "mozImageSmoothingEnabled";
-    else if ("oImageSmoothingEnabled" in this.context)
-        this.renderSession.smoothProperty = "oImageSmoothingEnabled";
-    else if ("msImageSmoothingEnabled" in this.context)
-        this.renderSession.smoothProperty = "msImageSmoothingEnabled";
+    if ('imageSmoothingEnabled' in this.context) this.renderSession.smoothProperty = 'imageSmoothingEnabled';
+    else if ('webkitImageSmoothingEnabled' in this.context)
+        this.renderSession.smoothProperty = 'webkitImageSmoothingEnabled';
+    else if ('mozImageSmoothingEnabled' in this.context)
+        this.renderSession.smoothProperty = 'mozImageSmoothingEnabled';
+    else if ('oImageSmoothingEnabled' in this.context)
+        this.renderSession.smoothProperty = 'oImageSmoothingEnabled';
+    else if ('msImageSmoothingEnabled' in this.context)
+        this.renderSession.smoothProperty = 'msImageSmoothingEnabled';
 };
 
-Tiny.CanvasRenderer.prototype.constructor = Tiny.CanvasRenderer;
+CanvasRenderer.prototype.constructor = CanvasRenderer;
 
-Tiny.CanvasRenderer.prototype.setClearColor = function (color) {
+CanvasRenderer.prototype.setClearColor = function (color) {
     this.clearColor = color;
 
     // if (color === null) {
@@ -70,7 +70,7 @@ Tiny.CanvasRenderer.prototype.setClearColor = function (color) {
     // this._clearColor = '#' + hex;
 };
 
-// Tiny.CanvasRenderer.prototype.setPixelArt = function() {
+// CanvasRenderer.prototype.setPixelArt = function() {
 
 //     var canvas = this.domElement;
 
@@ -85,18 +85,18 @@ Tiny.CanvasRenderer.prototype.setClearColor = function (color) {
 //     this.renderSession.roundPixels = true;
 // }
 
-Tiny.CanvasRenderer.prototype.render = function (scene) {
+CanvasRenderer.prototype.render = function (scene) {
     scene.updateTransform();
 
     this.context.setTransform(1, 0, 0, 1, 0, 0);
 
     this.context.globalAlpha = 1;
 
-    this.renderSession.currentBlendMode = "source-over";
-    this.context.globalCompositeOperation = "source-over";
+    this.renderSession.currentBlendMode = 'source-over';
+    this.context.globalCompositeOperation = 'source-over';
 
     if (navigator.isCocoonJS && this.domElement.screencanvas) {
-        this.context.fillStyle = "black";
+        this.context.fillStyle = 'black';
         this.context.clear();
     }
 
@@ -112,8 +112,8 @@ Tiny.CanvasRenderer.prototype.render = function (scene) {
     this.renderObject(scene);
 };
 
-Tiny.CanvasRenderer.prototype.destroy = function (removeView) {
-    if (typeof removeView === "undefined") {
+CanvasRenderer.prototype.destroy = function (removeView) {
+    if (typeof removeView === 'undefined') {
         removeView = true;
     }
 
@@ -129,7 +129,7 @@ Tiny.CanvasRenderer.prototype.destroy = function (removeView) {
     if (Tiny.defaultRenderer === this) Tiny.defaultRenderer = null;
 };
 
-Tiny.CanvasRenderer.prototype.resize = function (width, height) {
+CanvasRenderer.prototype.resize = function (width, height) {
     this.width = width;
     this.height = height;
 
@@ -139,12 +139,12 @@ Tiny.CanvasRenderer.prototype.resize = function (width, height) {
     view.height = Math.floor(this.height * this.resolution);
 
     if (this.autoResize) {
-        view.style.width = width + "px";
-        view.style.height = height + "px";
+        view.style.width = width + 'px';
+        view.style.height = height + 'px';
     }
 };
 
-Tiny.CanvasRenderer.prototype.setPixelRatio = function (resolution) {
+CanvasRenderer.prototype.setPixelRatio = function (resolution) {
     this.resolution = resolution;
 
     var view = this.domElement;
@@ -153,8 +153,10 @@ Tiny.CanvasRenderer.prototype.setPixelRatio = function (resolution) {
     view.height = Math.floor(this.height * this.resolution);
 };
 
-Tiny.CanvasRenderer.prototype.renderObject = function (displayObject, context) {
+CanvasRenderer.prototype.renderObject = function (displayObject, context) {
     this.renderSession.context = context || this.context;
     this.renderSession.resolution = this.resolution;
     displayObject.render(this.renderSession);
 };
+
+export { CanvasRenderer };

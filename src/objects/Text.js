@@ -1,18 +1,21 @@
-Tiny.Text = function (text, style) {
-    this.canvas = document.createElement("canvas");
-    this.context = this.canvas.getContext("2d");
+import { Sprite } from './Sprite';
+import { Texture } from '../textures/Texture';
+
+var Text = function (text, style) {
+    this.canvas = document.createElement('canvas');
+    this.context = this.canvas.getContext('2d');
     this.resolution = 1;
 
-    Tiny.Sprite.call(this, Tiny.Texture.fromCanvas(this.canvas));
+    Sprite.call(this, Texture.fromCanvas(this.canvas));
 
     this.setText(text);
     this.setStyle(style);
 };
 
-Tiny.Text.prototype = Object.create(Tiny.Sprite.prototype);
-Tiny.Text.prototype.constructor = Tiny.Text;
+Text.prototype = Object.create(Sprite.prototype);
+Text.prototype.constructor = Text;
 
-Object.defineProperty(Tiny.Text.prototype, "width", {
+Object.defineProperty(Text.prototype, 'width', {
     get: function () {
         if (this.dirty) {
             this.updateText();
@@ -27,7 +30,7 @@ Object.defineProperty(Tiny.Text.prototype, "width", {
     }
 });
 
-Object.defineProperty(Tiny.Text.prototype, "height", {
+Object.defineProperty(Text.prototype, 'height', {
     get: function () {
         if (this.dirty) {
             this.updateText();
@@ -42,12 +45,12 @@ Object.defineProperty(Tiny.Text.prototype, "height", {
     }
 });
 
-Tiny.Text.prototype.setStyle = function (style) {
+Text.prototype.setStyle = function (style) {
     style = style || {};
-    style.font = style.font || "bold 20pt Arial";
-    style.fill = style.fill || "black";
-    style.align = style.align || "left";
-    style.stroke = style.stroke || "black";
+    style.font = style.font || 'bold 20pt Arial';
+    style.fill = style.fill || 'black';
+    style.align = style.align || 'left';
+    style.stroke = style.stroke || 'black';
     style.strokeThickness = style.strokeThickness || 0;
     style.wordWrap = style.wordWrap || false;
     style.lineSpacing = style.lineSpacing || 0;
@@ -56,18 +59,18 @@ Tiny.Text.prototype.setStyle = function (style) {
     style.dropShadow = style.dropShadow || false;
     style.dropShadowAngle = style.dropShadowAngle !== undefined ? style.dropShadowAngle : Math.PI / 6;
     style.dropShadowDistance = style.dropShadowDistance !== undefined ? style.dropShadowDistance : 4;
-    style.dropShadowColor = style.dropShadowColor || "black";
+    style.dropShadowColor = style.dropShadowColor || 'black';
 
     this.style = style;
     this.dirty = true;
 };
 
-Tiny.Text.prototype.setText = function (text) {
-    this.text = text.toString() || " ";
+Text.prototype.setText = function (text) {
+    this.text = text.toString() || ' ';
     this.dirty = true;
 };
 
-Tiny.Text.prototype.updateText = function () {
+Text.prototype.updateText = function () {
     this.texture.resolution = this.resolution;
 
     this.context.font = this.style.font;
@@ -115,7 +118,7 @@ Tiny.Text.prototype.updateText = function () {
     this.context.font = this.style.font;
     this.context.strokeStyle = this.style.stroke;
     this.context.lineWidth = this.style.strokeThickness;
-    this.context.textBaseline = "alphabetic";
+    this.context.textBaseline = 'alphabetic';
     this.context.miterLimit = 2;
 
     //this.context.lineJoin = 'round';
@@ -133,9 +136,9 @@ Tiny.Text.prototype.updateText = function () {
             linePositionX = this.style.strokeThickness / 2;
             linePositionY = this.style.strokeThickness / 2 + i * lineHeight + fontProperties.ascent;
 
-            if (this.style.align === "right") {
+            if (this.style.align === 'right') {
                 linePositionX += maxLineWidth - lineWidths[i];
-            } else if (this.style.align === "center") {
+            } else if (this.style.align === 'center') {
                 linePositionX += (maxLineWidth - lineWidths[i]) / 2;
             }
 
@@ -155,9 +158,9 @@ Tiny.Text.prototype.updateText = function () {
         linePositionX = this.style.strokeThickness / 2;
         linePositionY = this.style.strokeThickness / 2 + i * lineHeight + fontProperties.ascent;
 
-        if (this.style.align === "right") {
+        if (this.style.align === 'right') {
             linePositionX += maxLineWidth - lineWidths[i];
-        } else if (this.style.align === "center") {
+        } else if (this.style.align === 'center') {
             linePositionX += (maxLineWidth - lineWidths[i]) / 2;
         }
 
@@ -175,7 +178,7 @@ Tiny.Text.prototype.updateText = function () {
     this.updateTexture();
 };
 
-Tiny.Text.prototype.updateTexture = function () {
+Text.prototype.updateTexture = function () {
     this.texture.width = this.canvas.width;
     this.texture.height = this.canvas.height;
     this.texture.crop.width = this.texture.frame.width = this.canvas.width;
@@ -185,7 +188,7 @@ Tiny.Text.prototype.updateTexture = function () {
     this._height = this.canvas.height;
 };
 
-Tiny.Text.prototype.render = function (renderSession) {
+Text.prototype.render = function (renderSession) {
     if (this.dirty || this.resolution !== renderSession.resolution) {
         this.resolution = renderSession.resolution;
 
@@ -193,22 +196,22 @@ Tiny.Text.prototype.render = function (renderSession) {
         this.dirty = false;
     }
 
-    Tiny.Sprite.prototype.render.call(this, renderSession);
+    Sprite.prototype.render.call(this, renderSession);
 };
 
-Tiny.Text.prototype.determineFontProperties = function (fontStyle) {
-    var properties = Tiny.Text.fontPropertiesCache[fontStyle];
+Text.prototype.determineFontProperties = function (fontStyle) {
+    var properties = Text.fontPropertiesCache[fontStyle];
 
     if (!properties) {
         properties = {};
 
-        var canvas = Tiny.Text.fontPropertiesCanvas;
-        var context = Tiny.Text.fontPropertiesContext;
+        var canvas = Text.fontPropertiesCanvas;
+        var context = Text.fontPropertiesContext;
 
         context.font = fontStyle;
 
-        var width = Math.ceil(context.measureText("|MÉq").width);
-        var baseline = Math.ceil(context.measureText("|MÉq").width);
+        var width = Math.ceil(context.measureText('|MÉq').width);
+        var baseline = Math.ceil(context.measureText('|MÉq').width);
         var height = 2 * baseline;
 
         baseline = (baseline * 1.4) | 0;
@@ -216,14 +219,14 @@ Tiny.Text.prototype.determineFontProperties = function (fontStyle) {
         canvas.width = width;
         canvas.height = height;
 
-        context.fillStyle = "#f00";
+        context.fillStyle = '#f00';
         context.fillRect(0, 0, width, height);
 
         context.font = fontStyle;
 
-        context.textBaseline = "alphabetic";
-        context.fillStyle = "#000";
-        context.fillText("|MÉq", 0, baseline);
+        context.textBaseline = 'alphabetic';
+        context.fillStyle = '#000';
+        context.fillText('|MÉq', 0, baseline);
 
         var imagedata = context.getImageData(0, 0, width, height).data;
         var pixels = imagedata.length;
@@ -274,63 +277,65 @@ Tiny.Text.prototype.determineFontProperties = function (fontStyle) {
         properties.descent += 6;
         properties.fontSize = properties.ascent + properties.descent;
 
-        Tiny.Text.fontPropertiesCache[fontStyle] = properties;
+        Text.fontPropertiesCache[fontStyle] = properties;
     }
 
     return properties;
 };
 
-Tiny.Text.prototype.wordWrap = function (text) {
+Text.prototype.wordWrap = function (text) {
     // Greedy wrapping algorithm that will wrap words as the line grows longer
     // than its horizontal bounds.
-    var result = "";
-    var lines = text.split("\n");
+    var result = '';
+    var lines = text.split('\n');
     for (var i = 0; i < lines.length; i++) {
         var spaceLeft = this.style.wordWrapWidth;
-        var words = lines[i].split(" ");
+        var words = lines[i].split(' ');
         for (var j = 0; j < words.length; j++) {
             var wordWidth = this.context.measureText(words[j]).width;
-            var wordWidthWithSpace = wordWidth + this.context.measureText(" ").width;
+            var wordWidthWithSpace = wordWidth + this.context.measureText(' ').width;
             if (j === 0 || wordWidthWithSpace > spaceLeft) {
                 // Skip printing the newline if it's the first word of the line that is
                 // greater than the word wrap width.
                 if (j > 0) {
-                    result += "\n";
+                    result += '\n';
                 }
                 result += words[j];
                 spaceLeft = this.style.wordWrapWidth - wordWidth;
             } else {
                 spaceLeft -= wordWidthWithSpace;
-                result += " " + words[j];
+                result += ' ' + words[j];
             }
         }
 
         if (i < lines.length - 1) {
-            result += "\n";
+            result += '\n';
         }
     }
     return result;
 };
 
-Tiny.Text.prototype.getBounds = function (matrix) {
+Text.prototype.getBounds = function (matrix) {
     if (this.dirty) {
         this.updateText();
         this.dirty = false;
     }
 
-    return Tiny.Sprite.prototype.getBounds.call(this, matrix);
+    return Sprite.prototype.getBounds.call(this, matrix);
 };
 
-Tiny.Text.prototype.destroy = function () {
+Text.prototype.destroy = function () {
     // make sure to reset the the context and canvas.. dont want this hanging around in memory!
     this.context = null;
     this.canvas = null;
 
     this.texture.destroy();
 
-    Tiny.Sprite.prototype.destroy.call(this);
+    Sprite.prototype.destroy.call(this);
 };
 
-Tiny.Text.fontPropertiesCache = {};
-Tiny.Text.fontPropertiesCanvas = document.createElement("canvas");
-Tiny.Text.fontPropertiesContext = Tiny.Text.fontPropertiesCanvas.getContext("2d");
+Text.fontPropertiesCache = {};
+Text.fontPropertiesCanvas = document.createElement('canvas');
+Text.fontPropertiesContext = Text.fontPropertiesCanvas.getContext('2d');
+
+export { Text };

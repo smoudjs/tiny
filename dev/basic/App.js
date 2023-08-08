@@ -1,9 +1,4 @@
-import resources from './resources';
-import Bunny from './Bunny';
-
-console.log(resources);
-
-export default class BunnyApp extends Tiny.App {
+export default class BasicApp extends Tiny.App {
     constructor(width, height, parentNode, states) {
         super(states);
 
@@ -30,25 +25,6 @@ export default class BunnyApp extends Tiny.App {
         view.style.perspective = '1000px';
 
         this.scene = new Tiny.Scene();
-        this.maxCount = 200000;
-        this.amount = 100;
-        this.count = 0;
-        this.bunnies = [];
-
-        this.bounds = {
-            left: 0,
-            top: 0,
-            right: width,
-            bottom: height
-        };
-
-        const counter = document.createElement('div');
-        document.body.appendChild(counter);
-
-        counter.style.cssText = 'position: absolute; bottom: 0; font-size: 30px;';
-        counter.innerText = `${this.count} BUNNIES`;
-
-        this.counter = counter;
     }
 
     /** Add an arbitrary amount of bunnies */
@@ -66,11 +42,16 @@ export default class BunnyApp extends Tiny.App {
     }
 
     preload() {
-        this.load.all(resources);
+        console.log('preload');
+        // this.load.all(resources);
     }
 
     create() {
-        this.textures = resources.map((e) => e.key);
+        console.log('create');
+
+        this.text = new Tiny.Text('Hello World !');
+        this.text.position.set(400, 200);
+        this.scene.add(this.text);
     }
 
     setPixelRatio(dpr) {
@@ -78,15 +59,16 @@ export default class BunnyApp extends Tiny.App {
     }
 
     update(time, delta) {
-        if (this.input.isDown) {
-            if (this.count < this.maxCount) {
-                this.addBunnies(this.amount);
-            }
-        }
+        this.text.rotation += delta * 0.01;
+        // if (this.input.isDown) {
+        //     if (this.count < this.maxCount) {
+        //         this.addBunnies(this.amount);
+        //     }
+        // }
 
-        for (let i = 0; i < this.bunnies.length; i++) {
-            this.bunnies[i].update();
-        }
+        // for (let i = 0; i < this.bunnies.length; i++) {
+        //     this.bunnies[i].update();
+        // }
     }
 
     render() {
@@ -94,9 +76,6 @@ export default class BunnyApp extends Tiny.App {
     }
 
     resize(width, height) {
-        this.bounds.right = width;
-        this.bounds.bottom = height;
-
         super.resize(width, height);
 
         this.renderer.resize(width, height);

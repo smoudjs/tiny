@@ -1,8 +1,8 @@
-Tiny.CanvasMaskManager = function () {};
+var CanvasMaskManager = function () {};
 
-Tiny.CanvasMaskManager.prototype.constructor = Tiny.CanvasMaskManager;
+CanvasMaskManager.prototype.constructor = CanvasMaskManager;
 
-Tiny.CanvasMaskManager.prototype.pushMask = function (maskData, renderSession) {
+CanvasMaskManager.prototype.pushMask = function (maskData, renderSession) {
     var context = renderSession.context;
 
     context.save();
@@ -28,6 +28,8 @@ Tiny.CanvasMaskManager.prototype.pushMask = function (maskData, renderSession) {
     maskData.worldAlpha = cacheAlpha;
 };
 
-Tiny.CanvasMaskManager.prototype.popMask = function (renderSession) {
+CanvasMaskManager.prototype.popMask = function (renderSession) {
     renderSession.context.restore();
 };
+
+export { CanvasMaskManager };
