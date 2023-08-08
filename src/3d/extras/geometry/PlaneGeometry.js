@@ -1,7 +1,7 @@
-import { Geometry } from '../core/Geometry.js';
+import { Geometry } from '../../core/Geometry.js';
 
-export class Plane extends Geometry {
-    constructor(gl, { width = 1, height = 1, widthSegments = 1, heightSegments = 1, attributes = {} } = {}) {
+export class PlaneGeometry extends Geometry {
+    constructor(width = 1, height = 1, widthSegments = 1, heightSegments = 1) {
         const wSegs = widthSegments;
         const hSegs = heightSegments;
 
@@ -15,16 +15,14 @@ export class Plane extends Geometry {
         const uv = new Float32Array(num * 2);
         const index = numIndices > 65536 ? new Uint32Array(numIndices) : new Uint16Array(numIndices);
 
-        Plane.buildPlane(position, normal, uv, index, width, height, 0, wSegs, hSegs);
+        PlaneGeometry.buildPlane(position, normal, uv, index, width, height, 0, wSegs, hSegs);
 
-        Object.assign(attributes, {
+        super({
             position: { size: 3, data: position },
             normal: { size: 3, data: normal },
             uv: { size: 2, data: uv },
             index: { data: index },
         });
-
-        super(gl, attributes);
     }
 
     static buildPlane(position, normal, uv, index, width, height, depth, wSegs, hSegs, u = 0, v = 1, w = 2, uDir = 1, vDir = -1, i = 0, ii = 0) {
@@ -65,3 +63,5 @@ export class Plane extends Geometry {
         }
     }
 }
+
+Tiny.PlaneGeometry = PlaneGeometry;

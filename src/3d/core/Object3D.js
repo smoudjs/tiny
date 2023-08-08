@@ -1,22 +1,22 @@
-import { Vector3 } from '../math/Vector3';
-import { Quaternion } from '../math/Quaternion';
+import { Vec3 } from '../math/Vec3';
+import { Quat } from '../math/Quat';
 import { Matrix4 } from '../math/Matrix4';
 import { Euler } from '../math/Euler';
 
 var _object3DId = 0;
 
-var _v1 = new Vector3();
-var _q1 = new Quaternion();
+var _v1 = new Vec3();
+var _q1 = new Quat();
 var _m1 = new Matrix4();
-var _target = new Vector3();
+var _target = new Vec3();
 
-var _position = new Vector3();
-var _scale = new Vector3();
-var _quaternion = new Quaternion();
+var _position = new Vec3();
+var _scale = new Vec3();
+var _quaternion = new Quat();
 
-var _xAxis = new Vector3( 1, 0, 0 );
-var _yAxis = new Vector3( 0, 1, 0 );
-var _zAxis = new Vector3( 0, 0, 1 );
+var _xAxis = new Vec3( 1, 0, 0 );
+var _yAxis = new Vec3( 0, 1, 0 );
+var _zAxis = new Vec3( 0, 0, 1 );
 
 var _addedEvent = { type: 'added' };
 var _removedEvent = { type: 'removed' };
@@ -31,11 +31,11 @@ export class Object3D {
         this.worldMatrix = new Matrix4();
         this.matrixAutoUpdate = true;
 
-        this.position = new Vector3();
-        this.quaternion = new Quaternion();
-        this.scale = new Vector3(1, 1, 1);
+        this.position = new Vec3();
+        this.quaternion = new Quat();
+        this.scale = new Vec3(1, 1, 1);
         this.rotation = new Euler();
-        this.up = new Vector3(0, 1, 0);
+        this.up = new Vec3(0, 1, 0);
 
         this.rotation._onChange( () => {
             this.quaternion.setFromEuler( this.rotation, false );
@@ -153,3 +153,5 @@ export class Object3D {
         }
     }
 }
+
+Tiny.Object3D = Object3D;

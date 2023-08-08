@@ -16,10 +16,10 @@
 
 // TODO: fit in transform feedback
 
-import { Vector3 } from '../math/Vector3.js';
+import { Vec3 } from '../math/Vec3.js';
 import {Attribute} from "./Attribute";
 
-const tempVec3 = new Vector3();
+const tempVec3 = new Vec3();
 
 let ID = 1;
 let ATTR_ID = 1;
@@ -28,9 +28,7 @@ let ATTR_ID = 1;
 let isBoundsWarned = false;
 
 export class Geometry {
-    constructor(gl, attributes = {}) {
-        if (!gl.canvas) console.error('gl not passed as first argument to Geometry');
-        this.gl = gl;
+    constructor(attributes = {}) {
         this.attributes = attributes;
         this.id = ID++;
 
@@ -39,6 +37,12 @@ export class Geometry {
 
         this.drawRange = { start: 0, count: 0 };
         this.instancedCount = 0;
+    }
+
+    initialize(gl) {
+        const {attributes} = this;
+
+        this.gl = gl;
 
         // Unbind current VAO so that new buffers don't get added to active mesh
         this.gl.renderer.bindVertexArray(null);
@@ -169,7 +173,7 @@ export class Geometry {
         if (this.attributes.index) this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.attributes.index.buffer);
     }
 
-    draw({ program, mode = this.gl.TRIANGLES }) {
+    draw({ program, mode = WebGLRenderingContext.TRIANGLES }) {
         if (this.gl.renderer.currentGeometry !== `${this.id}_${program.attributeOrder}`) {
             if (!this.VAOs[program.attributeOrder]) this.createVAO(program);
             this.gl.renderer.bindVertexArray(this.VAOs[program.attributeOrder]);
@@ -231,10 +235,10 @@ export class Geometry {
 
         if (!this.bounds) {
             this.bounds = {
-                min: new Vector3(),
-                max: new Vector3(),
-                center: new Vector3(),
-                scale: new Vector3(),
+                min: new Vec3(),
+                max: new Vec3(),
+                center: new Vec3(),
+                scale: new Vec3(),
                 radius: Infinity,
             };
         }
@@ -304,9 +308,9 @@ export class Geometry {
                 // }
             }
 
-            const pA = new Vector3(), pB = new Vector3(), pC = new Vector3();
-            const nA = new Vector3(), nB = new Vector3(), nC = new Vector3();
-            const cb = new Vector3(), ab = new Vector3();
+            const pA = new Vec3(), pB = new Vec3(), pC = new Vec3();
+            const nA = new Vec3(), nB = new Vec3(), nC = new Vec3();
+            const cb = new Vec3(), ab = new Vec3();
 
             // indexed elements
             if ( index ) {
@@ -371,3 +375,5 @@ export class Geometry {
         }
     }
 }
+
+Tiny.Geometry = Geometry;

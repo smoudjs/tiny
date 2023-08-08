@@ -1,26 +1,32 @@
 import {Camera} from "./Camera";
 
 import { Matrix4 } from '../math/Matrix4.js';
-import { Vector3 } from '../math/Vector3.js';
+import { Vec3 } from '../math/Vec3.js';
 
 const tempMat4 = new Matrix4();
-const tempVec3a = new Vector3();
-const tempVec3b = new Vector3();
+const tempVec3a = new Vec3();
+const tempVec3b = new Vec3();
 
 export class OrthographicCamera extends Camera {
-    constructor(gl, { near = 0.1, far = 100, left = -1, right = 1, bottom = -1, top = 1, zoom = 1 } = {}) {
+    constructor(near = 0.1, far = 100, left = -1, right = 1, bottom = -1, top = 1, zoom = 1) {
         super();
 
         this.isOrthographicCamera = true;
 
-        Object.assign(this, { near, far, left, right, bottom, top, zoom });
+        this.near = near;
+        this.far = far;
+        this.left = left;
+        this.right = right;
+        this.bottom = bottom;
+        this.top = top;
+        this.zoom = zoom;
 
         this.view = null;
 
         this.projectionMatrix = new Matrix4();
         this.viewMatrix = new Matrix4();
         this.projectionViewMatrix = new Matrix4();
-        this.worldPosition = new Vector3();
+        this.worldPosition = new Vec3();
 
         this.updateProjectionMatrix();
     }
@@ -67,11 +73,6 @@ export class OrthographicCamera extends Camera {
         return this;
     }
 
-    lookAt(target) {
-        super.lookAt(target, true);
-        return this;
-    }
-
     // Project 3D coordinate to 2D point
     project(v) {
         v.applyMatrix4(this.viewMatrix);
@@ -88,7 +89,7 @@ export class OrthographicCamera extends Camera {
 
     updateFrustum() {
         if (!this.frustum) {
-            this.frustum = [new Vector3(), new Vector3(), new Vector3(), new Vector3(), new Vector3(), new Vector3()];
+            this.frustum = [new Vec3(), new Vec3(), new Vec3(), new Vec3(), new Vec3(), new Vec3()];
         }
 
         const m = this.projectionViewMatrix.elements;
@@ -134,3 +135,5 @@ export class OrthographicCamera extends Camera {
         return true;
     }
 }
+
+Tiny.OrthographicCamera = OrthographicCamera;

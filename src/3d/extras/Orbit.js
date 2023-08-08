@@ -3,20 +3,20 @@
 // TODO: make scroll zoom more accurate than just >/< zero
 // TODO: be able to pass in new camera position
 
-import { Vector3 } from '../math/Vector3.js';
-import { Vector2 } from '../math/Vector2.js';
+import { Vec3 } from '../math/Vec3.js';
+import { Vec2 } from '../math/Vec2.js';
 
 const STATE = { NONE: -1, ROTATE: 0, DOLLY: 1, PAN: 2, DOLLY_PAN: 3 };
-const tempVec3 = new Vector3();
-const tempVec2a = new Vector2();
-const tempVec2b = new Vector2();
+const tempVec3 = new Vec3();
+const tempVec2a = new Vec2();
+const tempVec2b = new Vec2();
 
 export function Orbit(
     object,
     {
         element = document,
         enabled = true,
-        target = new Vector3(),
+        target = new Vec3(),
         ease = 0.25,
         inertia = 0.85,
         enableRotate = true,
@@ -51,10 +51,10 @@ export function Orbit(
     const sphericalDelta = { radius: 1, phi: 0, theta: 0 };
     const sphericalTarget = { radius: 1, phi: 0, theta: 0 };
     const spherical = { radius: 1, phi: 0, theta: 0 };
-    const panDelta = new Vector3();
+    const panDelta = new Vec3();
 
     // Grab initial position values
-    const offset = new Vector3();
+    const offset = new Vec3();
     offset.copy(object.position).subVectors(offset, this.target);
     spherical.radius = sphericalTarget.radius = offset.length();
     spherical.theta = sphericalTarget.theta = Math.atan2(offset.x, offset.z);
@@ -116,9 +116,9 @@ export function Orbit(
     // Everything below here just updates panDelta and sphericalDelta
     // Using those two objects' values, the orbit is calculated
 
-    const rotateStart = new Vector2();
-    const panStart = new Vector2();
-    const dollyStart = new Vector2();
+    const rotateStart = new Vec2();
+    const panStart = new Vec2();
+    const dollyStart = new Vec2();
 
     let state = STATE.NONE;
     this.mouseButtons = { ORBIT: 0, ZOOM: 1, PAN: 2 };

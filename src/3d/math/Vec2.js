@@ -5,14 +5,14 @@
  * @author zz85 / http://www.lab4games.net/zz85/blog
  */
 
-function Vector2( x, y ) {
+function Vec2(x, y ) {
 
 	this.x = x || 0;
 	this.y = y || 0;
 
 }
 
-Object.defineProperties( Vector2.prototype, {
+Object.defineProperties( Vec2.prototype, {
 
 	"width": {
 
@@ -48,7 +48,7 @@ Object.defineProperties( Vector2.prototype, {
 
 } );
 
-Object.assign( Vector2.prototype, {
+Object.assign( Vec2.prototype, {
 
 	isVector2: true,
 
@@ -489,4 +489,4 @@ Object.assign( Vector2.prototype, {
 } );
 
 
-export { Vector2 };
+export { Vec2 };

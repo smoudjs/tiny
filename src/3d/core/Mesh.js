@@ -5,10 +5,8 @@ import { Matrix4 } from '../math/Matrix4.js';
 let ID = 0;
 
 export class Mesh extends Object3D {
-    constructor(gl, { geometry, program, mode = gl.TRIANGLES, frustumCulled = true, renderOrder = 0 } = {}) {
+    constructor(geometry, program, {mode = WebGLRenderingContext.TRIANGLES, frustumCulled = true, renderOrder = 0 } = {}) {
         super();
-        if (!gl.canvas) console.error('gl not passed as first argument to Mesh');
-        this.gl = gl;
         this.id = ID++;
         this.geometry = geometry;
         this.program = program;
@@ -96,3 +94,5 @@ export class Mesh extends Object3D {
         this.afterRenderCallbacks.forEach((f) => f && f({ mesh: this, camera }));
     }
 }
+
+Tiny.Mesh = Mesh;

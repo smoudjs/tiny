@@ -1,5 +1,5 @@
-import { Quaternion } from './Quaternion.js';
-import { Vector3 } from './Vector3.js';
+import { Quat } from './Quat.js';
+import { Vec3 } from './Vec3.js';
 import { Matrix4 } from './Matrix4.js';
 import { MathFunc } from './MathFunc.js';
 
@@ -10,7 +10,7 @@ import { MathFunc } from './MathFunc.js';
  */
 
 var _matrix = new Matrix4();
-var _quaternion = new Quaternion();
+var _quaternion = new Quat();
 
 function Euler( x, y, z, order ) {
 
@@ -321,7 +321,7 @@ Object.assign( Euler.prototype, {
 
 		} else {
 
-			return new Vector3( this._x, this._y, this._z );
+			return new Vec3( this._x, this._y, this._z );
 
 		}
 

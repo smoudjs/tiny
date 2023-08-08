@@ -7,7 +7,7 @@
 
 import { MathFunc } from './MathFunc.js';
 
-function Quaternion( x, y, z, w ) {
+function Quat(x, y, z, w ) {
 
 	this._x = x || 0;
 	this._y = y || 0;
@@ -16,7 +16,7 @@ function Quaternion( x, y, z, w ) {
 
 }
 
-Object.assign( Quaternion, {
+Object.assign( Quat, {
 
 	slerp: function ( qa, qb, qm, t ) {
 
@@ -88,7 +88,7 @@ Object.assign( Quaternion, {
 
 } );
 
-Object.defineProperties( Quaternion.prototype, {
+Object.defineProperties( Quat.prototype, {
 
 	x: {
 
@@ -160,7 +160,7 @@ Object.defineProperties( Quaternion.prototype, {
 
 } );
 
-Object.assign( Quaternion.prototype, {
+Object.assign( Quat.prototype, {
 
 	isQuaternion: true,
 
@@ -633,4 +633,4 @@ Object.assign( Quaternion.prototype, {
 } );
 
 
-export { Quaternion };
+export { Quat };

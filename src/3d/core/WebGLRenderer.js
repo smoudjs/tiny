@@ -1,4 +1,4 @@
-import { Vector3 } from '../math/Vector3.js';
+import { Vec3 } from '../math/Vec3.js';
 import {Texture} from "./Texture";
 
 // TODO: Handle context loss https://www.khronos.org/webgl/wiki/HandlingContextLost
@@ -11,7 +11,7 @@ import {Texture} from "./Texture";
 // gl.stencilOp( stencilFail, stencilZFail, stencilZPass );
 // gl.clearStencil( stencil );
 
-const tempVec3 = new Vector3();
+const tempVec3 = new Vec3();
 
 let ID = 1;
 
@@ -52,7 +52,7 @@ export class WebGLRenderer {
         this.gl.renderer = this;
 
         // initialise size values
-        this.setSize(width, height);
+        this.resize(width, height);
 
         // gl state stores to avoid redundant calls on methods used internally
         this.state = {};
@@ -124,13 +124,17 @@ export class WebGLRenderer {
         );
     }
 
+    setClearColor(color, a) {
+        this.gl.clearColor(color.r, color.g, color.b, a);
+    }
+
     setPixelRatio(value) {
         this.dpr = value;
 
-        this.setSize(this.width, this.height);
+        this.resize(this.width, this.height);
     }
 
-    setSize(width, height) {
+    resize(width, height) {
         this.width = width;
         this.height = height;
 
@@ -375,6 +379,14 @@ export class WebGLRenderer {
         const renderList = this.getRenderList({ scene, camera, frustumCull, sort });
 
         renderList.forEach((node) => {
+            if (!node.geometry.gl) {
+                node.geometry.initialize(this.gl);
+            }
+
+            if (!node.program.gl) {
+                node.program.initialize(this.gl);
+            }
+
             node.draw({ camera, directionalLight, ambientLight });
         });
     }

@@ -1,8 +1,8 @@
-export * from './Vector4';
-export * from './Vector3';
-export * from './Vector2';
+export * from './Vec4';
+export * from './Vec3';
+export * from './Vec2';
 
-export * from './Quaternion';
+export * from './Quat';
 export * from './Euler';
 
 export * from './Matrix4';

@@ -11,27 +11,27 @@ const arrayCacheF32 = {};
 
 export class Material {
     constructor(
-        gl,
         {
             vertex,
             fragment,
             uniforms = {},
 
             transparent = false,
-            cullFace = gl.BACK,
-            frontFace = gl.CCW,
+            cullFace = WebGLRenderingContext.BACK,
+            frontFace = WebGLRenderingContext.CCW,
             depthTest = true,
             depthWrite = true,
-            depthFunc = gl.LESS,
+            depthFunc = WebGLRenderingContext.LESS,
         } = {}
     ) {
-        if (!gl.canvas) console.error('gl not passed as first argument to Material');
-        this.gl = gl;
         this.uniforms = uniforms;
         this.id = ID++;
 
         if (!vertex) console.warn('vertex shader not supplied');
         if (!fragment) console.warn('fragment shader not supplied');
+
+        this.vertex = vertex;
+        this.fragment = fragment;
 
         // Store program state
         this.transparent = transparent;
@@ -42,6 +42,12 @@ export class Material {
         this.depthFunc = depthFunc;
         this.blendFunc = {};
         this.blendEquation = {};
+    }
+
+    initialize(gl) {
+        const {vertex, fragment} = this;
+
+        this.gl = gl;
 
         // set default blendFunc if transparent flagged
         if (this.transparent && !this.blendFunc.src) {
@@ -305,3 +311,5 @@ function warn(message) {
     warnCount++;
     if (warnCount > 100) console.warn('More than 100 program warnings - stopping logs.');
 }
+
+Tiny.Material = Material;

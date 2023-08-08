@@ -23,13 +23,15 @@ const webpackConfig = {
         alias: {
             '@smoud/tiny/app': path.resolve('src/app.js'),
             '@smoud/tiny/2d': path.resolve('src/2d.js'),
-            '@smoud/tiny/extras': path.resolve('extras')
+            '@smoud/tiny/3d': path.resolve('src/3d'),
+            '@smoud/tiny/extras': path.resolve('extras'),
+            '@smoud/tiny': path.resolve('src')
         }
     },
 
     watch: true,
 
-    entry: path.resolve('dev/basic/index.js'),
+    entry: path.resolve('dev/tiny-3d/index.js'),
 
     output: {
         filename: '[name].js',
