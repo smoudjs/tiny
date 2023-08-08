@@ -35,20 +35,19 @@ const fragment = /* glsl */ `
 
 export class MeshBasicMaterial extends Material {
     constructor(
-        gl,
         {
             map = Texture.WHITE,
             color = Color.WHITE,
             opacity = 1,
             transparent = false,
-            cullFace = gl.BACK,
-            frontFace = gl.CCW,
+            cullFace = WebGLRenderingContext.BACK,
+            frontFace = WebGLRenderingContext.CCW,
             depthTest = true,
             depthWrite = true,
-            depthFunc = gl.LESS,
+            depthFunc = WebGLRenderingContext.LESS,
         } = {},
     ) {
-        super(gl, {
+        super({
             vertex,
             fragment,
             uniforms: {

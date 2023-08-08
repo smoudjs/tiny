@@ -1,8 +1,7 @@
 import { Geometry } from '../../core/Geometry.js';
-import {BoxGeometry} from "./BoxGeometry";
 
 export class PlaneGeometry extends Geometry {
-    constructor(gl, { width = 1, height = 1, widthSegments = 1, heightSegments = 1, attributes = {} } = {}) {
+    constructor(width = 1, height = 1, widthSegments = 1, heightSegments = 1) {
         const wSegs = widthSegments;
         const hSegs = heightSegments;
 
@@ -18,14 +17,12 @@ export class PlaneGeometry extends Geometry {
 
         PlaneGeometry.buildPlane(position, normal, uv, index, width, height, 0, wSegs, hSegs);
 
-        Object.assign(attributes, {
+        super({
             position: { size: 3, data: position },
             normal: { size: 3, data: normal },
             uv: { size: 2, data: uv },
             index: { data: index },
         });
-
-        super(gl, attributes);
     }
 
     static buildPlane(position, normal, uv, index, width, height, depth, wSegs, hSegs, u = 0, v = 1, w = 2, uDir = 1, vDir = -1, i = 0, ii = 0) {

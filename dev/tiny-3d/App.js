@@ -5,12 +5,14 @@ export default class BunnyApp extends Tiny.App {
         this.width = width;
         this.height = height;
 
+        window.game = this;
+
         this.renderer = new Tiny.WebGLRenderer( {
             width,
             height,
         });
 
-        this.renderer.setClearColor(0.9, 0.9, 0.9, 1);
+        this.renderer.setClearColor(new Tiny.Color(0.9, 0.9, 0.9), 1);
 
         var view = (this.inputView = this.renderer.domElement);
 
@@ -39,18 +41,12 @@ export default class BunnyApp extends Tiny.App {
         // this.textures = resources.map((e) => e.key);
 
         this.box = new Tiny.Mesh(
-            this.renderer.gl,
-            {
-                geometry: new Tiny.BoxGeometry(
-                    this.renderer.gl
-                ),
-                program: new Tiny.MeshBasicMaterial(
-                    this.renderer.gl,
-                    {
-                        color: new Tiny.Color(1, 0, 0)
-                    }
-                )
-            }
+            new Tiny.BoxGeometry(),
+            new Tiny.MeshBasicMaterial(
+                {
+                    color: new Tiny.Color(1, 0, 0)
+                }
+            )
         );
 
         const {box, world} = this;

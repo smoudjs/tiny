@@ -28,9 +28,7 @@ let ATTR_ID = 1;
 let isBoundsWarned = false;
 
 export class Geometry {
-    constructor(gl, attributes = {}) {
-        if (!gl.canvas) console.error('gl not passed as first argument to Geometry');
-        this.gl = gl;
+    constructor(attributes = {}) {
         this.attributes = attributes;
         this.id = ID++;
 
@@ -39,6 +37,12 @@ export class Geometry {
 
         this.drawRange = { start: 0, count: 0 };
         this.instancedCount = 0;
+    }
+
+    initialize(gl) {
+        const {attributes} = this;
+
+        this.gl = gl;
 
         // Unbind current VAO so that new buffers don't get added to active mesh
         this.gl.renderer.bindVertexArray(null);
@@ -169,7 +173,7 @@ export class Geometry {
         if (this.attributes.index) this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.attributes.index.buffer);
     }
 
-    draw({ program, mode = this.gl.TRIANGLES }) {
+    draw({ program, mode = WebGLRenderingContext.TRIANGLES }) {
         if (this.gl.renderer.currentGeometry !== `${this.id}_${program.attributeOrder}`) {
             if (!this.VAOs[program.attributeOrder]) this.createVAO(program);
             this.gl.renderer.bindVertexArray(this.VAOs[program.attributeOrder]);

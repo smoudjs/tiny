@@ -124,8 +124,8 @@ export class WebGLRenderer {
         );
     }
 
-    setClearColor(r, g, b, a) {
-        this.gl.clearColor(r, g, b, a);
+    setClearColor(color, a) {
+        this.gl.clearColor(color.r, color.g, color.b, a);
     }
 
     setPixelRatio(value) {
@@ -379,6 +379,14 @@ export class WebGLRenderer {
         const renderList = this.getRenderList({ scene, camera, frustumCull, sort });
 
         renderList.forEach((node) => {
+            if (!node.geometry.gl) {
+                node.geometry.initialize(this.gl);
+            }
+
+            if (!node.program.gl) {
+                node.program.initialize(this.gl);
+            }
+
             node.draw({ camera, directionalLight, ambientLight });
         });
     }
