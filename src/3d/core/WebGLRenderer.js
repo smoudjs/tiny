@@ -1,4 +1,4 @@
-import { Vector3 } from '../math/Vector3.js';
+import { Vec3 } from '../math/Vec3.js';
 import {Texture} from "./Texture";
 
 // TODO: Handle context loss https://www.khronos.org/webgl/wiki/HandlingContextLost
@@ -11,7 +11,7 @@ import {Texture} from "./Texture";
 // gl.stencilOp( stencilFail, stencilZFail, stencilZPass );
 // gl.clearStencil( stencil );
 
-const tempVec3 = new Vector3();
+const tempVec3 = new Vec3();
 
 let ID = 1;
 

@@ -1,5 +1,5 @@
 import { MathFunc } from './MathFunc.js';
-import { Quaternion } from './Quaternion.js';
+import { Quat } from './Quat.js';
 
 /**
  * @author mrdoob / http://mrdoob.com/
@@ -10,10 +10,10 @@ import { Quaternion } from './Quaternion.js';
  * @author WestLangley / http://github.com/WestLangley
  */
 
-var _vector = new Vector3();
-var _quaternion = new Quaternion();
+var _vector = new Vec3();
+var _quaternion = new Quat();
 
-function Vector3( x, y, z ) {
+function Vec3(x, y, z ) {
 
 	this.x = x || 0;
 	this.y = y || 0;
@@ -21,7 +21,7 @@ function Vector3( x, y, z ) {
 
 }
 
-Object.assign( Vector3.prototype, {
+Object.assign( Vec3.prototype, {
 
 	isVector3: true,
 
@@ -709,4 +709,4 @@ Object.assign( Vector3.prototype, {
 } );
 
 
-export { Vector3 };
+export { Vec3 };

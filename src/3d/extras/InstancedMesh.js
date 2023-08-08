@@ -1,6 +1,6 @@
 import { Object3D } from '../core/Object3D.js';
 import { Mesh } from '../core/Mesh.js';
-import { Vector4 } from '../math/Vector4.js';
+import { Vec4 } from '../math/Vec4.js';
 
 export class InstancedMesh extends Mesh {
     constructor(...args) {
@@ -40,7 +40,7 @@ export class InstancedMesh extends Mesh {
         if (!!this.geometry.attributes.lightmapScaleOffset) {
             const lightmapData = this.geometry.attributes.lightmapScaleOffset.data;
             for (let i = 0, j = 0; i < lightmapData.length; i += 4, j++) {
-                this.instanceTransforms[j].lightmapData = new Vector4().fromArray(lightmapData, i);
+                this.instanceTransforms[j].lightmapData = new Vec4().fromArray(lightmapData, i);
             }
         }
 

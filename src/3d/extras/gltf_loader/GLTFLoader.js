@@ -6,7 +6,7 @@ import { MeshLambertMaterial } from "../materials";
 import { GLTFAnimation } from './GLTFAnimation.js';
 import { GLTFSkin } from './GLTFSkin.js';
 import { Matrix4 } from '../../math/Matrix4.js';
-import { Vector3 } from '../../math/Vector3.js';
+import { Vec3 } from '../../math/Vec3.js';
 import { InstancedMesh } from '../InstancedMesh.js';
 
 // Supports
@@ -924,17 +924,17 @@ export class GLTFLoader {
             const lightDesc = lightsDescArray[lightIndex];
             const light = {
                 name: lightDesc.name || '',
-                color: { value: new Vector3().set(lightDesc.color || 1) },
+                color: { value: new Vec3().set(lightDesc.color || 1) },
             };
             // Apply intensity directly to color
             if (lightDesc.intensity !== undefined) light.color.value.multiply(lightDesc.intensity);
 
             switch (lightDesc.type) {
                 case 'directional':
-                    light.direction = { value: new Vector3(0, 0, 1).transformDirection(node.worldMatrix) };
+                    light.direction = { value: new Vec3(0, 0, 1).transformDirection(node.worldMatrix) };
                     break;
                 case 'point':
-                    light.position = { value: new Vector3().applyMatrix4(node.worldMatrix) };
+                    light.position = { value: new Vec3().applyMatrix4(node.worldMatrix) };
                     light.distance = { value: lightDesc.range };
                     light.decay = { value: 2 };
                     break;

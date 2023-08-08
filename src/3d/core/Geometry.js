@@ -16,10 +16,10 @@
 
 // TODO: fit in transform feedback
 
-import { Vector3 } from '../math/Vector3.js';
+import { Vec3 } from '../math/Vec3.js';
 import {Attribute} from "./Attribute";
 
-const tempVec3 = new Vector3();
+const tempVec3 = new Vec3();
 
 let ID = 1;
 let ATTR_ID = 1;
@@ -231,10 +231,10 @@ export class Geometry {
 
         if (!this.bounds) {
             this.bounds = {
-                min: new Vector3(),
-                max: new Vector3(),
-                center: new Vector3(),
-                scale: new Vector3(),
+                min: new Vec3(),
+                max: new Vec3(),
+                center: new Vec3(),
+                scale: new Vec3(),
                 radius: Infinity,
             };
         }
@@ -304,9 +304,9 @@ export class Geometry {
                 // }
             }
 
-            const pA = new Vector3(), pB = new Vector3(), pC = new Vector3();
-            const nA = new Vector3(), nB = new Vector3(), nC = new Vector3();
-            const cb = new Vector3(), ab = new Vector3();
+            const pA = new Vec3(), pB = new Vec3(), pC = new Vec3();
+            const nA = new Vec3(), nB = new Vec3(), nC = new Vec3();
+            const cb = new Vec3(), ab = new Vec3();
 
             // indexed elements
             if ( index ) {

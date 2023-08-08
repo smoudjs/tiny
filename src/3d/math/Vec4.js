@@ -6,7 +6,7 @@
  * @author WestLangley / http://github.com/WestLangley
  */
 
-function Vector4( x, y, z, w ) {
+function Vec4(x, y, z, w ) {
 
 	this.x = x || 0;
 	this.y = y || 0;
@@ -15,7 +15,7 @@ function Vector4( x, y, z, w ) {
 
 }
 
-Object.defineProperties( Vector4.prototype, {
+Object.defineProperties( Vec4.prototype, {
 
 	"width": {
 
@@ -51,7 +51,7 @@ Object.defineProperties( Vector4.prototype, {
 
 } );
 
-Object.assign( Vector4.prototype, {
+Object.assign( Vec4.prototype, {
 
 	isVector4: true,
 
@@ -651,4 +651,4 @@ Object.assign( Vector4.prototype, {
 } );
 
 
-export { Vector4 };
+export { Vec4 };

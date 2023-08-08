@@ -1,12 +1,12 @@
-import { Vector3 } from './Vector3.js';
+import { Vec3 } from './Vec3.js';
 
-var _v1 = new Vector3();
+var _v1 = new Vec3();
 var _m1 = new Matrix4();
-var _zero = new Vector3( 0, 0, 0 );
-var _one = new Vector3( 1, 1, 1 );
-var _x = new Vector3();
-var _y = new Vector3();
-var _z = new Vector3();
+var _zero = new Vec3( 0, 0, 0 );
+var _one = new Vec3( 1, 1, 1 );
+var _x = new Vec3();
+var _y = new Vec3();
+var _z = new Vec3();
 
 /**
  * @author mrdoob / http://mrdoob.com/
