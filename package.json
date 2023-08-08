@@ -19,10 +19,13 @@
     "url": "https://github.com/peter-hutsul/h5tiny"
   },
   "scripts": {
-    "serve": "webpack-dev-server --port 3000 --open --live-reload --mode development --watch-files examples --static-directory examples",
-    "watch": "webpack --config webpack.dev.js --watch",
-    "dev": "start npm run watch && npm run serve",
-    "build": "webpack --config webpack.build.js"
+    "dev": "node ./scripts/webpack.dev.js",
+    "build": "node ./scripts/webpack.build.js",
+    "test": "node ./scripts/webpack.dev.js --test",
+    "serve:old": "webpack-dev-server --port 3000 --open --live-reload --mode development --watch-files examples --static-directory examples",
+    "watch:old": "webpack --config webpack.dev.js --watch",
+    "dev:old": "start npm run watch && npm run serve",
+    "build:old": "webpack --config webpack.build.js"
   },
   "keywords": [
     "2d",
@@ -37,10 +40,10 @@
   "author": "Peter Hutsul",
   "license": "ISC",
   "devDependencies": {
-    "terser-webpack-plugin": "^5.3.6",
-    "three": "^0.112.1",
-    "webpack": "^5.75.0",
-    "webpack-cli": "^5.0.1",
-    "webpack-dev-server": "^4.13.3"
+    "file-loader": "^6.2.0",
+    "html-loader": "^4.2.0",
+    "html-webpack-plugin": "^5.5.3",
+    "webpack": "^5.88.2",
+    "webpack-dev-server": "^4.15.1"
   }
 }
