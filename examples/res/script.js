@@ -110,7 +110,7 @@ window.addEventListener('load', function (argument) {
 
 		var urlEl = document.getElementById('url-el');
 
-		var url = 'https://github.com/peter-hutsul/h5tiny/blob/master/examples/tests/' + name + '.js';
+		var url = 'https://github.com/smoudjs/tiny/blob/master/examples/tests/' + name + '.js';
 
 		urlEl.innerHTML = url;
 		urlEl.href = url;

@@ -14,7 +14,7 @@ Tiny.App = function (states) {
 
     if (!Tiny.app) Tiny.app = this;
 
-    if (Tiny.EventEmitter) Tiny.EventEmitter.mixin(this);
+    Tiny.EventEmitter.mixin(this);
 
     states = states || {};
     this.boot = states.boot || this.boot || noop;
@@ -62,7 +62,7 @@ Tiny.App.prototype._preload = function () {
 };
 
 Tiny.App.prototype._create = function () {
-    this.emit("load");
+    this.emit('load');
     this.create.call(this.callbackContext);
 
     if (this.raf) {
@@ -104,7 +104,7 @@ Tiny.App.prototype._update = function (time, delta) {
     if (!this.paused) {
         delta *= this.timeScale;
         this.update.call(this.callbackContext, time, delta);
-        this.emit("update", delta);
+        this.emit('update', delta);
 
         for (var i = 0; i < this.updatable.length; i++) {
             this.updatable[i].update(delta);
@@ -114,7 +114,7 @@ Tiny.App.prototype._update = function (time, delta) {
     }
 
     this.render();
-    this.emit("postrender");
+    this.emit('postrender');
 };
 
 Tiny.App.prototype.resize = function (width, height) {
@@ -123,7 +123,7 @@ Tiny.App.prototype.resize = function (width, height) {
 
     if (this.state > 0) {
         this._resize_cb.call(this.callbackContext, this.width, this.height);
-        this.emit("resize", width, height);
+        this.emit('resize', width, height);
     }
 
     var self = this;
@@ -133,7 +133,6 @@ Tiny.App.prototype.resize = function (width, height) {
 };
 
 Tiny.App.prototype.destroy = function (clearCache) {
-
     for (var i = 0; i < this.systems.length; i++) {
         if (this.systems[i].destroy) this.systems[i].destroy(clearCache);
     }

@@ -254,14 +254,12 @@ Tiny.CanvasGraphics.renderGraphicsMask = function (graphics, context) {
 };
 
 Tiny.CanvasGraphics.updateGraphicsTint = function (graphics) {
-    console.log(graphics.tint);
-
-    if (graphics.tint === "#ffffff") {
+    if (graphics.tint === '#ffffff') {
         return;
     }
 
     var tintHex = Tiny.style2hex(graphics.tint);
-    
+
     var tintR = ((tintHex >> 16) & 0xff) / 255;
     var tintG = ((tintHex >> 8) & 0xff) / 255;
     var tintB = (tintHex & 0xff) / 255;
