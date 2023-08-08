@@ -96,3 +96,5 @@ export class Mesh extends Object3D {
         this.afterRenderCallbacks.forEach((f) => f && f({ mesh: this, camera }));
     }
 }
+
+Tiny.Mesh = Mesh;

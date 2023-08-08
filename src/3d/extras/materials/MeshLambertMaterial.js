@@ -1,5 +1,6 @@
 import {Material, Texture} from "../../core";
 import {Color} from "../../math";
+import {MeshBasicMaterial} from "./MeshBasicMaterial";
 
 const vertex = /* glsl */ `
     attribute vec2 uv;
@@ -85,3 +86,5 @@ export class MeshLambertMaterial extends Material {
         this.isMeshLambertMaterial = true;
     }
 }
+
+Tiny.MeshLambertMaterial = MeshLambertMaterial;

@@ -371,3 +371,5 @@ export class Geometry {
         }
     }
 }
+
+Tiny.Geometry = Geometry;

@@ -27,7 +27,7 @@ const webpackConfig = {
 
     watch: true,
 
-    entry: path.resolve(__dirname, '../dev/bunny-mark/index.js'),
+    entry: path.resolve(__dirname, '../dev/three-3d/index.js'),
 
     output: {
         filename: '[name].js',

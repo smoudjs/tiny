@@ -8,12 +8,18 @@ const tempVec3a = new Vector3();
 const tempVec3b = new Vector3();
 
 export class OrthographicCamera extends Camera {
-    constructor(gl, { near = 0.1, far = 100, left = -1, right = 1, bottom = -1, top = 1, zoom = 1 } = {}) {
+    constructor(near = 0.1, far = 100, left = -1, right = 1, bottom = -1, top = 1, zoom = 1) {
         super();
 
         this.isOrthographicCamera = true;
 
-        Object.assign(this, { near, far, left, right, bottom, top, zoom });
+        this.near = near;
+        this.far = far;
+        this.left = left;
+        this.right = right;
+        this.bottom = bottom;
+        this.top = top;
+        this.zoom = zoom;
 
         this.view = null;
 
@@ -64,11 +70,6 @@ export class OrthographicCamera extends Camera {
 
         // used for sorting
         this.projectionViewMatrix.multiplyMatrices(this.projectionMatrix, this.viewMatrix);
-        return this;
-    }
-
-    lookAt(target) {
-        super.lookAt(target, true);
         return this;
     }
 
@@ -134,3 +135,5 @@ export class OrthographicCamera extends Camera {
         return true;
     }
 }
+
+Tiny.OrthographicCamera = OrthographicCamera;

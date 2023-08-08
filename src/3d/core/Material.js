@@ -305,3 +305,5 @@ function warn(message) {
     warnCount++;
     if (warnCount > 100) console.warn('More than 100 program warnings - stopping logs.');
 }
+
+Tiny.Material = Material;

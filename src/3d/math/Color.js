@@ -591,4 +591,6 @@ Object.assign( Color.prototype, {
 Color.WHITE = new Color(1, 1, 1);
 Color.NAMES = _colorKeywords;
 
+Tiny.Color = Color;
+
 export { Color };

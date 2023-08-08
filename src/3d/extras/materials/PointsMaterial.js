@@ -1,5 +1,6 @@
 import {Material, Texture} from "../../core";
 import {Color} from "../../math";
+import {MeshLambertMaterial} from "./MeshLambertMaterial";
 
 const vertex = /* glsl */ `
     attribute vec3 position;
@@ -60,3 +61,5 @@ export class PointsMaterial extends Material {
         });
     }
 }
+
+Tiny.PointsMaterial = PointsMaterial;

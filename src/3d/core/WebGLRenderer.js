@@ -52,7 +52,7 @@ export class WebGLRenderer {
         this.gl.renderer = this;
 
         // initialise size values
-        this.setSize(width, height);
+        this.resize(width, height);
 
         // gl state stores to avoid redundant calls on methods used internally
         this.state = {};
@@ -124,13 +124,17 @@ export class WebGLRenderer {
         );
     }
 
+    setClearColor(r, g, b, a) {
+        this.gl.clearColor(r, g, b, a);
+    }
+
     setPixelRatio(value) {
         this.dpr = value;
 
-        this.setSize(this.width, this.height);
+        this.resize(this.width, this.height);
     }
 
-    setSize(width, height) {
+    resize(width, height) {
         this.width = width;
         this.height = height;
 

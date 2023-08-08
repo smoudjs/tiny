@@ -153,3 +153,5 @@ export class Object3D {
         }
     }
 }
+
+Tiny.Object3D = Object3D;

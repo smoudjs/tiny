@@ -65,3 +65,5 @@ export class MeshBasicMaterial extends Material {
         });
     }
 }
+
+Tiny.MeshBasicMaterial = MeshBasicMaterial;
