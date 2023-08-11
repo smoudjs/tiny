@@ -521,7 +521,7 @@ export class GLTFLoader {
                         ({ geometry, program, mode }) => {
                             // InstancedMesh class has custom frustum culling for instances
                             const meshConstructor = geometry.attributes.instanceMatrix ? InstancedMesh : Mesh;
-                            const mesh = new meshConstructor(gl, { geometry, program, mode });
+                            const mesh = new meshConstructor(geometry, program, { mode });
                             mesh.name = name;
                             // Tag mesh so that nodes can add their transforms to the instance attribute
                             mesh.numInstances = numInstances;
@@ -551,12 +551,17 @@ export class GLTFLoader {
                 extras, // optional
             }) => {
                 // TODO: materials
-                const program = new MeshLambertMaterial(gl);
+                const program = new MeshLambertMaterial();
+
+                program.initialize(gl);
+
                 if (materialIndex !== undefined) {
                     program.gltfMaterial = materials[materialIndex];
                 }
 
-                const geometry = new Geometry(gl);
+                const geometry = new Geometry();
+
+                geometry.initialize(gl);
 
                 // Add each attribute found in primitive
                 for (let attr in attributes) {

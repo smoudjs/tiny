@@ -1,4 +1,4 @@
-import {Material, Texture} from "../../core";
+import {ColorUniform, FloatUniform, Material, Matrix4Uniform, Texture, TextureUniform} from "../../core";
 import {Color} from "../../math";
 import {MeshLambertMaterial} from "./MeshLambertMaterial";
 
@@ -6,11 +6,11 @@ const vertex = /* glsl */ `
     attribute vec3 position;
     attribute float size;
 
-    uniform mat4 modelViewMatrix;
-    uniform mat4 projectionMatrix;
+    uniform mat4 projectViewMatrix;
+    uniform mat4 modelMatrix;
 
     void main() {
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        gl_Position = projectViewMatrix * modelMatrix * vec4(position, 1.0);
         gl_PointSize = size;
     }
 `;
@@ -31,26 +31,28 @@ const fragment = /* glsl */ `
 
 export class PointsMaterial extends Material {
     constructor(
-        gl,
         {
             map = Texture.WHITE,
             color = Color.WHITE,
             opacity = 1,
             transparent = false,
-            cullFace = gl.BACK,
-            frontFace = gl.CCW,
+            cullFace = WebGLRenderingContext.BACK,
+            frontFace = WebGLRenderingContext.CCW,
             depthTest = true,
             depthWrite = true,
-            depthFunc = gl.LESS,
+            depthFunc = WebGLRenderingContext.LESS,
         } = {},
     ) {
-        super(gl, {
+        super({
             vertex,
             fragment,
             uniforms: {
-                uMap: {value: map},
-                uColor: {value: color.toArray()},
-                uOpacity: {value: opacity},
+                uMap: new TextureUniform(map),
+                uColor: new ColorUniform(color),
+                uOpacity: new FloatUniform(opacity),
+
+                modelMatrix: new Matrix4Uniform(),
+                projectViewMatrix: new Matrix4Uniform(),
             },
             transparent,
             cullFace,

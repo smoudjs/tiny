@@ -226,90 +226,12 @@ export class Material {
     }
 }
 
-function setUniform(gl, type, location, value) {
-    value = Array.isArray(value) ? flatten(value) : value;
-    const setValue = gl.renderer.state.uniformLocations.get(location);
-
-    // Avoid redundant uniform commands
-    if (Array.isArray(value)) {
-        if (setValue === undefined || setValue.length !== value.length) {
-            // clone array to store as cache
-            gl.renderer.state.uniformLocations.set(location, value.slice(0));
-        } else {
-            if (arraysEqual(setValue, value)) return;
-
-            // Update cached array values
-            setValue.set ? setValue.set(value) : setArray(setValue, value);
-            gl.renderer.state.uniformLocations.set(location, setValue);
-        }
-    } else {
-        if (setValue === value) return;
-        gl.renderer.state.uniformLocations.set(location, value);
-    }
-
-    switch (type) {
-        case 5126:
-            return Array.isArray(value) ? gl.uniform1fv(location, value) : gl.uniform1f(location, value); // FLOAT
-        case 35664:
-            return gl.uniform2fv(location, value); // FLOAT_VEC2
-        case 35665:
-            return gl.uniform3fv(location, value); // FLOAT_VEC3
-        case 35666:
-            return gl.uniform4fv(location, value); // FLOAT_VEC4
-        case 35670: // BOOL
-        case 5124: // INT
-        case 35678: // SAMPLER_2D
-        case 35680:
-            return Array.isArray(value) ? gl.uniform1iv(location, value) : gl.uniform1i(location, value); // SAMPLER_CUBE
-        case 35671: // BOOL_VEC2
-        case 35667:
-            return gl.uniform2iv(location, value); // INT_VEC2
-        case 35672: // BOOL_VEC3
-        case 35668:
-            return gl.uniform3iv(location, value); // INT_VEC3
-        case 35673: // BOOL_VEC4
-        case 35669:
-            return gl.uniform4iv(location, value); // INT_VEC4
-        case 35674:
-            return gl.uniformMatrix2fv(location, false, value); // FLOAT_MAT2
-        case 35675:
-            return gl.uniformMatrix3fv(location, false, value); // FLOAT_MAT3
-        case 35676:
-            return gl.uniformMatrix4fv(location, false, value); // FLOAT_MAT4
-    }
-}
-
 function addLineNumbers(string) {
     let lines = string.split('\n');
     for (let i = 0; i < lines.length; i++) {
         lines[i] = i + 1 + ': ' + lines[i];
     }
     return lines.join('\n');
-}
-
-function flatten(a) {
-    const arrayLen = a.length;
-    const valueLen = a[0].length;
-    if (valueLen === undefined) return a;
-    const length = arrayLen * valueLen;
-    let value = arrayCacheF32[length];
-    if (!value) arrayCacheF32[length] = value = new Float32Array(length);
-    for (let i = 0; i < arrayLen; i++) value.set(a[i], i * valueLen);
-    return value;
-}
-
-function arraysEqual(a, b) {
-    if (a.length !== b.length) return false;
-    for (let i = 0, l = a.length; i < l; i++) {
-        if (a[i] !== b[i]) return false;
-    }
-    return true;
-}
-
-function setArray(a, b) {
-    for (let i = 0, l = a.length; i < l; i++) {
-        a[i] = b[i];
-    }
 }
 
 let warnCount = 0;

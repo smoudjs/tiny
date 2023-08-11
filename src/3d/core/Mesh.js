@@ -36,39 +36,36 @@ export class Mesh extends Object3D {
 
     draw({ camera, directionalLight, ambientLight } = {}) {
         if (this.program.gl.renderer.state.currentProgram !== this.program.id) {
-            if (ambientLight) {
-                this.program.uniforms.ambientLight.set(
-                    new Vec4(
-                        ambientLight.color.r,
-                        ambientLight.color.g,
-                        ambientLight.color.b,
-                        ambientLight.visible ? ambientLight.intensity : 0
-                    )
-                );
-            }
+            if (this.program.isMeshLambertMaterial) {
+                if (ambientLight) {
+                    this.program.uniforms.ambientLight.set(
+                        new Vec4(
+                            ambientLight.color.r,
+                            ambientLight.color.g,
+                            ambientLight.color.b,
+                            ambientLight.visible ? ambientLight.intensity : 0
+                        )
+                    );
+                }
 
-            if (directionalLight) {
-                this.program.uniforms.directionalLight.set(
-                    new Vec4(
-                        directionalLight.color.r,
-                        directionalLight.color.g,
-                        directionalLight.color.b,
-                        directionalLight.visible ? directionalLight.intensity : 0
-                    )
-                );
+                if (directionalLight) {
+                    this.program.uniforms.directionalLight.set(
+                        new Vec4(
+                            directionalLight.color.r,
+                            directionalLight.color.g,
+                            directionalLight.color.b,
+                            directionalLight.visible ? directionalLight.intensity : 0
+                        )
+                    );
 
-                this.program.uniforms.directionalLightDirection.set(directionalLight.position);
+                    this.program.uniforms.directionalLightDirection.set(directionalLight.position);
+                }
             }
 
             this.program.uniforms.projectViewMatrix.set(camera.projectionViewMatrix);
         }
 
-        if (camera) {
-            // Add empty matrix uniforms to program if unset
-            // Set the matrix uniforms
-
-            this.program.uniforms.modelMatrix.set(this.worldMatrix);
-        }
+        this.program.uniforms.modelMatrix.set(this.worldMatrix);
 
         this.beforeRenderCallbacks.forEach((f) => f && f({ mesh: this, camera }));
 
