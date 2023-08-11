@@ -1,0 +1,1 @@
+export const tinyVSthreeCubesAmount = 1000;

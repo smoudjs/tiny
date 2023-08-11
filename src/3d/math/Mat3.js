@@ -9,7 +9,7 @@ import { Vec3 } from './Vec3.js';
 
 var _vector = new Vec3();
 
-function Matrix3() {
+function Mat3() {
 
 	this.elements = [
 
@@ -27,7 +27,7 @@ function Matrix3() {
 
 }
 
-Object.assign( Matrix3.prototype, {
+Object.assign( Mat3.prototype, {
 
 	isMatrix3: true,
 
@@ -381,4 +381,4 @@ Object.assign( Matrix3.prototype, {
 } );
 
 
-export { Matrix3 };
+export { Mat3 };

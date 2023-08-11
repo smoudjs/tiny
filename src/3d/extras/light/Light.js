@@ -9,3 +9,5 @@ export class Light extends Object3D {
         this.intensity = intensity;
     }
 }
+
+Tiny.Light = Light;

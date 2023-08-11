@@ -7,3 +7,5 @@ export class AmbientLight extends Light {
         this.isAmbientLight = true;
     }
 }
+
+Tiny.AmbientLight = AmbientLight;

@@ -5,7 +5,7 @@ import { Mesh } from '../../core/Mesh.js';
 import { MeshLambertMaterial } from "../materials";
 import { GLTFAnimation } from './GLTFAnimation.js';
 import { GLTFSkin } from './GLTFSkin.js';
-import { Matrix4 } from '../../math/Matrix4.js';
+import { Mat4 } from '../../math/Mat4.js';
 import { Vec3 } from '../../math/Vec3.js';
 import { InstancedMesh } from '../InstancedMesh.js';
 
@@ -815,7 +815,7 @@ export class GLTFLoader {
             skin.joints = skin.joints.map((i, index) => {
                 const joint = nodes[i];
                 joint.skin = skin;
-                joint.bindInverse = new Matrix4(...skin.inverseBindMatrices.data.slice(index * 16, (index + 1) * 16));
+                joint.bindInverse = new Mat4(...skin.inverseBindMatrices.data.slice(index * 16, (index + 1) * 16));
                 return joint;
             });
             if (skin.skeleton) skin.skeleton = nodes[skin.skeleton];

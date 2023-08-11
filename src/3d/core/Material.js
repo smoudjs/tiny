@@ -2,6 +2,8 @@
 // TODO: upload identity matrix if null ?
 // TODO: sampler Cube
 
+import {Matrix3Uniform, Matrix4Uniform, Uniform, Vector3Uniform, Vector4Uniform} from "./Uniform";
+
 let ID = 1;
 
 // cache of typed arrays used to flatten uniform arrays
@@ -45,7 +47,7 @@ export class Material {
     }
 
     initialize(gl) {
-        const {vertex, fragment} = this;
+        const {vertex, fragment, uniforms} = this;
 
         this.gl = gl;
 
@@ -88,14 +90,21 @@ export class Material {
         this.uniformLocations = new Map();
         let numUniforms = gl.getProgramParameter(this.program, gl.ACTIVE_UNIFORMS);
         for (let uIndex = 0; uIndex < numUniforms; uIndex++) {
-            let uniform = gl.getActiveUniform(this.program, uIndex);
-            this.uniformLocations.set(uniform, gl.getUniformLocation(this.program, uniform.name));
+            const uniform = gl.getActiveUniform(this.program, uIndex);
+
+            const location = gl.getUniformLocation(this.program, uniform.name);
+
+            this.uniformLocations.set(uniform, location);
 
             // split uniforms' names to separate array and struct declarations
             const split = uniform.name.match(/(\w+)/g);
 
             uniform.uniformName = split[0];
             uniform.nameComponents = split.slice(1);
+
+            if (uniforms[uniform.name]) {
+                uniforms[uniform.name].location = location;
+            }
         }
 
         // Get active attribute locations
@@ -180,12 +189,13 @@ export class Material {
                 return warn(`${activeUniform.name} uniform is missing a value parameter`);
             }
 
-            if (uniform.value.texture) {
+            if (uniform.isTextureUniform && this.gl.renderer.state.currentTexture !== uniform.value) {
+                this.gl.renderer.state.currentTexture = uniform.value;
+
                 textureUnit = textureUnit + 1;
 
-                // Check if texture needs to be updated
                 uniform.value.update(textureUnit);
-                return setUniform(this.gl, activeUniform.type, location, textureUnit);
+                uniform.apply(this.gl, textureUnit);
             }
 
             // For texture arrays, set uniform as an array of texture units instead of just one
@@ -202,11 +212,9 @@ export class Material {
             //     return setUniform(this.gl, activeUniform.type, location, textureUnits);
             // }
 
-            if (activeUniform.name === 'directionalLightColor') {
-                debugger;
+            if (uniform.dirty) {
+                uniform.apply(this.gl);
             }
-
-            setUniform(this.gl, activeUniform.type, location, uniform.value);
         });
 
         this.applyState();

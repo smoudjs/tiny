@@ -7,3 +7,5 @@ export class DirectionalLight extends Light {
         this.isDirectionalLight = true;
     }
 }
+
+Tiny.DirectionalLight = DirectionalLight;

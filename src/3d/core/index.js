@@ -7,3 +7,5 @@ export * from './Object3D';
 
 export * from './Camera';
 export * from './OrthographicCamera';
+
+export * from './Uniform';

@@ -215,3 +215,5 @@ export class Texture {
         this.store.image = this.image;
     }
 }
+
+Tiny.WebGlTexture = Texture;
