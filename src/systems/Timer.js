@@ -1,3 +1,5 @@
+import { registerSystem } from './registrar';
+
 var noop = function () {};
 
 var Timer = function (autoStart, autoRemove, game, cb, ctx, delay, loop, n, oncomplete) {
@@ -47,16 +49,14 @@ Timer.prototype = {
     }
 };
 
-Tiny.Timer = Timer;
-
-Tiny.TimerCreator = function (game) {
+var TimerCreator = function (game) {
     this.game = game;
     this.list = [];
     this.autoStart = true;
     this.autoRemove = true;
 };
 
-Tiny.TimerCreator.prototype = {
+TimerCreator.prototype = {
     update: function (delta) {
         for (var i = 0; i < this.list.length; i++) {
             this.list[i].update(delta);
@@ -105,4 +105,6 @@ Tiny.TimerCreator.prototype = {
     }
 };
 
-Tiny.registerSystem("timer", Tiny.TimerCreator);
+registerSystem('timer', TimerCreator);
+
+export { TimerCreator, Timer };

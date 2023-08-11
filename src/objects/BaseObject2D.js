@@ -1,24 +1,28 @@
+import { Vec2 } from '../math/Vec2';
+import { Mat3, identityMatrix } from '../math/Mat3';
+import { EmptyRectangle } from '../math/shapes/Rectangle';
+
 var pi2 = Math.PI * 2;
 
-Tiny.BaseObject2D = function () {
-    this.position = new Tiny.Point(0, 0);
-    this.scale = new Tiny.Point(1, 1);
-    this.pivot = new Tiny.Point(0, 0);
+var BaseObject2D = function () {
+    this.position = new Vec2(0, 0);
+    this.scale = new Vec2(1, 1);
+    this.pivot = new Vec2(0, 0);
     this.rotation = 0;
     this.alpha = 1;
     this.visible = true;
     this.renderable = false;
     this.parent = null;
     this.worldAlpha = 1;
-    this.worldTransform = new Tiny.Matrix();
+    this.worldTransform = new Mat3();
     this._sr = 0;
     this._cr = 1;
     this._cacheAsBitmap = false;
 };
 
-Tiny.BaseObject2D.prototype.constructor = Tiny.BaseObject2D;
+BaseObject2D.prototype.constructor = BaseObject2D;
 
-Tiny.BaseObject2D.prototype.destroy = function () {
+BaseObject2D.prototype.destroy = function () {
     if (this.parent) this.parent.remove(this);
 
     this.parent = null;
@@ -28,7 +32,7 @@ Tiny.BaseObject2D.prototype.destroy = function () {
     this._destroyCachedSprite();
 };
 
-Object.defineProperty(Tiny.BaseObject2D.prototype, "worldVisible", {
+Object.defineProperty(BaseObject2D.prototype, 'worldVisible', {
     get: function () {
         var item = this;
 
@@ -41,7 +45,7 @@ Object.defineProperty(Tiny.BaseObject2D.prototype, "worldVisible", {
     }
 });
 
-Object.defineProperty(Tiny.BaseObject2D.prototype, "cacheAsBitmap", {
+Object.defineProperty(BaseObject2D.prototype, 'cacheAsBitmap', {
     get: function () {
         return this._cacheAsBitmap;
     },
@@ -59,7 +63,7 @@ Object.defineProperty(Tiny.BaseObject2D.prototype, "cacheAsBitmap", {
     }
 });
 
-Tiny.BaseObject2D.prototype.updateTransform = function () {
+BaseObject2D.prototype.updateTransform = function () {
     if (!this.parent) {
         return;
     }
@@ -122,41 +126,41 @@ Tiny.BaseObject2D.prototype.updateTransform = function () {
 };
 
 // performance increase to avoid using call.. (10x faster)
-Tiny.BaseObject2D.prototype.displayObjectUpdateTransform = Tiny.BaseObject2D.prototype.updateTransform;
+BaseObject2D.prototype.displayObjectUpdateTransform = BaseObject2D.prototype.updateTransform;
 
-Tiny.BaseObject2D.prototype.getBounds = function (matrix) {
+BaseObject2D.prototype.getBounds = function (matrix) {
     // matrix = matrix;//just to get passed js hinting (and preserve inheritance)
-    return Tiny.EmptyRectangle;
+    return EmptyRectangle;
 };
 
-Tiny.BaseObject2D.prototype.getLocalBounds = function () {
-    return this.getBounds(Tiny.identityMatrix);
+BaseObject2D.prototype.getLocalBounds = function () {
+    return this.getBounds(identityMatrix);
 };
 
-Tiny.BaseObject2D.prototype.generateTexture = function (resolution, renderer) {
+BaseObject2D.prototype.generateTexture = function (resolution, renderer) {
     var bounds = this.getLocalBounds();
 
     var renderTexture = new Tiny.RenderTexture(bounds.width | 0, bounds.height | 0, renderer, resolution);
 
-    Tiny.BaseObject2D._tempMatrix.tx = -bounds.x;
-    Tiny.BaseObject2D._tempMatrix.ty = -bounds.y;
+    BaseObject2D._tempMatrix.tx = -bounds.x;
+    BaseObject2D._tempMatrix.ty = -bounds.y;
 
-    renderTexture.render(this, Tiny.BaseObject2D._tempMatrix);
+    renderTexture.render(this, BaseObject2D._tempMatrix);
 
     return renderTexture;
 };
 
-Tiny.BaseObject2D.prototype.updateCache = function () {
+BaseObject2D.prototype.updateCache = function () {
     this._generateCachedSprite();
 };
 
-Tiny.BaseObject2D.prototype.toGlobal = function (position) {
+BaseObject2D.prototype.toGlobal = function (position) {
     // don't need to u[date the lot
     this.displayObjectUpdateTransform();
     return this.worldTransform.apply(position);
 };
 
-Tiny.BaseObject2D.prototype.toLocal = function (position, from) {
+BaseObject2D.prototype.toLocal = function (position, from) {
     if (from) {
         position = from.toGlobal(position);
     }
@@ -167,13 +171,13 @@ Tiny.BaseObject2D.prototype.toLocal = function (position, from) {
     return this.worldTransform.applyInverse(position);
 };
 
-Tiny.BaseObject2D.prototype._renderCachedSprite = function (renderSession) {
+BaseObject2D.prototype._renderCachedSprite = function (renderSession) {
     this._cachedSprite.worldAlpha = this.worldAlpha;
 
     Tiny.Sprite.prototype.render.call(this._cachedSprite, renderSession);
 };
 
-Tiny.BaseObject2D.prototype._generateCachedSprite = function () {
+BaseObject2D.prototype._generateCachedSprite = function () {
     this._cachedSprite = null;
     this._cacheAsBitmap = false;
 
@@ -188,10 +192,10 @@ Tiny.BaseObject2D.prototype._generateCachedSprite = function () {
         this._cachedSprite.texture.resize(bounds.width | 0, bounds.height | 0);
     }
 
-    Tiny.BaseObject2D._tempMatrix.tx = -bounds.x;
-    Tiny.BaseObject2D._tempMatrix.ty = -bounds.y;
+    BaseObject2D._tempMatrix.tx = -bounds.x;
+    BaseObject2D._tempMatrix.ty = -bounds.y;
 
-    this._cachedSprite.texture.render(this, Tiny.BaseObject2D._tempMatrix, true);
+    this._cachedSprite.texture.render(this, BaseObject2D._tempMatrix, true);
 
     this._cachedSprite.anchor.x = -(bounds.x / bounds.width);
     this._cachedSprite.anchor.y = -(bounds.y / bounds.height);
@@ -199,7 +203,7 @@ Tiny.BaseObject2D.prototype._generateCachedSprite = function () {
     this._cacheAsBitmap = true;
 };
 
-Tiny.BaseObject2D.prototype._destroyCachedSprite = function () {
+BaseObject2D.prototype._destroyCachedSprite = function () {
     if (!this._cachedSprite) return;
 
     this._cachedSprite.texture.destroy(true);
@@ -207,9 +211,9 @@ Tiny.BaseObject2D.prototype._destroyCachedSprite = function () {
     this._cachedSprite = null;
 };
 
-Tiny.BaseObject2D.prototype.render = function (renderSession) {};
+BaseObject2D.prototype.render = function (renderSession) {};
 
-Object.defineProperty(Tiny.BaseObject2D.prototype, "x", {
+Object.defineProperty(BaseObject2D.prototype, 'x', {
     get: function () {
         return this.position.x;
     },
@@ -219,7 +223,7 @@ Object.defineProperty(Tiny.BaseObject2D.prototype, "x", {
     }
 });
 
-Object.defineProperty(Tiny.BaseObject2D.prototype, "y", {
+Object.defineProperty(BaseObject2D.prototype, 'y', {
     get: function () {
         return this.position.y;
     },
@@ -229,4 +233,6 @@ Object.defineProperty(Tiny.BaseObject2D.prototype, "y", {
     }
 });
 
-Tiny.BaseObject2D._tempMatrix = new Tiny.Matrix();
+BaseObject2D._tempMatrix = new Mat3();
+
+export { BaseObject2D };

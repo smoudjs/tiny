@@ -23,15 +23,15 @@ const config = {
             // },
 
             // CSS
-            {
-                test: /\.(sa|sc|c)ss$/i,
-                exclude: /node_modules/,
-                use: [
-                    process.env.NODE_ENV !== 'production' ? 'style-loader' : MiniCssExtractPlugin.loader,
-                    'css-loader',
-                    'sass-loader'
-                ]
-            },
+            // {
+            //     test: /\.(sa|sc|c)ss$/i,
+            //     exclude: /node_modules/,
+            //     use: [
+            //         process.env.NODE_ENV !== 'production' ? 'style-loader' : MiniCssExtractPlugin.loader,
+            //         'css-loader',
+            //         'sass-loader'
+            //     ]
+            // },
 
             // Fonts
             {

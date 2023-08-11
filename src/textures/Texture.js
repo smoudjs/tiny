@@ -1,9 +1,12 @@
+import { Rectangle } from '../math/shapes/Rectangle';
+import { Cache } from '../systems/Loader';
+
 // Tiny.TextureCache = {};
 // Tiny.FrameCache = {};
 Tiny.TextureCacheIdGenerator = 0;
 Tiny.TextureSilentFail = false;
 
-Tiny.Texture = function (source, frame, crop, trim) {
+var Texture = function (source, frame, crop, trim) {
     // console.log(this);
     this.noFrame = false;
 
@@ -13,17 +16,17 @@ Tiny.Texture = function (source, frame, crop, trim) {
 
     if (!frame) {
         this.noFrame = true;
-        frame = new Tiny.Rectangle(0, 0, 1, 1);
+        frame = new Rectangle(0, 0, 1, 1);
     }
 
     if (typeof source == 'string') {
         var key = source;
 
-        source = Tiny.Cache.image[key];
+        source = Cache.image[key];
 
         if (!source) throw new Error('Cache Error: image ' + key + ' does`t found in cache');
 
-        Tiny.Cache.texture[key] = this;
+        Cache.texture[key] = this;
 
         this.key = key;
     }
@@ -40,7 +43,7 @@ Tiny.Texture = function (source, frame, crop, trim) {
 
     this.height = 0;
 
-    this.crop = crop || new Tiny.Rectangle(0, 0, 1, 1);
+    this.crop = crop || new Rectangle(0, 0, 1, 1);
 
     if ((this.source.complete || this.source.getContext) && this.source.width && this.source.height) {
         this.onSourceLoaded();
@@ -52,37 +55,37 @@ Tiny.Texture = function (source, frame, crop, trim) {
     }
 };
 
-Tiny.Texture.prototype.constructor = Tiny.Texture;
+Texture.prototype.constructor = Texture;
 
-Tiny.Texture.prototype.onSourceLoaded = function () {
+Texture.prototype.onSourceLoaded = function () {
     this.hasLoaded = true;
     this.width = this.source.naturalWidth || this.source.width;
     this.height = this.source.naturalHeight || this.source.height;
 
-    if (this.noFrame) this.frame = new Tiny.Rectangle(0, 0, this.width, this.height);
+    if (this.noFrame) this.frame = new Rectangle(0, 0, this.width, this.height);
 
     this.setFrame(this.frame);
 };
 
-Tiny.Texture.prototype.addToCache = function (key, frameName) {
+Texture.prototype.addToCache = function (key, frameName) {
     this.key = this.key || key;
     this.frame.name = this.frame.name || frameName;
 
     if (this.frame.name) key += '.' + this.frame.name;
 
-    Tiny.Cache.texture[key] = this;
+    Cache.texture[key] = this;
 };
 
-Tiny.Texture.prototype.destroy = function () {
+Texture.prototype.destroy = function () {
     if (this.key) {
-        delete Tiny.Cache.texture[this.key];
+        delete Cache.texture[this.key];
     }
 
     this.source = null;
     this.valid = false;
 };
 
-Tiny.Texture.prototype.setFrame = function (frame) {
+Texture.prototype.setFrame = function (frame) {
     this.noFrame = false;
 
     this.frame = frame;
@@ -100,7 +103,7 @@ Tiny.Texture.prototype.setFrame = function (frame) {
     this.crop.height = frame.height;
 
     if (!this.trim && (frame.x + frame.width > this.width || frame.y + frame.height > this.height)) {
-        if (!Tiny.TextureSilentFail) {
+        if (!TextureSilentFail) {
             throw new Error('Texture Error: frame does not fit inside the base Texture dimensions ' + this);
         }
 
@@ -116,54 +119,56 @@ Tiny.Texture.prototype.setFrame = function (frame) {
     }
 };
 
-// Tiny.Texture.fromImage = function(key, imageUrl, crossorigin)
+// Texture.fromImage = function(key, imageUrl, crossorigin)
 // {
-//     var texture = Tiny.TextureCache[key];
+//     var texture = TextureCache[key];
 
 //     if(!texture)
 //     {
-//         texture = new Tiny.Texture(Tiny.BaseTexture.fromImage(key, imageUrl, crossorigin));
+//         texture = new Texture(Tiny.BaseTexture.fromImage(key, imageUrl, crossorigin));
 //         texture.key = key
-//         Tiny.TextureCache[key] = texture;
+//         TextureCache[key] = texture;
 //     }
 
 //     return texture;
 // };
 
-// Tiny.Texture.fromFrame = function(frameId)
+// Texture.fromFrame = function(frameId)
 // {
-//     var texture = Tiny.TextureCache[frameId];
+//     var texture = TextureCache[frameId];
 //     if(!texture) throw new Error('The frameId "' + frameId + '" does not exist in the texture cache ');
 //     return texture;
 // };
 
-Tiny.Texture.fromCanvas = function (canvas) {
+Texture.fromCanvas = function (canvas) {
     // if(!canvas._tinyId)
     // {
-    //     canvas._tinyId = '_from_canvas_' + Tiny.TextureCacheIdGenerator++;
+    //     canvas._tinyId = '_from_canvas_' + TextureCacheIdGenerator++;
     // }
 
-    // var texture = Tiny.Cache.texture[canvas._tinyId];
+    // var texture = Cache.texture[canvas._tinyId];
 
     // if(!texture)
     // {
-    //     texture = new Tiny.Texture( canvas );
-    //     Tiny.Cache.texture[canvas._tinyId] = texture;
+    //     texture = new Texture( canvas );
+    //     Cache.texture[canvas._tinyId] = texture;
     // }
 
     // return texture;
-    return new Tiny.Texture(canvas);
+    return new Texture(canvas);
 };
 
-// Tiny.Texture.addTextureToCache = function(texture, id)
+// Texture.addTextureToCache = function(texture, id)
 // {
-//     Tiny.TextureCache[id] = texture;
+//     TextureCache[id] = texture;
 // };
 
-// Tiny.Texture.removeTextureFromCache = function(id)
+// Texture.removeTextureFromCache = function(id)
 // {
-//     var texture = Tiny.TextureCache[id];
-//     delete Tiny.TextureCache[id];
+//     var texture = TextureCache[id];
+//     delete TextureCache[id];
 //     delete Tiny.BaseTextureCache[id];
 //     return texture;
 // };
+
+export { Texture };

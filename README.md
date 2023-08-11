@@ -478,5 +478,5 @@ Check the [examples](https://smoudjs.github.io/tiny/examples/index.html) to see 
 [build-size-url]: https://bundlephobia.com/result?p=tiny
 [npm-downloads]: https://img.shields.io/npm/dw/tiny
 [npmtrends-url]: https://www.npmtrends.com/tiny
-[deepscan]: https://deepscan.io/api/teams/19616/projects/23076/branches/688845/badge/grade.svg
-[deepscan-url]: https://deepscan.io/dashboard/#view=project&tid=19616&pid=23076&bid=688845
+[deepscan]: https://deepscan.io/api/teams/19616/projects/25245/branches/787107/badge/grade.svg
+[deepscan-url]: https://deepscan.io/dashboard/#view=project&tid=19616&pid=25245&bid=787107

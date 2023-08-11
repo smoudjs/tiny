@@ -1,4 +1,14 @@
-Tiny.GraphicsData = function (lineWidth, lineColor, lineAlpha, fillColor, fillAlpha, fill, shape) {
+import { Object2D } from './Object2D';
+import { Sprite } from './Sprite';
+import { CanvasBuffer } from '../utils/CanvasBuffer';
+import { Texture } from '../textures/Texture';
+import { Rectangle, EmptyRectangle } from '../math/shapes/Rectangle';
+import { Circle } from '../math/shapes/Circle';
+import { Polygon } from '../math/shapes/Polygon';
+import { RoundedRectangle } from '../math/shapes/RoundedRectangle';
+import { Vec2 } from '../math/Vec2';
+
+var GraphicsData = function (lineWidth, lineColor, lineAlpha, fillColor, fillAlpha, fill, shape) {
     this.lineWidth = lineWidth;
     this.lineColor = lineColor;
     this.lineAlpha = lineAlpha;
@@ -11,9 +21,9 @@ Tiny.GraphicsData = function (lineWidth, lineColor, lineAlpha, fillColor, fillAl
     this.type = shape.type;
 };
 
-Tiny.GraphicsData.prototype.constructor = Tiny.GraphicsData;
+GraphicsData.prototype.constructor = GraphicsData;
 
-Tiny.GraphicsData.prototype.clone = function () {
+GraphicsData.prototype.clone = function () {
     return new GraphicsData(
         this.lineWidth,
         this.lineColor,
@@ -25,38 +35,38 @@ Tiny.GraphicsData.prototype.clone = function () {
     );
 };
 
-Tiny.Graphics = function () {
-    Tiny.Object2D.call(this);
+var Graphics = function () {
+    Object2D.call(this);
 
     this.renderable = true;
     this.fillAlpha = 1;
     this.lineWidth = 0;
-    this.lineColor = "#000000";
+    this.lineColor = '#000000';
     this.graphicsData = [];
-    this.tint = "#ffffff";
-    this.blendMode = "source-over";
+    this.tint = '#ffffff';
+    this.blendMode = 'source-over';
     this.currentPath = null;
     this.isMask = false;
     this.boundsPadding = 0;
 
-    this._localBounds = new Tiny.Rectangle(0, 0, 1, 1);
+    this._localBounds = new Rectangle(0, 0, 1, 1);
     this._boundsDirty = true;
     this.cachedSpriteDirty = false;
 };
 
 // constructor
-Tiny.Graphics.prototype = Object.create(Tiny.Object2D.prototype);
-Tiny.Graphics.prototype.constructor = Tiny.Graphics;
+Graphics.prototype = Object.create(Object2D.prototype);
+Graphics.prototype.constructor = Graphics;
 
-Tiny.Graphics.prototype.lineStyle = function (lineWidth, color, alpha) {
+Graphics.prototype.lineStyle = function (lineWidth, color, alpha) {
     this.lineWidth = lineWidth || 0;
-    this.lineColor = color || "#000000";
+    this.lineColor = color || '#000000';
     this.lineAlpha = alpha === undefined ? 1 : alpha;
 
     if (this.currentPath) {
         if (this.currentPath.shape.points.length) {
             // halfway through a line? start a new one!
-            this.drawShape(new Tiny.Polygon(this.currentPath.shape.points.slice(-2)));
+            this.drawShape(new Polygon(this.currentPath.shape.points.slice(-2)));
         } else {
             // otherwise its empty so lets just set the line properties
             this.currentPath.lineWidth = this.lineWidth;
@@ -68,13 +78,13 @@ Tiny.Graphics.prototype.lineStyle = function (lineWidth, color, alpha) {
     return this;
 };
 
-Tiny.Graphics.prototype.moveTo = function (x, y) {
-    this.drawShape(new Tiny.Polygon([x, y]));
+Graphics.prototype.moveTo = function (x, y) {
+    this.drawShape(new Polygon([x, y]));
 
     return this;
 };
 
-Tiny.Graphics.prototype.lineTo = function (x, y) {
+Graphics.prototype.lineTo = function (x, y) {
     if (!this.currentPath) {
         this.moveTo(0, 0);
     }
@@ -86,7 +96,7 @@ Tiny.Graphics.prototype.lineTo = function (x, y) {
     return this;
 };
 
-Tiny.Graphics.prototype.quadraticCurveTo = function (cpX, cpY, toX, toY) {
+Graphics.prototype.quadraticCurveTo = function (cpX, cpY, toX, toY) {
     if (this.currentPath) {
         if (this.currentPath.shape.points.length === 0) {
             this.currentPath.shape.points = [0, 0];
@@ -122,7 +132,7 @@ Tiny.Graphics.prototype.quadraticCurveTo = function (cpX, cpY, toX, toY) {
     return this;
 };
 
-Tiny.Graphics.prototype.bezierCurveTo = function (cpX, cpY, cpX2, cpY2, toX, toY) {
+Graphics.prototype.bezierCurveTo = function (cpX, cpY, cpX2, cpY2, toX, toY) {
     if (this.currentPath) {
         if (this.currentPath.shape.points.length === 0) {
             this.currentPath.shape.points = [0, 0];
@@ -165,7 +175,7 @@ Tiny.Graphics.prototype.bezierCurveTo = function (cpX, cpY, cpX2, cpY2, toX, toY
     return this;
 };
 
-Tiny.Graphics.prototype.arcTo = function (x1, y1, x2, y2, radius) {
+Graphics.prototype.arcTo = function (x1, y1, x2, y2, radius) {
     if (this.currentPath) {
         if (this.currentPath.shape.points.length === 0) {
             this.currentPath.shape.points.push(x1, y1);
@@ -213,13 +223,13 @@ Tiny.Graphics.prototype.arcTo = function (x1, y1, x2, y2, radius) {
     return this;
 };
 
-Tiny.Graphics.prototype.arc = function (cx, cy, radius, startAngle, endAngle, anticlockwise) {
+Graphics.prototype.arc = function (cx, cy, radius, startAngle, endAngle, anticlockwise) {
     //  If we do this we can never draw a full circle
     if (startAngle === endAngle) {
         return this;
     }
 
-    if (typeof anticlockwise === "undefined") {
+    if (typeof anticlockwise === 'undefined') {
         anticlockwise = false;
     }
 
@@ -276,9 +286,9 @@ Tiny.Graphics.prototype.arc = function (cx, cy, radius, startAngle, endAngle, an
     return this;
 };
 
-Tiny.Graphics.prototype.beginFill = function (color, alpha) {
+Graphics.prototype.beginFill = function (color, alpha) {
     this.filling = true;
-    this.fillColor = color || "#000000";
+    this.fillColor = color || '#000000';
     this.fillAlpha = alpha === undefined ? 1 : alpha;
 
     if (this.currentPath) {
@@ -292,7 +302,7 @@ Tiny.Graphics.prototype.beginFill = function (color, alpha) {
     return this;
 };
 
-Tiny.Graphics.prototype.endFill = function () {
+Graphics.prototype.endFill = function () {
     this.filling = false;
     this.fillColor = null;
     this.fillAlpha = 1;
@@ -300,43 +310,43 @@ Tiny.Graphics.prototype.endFill = function () {
     return this;
 };
 
-Tiny.Graphics.prototype.drawRect = function (x, y, width, height) {
-    this.drawShape(new Tiny.Rectangle(x, y, width, height));
+Graphics.prototype.drawRect = function (x, y, width, height) {
+    this.drawShape(new Rectangle(x, y, width, height));
 
     return this;
 };
 
-Tiny.Graphics.prototype.drawRoundedRect = function (x, y, width, height, radius) {
-    if (radius > 0) this.drawShape(new Tiny.RoundedRectangle(x, y, width, height, radius));
+Graphics.prototype.drawRoundedRect = function (x, y, width, height, radius) {
+    if (radius > 0) this.drawShape(new RoundedRectangle(x, y, width, height, radius));
     else this.drawRect(x, y, width, height);
 
     return this;
 };
 
-// Tiny.Graphics.prototype.drawRoundedRect2 = function(x, y, width, height, radius)
+// Graphics.prototype.drawRoundedRect2 = function(x, y, width, height, radius)
 // {
-//     var shape = new Tiny.RoundedRectangle(x, y, width, height, radius)
+//     var shape = new RoundedRectangle(x, y, width, height, radius)
 //     shape.type = Tiny.Primitives.RREC_LJOIN;
 //     this.drawShape(shape);
 
 //     return this;
 // };
 
-Tiny.Graphics.prototype.drawCircle = function (x, y, diameter) {
-    this.drawShape(new Tiny.Circle(x, y, diameter));
+Graphics.prototype.drawCircle = function (x, y, diameter) {
+    this.drawShape(new Circle(x, y, diameter));
 
     return this;
 };
 
 // Moved to extra Ellipse
-// Tiny.Graphics.prototype.drawEllipse = function(x, y, width, height)
+// Graphics.prototype.drawEllipse = function(x, y, width, height)
 // {
 //     this.drawShape(new Tiny.Ellipse(x, y, width, height));
 
 //     return this;
 // };
 
-Tiny.Graphics.prototype.drawPolygon = function (path) {
+Graphics.prototype.drawPolygon = function (path) {
     // prevents an argument assignment deopt
     // see section 3.1: https://github.com/petkaantonov/bluebird/wiki/Optimization-killers#3-managing-arguments
     var points = path;
@@ -351,12 +361,12 @@ Tiny.Graphics.prototype.drawPolygon = function (path) {
         }
     }
 
-    this.drawShape(new Tiny.Polygon(points));
+    this.drawShape(new Polygon(points));
 
     return this;
 };
 
-Tiny.Graphics.prototype.clear = function () {
+Graphics.prototype.clear = function () {
     this.lineWidth = 0;
     this.filling = false;
 
@@ -368,20 +378,20 @@ Tiny.Graphics.prototype.clear = function () {
     return this;
 };
 
-Tiny.Graphics.prototype.destroy = function (destroyChildren) {
-    Tiny.Object2D.prototype.destroy.call(this);
+Graphics.prototype.destroy = function (destroyChildren) {
+    Object2D.prototype.destroy.call(this);
 
     this.clear();
 };
 
-Tiny.Graphics.prototype.generateTexture = function (resolution) {
+Graphics.prototype.generateTexture = function (resolution) {
     resolution = resolution || 1;
 
     var bounds = this.getBounds();
 
-    var canvasBuffer = new Tiny.CanvasBuffer(bounds.width * resolution, bounds.height * resolution);
+    var canvasBuffer = new CanvasBuffer(bounds.width * resolution, bounds.height * resolution);
 
-    var texture = Tiny.Texture.fromCanvas(canvasBuffer.canvas);
+    var texture = Texture.fromCanvas(canvasBuffer.canvas);
     texture.resolution = resolution;
 
     canvasBuffer.context.scale(resolution, resolution);
@@ -393,7 +403,7 @@ Tiny.Graphics.prototype.generateTexture = function (resolution) {
     return texture;
 };
 
-Tiny.Graphics.prototype.render = function (renderSession) {
+Graphics.prototype.render = function (renderSession) {
     if (this.isMask === true) {
         return;
     }
@@ -416,7 +426,7 @@ Tiny.Graphics.prototype.render = function (renderSession) {
         }
 
         this._cachedSprite.alpha = this.alpha;
-        Tiny.Sprite.prototype.render.call(this._cachedSprite, renderSession);
+        Sprite.prototype.render.call(this._cachedSprite, renderSession);
 
         return;
     } else {
@@ -456,11 +466,11 @@ Tiny.Graphics.prototype.render = function (renderSession) {
     }
 };
 
-Tiny.Graphics.prototype.getBounds = function (matrix) {
+Graphics.prototype.getBounds = function (matrix) {
     if (!this._currentBounds || this._boundsDirty) {
         // return an empty object if the item is a mask!
         if (!this.renderable) {
-            return Tiny.EmptyRectangle;
+            return EmptyRectangle;
         }
 
         if (this._boundsDirty) {
@@ -532,7 +542,7 @@ Tiny.Graphics.prototype.getBounds = function (matrix) {
     return this._currentBounds;
 };
 
-Tiny.Graphics.prototype.containsPoint = function (point) {
+Graphics.prototype.containsPoint = function (point) {
     this.worldTransform.applyInverse(point, tempPoint);
 
     var graphicsData = this.graphicsData;
@@ -555,7 +565,7 @@ Tiny.Graphics.prototype.containsPoint = function (point) {
     return false;
 };
 
-Tiny.Graphics.prototype.updateLocalBounds = function () {
+Graphics.prototype.updateLocalBounds = function () {
     var minX = Infinity;
     var maxX = -Infinity;
 
@@ -571,11 +581,7 @@ Tiny.Graphics.prototype.updateLocalBounds = function () {
             var lineWidth = data.lineWidth;
             shape = data.shape;
 
-            if (
-                type === Tiny.Primitives.RECT ||
-                type === Tiny.Primitives.RREC ||
-                type === Tiny.Primitives.RREC_LJOIN
-            ) {
+            if (type === Tiny.Primitives.RECT || type === Tiny.Primitives.RREC) {
                 x = shape.x - lineWidth / 2;
                 y = shape.y - lineWidth / 2;
                 w = shape.width + lineWidth;
@@ -613,7 +619,7 @@ Tiny.Graphics.prototype.updateLocalBounds = function () {
                 points = shape.points;
 
                 for (var j = 0; j < points.length; j++) {
-                    if (points[j] instanceof Tiny.Point) {
+                    if (points[j] instanceof Vec2) {
                         x = points[j].x;
                         y = points[j].y;
                     } else {
@@ -649,14 +655,14 @@ Tiny.Graphics.prototype.updateLocalBounds = function () {
     this._localBounds.height = maxY - minY + padding * 2;
 };
 
-Tiny.Graphics.prototype._generateCachedSprite = function () {
+Graphics.prototype._generateCachedSprite = function () {
     var bounds = this.getLocalBounds();
 
     if (!this._cachedSprite) {
-        var canvasBuffer = new Tiny.CanvasBuffer(bounds.width, bounds.height);
-        var texture = Tiny.Texture.fromCanvas(canvasBuffer.canvas);
+        var canvasBuffer = new CanvasBuffer(bounds.width, bounds.height);
+        var texture = Texture.fromCanvas(canvasBuffer.canvas);
 
-        this._cachedSprite = new Tiny.Sprite(texture);
+        this._cachedSprite = new Sprite(texture);
         this._cachedSprite.buffer = canvasBuffer;
 
         this._cachedSprite.worldTransform = this.worldTransform;
@@ -685,7 +691,7 @@ Tiny.Graphics.prototype._generateCachedSprite = function () {
  * @method updateCachedSpriteTexture
  * @private
  */
-Tiny.Graphics.prototype.updateCachedSpriteTexture = function () {
+Graphics.prototype.updateCachedSpriteTexture = function () {
     var cachedSprite = this._cachedSprite;
     var texture = cachedSprite.texture;
     var canvas = cachedSprite.buffer.canvas;
@@ -704,12 +710,12 @@ Tiny.Graphics.prototype.updateCachedSpriteTexture = function () {
  *
  * @method destroyCachedSprite
  */
-Tiny.Graphics.prototype.destroyCachedSprite = function () {
+Graphics.prototype.destroyCachedSprite = function () {
     this._cachedSprite.texture.destroy(true);
     this._cachedSprite = null;
 };
 
-Tiny.Graphics.prototype.drawShape = function (shape) {
+Graphics.prototype.drawShape = function (shape) {
     if (this.currentPath) {
         // check current path!
         if (this.currentPath.shape.points.length <= 2) {
@@ -720,11 +726,11 @@ Tiny.Graphics.prototype.drawShape = function (shape) {
     this.currentPath = null;
 
     //  Handle mixed-type polygons
-    if (shape instanceof Tiny.Polygon) {
+    if (shape instanceof Polygon) {
         shape.flatten();
     }
 
-    var data = new Tiny.GraphicsData(
+    var data = new GraphicsData(
         this.lineWidth,
         this.lineColor,
         this.lineAlpha,
@@ -747,7 +753,7 @@ Tiny.Graphics.prototype.drawShape = function (shape) {
     return data;
 };
 
-Object.defineProperty(Tiny.Graphics.prototype, "cacheAsBitmap", {
+Object.defineProperty(Graphics.prototype, 'cacheAsBitmap', {
     get: function () {
         return this._cacheAsBitmap;
     },
@@ -763,3 +769,5 @@ Object.defineProperty(Tiny.Graphics.prototype, "cacheAsBitmap", {
         }
     }
 });
+
+export { Graphics, GraphicsData };

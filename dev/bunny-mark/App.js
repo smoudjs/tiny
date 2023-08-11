@@ -1,4 +1,5 @@
 import resources from './resources';
+import Bunny from './Bunny';
 
 console.log(resources);
 
@@ -52,18 +53,16 @@ export default class BunnyApp extends Tiny.App {
 
     /** Add an arbitrary amount of bunnies */
     addBunnies(num) {
-        import('./Bunny').then(({ default: Bunny }) => {
-            for (let i = 0; i < num; i++) {
-                const texture = this.textures[this.count % this.textures.length];
-                const bunny = new Bunny(texture, this.bounds);
+        for (let i = 0; i < num; i++) {
+            const texture = this.textures[this.count % this.textures.length];
+            const bunny = new Bunny(texture, this.bounds);
 
-                bunny.position.x = (this.count % 2) * this.width;
-                this.bunnies.push(bunny);
-                this.scene.add(bunny);
-                this.count++;
-            }
-            this.counter.innerText = `${this.count} BUNNIES`;
-        });
+            bunny.position.x = (this.count % 2) * this.width;
+            this.bunnies.push(bunny);
+            this.scene.add(bunny);
+            this.count++;
+        }
+        this.counter.innerText = `${this.count} BUNNIES`;
     }
 
     preload() {
@@ -95,7 +94,6 @@ export default class BunnyApp extends Tiny.App {
     }
 
     resize(width, height) {
-
         this.bounds.right = width;
         this.bounds.bottom = height;
 

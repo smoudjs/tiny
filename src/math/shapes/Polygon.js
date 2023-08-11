@@ -1,4 +1,6 @@
-Tiny.Polygon = function () {
+import { Vec2 } from '../Vec2';
+
+var Polygon = function () {
     this.area = 0;
     this._points = [];
 
@@ -9,14 +11,14 @@ Tiny.Polygon = function () {
     this.type = Tiny.Primitives.POLY;
 };
 
-Tiny.Polygon.prototype = {
+Polygon.prototype = {
     toNumberArray: function (output) {
-        if (typeof output === "undefined") {
+        if (typeof output === 'undefined') {
             output = [];
         }
 
         for (var i = 0; i < this._points.length; i++) {
-            if (typeof this._points[i] === "number") {
+            if (typeof this._points[i] === 'number') {
                 output.push(this._points[i]);
                 output.push(this._points[i + 1]);
                 i++;
@@ -38,8 +40,8 @@ Tiny.Polygon.prototype = {
     clone: function (output) {
         var points = this._points.slice();
 
-        if (typeof output === "undefined" || output === null) {
-            output = new Tiny.Polygon(points);
+        if (typeof output === 'undefined' || output === null) {
+            output = new Polygon(points);
         } else {
             output.setTo(points);
         }
@@ -80,11 +82,11 @@ Tiny.Polygon.prototype = {
 
             //  Allows for mixed-type arguments
             for (var i = 0, len = points.length; i < len; i++) {
-                if (typeof points[i] === "number") {
-                    var p = new Tiny.Point(points[i], points[i + 1]);
+                if (typeof points[i] === 'number') {
+                    var p = new Vec2(points[i], points[i + 1]);
                     i++;
                 } else {
-                    var p = new Tiny.Point(points[i].x, points[i].y);
+                    var p = new Vec2(points[i].x, points[i].y);
                 }
 
                 this._points.push(p);
@@ -125,9 +127,9 @@ Tiny.Polygon.prototype = {
     }
 };
 
-Tiny.Polygon.prototype.constructor = Tiny.Polygon;
+Polygon.prototype.constructor = Polygon;
 
-Object.defineProperty(Tiny.Polygon.prototype, "points", {
+Object.defineProperty(Polygon.prototype, 'points', {
     get: function () {
         return this._points;
     },
@@ -141,3 +143,5 @@ Object.defineProperty(Tiny.Polygon.prototype, "points", {
         }
     }
 });
+
+export { Polygon };

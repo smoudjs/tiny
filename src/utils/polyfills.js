@@ -6,4 +6,5 @@ if (!Date.now) {
 
 if (typeof Float32Array == "undefined") {
   window.Float32Array = Array;
+  window.Uint16Array = Array;
 }

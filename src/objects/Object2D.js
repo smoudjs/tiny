@@ -1,16 +1,20 @@
-Tiny.Object2D = function () {
-    Tiny.BaseObject2D.call(this);
+import { BaseObject2D } from './BaseObject2D';
+import { identityMatrix } from '../math/Mat3';
+import { Rectangle, EmptyRectangle } from '../math/shapes/Rectangle';
+
+var Object2D = function () {
+    BaseObject2D.call(this);
 
     this.children = [];
-    this._bounds = new Tiny.Rectangle(0, 0, 1, 1);
+    this._bounds = new Rectangle(0, 0, 1, 1);
     this._currentBounds = null;
     this._mask = null;
 };
 
-Tiny.Object2D.prototype = Object.create(Tiny.BaseObject2D.prototype);
-Tiny.Object2D.prototype.constructor = Tiny.Object2D;
+Object2D.prototype = Object.create(BaseObject2D.prototype);
+Object2D.prototype.constructor = Object2D;
 
-// Object.defineProperty(Tiny.Object2D.prototype, 'inputEnabled', {
+// Object.defineProperty(Object2D.prototype, 'inputEnabled', {
 
 //     get: function() {
 //         return (this.input && this.input.enabled)
@@ -30,7 +34,7 @@ Tiny.Object2D.prototype.constructor = Tiny.Object2D;
 
 // });
 
-Object.defineProperty(Tiny.Object2D.prototype, "width", {
+Object.defineProperty(Object2D.prototype, 'width', {
     get: function () {
         return this.scale.x * this.getLocalBounds().width;
     },
@@ -48,7 +52,7 @@ Object.defineProperty(Tiny.Object2D.prototype, "width", {
     }
 });
 
-Object.defineProperty(Tiny.Object2D.prototype, "height", {
+Object.defineProperty(Object2D.prototype, 'height', {
     get: function () {
         return this.scale.y * this.getLocalBounds().height;
     },
@@ -66,7 +70,7 @@ Object.defineProperty(Tiny.Object2D.prototype, "height", {
     }
 });
 
-Object.defineProperty(Tiny.Object2D.prototype, "mask", {
+Object.defineProperty(Object2D.prototype, 'mask', {
     get: function () {
         return this._mask;
     },
@@ -80,7 +84,7 @@ Object.defineProperty(Tiny.Object2D.prototype, "mask", {
     }
 });
 
-Tiny.Object2D.prototype.destroy = function () {
+Object2D.prototype.destroy = function () {
     var i = this.children.length;
 
     while (i--) {
@@ -89,7 +93,7 @@ Tiny.Object2D.prototype.destroy = function () {
 
     this.children = [];
 
-    Tiny.BaseObject2D.prototype.destroy.call(this);
+    BaseObject2D.prototype.destroy.call(this);
 
     this._bounds = null;
     this._currentBounds = null;
@@ -98,11 +102,11 @@ Tiny.Object2D.prototype.destroy = function () {
     if (this.input) this.input.system.remove(this);
 };
 
-Tiny.Object2D.prototype.add = function (child) {
+Object2D.prototype.add = function (child) {
     return this.addChildAt(child, this.children.length);
 };
 
-Tiny.Object2D.prototype.addChildAt = function (child, index) {
+Object2D.prototype.addChildAt = function (child, index) {
     if (index >= 0 && index <= this.children.length) {
         if (child.parent) {
             child.parent.remove(child);
@@ -117,12 +121,12 @@ Tiny.Object2D.prototype.addChildAt = function (child, index) {
         return child;
     } else {
         throw new Error(
-            child + "addChildAt: The index " + index + " supplied is out of bounds " + this.children.length
+            child + 'addChildAt: The index ' + index + ' supplied is out of bounds ' + this.children.length
         );
     }
 };
 
-Tiny.Object2D.prototype.swapChildren = function (child, child2) {
+Object2D.prototype.swapChildren = function (child, child2) {
     if (child === child2) {
         return;
     }
@@ -131,56 +135,56 @@ Tiny.Object2D.prototype.swapChildren = function (child, child2) {
     var index2 = this.getChildIndex(child2);
 
     if (index1 < 0 || index2 < 0) {
-        throw new Error("swapChildren: Both the supplied Objects must be a child of the caller.");
+        throw new Error('swapChildren: Both the supplied Objects must be a child of the caller.');
     }
 
     this.children[index1] = child2;
     this.children[index2] = child;
 };
 
-Tiny.Object2D.prototype.getChildIndex = function (child) {
+Object2D.prototype.getChildIndex = function (child) {
     var index = this.children.indexOf(child);
     if (index === -1) {
-        throw new Error("The supplied Object must be a child of the caller");
+        throw new Error('The supplied Object must be a child of the caller');
     }
     return index;
 };
 
-Tiny.Object2D.prototype.setChildIndex = function (child, index) {
+Object2D.prototype.setChildIndex = function (child, index) {
     if (index < 0 || index >= this.children.length) {
-        throw new Error("The supplied index is out of bounds");
+        throw new Error('The supplied index is out of bounds');
     }
     var currentIndex = this.getChildIndex(child);
     this.children.splice(currentIndex, 1); //remove from old position
     this.children.splice(index, 0, child); //add at new position
 };
 
-Tiny.Object2D.prototype.getChildAt = function (index) {
+Object2D.prototype.getChildAt = function (index) {
     if (index < 0 || index >= this.children.length) {
         throw new Error(
-            "getChildAt: Supplied index " +
+            'getChildAt: Supplied index ' +
                 index +
-                " does not exist in the child list, or the supplied Object must be a child of the caller"
+                ' does not exist in the child list, or the supplied Object must be a child of the caller'
         );
     }
     return this.children[index];
 };
 
-Tiny.Object2D.prototype.remove = function (child) {
+Object2D.prototype.remove = function (child) {
     var index = this.children.indexOf(child);
     if (index === -1) return;
 
     return this.removeChildAt(index);
 };
 
-Tiny.Object2D.prototype.removeChildAt = function (index) {
+Object2D.prototype.removeChildAt = function (index) {
     var child = this.getChildAt(index);
     child.parent = undefined;
     this.children.splice(index, 1);
     return child;
 };
 
-Tiny.Object2D.prototype.updateTransform = function () {
+Object2D.prototype.updateTransform = function () {
     if (!this.visible) return;
 
     this.displayObjectUpdateTransform();
@@ -193,10 +197,10 @@ Tiny.Object2D.prototype.updateTransform = function () {
 };
 
 // performance increase to avoid using call.. (10x faster)
-Tiny.Object2D.prototype.displayObjectContainerUpdateTransform = Tiny.Object2D.prototype.updateTransform;
+Object2D.prototype.displayObjectContainerUpdateTransform = Object2D.prototype.updateTransform;
 
-Tiny.Object2D.prototype.getBounds = function () {
-    if (this.children.length === 0) return Tiny.EmptyRectangle;
+Object2D.prototype.getBounds = function () {
+    if (this.children.length === 0) return EmptyRectangle;
     if (this._cachedSprite) return this._cachedSprite.getBounds();
 
     // TODO the bounds have already been calculated this render session so return what we have
@@ -232,7 +236,7 @@ Tiny.Object2D.prototype.getBounds = function () {
         maxY = maxY > childMaxY ? maxY : childMaxY;
     }
 
-    if (!childVisible) return Tiny.EmptyRectangle;
+    if (!childVisible) return EmptyRectangle;
 
     var bounds = this._bounds;
 
@@ -247,10 +251,10 @@ Tiny.Object2D.prototype.getBounds = function () {
     return bounds;
 };
 
-Tiny.Object2D.prototype.getLocalBounds = function () {
+Object2D.prototype.getLocalBounds = function () {
     var matrixCache = this.worldTransform;
 
-    this.worldTransform = Tiny.identityMatrix;
+    this.worldTransform = identityMatrix;
 
     for (var i = 0, j = this.children.length; i < j; i++) {
         this.children[i].updateTransform();
@@ -263,23 +267,46 @@ Tiny.Object2D.prototype.getLocalBounds = function () {
     return bounds;
 };
 
-Tiny.Object2D.prototype.render = function (renderSession) {
-    if (this.visible === false || this.alpha === 0) return;
+Object2D.prototype.render = function (renderSession) {
+    if (!this.visible || this.alpha <= 0) return;
 
     if (this._cacheAsBitmap) {
         this._renderCachedSprite(renderSession);
         return;
     }
 
-    if (this._mask) {
-        renderSession.maskManager.pushMask(this._mask, renderSession);
-    }
+    var i, j;
 
-    for (var i = 0; i < this.children.length; i++) {
-        this.children[i].render(renderSession);
-    }
+    if (this._mask || this._filters) {
+        // push filter first as we need to ensure the stencil buffer is correct for any masking
+        if (this._filters) {
+            renderSession.spriteBatch.flush();
+            renderSession.filterManager.pushFilter(this._filterBlock);
+        }
 
-    if (this._mask) {
-        renderSession.maskManager.popMask(renderSession);
+        if (this._mask) {
+            renderSession.spriteBatch.stop();
+            renderSession.maskManager.pushMask(this.mask, renderSession);
+            renderSession.spriteBatch.start();
+        }
+
+        // simple render children!
+        for (i = 0, j = this.children.length; i < j; i++) {
+            this.children[i].render(renderSession);
+        }
+
+        renderSession.spriteBatch.stop();
+
+        if (this._mask) renderSession.maskManager.popMask(this._mask, renderSession);
+        if (this._filters) renderSession.filterManager.popFilter();
+
+        renderSession.spriteBatch.start();
+    } else {
+        // simple render children!
+        for (i = 0, j = this.children.length; i < j; i++) {
+            this.children[i].render(renderSession);
+        }
     }
 };
+
+export { Object2D };

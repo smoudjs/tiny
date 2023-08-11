@@ -19,6 +19,12 @@ const webpackConfig = {
 
     watch: false,
 
+    entry: {
+        tiny: path.resolve('src/index.js')
+        // 'tiny.mini': path.resolve('src/index.js'),
+        // 'tiny.base': path.resolve('src/index.js'),
+    },
+
     optimization: {
         minimizer: [
             new TerserPlugin({
@@ -41,7 +47,7 @@ const webpackConfig = {
 
     output: {
         filename: '[name].js',
-        path: path.resolve(__dirname, '../build'),
+        path: path.resolve('build'),
         environment: {
             arrowFunction: false
         }
@@ -50,7 +56,7 @@ const webpackConfig = {
 
 Object.assign(webpackConfig, commonConfig);
 
-webpackConfig.plugins.splice(0, 0, new CleanWebpackPlugin());
+// webpackConfig.plugins.splice(0, 0, new CleanWebpackPlugin());
 webpackConfig.plugins.push(new Webpack.DefinePlugin(DEFINES));
 
 // Create new Webpack compiler

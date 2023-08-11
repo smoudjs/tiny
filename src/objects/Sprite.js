@@ -1,7 +1,12 @@
-Tiny.Sprite = function (texture, key) {
-    Tiny.Object2D.call(this);
+import { Object2D } from './Object2D';
+import { Vec2 } from '../math/Vec2';
+import { Cache } from '../systems/Loader';
+import { Texture } from '../textures/Texture';
 
-    this.anchor = new Tiny.Point();
+var Sprite = function (texture, key) {
+    Object2D.call(this);
+
+    this.anchor = new Vec2();
 
     this.setTexture(texture, key, false);
 
@@ -22,22 +27,22 @@ Tiny.Sprite = function (texture, key) {
     this.renderable = true;
 };
 
-Tiny.Sprite.prototype = Object.create(Tiny.Object2D.prototype);
-Tiny.Sprite.prototype.constructor = Tiny.Sprite;
+Sprite.prototype = Object.create(Object2D.prototype);
+Sprite.prototype.constructor = Sprite;
 
-Object.defineProperty(Tiny.Sprite.prototype, 'frameName', {
+Object.defineProperty(Sprite.prototype, 'frameName', {
     get: function () {
         return this.texture.frame.name;
     },
 
     set: function (value) {
         if (this.texture.frame.name) {
-            this.setTexture(Tiny.Cache.texture[this.texture.key + '.' + value]);
+            this.setTexture(Cache.texture[this.texture.key + '.' + value]);
         }
     }
 });
 
-// Object.defineProperty(Tiny.Sprite.prototype, 'frame', {
+// Object.defineProperty(Sprite.prototype, 'frame', {
 //     get: function () {
 //         return this._frame;
 //     },
@@ -47,12 +52,12 @@ Object.defineProperty(Tiny.Sprite.prototype, 'frameName', {
 //             this._frame = value;
 //             if (this._frame > this.texture.lastFrame) this._frame = 0;
 //             else if (this._frame < 0) this._frame = this.texture.lastFrame;
-//             this.setTexture(Tiny.Cache.texture[this.texture.key + '.' + this._frame]);
+//             this.setTexture(Cache.texture[this.texture.key + '.' + this._frame]);
 //         }
 //     }
 // });
 
-Object.defineProperty(Tiny.Sprite.prototype, 'width', {
+Object.defineProperty(Sprite.prototype, 'width', {
     get: function () {
         return this.scale.x * this.texture.frame.width;
     },
@@ -63,7 +68,7 @@ Object.defineProperty(Tiny.Sprite.prototype, 'width', {
     }
 });
 
-Object.defineProperty(Tiny.Sprite.prototype, 'height', {
+Object.defineProperty(Sprite.prototype, 'height', {
     get: function () {
         return this.scale.y * this.texture.frame.height;
     },
@@ -74,7 +79,7 @@ Object.defineProperty(Tiny.Sprite.prototype, 'height', {
     }
 });
 
-Tiny.Sprite.prototype.setTexture = function (texture, frameName, updateDimension) {
+Sprite.prototype.setTexture = function (texture, frameName, updateDimension) {
     if (typeof texture == 'string') {
         var imagePath = texture;
 
@@ -82,10 +87,10 @@ Tiny.Sprite.prototype.setTexture = function (texture, frameName, updateDimension
             imagePath = imagePath + '.' + frameName;
         }
 
-        texture = Tiny.Cache.texture[imagePath];
+        texture = Cache.texture[imagePath];
 
         if (!texture) {
-            texture = new Tiny.Texture(imagePath);
+            texture = new Texture(imagePath);
             // throw new Error('Cache Error: image ' + imagePath + ' does`t found in cache');
         }
     }
@@ -102,13 +107,13 @@ Tiny.Sprite.prototype.setTexture = function (texture, frameName, updateDimension
     return true;
 };
 
-Tiny.Sprite.prototype.onTextureUpdate = function () {
+Sprite.prototype.onTextureUpdate = function () {
     // so if _width is 0 then width was not set..
     if (this._width) this.scale.x = this._width / this.texture.frame.width;
     if (this._height) this.scale.y = this._height / this.texture.frame.height;
 };
 
-// Tiny.Sprite.prototype.animate = function (delay, yoyo) {
+// Sprite.prototype.animate = function (delay, yoyo) {
 //     this.reverse = false;
 //     this.yoyo = yoyo;
 
@@ -138,7 +143,7 @@ Tiny.Sprite.prototype.onTextureUpdate = function () {
 //     }
 // };
 
-Tiny.Sprite.prototype.getBounds = function (matrix) {
+Sprite.prototype.getBounds = function (matrix) {
     var width = this.texture.frame.width / this.texture.resolution;
     var height = this.texture.frame.height / this.texture.resolution;
 
@@ -238,101 +243,51 @@ Tiny.Sprite.prototype.getBounds = function (matrix) {
     return bounds;
 };
 
-Tiny.Sprite.prototype.render = function (renderSession) {
-    // If the sprite is not visible or the alpha is 0 then no need to render this element
-    if (
-        this.visible === false ||
-        this.alpha === 0 ||
-        this.renderable === false ||
-        this.texture.crop.width <= 0 ||
-        this.texture.crop.height <= 0
-    )
-        return;
+Sprite.prototype.render = function (renderSession) {
+    // if the sprite is not visible or the alpha is 0 then no need to render this element
+    if (!this.visible || this.alpha <= 0) return;
 
-    if (this.blendMode !== renderSession.currentBlendMode) {
-        renderSession.currentBlendMode = this.blendMode;
-        renderSession.context.globalCompositeOperation = renderSession.currentBlendMode;
-    }
+    var i, j;
 
-    if (this._mask) {
-        renderSession.maskManager.pushMask(this._mask, renderSession);
-    }
+    // do a quick check to see if this element has a mask or a filter.
+    if (this._mask || this._filters) {
+        var spriteBatch = renderSession.spriteBatch;
 
-    //  Ignore null sources
-    if (this.texture.valid) {
-        var resolution = this.texture.resolution / renderSession.resolution;
-
-        renderSession.context.globalAlpha = this.worldAlpha;
-
-        //  If the texture is trimmed we offset by the trim x/y, otherwise we use the frame dimensions
-        var dx = this.texture.trim
-            ? this.texture.trim.x - this.anchor.x * this.texture.trim.width
-            : this.anchor.x * -this.texture.frame.width;
-        var dy = this.texture.trim
-            ? this.texture.trim.y - this.anchor.y * this.texture.trim.height
-            : this.anchor.y * -this.texture.frame.height;
-
-        //  Allow for pixel rounding
-        if (renderSession.roundPixels) {
-            renderSession.context.setTransform(
-                this.worldTransform.a,
-                this.worldTransform.b,
-                this.worldTransform.c,
-                this.worldTransform.d,
-                (this.worldTransform.tx * renderSession.resolution) | 0,
-                (this.worldTransform.ty * renderSession.resolution) | 0
-            );
-            dx = dx | 0;
-            dy = dy | 0;
-        } else {
-            renderSession.context.setTransform(
-                this.worldTransform.a,
-                this.worldTransform.b,
-                this.worldTransform.c,
-                this.worldTransform.d,
-                this.worldTransform.tx * renderSession.resolution,
-                this.worldTransform.ty * renderSession.resolution
-            );
+        // push filter first as we need to ensure the stencil buffer is correct for any masking
+        if (this._filters) {
+            spriteBatch.flush();
+            renderSession.filterManager.pushFilter(this._filterBlock);
         }
 
-        if (this.tint !== '#ffffff') {
-            if (this.cachedTint !== this.tint) {
-                this.cachedTint = this.tint;
-                this.tintedTexture = Tiny.CanvasTinter.getTintedTexture(this, this.tint);
-            }
-
-            renderSession.context.drawImage(
-                this.tintedTexture,
-                0,
-                0,
-                this.texture.crop.width,
-                this.texture.crop.height,
-                dx / resolution,
-                dy / resolution,
-                this.texture.crop.width / resolution,
-                this.texture.crop.height / resolution
-            );
-        } else {
-            renderSession.context.drawImage(
-                this.texture.source,
-                this.texture.crop.x,
-                this.texture.crop.y,
-                this.texture.crop.width,
-                this.texture.crop.height,
-                dx / resolution,
-                dy / resolution,
-                this.texture.crop.width / resolution,
-                this.texture.crop.height / resolution
-            );
+        if (this._mask) {
+            spriteBatch.stop();
+            renderSession.maskManager.pushMask(this.mask, renderSession);
+            spriteBatch.start();
         }
-    }
 
-    // OVERWRITE
-    for (var i = 0; i < this.children.length; i++) {
-        this.children[i].render(renderSession);
-    }
+        // add this sprite to the batch
+        spriteBatch.render(this);
 
-    if (this._mask) {
-        renderSession.maskManager.popMask(renderSession);
+        // now loop through the children and make sure they get rendered
+        for (i = 0, j = this.children.length; i < j; i++) {
+            this.children[i].render(renderSession);
+        }
+
+        // time to stop the sprite batch as either a mask element or a filter draw will happen next
+        spriteBatch.stop();
+
+        if (this._mask) renderSession.maskManager.popMask(this._mask, renderSession);
+        if (this._filters) renderSession.filterManager.popFilter();
+
+        spriteBatch.start();
+    } else {
+        renderSession.spriteBatch.render(this);
+
+        // simple render children!
+        for (i = 0, j = this.children.length; i < j; i++) {
+            this.children[i].render(renderSession);
+        }
     }
 };
+
+export { Sprite };

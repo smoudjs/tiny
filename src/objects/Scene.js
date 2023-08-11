@@ -1,16 +1,21 @@
-Tiny.Scene = function (game) {
-    Tiny.Object2D.call(this);
-    this.worldTransform = new Tiny.Matrix();
+import { Object2D } from './Object2D';
+import { Mat3 } from '../math/Mat3';
+
+var Scene = function (game) {
+    Object2D.call(this);
+    this.worldTransform = new Mat3();
     this.game = game;
 };
 
-Tiny.Scene.prototype = Object.create(Tiny.Object2D.prototype);
-Tiny.Scene.prototype.constructor = Tiny.Scene;
+Scene.prototype = Object.create(Object2D.prototype);
+Scene.prototype.constructor = Scene;
 
-Tiny.Scene.prototype.updateTransform = function () {
+Scene.prototype.updateTransform = function () {
     this.worldAlpha = 1;
 
     for (var i = 0; i < this.children.length; i++) {
         this.children[i].updateTransform();
     }
 };
+
+export { Scene };

@@ -1,4 +1,6 @@
-Tiny.Circle = function (x, y, diameter) {
+import { Rectangle } from './Rectangle';
+
+var Circle = function (x, y, diameter) {
     x = x || 0;
     y = y || 0;
     diameter = diameter || 0;
@@ -18,9 +20,9 @@ Tiny.Circle = function (x, y, diameter) {
     this.type = Tiny.Primitives.CIRC;
 };
 
-Tiny.Circle.prototype = {
+Circle.prototype = {
     getBounds: function () {
-        return new Tiny.Rectangle(this.x - this.radius, this.y - this.radius, this.diameter, this.diameter);
+        return new Rectangle(this.x - this.radius, this.y - this.radius, this.diameter, this.diameter);
     },
 
     setTo: function (x, y, diameter) {
@@ -50,8 +52,8 @@ Tiny.Circle.prototype = {
     },
 
     clone: function (output) {
-        if (typeof output === "undefined" || output === null) {
-            output = new Tiny.Circle(this.x, this.y, this.diameter);
+        if (typeof output === 'undefined' || output === null) {
+            output = new Circle(this.x, this.y, this.diameter);
         } else {
             output.setTo(this.x, this.y, this.diameter);
         }
@@ -60,7 +62,7 @@ Tiny.Circle.prototype = {
     },
 
     contains: function (x, y) {
-        return Tiny.Circle.contains(this, x, y);
+        return Circle.contains(this, x, y);
     },
 
     offset: function (dx, dy) {
@@ -75,9 +77,9 @@ Tiny.Circle.prototype = {
     }
 };
 
-Tiny.Circle.prototype.constructor = Tiny.Circle;
+Circle.prototype.constructor = Circle;
 
-Object.defineProperty(Tiny.Circle.prototype, "diameter", {
+Object.defineProperty(Circle.prototype, 'diameter', {
     get: function () {
         return this._diameter;
     },
@@ -90,7 +92,7 @@ Object.defineProperty(Tiny.Circle.prototype, "diameter", {
     }
 });
 
-Object.defineProperty(Tiny.Circle.prototype, "radius", {
+Object.defineProperty(Circle.prototype, 'radius', {
     get: function () {
         return this._radius;
     },
@@ -103,7 +105,7 @@ Object.defineProperty(Tiny.Circle.prototype, "radius", {
     }
 });
 
-Object.defineProperty(Tiny.Circle.prototype, "left", {
+Object.defineProperty(Circle.prototype, 'left', {
     get: function () {
         return this.x - this._radius;
     },
@@ -118,7 +120,7 @@ Object.defineProperty(Tiny.Circle.prototype, "left", {
     }
 });
 
-Object.defineProperty(Tiny.Circle.prototype, "right", {
+Object.defineProperty(Circle.prototype, 'right', {
     get: function () {
         return this.x + this._radius;
     },
@@ -133,7 +135,7 @@ Object.defineProperty(Tiny.Circle.prototype, "right", {
     }
 });
 
-Object.defineProperty(Tiny.Circle.prototype, "top", {
+Object.defineProperty(Circle.prototype, 'top', {
     get: function () {
         return this.y - this._radius;
     },
@@ -148,7 +150,7 @@ Object.defineProperty(Tiny.Circle.prototype, "top", {
     }
 });
 
-Object.defineProperty(Tiny.Circle.prototype, "bottom", {
+Object.defineProperty(Circle.prototype, 'bottom', {
     get: function () {
         return this.y + this._radius;
     },
@@ -163,7 +165,7 @@ Object.defineProperty(Tiny.Circle.prototype, "bottom", {
     }
 });
 
-Object.defineProperty(Tiny.Circle.prototype, "area", {
+Object.defineProperty(Circle.prototype, 'area', {
     get: function () {
         if (this._radius > 0) {
             return Math.PI * this._radius * this._radius;
@@ -173,7 +175,7 @@ Object.defineProperty(Tiny.Circle.prototype, "area", {
     }
 });
 
-Object.defineProperty(Tiny.Circle.prototype, "empty", {
+Object.defineProperty(Circle.prototype, 'empty', {
     get: function () {
         return this._diameter === 0;
     },
@@ -185,7 +187,7 @@ Object.defineProperty(Tiny.Circle.prototype, "empty", {
     }
 });
 
-Tiny.Circle.contains = function (a, x, y) {
+Circle.contains = function (a, x, y) {
     //  Check if x/y are within the bounds first
     if (a.radius > 0 && x >= a.left && x <= a.right && y >= a.top && y <= a.bottom) {
         var dx = (a.x - x) * (a.x - x);
@@ -197,15 +199,15 @@ Tiny.Circle.contains = function (a, x, y) {
     }
 };
 
-Tiny.Circle.equals = function (a, b) {
+Circle.equals = function (a, b) {
     return a.x == b.x && a.y == b.y && a.diameter == b.diameter;
 };
 
-Tiny.Circle.intersects = function (a, b) {
+Circle.intersects = function (a, b) {
     return Tiny.Math.distance(a.x, a.y, b.x, b.y) <= a.radius + b.radius;
 };
 
-Tiny.Circle.intersectsRectangle = function (c, r) {
+Circle.intersectsRectangle = function (c, r) {
     var cx = Math.abs(c.x - r.x - r.halfWidth);
     var xDist = r.halfWidth + c.radius;
 
@@ -232,3 +234,5 @@ Tiny.Circle.intersectsRectangle = function (c, r) {
 
     return xCornerDistSq + yCornerDistSq <= maxCornerDistSq;
 };
+
+export { Circle };

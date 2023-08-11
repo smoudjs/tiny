@@ -1,21 +1,24 @@
-Tiny.Cache = {
+import { registerSystem } from './registrar';
+import { EventEmitter } from '../utils/EventEmitter';
+
+var Cache = {
     image: {},
     texture: {}
 };
 
-Tiny.Loader = function (game) {
-    if (Tiny.EventEmitter) Tiny.EventEmitter.mixin(this);
-    game.cache = Tiny.Cache;
+var Loader = function (game) {
+    EventEmitter.mixin(this);
+    game.cache = Cache;
 
     this.game = game;
     this.list = [];
 };
 
-Tiny.Loader.prototype = {
+Loader.prototype = {
     clearCache: function () {
-        for (var y in Tiny.Cache.texture) Tiny.Cache.texture[y].destroy();
+        for (var y in Cache.texture) Cache.texture[y].destroy();
 
-        for (var y in Tiny.Cache) Tiny.Cache[y] = {};
+        for (var y in Cache) Cache[y] = {};
     },
 
     all: function (array) {
@@ -74,7 +77,7 @@ Tiny.Loader.prototype = {
             // var done = false;
             var resource = list.shift();
 
-            var loader = Tiny.Loader[resource.type];
+            var loader = Loader[resource.type];
 
             if (loader) {
                 loader(resource, loaded);
@@ -98,26 +101,26 @@ Tiny.Loader.prototype = {
     }
 };
 
-Tiny.Loader.atlas = function (resource, cb) {
+Loader.atlas = function (resource, cb) {
     var key = resource.key;
 
-    Tiny.Loader.image(resource, function (resource, image) {
+    Loader.image(resource, function (resource, image) {
         for (var i = 0; i < resource.data.length; i++) {
             var uuid = key + '.' + resource.data[i].name;
             var texture = new Tiny.Texture(image, resource.data[i]);
             texture.key = key;
 
-            Tiny.Cache.texture[uuid] = texture;
+            Cache.texture[uuid] = texture;
         }
 
         cb();
     });
 };
 
-Tiny.Loader.spritesheet = function (resource, cb) {
+Loader.spritesheet = function (resource, cb) {
     var key = resource.key;
 
-    Tiny.Loader.image(resource, function (resource, image) {
+    Loader.image(resource, function (resource, image) {
         var lastFrame, uuid, texture;
 
         if (resource.data) {
@@ -139,7 +142,7 @@ Tiny.Loader.spritesheet = function (resource, cb) {
                 texture.key = key;
                 texture.lastFrame = lastFrame;
 
-                Tiny.Cache.texture[uuid] = texture;
+                Cache.texture[uuid] = texture;
             }
         } else {
             var width = image.naturalWidth || image.width;
@@ -178,7 +181,7 @@ Tiny.Loader.spritesheet = function (resource, cb) {
                 });
                 texture.key = key;
                 texture.lastFrame = lastFrame;
-                Tiny.Cache.texture[uuid] = texture;
+                Cache.texture[uuid] = texture;
 
                 x += frameWidth;
 
@@ -193,13 +196,13 @@ Tiny.Loader.spritesheet = function (resource, cb) {
     });
 };
 
-Tiny.Loader.image = function (resource, cb) {
-    // if (Tiny.Cache["image"][resource.key]) return cb(resource, Tiny.Cache["image"][resource.key]);
+Loader.image = function (resource, cb) {
+    // if (Cache["image"][resource.key]) return cb(resource, Cache["image"][resource.key]);
 
     const image = new Image();
 
     image.addEventListener('load', function () {
-        Tiny.Cache.image[resource.key] = image;
+        Cache.image[resource.key] = image;
 
         cb(resource, image);
     });
@@ -212,4 +215,6 @@ Tiny.Loader.image = function (resource, cb) {
     image.src = resource.src;
 };
 
-Tiny.registerSystem('load', Tiny.Loader);
+registerSystem('load', Loader);
+
+export { Loader, Cache };

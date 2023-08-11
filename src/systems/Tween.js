@@ -1,3 +1,5 @@
+import { registerSystem } from './registrar';
+
 /**
  * Tween.js - Licensed under the MIT license
  * https://github.com/tweenjs/tween.js
@@ -110,7 +112,7 @@ TWEEN.nextId = function () {
 //  };
 // }
 
-Tiny.Tween = function (object, group) {
+var Tween = function (object, group) {
     this._isPaused = false;
     // this._pauseStart = null;
     this._object = object;
@@ -126,8 +128,8 @@ Tiny.Tween = function (object, group) {
     this._delayTime = 0;
     this._startTime = null;
     this._time = 0;
-    this._easingFunction = Tiny.Easing.Linear.None;
-    this._interpolationFunction = Tiny.Interpolation.Linear;
+    this._easingFunction = Easing.Linear.None;
+    this._interpolationFunction = Interpolation.Linear;
     this._chainedTweens = [];
     this._onStartCallback = null;
     this._onStartCallbackFired = false;
@@ -139,7 +141,7 @@ Tiny.Tween = function (object, group) {
     this._id = TWEEN.nextId();
 };
 
-Tiny.Tween.prototype = {
+Tween.prototype = {
     getId: function () {
         return this._id;
     },
@@ -197,7 +199,7 @@ Tiny.Tween.prototype = {
             }
 
             // Save the starting value, only once - if reset set to false.
-            if (reset == true || typeof this._valuesStart[property] === "undefined") {
+            if (reset == true || typeof this._valuesStart[property] === 'undefined') {
                 this._valuesStart[property] = this._object[property];
             }
 
@@ -374,8 +376,8 @@ Tiny.Tween.prototype = {
                 this._object[property] = this._interpolationFunction(end, value);
             } else {
                 // Parses relative end values with start as base (e.g.: +10, -3)
-                if (typeof end === "string") {
-                    if (end.charAt(0) === "+" || end.charAt(0) === "-") {
+                if (typeof end === 'string') {
+                    if (end.charAt(0) === '+' || end.charAt(0) === '-') {
                         end = start + parseFloat(end);
                     } else {
                         end = parseFloat(end);
@@ -383,7 +385,7 @@ Tiny.Tween.prototype = {
                 }
 
                 // Protect against non numeric properties.
-                if (typeof end === "number") {
+                if (typeof end === 'number') {
                     this._object[property] = start + (end - start) * value;
                 }
             }
@@ -403,7 +405,7 @@ Tiny.Tween.prototype = {
 
                 // Reassign starting values, restart by making startTime = now
                 for (property in this._valuesStartRepeat) {
-                    if (typeof this._valuesEnd[property] === "string") {
+                    if (typeof this._valuesEnd[property] === 'string') {
                         this._valuesStartRepeat[property] =
                             this._valuesStartRepeat[property] + parseFloat(this._valuesEnd[property]);
                     }
@@ -452,7 +454,7 @@ Tiny.Tween.prototype = {
     }
 };
 
-Tiny.Easing = {
+var Easing = {
     Linear: {
         None: function (k) {
             return k;
@@ -659,7 +661,7 @@ Tiny.Easing = {
 
     Bounce: {
         In: function (k) {
-            return 1 - Tiny.Easing.Bounce.Out(1 - k);
+            return 1 - Easing.Bounce.Out(1 - k);
         },
 
         Out: function (k) {
@@ -676,20 +678,20 @@ Tiny.Easing = {
 
         InOut: function (k) {
             if (k < 0.5) {
-                return Tiny.Easing.Bounce.In(k * 2) * 0.5;
+                return Easing.Bounce.In(k * 2) * 0.5;
             }
 
-            return Tiny.Easing.Bounce.Out(k * 2 - 1) * 0.5 + 0.5;
+            return Easing.Bounce.Out(k * 2 - 1) * 0.5 + 0.5;
         }
     }
 };
 
-Tiny.Interpolation = {
+var Interpolation = {
     Linear: function (v, k) {
         var m = v.length - 1;
         var f = m * k;
         var i = Math.floor(f);
-        var fn = Tiny.Interpolation.Utils.Linear;
+        var fn = Interpolation.Utils.Linear;
 
         if (k < 0) {
             return fn(v[0], v[1], f);
@@ -706,7 +708,7 @@ Tiny.Interpolation = {
         var b = 0;
         var n = v.length - 1;
         var pw = Math.pow;
-        var bn = Tiny.Interpolation.Utils.Bernstein;
+        var bn = Interpolation.Utils.Bernstein;
 
         for (var i = 0; i <= n; i++) {
             b += pw(1 - k, n - i) * pw(k, i) * v[i] * bn(n, i);
@@ -719,7 +721,7 @@ Tiny.Interpolation = {
         var m = v.length - 1;
         var f = m * k;
         var i = Math.floor(f);
-        var fn = Tiny.Interpolation.Utils.CatmullRom;
+        var fn = Interpolation.Utils.CatmullRom;
 
         if (v[0] === v[m]) {
             if (k < 0) {
@@ -746,7 +748,7 @@ Tiny.Interpolation = {
         },
 
         Bernstein: function (n, i) {
-            var fc = Tiny.Interpolation.Utils.Factorial;
+            var fc = Interpolation.Utils.Factorial;
 
             return fc(n) / fc(i) / fc(n - i);
         },
@@ -781,19 +783,19 @@ Tiny.Interpolation = {
     }
 };
 
-Tiny.TweenManager = function (game) {
+var TweenManager = function (game) {
     this.game = game;
     this.bufferList = [];
     this.group = new _Group();
 };
 
-Tiny.TweenManager.prototype = {
+TweenManager.prototype = {
     remove: function (tween) {
         this.group.remove(tween);
     },
 
     add: function (obj) {
-        return new Tiny.Tween(obj, this.group);
+        return new Tween(obj, this.group);
     },
 
     pause: function () {
@@ -824,4 +826,6 @@ Tiny.TweenManager.prototype = {
     }
 };
 
-Tiny.registerSystem("tweens", Tiny.TweenManager);
+registerSystem('tweens', TweenManager);
+
+export { TweenManager, Tween, Easing, Interpolation };
