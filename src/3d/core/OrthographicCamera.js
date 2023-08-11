@@ -1,9 +1,9 @@
 import {Camera} from "./Camera";
 
-import { Matrix4 } from '../math/Matrix4.js';
+import { Mat4 } from '../math/Mat4.js';
 import { Vec3 } from '../math/Vec3.js';
 
-const tempMat4 = new Matrix4();
+const tempMat4 = new Mat4();
 const tempVec3a = new Vec3();
 const tempVec3b = new Vec3();
 
@@ -23,10 +23,9 @@ export class OrthographicCamera extends Camera {
 
         this.view = null;
 
-        this.projectionMatrix = new Matrix4();
-        this.viewMatrix = new Matrix4();
-        this.projectionViewMatrix = new Matrix4();
-        this.worldPosition = new Vec3();
+        this.projectionMatrix = new Mat4();
+        this.viewMatrix = new Mat4();
+        this.projectionViewMatrix = new Mat4();
 
         this.updateProjectionMatrix();
     }
@@ -66,7 +65,6 @@ export class OrthographicCamera extends Camera {
     updateMatrixWorld() {
         super.updateMatrixWorld();
         this.viewMatrix.getInverse(this.worldMatrix);
-        // this.worldMatrix.getTranslation(this.worldPosition);
 
         // used for sorting
         this.projectionViewMatrix.multiplyMatrices(this.projectionMatrix, this.viewMatrix);

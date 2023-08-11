@@ -1,19 +1,27 @@
-import {Material, Texture} from "../../core";
+import {
+    ColorUniform,
+    FloatUniform,
+    Material,
+    Matrix4Uniform,
+    Texture, TextureUniform,
+    Vector3Uniform,
+    Vector4Uniform
+} from "../../core";
 import {Color} from "../../math";
 
 const vertex = /* glsl */ `
     attribute vec2 uv;
     attribute vec3 position;
 
-    uniform mat4 modelViewMatrix;
-    uniform mat4 projectionMatrix;
+    uniform mat4 projectViewMatrix;
+    uniform mat4 modelMatrix;
 
     varying vec2 vUv;
 
     void main() {
         vUv = uv;
         
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        gl_Position = projectViewMatrix * modelMatrix * vec4(position, 1.0);
     }
 `;
 
@@ -51,9 +59,12 @@ export class MeshBasicMaterial extends Material {
             vertex,
             fragment,
             uniforms: {
-                uMap: {value: map},
-                uColor: {value: color.toArray()},
-                uOpacity: {value: opacity},
+                uMap: new TextureUniform(map),
+                uColor: new ColorUniform(color),
+                uOpacity: new FloatUniform(opacity),
+
+                modelMatrix: new Matrix4Uniform(),
+                projectViewMatrix: new Matrix4Uniform(),
             },
             transparent,
             cullFace,

@@ -1,15 +1,21 @@
-import {Material, Texture} from "../../core";
+import {
+    ColorUniform,
+    FloatUniform,
+    Material,
+    Matrix4Uniform,
+    Texture, TextureUniform,
+    Vector3Uniform,
+    Vector4Uniform
+} from "../../core";
+
 import {Color} from "../../math";
-import {MeshBasicMaterial} from "./MeshBasicMaterial";
 
 const vertex = /* glsl */ `
     attribute vec2 uv;
     attribute vec3 position;
     attribute vec3 normal;
-
-    uniform mat4 modelViewMatrix;
-    uniform mat4 projectionMatrix;
-    uniform mat3 normalMatrix;
+    
+    uniform mat4 projectViewMatrix;
     uniform mat4 modelMatrix;
 
     varying vec2 vUv;
@@ -19,20 +25,21 @@ const vertex = /* glsl */ `
         vUv = uv;
         vNormal = mat3(modelMatrix) * normal;
         
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        gl_Position = projectViewMatrix * modelMatrix * vec4(position, 1.0);
     }
 `;
 
 const fragment = /* glsl */ `
     precision highp float;
     
-    uniform vec4 ambientLightColor;
+    uniform vec4 ambientLight;
     
-    uniform vec4 directionalLightColor;
+    uniform vec4 directionalLight;
     uniform vec3 directionalLightDirection;
 
     uniform sampler2D uMap;
     uniform vec3 uColor;
+    uniform float uOpacity;
 
     varying vec2 vUv;
     varying vec3 vNormal;
@@ -43,37 +50,43 @@ const fragment = /* glsl */ `
         
         float directional = max(dot(normal, normalize(directionalLightDirection)), 0.0);
         
-        vec3 directLightColor = directionalLightColor.rgb * directionalLightColor.a * directional;
+        vec3 directLightColor = directionalLight.rgb * directionalLight.a * directional;
         
-        vec3 ambLightColor = ambientLightColor.rgb * ambientLightColor.a;
+        vec3 ambLightColor = ambientLight.rgb * ambientLight.a;
         
         gl_FragColor.rgb = tex * uColor * (ambLightColor + directLightColor);
-        gl_FragColor.a = 1.0;
+        gl_FragColor.a = uOpacity;
     }
 `;
 
 export class MeshLambertMaterial extends Material {
     constructor(
-        gl,
         {
             map = Texture.WHITE,
             color = Color.WHITE,
             opacity = 1,
             transparent = false,
-            cullFace = gl.BACK,
-            frontFace = gl.CCW,
+            cullFace = WebGLRenderingContext.BACK,
+            frontFace = WebGLRenderingContext.CCW,
             depthTest = true,
             depthWrite = true,
-            depthFunc = gl.LESS,
+            depthFunc = WebGLRenderingContext.LESS,
         } = {}
     ) {
-        super(gl, {
+        super({
             vertex,
             fragment,
             uniforms: {
-                uColor: {value: color.toArray()},
-                uMap: {value: map},
-                uOpacity: {value: opacity}
+                uColor: new ColorUniform(color),
+                uMap: new TextureUniform(map),
+                uOpacity: new FloatUniform(opacity),
+
+                modelMatrix: new Matrix4Uniform(),
+                projectViewMatrix: new Matrix4Uniform(),
+
+                directionalLight: new Vector4Uniform(),
+                directionalLightDirection: new Vector3Uniform(),
+                ambientLight: new Vector4Uniform(),
             },
             transparent,
             cullFace,

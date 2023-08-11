@@ -1,8 +1,47 @@
 import {Color} from "three";
+import {tinyVSthreeCubesAmount} from "../constants";
+
+const random = (s = 5) => {
+    return (Math.random() - 0.5) * s;
+}
+
+const aLofOFBoxesSimulation = (amount) => {
+    let material = new THREE.MeshLambertMaterial({
+        color: new THREE.Color(1, 0, 0)
+    });
+
+    debugger;
+    const geometry = new THREE.BoxGeometry();
+
+    let newMat = false;
+
+    for (let i = 0; i < amount; i++) {
+        const box = new THREE.Mesh(
+            geometry,
+            material
+        );
+
+        if (!newMat && i > amount/2) {
+            material = new THREE.MeshLambertMaterial({
+                color: new Color(0, 1, 0),
+                // opacity: 1,
+                // transparent: false
+            });
+
+            newMat = true;
+        }
+
+        box.position.set(random(), random(), random())
+
+        game.world.add(box);
+    }
+};
 
 export default class BunnyApp extends Tiny.App {
     constructor(width, height, parentNode, states) {
         super(states);
+
+        window.game = this;
 
         this.width = width;
         this.height = height;
@@ -41,12 +80,17 @@ export default class BunnyApp extends Tiny.App {
 
         this.box = new THREE.Mesh(
             new THREE.BoxGeometry(),
-            new THREE.MeshBasicMaterial({color: new THREE.Color(1, 0, 0)})
+            new THREE.MeshLambertMaterial({color: new THREE.Color(1, 0, 0)})
         );
 
         const {box, world} = this;
 
-        world.add(box);
+        const ambientLight = new THREE.AmbientLight(undefined, 0.5);
+        const directionalLight = new THREE.DirectionalLight(undefined, 0.5);
+
+        world.add(ambientLight, directionalLight);
+
+        aLofOFBoxesSimulation(tinyVSthreeCubesAmount);
 
         this.resize(window.innerWidth, window.innerHeight);
     }
@@ -56,13 +100,14 @@ export default class BunnyApp extends Tiny.App {
     }
 
     update(time, delta) {
-        delta *= 0.001;
-
-        this.box.rotation.x += delta;
+        // delta *= 0.001;
+        //
+        // this.box.rotation.x += delta;
         // this.box.rotation.y += delta;
     }
 
     render() {
+        debugger;
         this.renderer.render(this.world, this.worldCamera);
     }
 

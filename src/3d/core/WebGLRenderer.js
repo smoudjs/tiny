@@ -308,7 +308,9 @@ export class WebGLRenderer {
             const transparent = []; // depthTest true
             const ui = []; // depthTest false
 
-            renderList.forEach((node) => {
+            for (let i = 0; i < renderList.length; i++) {
+                const node = renderList[i];
+
                 // Split into the 3 render groups
                 if (!node.program.transparent) {
                     opaque.push(node);
@@ -333,11 +335,14 @@ export class WebGLRenderer {
                 // node.worldMatrix.getTranslation(tempVec3);
                 tempVec3.applyMatrix4(camera.projectionViewMatrix);
                 node.zDepth = tempVec3.z;
-            });
+            }
 
-            opaque.sort(this.sortOpaque);
+            // @TODO really don't know if we need sort opaque
+            // opaque.sort(this.sortOpaque);
             transparent.sort(this.sortTransparent);
-            ui.sort(this.sortUI);
+
+            // @TODO don't know what ui means. I think should be deleted later
+            // ui.sort(this.sortUI);
 
             renderList = opaque.concat(transparent, ui);
         }
@@ -345,7 +350,7 @@ export class WebGLRenderer {
         return renderList;
     }
 
-    render({ scene, camera, directionalLight, ambientLight, target = null, update = true, sort = true, frustumCull = true, clear }) {
+    render({ scene, camera, directionalLight, ambientLight, target = null, update = true, sort = true, frustumCull = false, clear }) {
         if (target === null) {
             // make sure no render target bound so draws to canvas
             this.bindFramebuffer();
@@ -378,7 +383,9 @@ export class WebGLRenderer {
         // Get render list - entails culling and sorting
         const renderList = this.getRenderList({ scene, camera, frustumCull, sort });
 
-        renderList.forEach((node) => {
+        for (let i = 0; i < renderList.length; i++) {
+            const node = renderList[i];
+
             if (!node.geometry.gl) {
                 node.geometry.initialize(this.gl);
             }
@@ -388,7 +395,7 @@ export class WebGLRenderer {
             }
 
             node.draw({ camera, directionalLight, ambientLight });
-        });
+        }
     }
 }
 

@@ -1,13 +1,13 @@
 import { Vec3 } from '../math/Vec3';
 import { Quat } from '../math/Quat';
-import { Matrix4 } from '../math/Matrix4';
+import { Mat4 } from '../math/Mat4';
 import { Euler } from '../math/Euler';
 
 var _object3DId = 0;
 
 var _v1 = new Vec3();
 var _q1 = new Quat();
-var _m1 = new Matrix4();
+var _m1 = new Mat4();
 var _target = new Vec3();
 
 var _position = new Vec3();
@@ -27,8 +27,8 @@ export class Object3D {
         this.children = [];
         this.visible = true;
 
-        this.matrix = new Matrix4();
-        this.worldMatrix = new Matrix4();
+        this.matrix = new Mat4();
+        this.worldMatrix = new Mat4();
         this.matrixAutoUpdate = true;
 
         this.position = new Vec3();

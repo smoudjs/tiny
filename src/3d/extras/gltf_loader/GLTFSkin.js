@@ -1,9 +1,9 @@
 import { Mesh } from '../../core/Mesh.js';
-import { Matrix4 } from '../../math/Matrix4.js';
+import { Mat4 } from '../../math/Mat4.js';
 import { Texture } from '../../core/Texture.js';
 
-const tempMat4 = new Matrix4();
-const identity = new Matrix4();
+const tempMat4 = new Mat4();
+const identity = new Mat4();
 
 export class GLTFSkin extends Mesh {
     constructor(gl, { skeleton, geometry, program, mode = gl.TRIANGLES } = {}) {

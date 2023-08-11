@@ -5,7 +5,7 @@ import { Mesh } from '../../core/Mesh.js';
 import { MeshLambertMaterial } from "../materials";
 import { GLTFAnimation } from './GLTFAnimation.js';
 import { GLTFSkin } from './GLTFSkin.js';
-import { Matrix4 } from '../../math/Matrix4.js';
+import { Mat4 } from '../../math/Mat4.js';
 import { Vec3 } from '../../math/Vec3.js';
 import { InstancedMesh } from '../InstancedMesh.js';
 
@@ -521,7 +521,7 @@ export class GLTFLoader {
                         ({ geometry, program, mode }) => {
                             // InstancedMesh class has custom frustum culling for instances
                             const meshConstructor = geometry.attributes.instanceMatrix ? InstancedMesh : Mesh;
-                            const mesh = new meshConstructor(gl, { geometry, program, mode });
+                            const mesh = new meshConstructor(geometry, program, { mode });
                             mesh.name = name;
                             // Tag mesh so that nodes can add their transforms to the instance attribute
                             mesh.numInstances = numInstances;
@@ -551,12 +551,17 @@ export class GLTFLoader {
                 extras, // optional
             }) => {
                 // TODO: materials
-                const program = new MeshLambertMaterial(gl);
+                const program = new MeshLambertMaterial();
+
+                program.initialize(gl);
+
                 if (materialIndex !== undefined) {
                     program.gltfMaterial = materials[materialIndex];
                 }
 
-                const geometry = new Geometry(gl);
+                const geometry = new Geometry();
+
+                geometry.initialize(gl);
 
                 // Add each attribute found in primitive
                 for (let attr in attributes) {
@@ -815,7 +820,7 @@ export class GLTFLoader {
             skin.joints = skin.joints.map((i, index) => {
                 const joint = nodes[i];
                 joint.skin = skin;
-                joint.bindInverse = new Matrix4(...skin.inverseBindMatrices.data.slice(index * 16, (index + 1) * 16));
+                joint.bindInverse = new Mat4(...skin.inverseBindMatrices.data.slice(index * 16, (index + 1) * 16));
                 return joint;
             });
             if (skin.skeleton) skin.skeleton = nodes[skin.skeleton];

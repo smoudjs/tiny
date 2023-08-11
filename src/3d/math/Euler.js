@@ -1,6 +1,6 @@
 import { Quat } from './Quat.js';
 import { Vec3 } from './Vec3.js';
-import { Matrix4 } from './Matrix4.js';
+import { Mat4 } from './Mat4.js';
 import { MathFunc } from './MathFunc.js';
 
 /**
@@ -9,7 +9,7 @@ import { MathFunc } from './MathFunc.js';
  * @author bhouston / http://clara.io
  */
 
-var _matrix = new Matrix4();
+var _matrix = new Mat4();
 var _quaternion = new Quat();
 
 function Euler( x, y, z, order ) {

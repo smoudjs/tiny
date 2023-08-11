@@ -1,7 +1,7 @@
 import { Vec3 } from './Vec3.js';
 
 var _v1 = new Vec3();
-var _m1 = new Matrix4();
+var _m1 = new Mat4();
 var _zero = new Vec3( 0, 0, 0 );
 var _one = new Vec3( 1, 1, 1 );
 var _x = new Vec3();
@@ -21,7 +21,7 @@ var _z = new Vec3();
  * @author WestLangley / http://github.com/WestLangley
  */
 
-function Matrix4() {
+function Mat4() {
 
 	this.elements = [
 
@@ -40,7 +40,7 @@ function Matrix4() {
 
 }
 
-Object.assign( Matrix4.prototype, {
+Object.assign( Mat4.prototype, {
 
 	isMatrix4: true,
 
@@ -74,7 +74,7 @@ Object.assign( Matrix4.prototype, {
 
 	clone: function () {
 
-		return new Matrix4().fromArray( this.elements );
+		return new Mat4().fromArray( this.elements );
 
 	},
 
@@ -919,4 +919,4 @@ Object.assign( Matrix4.prototype, {
 } );
 
 
-export { Matrix4 };
+export { Mat4 };
