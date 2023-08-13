@@ -1,7 +1,7 @@
-import './app';
+import './apps';
 import './2d';
-import './3d';
-import '../extras/renderers/canvas';
+// import './3d';
+import '../extras/canvas-renderer';
 
 // import './utils/polyfills.js';
 // import './global.js';

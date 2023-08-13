@@ -3,11 +3,11 @@
  */
 
 /**
-* @class WebGLStencilManager
+* @class StencilManager
 * @constructor
 * @private
 */
-var WebGLStencilManager = function()
+var StencilManager = function()
 {
     this.stencilStack = [];
     this.reverse = true;
@@ -20,7 +20,7 @@ var WebGLStencilManager = function()
 * @method setContext 
 * @param gl {WebGLContext} the current WebGL drawing context
 */
-WebGLStencilManager.prototype.setContext = function(gl)
+StencilManager.prototype.setContext = function(gl)
 {
     this.gl = gl;
 };
@@ -33,7 +33,7 @@ WebGLStencilManager.prototype.setContext = function(gl)
 * @param webGLData {Array}
 * @param renderSession {Object}
 */
-WebGLStencilManager.prototype.pushStencil = function(graphics, webGLData, renderSession)
+StencilManager.prototype.pushStencil = function(graphics, webGLData, renderSession)
 {
     var gl = this.gl;
     this.bindGraphics(graphics, webGLData, renderSession);
@@ -125,7 +125,7 @@ WebGLStencilManager.prototype.pushStencil = function(graphics, webGLData, render
  * @param webGLData {Array}
  * @param renderSession {Object}
  */
-WebGLStencilManager.prototype.bindGraphics = function(graphics, webGLData, renderSession)
+StencilManager.prototype.bindGraphics = function(graphics, webGLData, renderSession)
 {
     //if(this._currentGraphics === graphics)return;
     this._currentGraphics = graphics;
@@ -196,7 +196,7 @@ WebGLStencilManager.prototype.bindGraphics = function(graphics, webGLData, rende
  * @param webGLData {Array}
  * @param renderSession {Object}
  */
-WebGLStencilManager.prototype.popStencil = function(graphics, webGLData, renderSession)
+StencilManager.prototype.popStencil = function(graphics, webGLData, renderSession)
 {
 	var gl = this.gl;
     this.stencilStack.pop();
@@ -290,10 +290,10 @@ WebGLStencilManager.prototype.popStencil = function(graphics, webGLData, renderS
 * 
 * @method destroy
 */
-WebGLStencilManager.prototype.destroy = function()
+StencilManager.prototype.destroy = function()
 {
     this.stencilStack = null;
     this.gl = null;
 };
 
-export { WebGLStencilManager };
+export { StencilManager };

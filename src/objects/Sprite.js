@@ -2,6 +2,7 @@ import { Object2D } from './Object2D';
 import { Vec2 } from '../math/Vec2';
 import { Cache } from '../systems/Loader';
 import { Texture } from '../textures/Texture';
+import { BLEND_MODES } from '../constants';
 
 var Sprite = function (texture, key) {
     Object2D.call(this);
@@ -18,7 +19,7 @@ var Sprite = function (texture, key) {
 
     this.tint = '#ffffff';
 
-    this.blendMode = 'source-over';
+    this.blendMode = BLEND_MODES.NORMAL;
 
     if (this.texture.hasLoaded) {
         this.onTextureUpdate();

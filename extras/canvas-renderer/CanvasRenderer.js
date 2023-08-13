@@ -1,3 +1,5 @@
+import { BlendModes } from './BlendModes';
+
 var CanvasRenderer = function (width, height, options) {
     options = options || {};
 
@@ -92,8 +94,8 @@ CanvasRenderer.prototype.render = function (scene) {
 
     this.context.globalAlpha = 1;
 
-    this.renderSession.currentBlendMode = 'source-over';
-    this.context.globalCompositeOperation = 'source-over';
+    this.renderSession.currentBlendMode = Tiny.NORMAL;
+    this.context.globalCompositeOperation = BlendModes[Tiny.NORMAL];
 
     if (navigator.isCocoonJS && this.domElement.screencanvas) {
         this.context.fillStyle = 'black';

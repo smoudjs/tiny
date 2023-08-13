@@ -2,6 +2,8 @@ window.Tiny = {};
 
 Tiny.VERSION = '2.2.2';
 
+Tiny._UID = 0;
+
 Tiny.Primitives = {
     POLY: 0,
     RECT: 1,

@@ -11,7 +11,7 @@ export default class BunnyApp extends Tiny.App {
         this.height = height;
 
         this.renderer = new Tiny.CanvasRenderer(this.width, this.height, {
-            resolution: 1.25,
+            resolution: 1,
             autoResize: true
         });
 
@@ -43,10 +43,16 @@ export default class BunnyApp extends Tiny.App {
         };
 
         const counter = document.createElement('div');
+        counter.className = "disable";
         document.body.appendChild(counter);
 
-        counter.style.cssText = 'position: absolute; bottom: 0; font-size: 30px;';
+        counter.id = "counter";
+
         counter.innerText = `${this.count} BUNNIES`;
+
+        this.stats = new Stats();
+        this.stats.domElement.id = 'stats';
+        document.body.append(this.stats.domElement);
 
         this.counter = counter;
     }
@@ -78,6 +84,7 @@ export default class BunnyApp extends Tiny.App {
     }
 
     update(time, delta) {
+        this.stats.begin();
         if (this.input.isDown) {
             if (this.count < this.maxCount) {
                 this.addBunnies(this.amount);
@@ -91,6 +98,7 @@ export default class BunnyApp extends Tiny.App {
 
     render() {
         this.renderer.render(this.scene);
+        this.stats.end();
     }
 
     resize(width, height) {

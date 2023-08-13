@@ -1,7 +1,7 @@
 import { CanvasRenderer } from './CanvasRenderer';
 import { CanvasMaskManager } from './CanvasMaskManager';
 import { CanvasTinter } from './CanvasTinter';
-import { CanvasGraphics } from './GraphicsRenderer';
+import { CanvasGraphics } from './CanvasGraphics';
 import { autoDetectRenderer } from './Detector';
 import './extends';
 

@@ -1,3 +1,6 @@
+import { Filter } from '../Filter';
+import { PixiShader } from '../shaders/PixiShader';
+
 /**
  * @author Mat Groves
  *
@@ -133,7 +136,7 @@ var WebGLSpriteBatch = function () {
      * @property defaultShader
      * @type AbstractFilter
      */
-    this.defaultShader = new PIXI.AbstractFilter([
+    this.defaultShader = new Filter([
         'precision lowp float;',
         'varying vec2 vTextureCoord;',
         'varying vec4 vColor;',
@@ -166,7 +169,7 @@ WebGLSpriteBatch.prototype.setContext = function (gl) {
 
     this.currentBlendMode = 99999;
 
-    var shader = new PIXI.PixiShader(gl);
+    var shader = new PixiShader(gl);
 
     shader.fragmentSrc = this.defaultShader.fragmentSrc;
     shader.uniforms = {};
@@ -187,13 +190,6 @@ WebGLSpriteBatch.prototype.begin = function (renderSession) {
 };
 
 /**
- * @method end
- */
-WebGLSpriteBatch.prototype.end = function () {
-    this.flush();
-};
-
-/**
  * @method render
  * @param sprite {Sprite} the sprite to render when using this spritebatch
  */
@@ -204,7 +200,7 @@ WebGLSpriteBatch.prototype.render = function (sprite) {
     // check texture..
     if (this.currentBatchSize >= this.size) {
         this.flush();
-        this.currentBaseTexture = texture.baseTexture;
+        this.currentBaseTexture = texture.base;
     }
 
     // get the uvs for the texture
@@ -237,7 +233,7 @@ WebGLSpriteBatch.prototype.render = function (sprite) {
 
     var index = this.currentBatchSize * 4 * this.vertSize;
 
-    var resolution = texture.baseTexture.resolution;
+    var resolution = texture.base.resolution;
 
     var worldTransform = sprite.worldTransform;
 
@@ -326,7 +322,7 @@ WebGLSpriteBatch.prototype.renderTilingSprite = function (tilingSprite) {
     if (this.currentBatchSize >= this.size) {
         //return;
         this.flush();
-        this.currentBaseTexture = texture.baseTexture;
+        this.currentBaseTexture = texture.base;
     }
 
     // set the textures uvs temporarily
@@ -336,19 +332,19 @@ WebGLSpriteBatch.prototype.renderTilingSprite = function (tilingSprite) {
 
     var uvs = tilingSprite._uvs;
 
-    tilingSprite.tilePosition.x %= texture.baseTexture.width * tilingSprite.tileScaleOffset.x;
-    tilingSprite.tilePosition.y %= texture.baseTexture.height * tilingSprite.tileScaleOffset.y;
+    tilingSprite.tilePosition.x %= texture.base.width * tilingSprite.tileScaleOffset.x;
+    tilingSprite.tilePosition.y %= texture.base.height * tilingSprite.tileScaleOffset.y;
 
-    var offsetX = tilingSprite.tilePosition.x / (texture.baseTexture.width * tilingSprite.tileScaleOffset.x);
-    var offsetY = tilingSprite.tilePosition.y / (texture.baseTexture.height * tilingSprite.tileScaleOffset.y);
+    var offsetX = tilingSprite.tilePosition.x / (texture.base.width * tilingSprite.tileScaleOffset.x);
+    var offsetY = tilingSprite.tilePosition.y / (texture.base.height * tilingSprite.tileScaleOffset.y);
 
     var scaleX =
         tilingSprite.width /
-        texture.baseTexture.width /
+        texture.base.width /
         (tilingSprite.tileScale.x * tilingSprite.tileScaleOffset.x);
     var scaleY =
         tilingSprite.height /
-        texture.baseTexture.height /
+        texture.base.height /
         (tilingSprite.tileScale.y * tilingSprite.tileScaleOffset.y);
 
     uvs.x0 = 0 - offsetX;
@@ -384,7 +380,7 @@ WebGLSpriteBatch.prototype.renderTilingSprite = function (tilingSprite) {
 
     var index = this.currentBatchSize * 4 * this.vertSize;
 
-    var resolution = texture.baseTexture.resolution;
+    var resolution = texture.base.resolution;
 
     var worldTransform = tilingSprite.worldTransform;
 
@@ -490,7 +486,7 @@ WebGLSpriteBatch.prototype.flush = function () {
     for (var i = 0, j = this.currentBatchSize; i < j; i++) {
         sprite = this.sprites[i];
 
-        nextTexture = sprite.texture.baseTexture;
+        nextTexture = sprite.texture.base;
         nextBlendMode = sprite.blendMode;
         nextShader = sprite.shader || this.defaultShader;
 

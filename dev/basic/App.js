@@ -5,7 +5,7 @@ export default class BasicApp extends Tiny.App {
         this.width = width;
         this.height = height;
 
-        this.renderer = new Tiny.CanvasRenderer(this.width, this.height, {
+        this.renderer = new Tiny.Renderer(this.width, this.height, {
             resolution: 1.25,
             autoResize: true
         });

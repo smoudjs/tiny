@@ -1,3 +1,6 @@
+import { compileProgram } from '../utils/WebGLShaderUtils';
+
+
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
  * @author Richard Davey http://www.photonstorm.com @photonstorm
@@ -14,7 +17,7 @@ var PixiShader = function (gl) {
      * @type Number
      * @private
      */
-    this._UID = PIXI._UID++;
+    this._UID = Tiny._UID++;
 
     /**
      * @property gl
@@ -87,7 +90,7 @@ PixiShader.prototype.constructor = PixiShader;
 PixiShader.prototype.init = function () {
     var gl = this.gl;
 
-    var program = PIXI.compileProgram(gl, this.vertexSrc || PixiShader.defaultVertexSrc, this.fragmentSrc);
+    var program = compileProgram(gl, this.vertexSrc || PixiShader.defaultVertexSrc, this.fragmentSrc);
 
     gl.useProgram(program);
 
@@ -186,14 +189,14 @@ PixiShader.prototype.initUniforms = function () {
  * @method initSampler2D
  */
 PixiShader.prototype.initSampler2D = function (uniform) {
-    if (!uniform.value || !uniform.value.baseTexture || !uniform.value.baseTexture.hasLoaded) {
+    if (!uniform.value || !uniform.value.base || !uniform.value.base.loaded) {
         return;
     }
 
     var gl = this.gl;
 
     gl.activeTexture(gl['TEXTURE' + this.textureCount]);
-    gl.bindTexture(gl.TEXTURE_2D, uniform.value.baseTexture._glTextures[gl.id]);
+    gl.bindTexture(gl.TEXTURE_2D, uniform.value.base._glTextures[gl.id]);
 
     //  Extended texture data
     if (uniform.textureData) {
@@ -237,7 +240,7 @@ PixiShader.prototype.initSampler2D = function (uniform) {
                 format,
                 gl.RGBA,
                 gl.UNSIGNED_BYTE,
-                uniform.value.baseTexture.source
+                uniform.value.base.source
             );
         }
 
@@ -297,14 +300,14 @@ PixiShader.prototype.syncUniforms = function () {
             if (uniform._init) {
                 gl.activeTexture(gl['TEXTURE' + this.textureCount]);
 
-                if (uniform.value.baseTexture._dirty[gl.id]) {
-                    PIXI.instances[gl.id].updateTexture(uniform.value.baseTexture);
+                if (uniform.value.base._dirty[gl.id]) {
+                    Tiny.instances[gl.id].updateTexture(uniform.value.base);
                 } else {
                     // bind the current texture
-                    gl.bindTexture(gl.TEXTURE_2D, uniform.value.baseTexture._glTextures[gl.id]);
+                    gl.bindTexture(gl.TEXTURE_2D, uniform.value.base._glTextures[gl.id]);
                 }
 
-                //   gl.bindTexture(gl.TEXTURE_2D, uniform.value.baseTexture._glTextures[gl.id] || PIXI.createWebGLTexture( uniform.value.baseTexture, gl));
+                //   gl.bindTexture(gl.TEXTURE_2D, uniform.value.base._glTextures[gl.id] || Tiny.createWebGLTexture( uniform.value.base, gl));
                 gl.uniform1i(uniform.uniformLocation, this.textureCount);
                 this.textureCount++;
             } else {

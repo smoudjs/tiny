@@ -44,8 +44,8 @@
     "file-loader": "^6.2.0",
     "html-loader": "^4.2.0",
     "html-webpack-plugin": "^5.5.3",
+    "three": "^0.112.1",
     "webpack": "^5.88.2",
-    "webpack-dev-server": "^4.15.1",
-    "three": "^0.112.1"
+    "webpack-dev-server": "^4.15.1"
   }
 }

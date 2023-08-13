@@ -1,3 +1,5 @@
+import { BlendModes } from './BlendModes';
+
 Tiny.Object2D.prototype.renderCanvas = function (renderSession) {
     if (this.visible === false || this.alpha === 0) return;
 
@@ -32,7 +34,7 @@ Tiny.Sprite.prototype.renderCanvas = function (renderSession) {
 
     if (this.blendMode !== renderSession.currentBlendMode) {
         renderSession.currentBlendMode = this.blendMode;
-        renderSession.context.globalCompositeOperation = renderSession.currentBlendMode;
+        renderSession.context.globalCompositeOperation = BlendModes[renderSession.currentBlendMode];
     }
 
     if (this._mask) {
@@ -95,7 +97,7 @@ Tiny.Sprite.prototype.renderCanvas = function (renderSession) {
             );
         } else {
             renderSession.context.drawImage(
-                this.texture.source,
+                this.texture.base.source,
                 this.texture.crop.x,
                 this.texture.crop.y,
                 this.texture.crop.width,

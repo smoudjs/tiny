@@ -6,7 +6,7 @@ var Text = function (text, style) {
     this.context = this.canvas.getContext('2d');
     this.resolution = 1;
 
-    Sprite.call(this, Texture.fromCanvas(this.canvas));
+    Sprite.call(this, new Texture(this.canvas));
 
     this.setText(text);
     this.setStyle(style);

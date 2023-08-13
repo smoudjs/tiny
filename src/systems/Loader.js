@@ -1,5 +1,6 @@
 import { registerSystem } from './registrar';
 import { EventEmitter } from '../utils/EventEmitter';
+import { BaseTexture } from '../textures/BaseTexture';
 
 var Cache = {
     image: {},
@@ -104,10 +105,10 @@ Loader.prototype = {
 Loader.atlas = function (resource, cb) {
     var key = resource.key;
 
-    Loader.image(resource, function (resource, image) {
+    Loader.image(resource, function (resource, base) {
         for (var i = 0; i < resource.data.length; i++) {
             var uuid = key + '.' + resource.data[i].name;
-            var texture = new Tiny.Texture(image, resource.data[i]);
+            var texture = new Tiny.Texture(base, resource.data[i]);
             texture.key = key;
 
             Cache.texture[uuid] = texture;
@@ -120,7 +121,7 @@ Loader.atlas = function (resource, cb) {
 Loader.spritesheet = function (resource, cb) {
     var key = resource.key;
 
-    Loader.image(resource, function (resource, image) {
+    Loader.image(resource, function (resource, base) {
         var lastFrame, uuid, texture;
 
         if (resource.data) {
@@ -130,7 +131,7 @@ Loader.spritesheet = function (resource, cb) {
             for (var i = 0; i <= lastFrame; i++) {
                 uuid = key + '.' + i;
 
-                texture = new Tiny.Texture(image, {
+                texture = new Tiny.Texture(base, {
                     name: i,
                     x: Math.floor(frameData[i].x),
                     y: Math.floor(frameData[i].y),
@@ -145,8 +146,8 @@ Loader.spritesheet = function (resource, cb) {
                 Cache.texture[uuid] = texture;
             }
         } else {
-            var width = image.naturalWidth || image.width;
-            var height = image.naturalHeight || image.height;
+            var width = base.width;
+            var height = base.height;
 
             var frameWidth = resource.width;
             var frameHeight = resource.height;
@@ -171,7 +172,7 @@ Loader.spritesheet = function (resource, cb) {
 
             for (var i = 0; i < total; i++) {
                 uuid = key + '.' + i;
-                texture = new Tiny.Texture(image, {
+                texture = new Tiny.Texture(base, {
                     name: i,
                     x: x,
                     y: y,
@@ -202,9 +203,10 @@ Loader.image = function (resource, cb) {
     const image = new Image();
 
     image.addEventListener('load', function () {
-        Cache.image[resource.key] = image;
+        var baseTexture = new BaseTexture(image);
+        Cache.image[resource.key] = baseTexture;
 
-        cb(resource, image);
+        cb(resource, baseTexture);
     });
 
     // image.addEventListener('error', function()

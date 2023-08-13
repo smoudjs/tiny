@@ -8,6 +8,8 @@ import { Texture } from './textures/Texture';
 import { RenderTexture } from './textures/RenderTexture';
 import { Rectangle } from './math/shapes/Rectangle';
 
+// import { WebGLRenderer } from './renderers/webgl/WebGLRenderer';
+
 Tiny.BaseObject2D = BaseObject2D;
 Tiny.Object2D = Object2D;
 Tiny.Scene = Scene;
@@ -18,3 +20,6 @@ Tiny.Graphics = Graphics;
 Tiny.Texture = Texture;
 Tiny.RenderTexture = RenderTexture;
 Tiny.Rectangle = Rectangle;
+
+
+// Tiny.Renderer = WebGLRenderer;
