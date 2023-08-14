@@ -1,3 +1,4 @@
+import { uid } from '../../../utils';
 import { compileProgram } from '../utils/WebGLShaderUtils';
 
 
@@ -17,7 +18,7 @@ var PixiShader = function (gl) {
      * @type Number
      * @private
      */
-    this._UID = Tiny._UID++;
+    this._UID = uid();
 
     /**
      * @property gl

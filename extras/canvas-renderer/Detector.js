@@ -12,7 +12,7 @@ function autoDetectRenderer(width, height, options) {
     })();
 
     if (webgl) {
-        return new Tiny.WebGLRenderer(width, height, options);
+        return new Tiny.Renderer(width, height, options);
     }
 
     return new Tiny.CanvasRenderer(width, height, options);

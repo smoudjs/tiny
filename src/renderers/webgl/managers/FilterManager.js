@@ -6,7 +6,8 @@
  * @class FilterManager
  * @constructor
  */
-var FilterManager = function () {
+var FilterManager = function (renderer) {
+    this.renderer = renderer;
     /**
      * @property filterStack
      * @type Array
@@ -43,14 +44,14 @@ FilterManager.prototype.setContext = function (gl) {
 
 /**
  * @method begin
- * @param renderSession {RenderSession}
+ * @param renderer {RenderSession}
  * @param buffer {ArrayBuffer}
  */
-FilterManager.prototype.begin = function (renderSession, buffer) {
-    this.renderSession = renderSession;
-    this.defaultShader = renderSession.shaderManager.defaultShader;
+FilterManager.prototype.begin = function (renderer, buffer) {
+    // this.renderSession = renderSession;
+    this.defaultShader = renderer.shaderManager.defaultShader;
 
-    var projection = this.renderSession.projection;
+    var projection = renderer.projection;
     this.width = projection.x * 2;
     this.height = -projection.y * 2;
     this.buffer = buffer;
@@ -65,8 +66,8 @@ FilterManager.prototype.begin = function (renderSession, buffer) {
 FilterManager.prototype.pushFilter = function (filterBlock) {
     var gl = this.gl;
 
-    var projection = this.renderSession.projection;
-    var offset = this.renderSession.offset;
+    var projection = this.renderer.projection;
+    var offset = this.renderer.offset;
 
     filterBlock._filterArea = filterBlock.target.filterArea || filterBlock.target.getBounds();
 
@@ -116,7 +117,7 @@ FilterManager.prototype.pushFilter = function (filterBlock) {
 
     // update projection
     // now restore the regular shader..
-    // this.renderSession.shaderManager.setShader(this.defaultShader);
+    // this.renderer.shaderManager.setShader(this.defaultShader);
     //gl.uniform2f(this.defaultShader.projectionVector, filterArea.width/2, -filterArea.height/2);
     //gl.uniform2f(this.defaultShader.offsetVector, -filterArea.x, -filterArea.y);
 
@@ -137,8 +138,8 @@ FilterManager.prototype.popFilter = function () {
     var filterBlock = this.filterStack.pop();
     var filterArea = filterBlock._filterArea;
     var texture = filterBlock._glFilterTexture;
-    var projection = this.renderSession.projection;
-    var offset = this.renderSession.offset;
+    var projection = this.renderer.projection;
+    var offset = this.renderer.offset;
 
     if (filterBlock.filterPasses.length > 1) {
         gl.viewport(0, 0, filterArea.width, filterArea.height);
@@ -272,7 +273,7 @@ FilterManager.prototype.popFilter = function () {
 
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.uvArray);
 
-    gl.viewport(0, 0, sizeX * this.renderSession.resolution, sizeY * this.renderSession.resolution);
+    gl.viewport(0, 0, sizeX * this.renderer.resolution, sizeY * this.renderer.resolution);
 
     // bind the buffer
     gl.bindFramebuffer(gl.FRAMEBUFFER, buffer);
@@ -288,7 +289,7 @@ FilterManager.prototype.popFilter = function () {
     this.applyFilterPass(filter, filterArea, sizeX, sizeY);
 
     // now restore the regular shader.. should happen automatically now..
-    // this.renderSession.shaderManager.setShader(this.defaultShader);
+    // this.renderer.shaderManager.setShader(this.defaultShader);
     // gl.uniform2f(this.defaultShader.projectionVector, sizeX/2, -sizeY/2);
     // gl.uniform2f(this.defaultShader.offsetVector, -offsetX, -offsetY);
 
@@ -322,7 +323,7 @@ FilterManager.prototype.applyFilterPass = function (filter, filterArea, width, h
     }
 
     // set the shader
-    this.renderSession.shaderManager.setShader(shader);
+    this.renderer.shaderManager.setShader(shader);
 
     //    gl.useProgram(shader.program);
 
@@ -352,7 +353,7 @@ FilterManager.prototype.applyFilterPass = function (filter, filterArea, width, h
     // draw the filter...
     gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
 
-    this.renderSession.drawCount++;
+    this.renderer.drawCount++;
 };
 
 /**

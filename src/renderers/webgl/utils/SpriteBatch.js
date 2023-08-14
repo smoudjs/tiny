@@ -8,17 +8,19 @@ import { PixiShader } from '../shaders/PixiShader';
  * for creating the original pixi version!
  * Also a thanks to https://github.com/bchevalier for tweaking the tint and alpha so that they now share 4 bytes on the vertex buffer
  *
- * Heavily inspired by LibGDX's WebGLSpriteBatch:
- * https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g2d/WebGLSpriteBatch.java
+ * Heavily inspired by LibGDX's SpriteBatch:
+ * https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g2d/SpriteBatch.java
  */
 
 /**
  *
- * @class WebGLSpriteBatch
+ * @class SpriteBatch
  * @private
  * @constructor
  */
-var WebGLSpriteBatch = function () {
+var SpriteBatch = function (renderer) {
+    this.renderer = renderer;
+
     /**
      * @property vertSize
      * @type Number
@@ -151,7 +153,7 @@ var WebGLSpriteBatch = function () {
  * @method setContext
  * @param gl {WebGLContext} the current WebGL drawing context
  */
-WebGLSpriteBatch.prototype.setContext = function (gl) {
+SpriteBatch.prototype.setContext = function (gl) {
     this.gl = gl;
 
     // create a couple of buffers
@@ -182,9 +184,9 @@ WebGLSpriteBatch.prototype.setContext = function (gl) {
  * @method begin
  * @param renderSession {Object} The RenderSession object
  */
-WebGLSpriteBatch.prototype.begin = function (renderSession) {
-    this.renderSession = renderSession;
-    this.shader = this.renderSession.shaderManager.defaultShader;
+SpriteBatch.prototype.begin = function (renderer) {
+    // this.renderSession = renderSession;
+    this.shader = renderer.shaderManager.defaultShader;
 
     this.start();
 };
@@ -193,7 +195,7 @@ WebGLSpriteBatch.prototype.begin = function (renderSession) {
  * @method render
  * @param sprite {Sprite} the sprite to render when using this spritebatch
  */
-WebGLSpriteBatch.prototype.render = function (sprite) {
+SpriteBatch.prototype.render = function (sprite) {
     var texture = sprite.texture;
 
     //TODO set blend modes..
@@ -247,7 +249,7 @@ WebGLSpriteBatch.prototype.render = function (sprite) {
     var colors = this.colors;
     var positions = this.positions;
 
-    if (this.renderSession.roundPixels) {
+    if (this.renderer.roundPixels) {
         // xy
         positions[index] = (a * w1 + c * h1 + tx) | 0;
         positions[index + 1] = (d * h1 + b * w1 + ty) | 0;
@@ -298,7 +300,7 @@ WebGLSpriteBatch.prototype.render = function (sprite) {
     positions[index + 18] = uvs.y3;
 
     // color and alpha
-    var tint = sprite.tint;
+    var tint = sprite.tint.int;
     colors[index + 4] =
         colors[index + 9] =
         colors[index + 14] =
@@ -310,133 +312,11 @@ WebGLSpriteBatch.prototype.render = function (sprite) {
 };
 
 /**
- * Renders a TilingSprite using the spriteBatch.
- *
- * @method renderTilingSprite
- * @param sprite {TilingSprite} the tilingSprite to render
- */
-WebGLSpriteBatch.prototype.renderTilingSprite = function (tilingSprite) {
-    var texture = tilingSprite.tilingTexture;
-
-    // check texture..
-    if (this.currentBatchSize >= this.size) {
-        //return;
-        this.flush();
-        this.currentBaseTexture = texture.base;
-    }
-
-    // set the textures uvs temporarily
-    // TODO create a separate texture so that we can tile part of a texture
-
-    if (!tilingSprite._uvs) tilingSprite._uvs = new PIXI.TextureUvs();
-
-    var uvs = tilingSprite._uvs;
-
-    tilingSprite.tilePosition.x %= texture.base.width * tilingSprite.tileScaleOffset.x;
-    tilingSprite.tilePosition.y %= texture.base.height * tilingSprite.tileScaleOffset.y;
-
-    var offsetX = tilingSprite.tilePosition.x / (texture.base.width * tilingSprite.tileScaleOffset.x);
-    var offsetY = tilingSprite.tilePosition.y / (texture.base.height * tilingSprite.tileScaleOffset.y);
-
-    var scaleX =
-        tilingSprite.width /
-        texture.base.width /
-        (tilingSprite.tileScale.x * tilingSprite.tileScaleOffset.x);
-    var scaleY =
-        tilingSprite.height /
-        texture.base.height /
-        (tilingSprite.tileScale.y * tilingSprite.tileScaleOffset.y);
-
-    uvs.x0 = 0 - offsetX;
-    uvs.y0 = 0 - offsetY;
-
-    uvs.x1 = 1 * scaleX - offsetX;
-    uvs.y1 = 0 - offsetY;
-
-    uvs.x2 = 1 * scaleX - offsetX;
-    uvs.y2 = 1 * scaleY - offsetY;
-
-    uvs.x3 = 0 - offsetX;
-    uvs.y3 = 1 * scaleY - offsetY;
-
-    // get the tilingSprites current alpha and tint and combining them into a single color
-    var tint = tilingSprite.tint;
-    var color = (tint >> 16) + (tint & 0xff00) + ((tint & 0xff) << 16) + ((tilingSprite.alpha * 255) << 24);
-
-    var positions = this.positions;
-    var colors = this.colors;
-
-    var width = tilingSprite.width;
-    var height = tilingSprite.height;
-
-    // TODO trim??
-    var aX = tilingSprite.anchor.x;
-    var aY = tilingSprite.anchor.y;
-    var w0 = width * (1 - aX);
-    var w1 = width * -aX;
-
-    var h0 = height * (1 - aY);
-    var h1 = height * -aY;
-
-    var index = this.currentBatchSize * 4 * this.vertSize;
-
-    var resolution = texture.base.resolution;
-
-    var worldTransform = tilingSprite.worldTransform;
-
-    var a = worldTransform.a / resolution; //[0];
-    var b = worldTransform.b / resolution; //[3];
-    var c = worldTransform.c / resolution; //[1];
-    var d = worldTransform.d / resolution; //[4];
-    var tx = worldTransform.tx; //[2];
-    var ty = worldTransform.ty; //[5];
-
-    // xy
-    positions[index++] = a * w1 + c * h1 + tx;
-    positions[index++] = d * h1 + b * w1 + ty;
-    // uv
-    positions[index++] = uvs.x0;
-    positions[index++] = uvs.y0;
-    // color
-    colors[index++] = color;
-
-    // xy
-    positions[index++] = a * w0 + c * h1 + tx;
-    positions[index++] = d * h1 + b * w0 + ty;
-    // uv
-    positions[index++] = uvs.x1;
-    positions[index++] = uvs.y1;
-    // color
-    colors[index++] = color;
-
-    // xy
-    positions[index++] = a * w0 + c * h0 + tx;
-    positions[index++] = d * h0 + b * w0 + ty;
-    // uv
-    positions[index++] = uvs.x2;
-    positions[index++] = uvs.y2;
-    // color
-    colors[index++] = color;
-
-    // xy
-    positions[index++] = a * w1 + c * h0 + tx;
-    positions[index++] = d * h0 + b * w1 + ty;
-    // uv
-    positions[index++] = uvs.x3;
-    positions[index++] = uvs.y3;
-    // color
-    colors[index++] = color;
-
-    // increment the batchsize
-    this.sprites[this.currentBatchSize++] = tilingSprite;
-};
-
-/**
  * Renders the content and empties the current batch.
  *
  * @method flush
  */
-WebGLSpriteBatch.prototype.flush = function () {
+SpriteBatch.prototype.flush = function () {
     // If the batch is length 0 then return as there is nothing to draw
     if (this.currentBatchSize === 0) return;
 
@@ -476,7 +356,7 @@ WebGLSpriteBatch.prototype.flush = function () {
     var start = 0;
 
     var currentBaseTexture = null;
-    var currentBlendMode = this.renderSession.blendModeManager.currentBlendMode;
+    var currentBlendMode = this.renderer.blendModeManager.currentBlendMode;
     var currentShader = null;
 
     var blendSwap = false;
@@ -502,7 +382,7 @@ WebGLSpriteBatch.prototype.flush = function () {
 
             if (blendSwap) {
                 currentBlendMode = nextBlendMode;
-                this.renderSession.blendModeManager.setBlendMode(currentBlendMode);
+                this.renderer.blendModeManager.setBlendMode(currentBlendMode);
             }
 
             if (shaderSwap) {
@@ -511,7 +391,7 @@ WebGLSpriteBatch.prototype.flush = function () {
                 shader = currentShader.shaders[gl.id];
 
                 if (!shader) {
-                    shader = new PIXI.PixiShader(gl);
+                    shader = new PixiShader(gl);
 
                     shader.fragmentSrc = currentShader.fragmentSrc;
                     shader.uniforms = currentShader.uniforms;
@@ -521,17 +401,17 @@ WebGLSpriteBatch.prototype.flush = function () {
                 }
 
                 // set shader function???
-                this.renderSession.shaderManager.setShader(shader);
+                this.renderer.shaderManager.setShader(shader);
 
                 if (shader.dirty) shader.syncUniforms();
 
                 // both thease only need to be set if they are changing..
                 // set the projection
-                var projection = this.renderSession.projection;
+                var projection = this.renderer.projection;
                 gl.uniform2f(shader.projectionVector, projection.x, projection.y);
 
                 // TODO - this is temprorary!
-                var offsetVector = this.renderSession.offset;
+                var offsetVector = this.renderer.offset;
                 gl.uniform2f(shader.offsetVector, offsetVector.x, offsetVector.y);
 
                 // set the pointers
@@ -553,14 +433,14 @@ WebGLSpriteBatch.prototype.flush = function () {
  * @param size {Number}
  * @param startIndex {Number}
  */
-WebGLSpriteBatch.prototype.renderBatch = function (texture, size, startIndex) {
+SpriteBatch.prototype.renderBatch = function (texture, size, startIndex) {
     if (size === 0) return;
 
     var gl = this.gl;
 
     // check if a texture is dirty..
     if (texture._dirty[gl.id]) {
-        this.renderSession.renderer.updateTexture(texture);
+        this.renderer.updateTexture(texture);
     } else {
         // bind the current texture
         gl.bindTexture(gl.TEXTURE_2D, texture._glTextures[gl.id]);
@@ -570,13 +450,13 @@ WebGLSpriteBatch.prototype.renderBatch = function (texture, size, startIndex) {
     gl.drawElements(gl.TRIANGLES, size * 6, gl.UNSIGNED_SHORT, startIndex * 6 * 2);
 
     // increment the draw count
-    this.renderSession.drawCount++;
+    this.renderer.drawCount++;
 };
 
 /**
  * @method stop
  */
-WebGLSpriteBatch.prototype.stop = function () {
+SpriteBatch.prototype.stop = function () {
     this.flush();
     this.dirty = true;
 };
@@ -584,7 +464,7 @@ WebGLSpriteBatch.prototype.stop = function () {
 /**
  * @method start
  */
-WebGLSpriteBatch.prototype.start = function () {
+SpriteBatch.prototype.start = function () {
     this.dirty = true;
 };
 
@@ -593,7 +473,7 @@ WebGLSpriteBatch.prototype.start = function () {
  *
  * @method destroy
  */
-WebGLSpriteBatch.prototype.destroy = function () {
+SpriteBatch.prototype.destroy = function () {
     this.vertices = null;
     this.indices = null;
 
@@ -605,4 +485,4 @@ WebGLSpriteBatch.prototype.destroy = function () {
     this.gl = null;
 };
 
-export { WebGLSpriteBatch };
+export { SpriteBatch };

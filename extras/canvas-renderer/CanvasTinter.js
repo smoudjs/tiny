@@ -5,11 +5,12 @@ var canHandleAlpha = checkInverseAlpha();
 var CanvasTinter = function () {};
 
 CanvasTinter.getTintedTexture = function (sprite, color) {
+    var key = color.int;
     var texture = sprite.texture;
 
     if (!texture._tintCache) texture._tintCache = {};
 
-    if (texture._tintCache[color]) return texture._tintCache[color];
+    if (texture._tintCache[key]) return texture._tintCache[key];
 
     var canvas = CanvasTinter.canvas || document.createElement('canvas');
 
@@ -25,7 +26,7 @@ CanvasTinter.getTintedTexture = function (sprite, color) {
         CanvasTinter.canvas = null;
     }
 
-    if (CanvasTinter.cacheTint) texture._tintCache[color] = canvas;
+    if (CanvasTinter.cacheTint) texture._tintCache[key] = canvas;
 
     return canvas;
 };
@@ -38,17 +39,37 @@ CanvasTinter.tintWithMultiply = function (texture, color, canvas) {
     canvas.width = crop.width;
     canvas.height = crop.height;
 
-    context.fillStyle = color;
+    context.fillStyle = color.toStyle();
 
     context.fillRect(0, 0, crop.width, crop.height);
 
     context.globalCompositeOperation = 'multiply';
 
-    context.drawImage(texture.source, crop.x, crop.y, crop.width, crop.height, 0, 0, crop.width, crop.height);
+    context.drawImage(
+        texture.base.source,
+        crop.x,
+        crop.y,
+        crop.width,
+        crop.height,
+        0,
+        0,
+        crop.width,
+        crop.height
+    );
 
     context.globalCompositeOperation = 'destination-atop';
 
-    context.drawImage(texture.source, crop.x, crop.y, crop.width, crop.height, 0, 0, crop.width, crop.height);
+    context.drawImage(
+        texture.base.source,
+        crop.x,
+        crop.y,
+        crop.width,
+        crop.height,
+        0,
+        0,
+        crop.width,
+        crop.height
+    );
 };
 
 CanvasTinter.tintWithPerPixel = function (texture, color, canvas) {
@@ -60,21 +81,26 @@ CanvasTinter.tintWithPerPixel = function (texture, color, canvas) {
     canvas.height = crop.height;
 
     context.globalCompositeOperation = 'copy';
-    context.drawImage(texture.source, crop.x, crop.y, crop.width, crop.height, 0, 0, crop.width, crop.height);
-
-    var rgbValues = Tiny.hex2rgb(Tiny.style2hex(color));
-    var r = rgbValues[0],
-        g = rgbValues[1],
-        b = rgbValues[2];
+    context.drawImage(
+        texture.base.source,
+        crop.x,
+        crop.y,
+        crop.width,
+        crop.height,
+        0,
+        0,
+        crop.width,
+        crop.height
+    );
 
     var pixelData = context.getImageData(0, 0, crop.width, crop.height);
 
     var pixels = pixelData.data;
 
     for (var i = 0; i < pixels.length; i += 4) {
-        pixels[i + 0] *= r;
-        pixels[i + 1] *= g;
-        pixels[i + 2] *= b;
+        pixels[i + 0] *= color.r;
+        pixels[i + 1] *= color.g;
+        pixels[i + 2] *= color.b;
 
         if (!canHandleAlpha) {
             var alpha = pixels[i + 3];
@@ -90,10 +116,8 @@ CanvasTinter.tintWithPerPixel = function (texture, color, canvas) {
 
 CanvasTinter.convertTintToImage = false;
 
-CanvasTinter.cacheTint = false;
+CanvasTinter.cacheTint = true;
 
-CanvasTinter.tintMethod = canUseNewCanvasBlendModes()
-    ? CanvasTinter.tintWithMultiply
-    : CanvasTinter.tintWithPerPixel;
+CanvasTinter.tintMethod = canUseNewCanvasBlendModes() ? CanvasTinter.tintWithMultiply : CanvasTinter.tintWithPerPixel;
 
 export { CanvasTinter };

@@ -1,11 +1,7 @@
 import { registerSystem } from './registrar';
 import { EventEmitter } from '../utils/EventEmitter';
 import { BaseTexture } from '../textures/BaseTexture';
-
-var Cache = {
-    image: {},
-    texture: {}
-};
+import { Cache } from './Cache';
 
 var Loader = function (game) {
     EventEmitter.mixin(this);
@@ -219,4 +215,4 @@ Loader.image = function (resource, cb) {
 
 registerSystem('load', Loader);
 
-export { Loader, Cache };
+export { Loader };

@@ -17,7 +17,7 @@ CanvasGraphics.renderGraphics = function (graphics, context) {
 
         context.lineWidth = data.lineWidth;
 
-        if (data.type === Tiny.Primitives.POLY) {
+        if (data.type === Tiny.POLY) {
             context.beginPath();
 
             var points = shape.points;
@@ -38,46 +38,46 @@ CanvasGraphics.renderGraphics = function (graphics, context) {
             }
 
             if (data.fill) {
-                context.globalAlpha = data.fillAlpha * worldAlpha;
-                context.fillStyle = fillColor;
+                context.globalAlpha = fillColor.a * worldAlpha;
+                context.fillStyle = fillColor.toStyle();
                 context.fill();
             }
 
             if (data.lineWidth) {
-                context.globalAlpha = data.lineAlpha * worldAlpha;
-                context.strokeStyle = lineColor;
+                context.globalAlpha = lineColor.a * worldAlpha;
+                context.strokeStyle = lineColor.toStyle();
                 context.stroke();
             }
-        } else if (data.type === Tiny.Primitives.RECT) {
+        } else if (data.type === Tiny.RECT) {
             if (data.fillColor) {
-                context.globalAlpha = data.fillAlpha * worldAlpha;
-                context.fillStyle = fillColor;
+                context.globalAlpha = fillColor.a * worldAlpha;
+                context.fillStyle = fillColor.toStyle();
                 context.fillRect(shape.x, shape.y, shape.width, shape.height);
             }
 
             if (data.lineWidth) {
-                context.globalAlpha = data.lineAlpha * worldAlpha;
-                context.strokeStyle = lineColor;
+                context.globalAlpha = lineColor.a * worldAlpha;
+                context.strokeStyle = lineColor.toStyle();
                 context.strokeRect(shape.x, shape.y, shape.width, shape.height);
             }
-        } else if (data.type === Tiny.Primitives.CIRC) {
+        } else if (data.type === Tiny.CIRC) {
             // TODO - need to be Undefined!
             context.beginPath();
             context.arc(shape.x, shape.y, shape.radius, 0, 2 * Math.PI);
             context.closePath();
 
             if (data.fill) {
-                context.globalAlpha = data.fillAlpha * worldAlpha;
-                context.fillStyle = fillColor;
+                context.globalAlpha = fillColor.a * worldAlpha;
+                context.fillStyle = fillColor.toStyle();
                 context.fill();
             }
 
             if (data.lineWidth) {
-                context.globalAlpha = data.lineAlpha * worldAlpha;
-                context.strokeStyle = lineColor;
+                context.globalAlpha = lineColor.a * worldAlpha;
+                context.strokeStyle = lineColor.toStyle();
                 context.stroke();
             }
-        } else if (data.type === Tiny.Primitives.ELIP) {
+        } else if (data.type === Tiny.ELIP) {
             // ellipse code taken from: http://stackoverflow.com/questions/2172798/how-to-draw-an-oval-in-html5-canvas
 
             var w = shape.width * 2;
@@ -105,17 +105,17 @@ CanvasGraphics.renderGraphics = function (graphics, context) {
             context.closePath();
 
             if (data.fill) {
-                context.globalAlpha = data.fillAlpha * worldAlpha;
-                context.fillStyle = fillColor;
+                context.globalAlpha = fillColor.a * worldAlpha;
+                context.fillStyle = fillColor.toStyle();
                 context.fill();
             }
 
             if (data.lineWidth) {
-                context.globalAlpha = data.lineAlpha * worldAlpha;
-                context.strokeStyle = lineColor;
+                context.globalAlpha = lineColor.a * worldAlpha;
+                context.strokeStyle = lineColor.toStyle();
                 context.stroke();
             }
-        } else if (data.type === Tiny.Primitives.RREC) {
+        } else if (data.type === Tiny.RREC) {
             var rx = shape.x;
             var ry = shape.y;
             var width = shape.width;
@@ -138,18 +138,18 @@ CanvasGraphics.renderGraphics = function (graphics, context) {
             context.closePath();
 
             if (data.fillColor) {
-                context.globalAlpha = data.fillAlpha * worldAlpha;
-                context.fillStyle = fillColor;
+                context.globalAlpha = fillColor.a * worldAlpha;
+                context.fillStyle = fillColor.toStyle();
                 context.fill();
             }
 
             if (data.lineWidth) {
-                context.globalAlpha = data.lineAlpha * worldAlpha;
-                context.strokeStyle = lineColor;
+                context.globalAlpha = lineColor.a * worldAlpha;
+                context.strokeStyle = lineColor.toStyle();
                 context.stroke();
             }
         }
-        // else if (data.type === Tiny.Primitives.RREC_LJOIN)
+        // else if (data.type === Tiny.RREC_LJOIN)
         // {
         //     var rx = shape.x;
         //     var ry = shape.y;
@@ -159,8 +159,8 @@ CanvasGraphics.renderGraphics = function (graphics, context) {
 
         //     if (data.fillColor)
         //     {
-        //         context.globalAlpha = data.fillAlpha * worldAlpha;
-        //         context.fillStyle = fillColor;
+        //         context.globalAlpha = fillColor.a * worldAlpha;
+        //         context.fillStyle = fillColor.toStyle();
         //         context.strokeStyle = fillColor;
         //     }
 
@@ -186,7 +186,7 @@ CanvasGraphics.renderGraphicsMask = function (graphics, context) {
         var data = graphics.graphicsData[i];
         var shape = data.shape;
 
-        if (data.type === Tiny.Primitives.POLY) {
+        if (data.type === Tiny.POLY) {
             var points = shape.points;
 
             context.moveTo(points[0], points[1]);
@@ -199,14 +199,14 @@ CanvasGraphics.renderGraphicsMask = function (graphics, context) {
             if (points[0] === points[points.length - 2] && points[1] === points[points.length - 1]) {
                 context.closePath();
             }
-        } else if (data.type === Tiny.Primitives.RECT) {
+        } else if (data.type === Tiny.RECT) {
             context.rect(shape.x, shape.y, shape.width, shape.height);
             context.closePath();
-        } else if (data.type === Tiny.Primitives.CIRC) {
+        } else if (data.type === Tiny.CIRC) {
             // TODO - need to be Undefined!
             context.arc(shape.x, shape.y, shape.radius, 0, 2 * Math.PI);
             context.closePath();
-        } else if (data.type === Tiny.Primitives.ELIP) {
+        } else if (data.type === Tiny.ELIP) {
             // ellipse code taken from: http://stackoverflow.com/questions/2172798/how-to-draw-an-oval-in-html5-canvas
 
             var w = shape.width * 2;
@@ -229,7 +229,7 @@ CanvasGraphics.renderGraphicsMask = function (graphics, context) {
             context.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
             context.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
             context.closePath();
-        } else if (data.type === Tiny.Primitives.RREC) {
+        } else if (data.type === Tiny.RREC) {
             var rx = shape.x;
             var ry = shape.y;
             var width = shape.width;
@@ -254,23 +254,24 @@ CanvasGraphics.renderGraphicsMask = function (graphics, context) {
 };
 
 CanvasGraphics.updateGraphicsTint = function (graphics) {
-    console.log(graphics.tint);
-
-    if (graphics.tint === '#ffffff') {
+    if (graphics.tint.int === 0xffffff) {
         return;
     }
 
-    var tintHex = Tiny.style2hex(graphics.tint);
+    // var tintHex = Tiny.style2hex(graphics.tint);
 
-    var tintR = ((tintHex >> 16) & 0xff) / 255;
-    var tintG = ((tintHex >> 8) & 0xff) / 255;
-    var tintB = (tintHex & 0xff) / 255;
+    // var tintR = ((tintHex >> 16) & 0xff) / 255;
+    // var tintG = ((tintHex >> 8) & 0xff) / 255;
+    // var tintB = (tintHex & 0xff) / 255;
 
     for (var i = 0; i < graphics.graphicsData.length; i++) {
         var data = graphics.graphicsData[i];
 
-        var fillColor = Tiny.style2hex(data.fillColor);
-        var lineColor = Tiny.style2hex(data.lineColor);
+        data._fillTint = new Tiny.Color(data.fillColor).multiply(graphics.tint);
+        data._lineTint = new Tiny.Color(data.lineColor).multiply(graphics.tint);
+
+        // var fillColor = Tiny.style2hex(data.fillColor);
+        // var lineColor = Tiny.style2hex(data.lineColor);
 
         /*
         var colorR = (fillColor >> 16 & 0xFF) / 255;
@@ -289,17 +290,17 @@ CanvasGraphics.updateGraphicsTint = function (graphics) {
         lineColor = ((colorR*255 << 16) + (colorG*255 << 8) + colorB*255);   
         */
 
-        data._fillTint =
-            (((((fillColor >> 16) & 0xff) / 255) * tintR * 255) << 16) +
-            (((((fillColor >> 8) & 0xff) / 255) * tintG * 255) << 8) +
-            ((fillColor & 0xff) / 255) * tintB * 255;
-        data._lineTint =
-            (((((lineColor >> 16) & 0xff) / 255) * tintR * 255) << 16) +
-            (((((lineColor >> 8) & 0xff) / 255) * tintG * 255) << 8) +
-            ((lineColor & 0xff) / 255) * tintB * 255;
+        // data._fillTint =
+        //     (((((fillColor >> 16) & 0xff) / 255) * tintR * 255) << 16) +
+        //     (((((fillColor >> 8) & 0xff) / 255) * tintG * 255) << 8) +
+        //     ((fillColor & 0xff) / 255) * tintB * 255;
+        // data._lineTint =
+        //     (((((lineColor >> 16) & 0xff) / 255) * tintR * 255) << 16) +
+        //     (((((lineColor >> 8) & 0xff) / 255) * tintG * 255) << 8) +
+        //     ((lineColor & 0xff) / 255) * tintB * 255;
 
-        data._fillTint = Tiny.hex2style(data._fillTint);
-        data._lineTint = Tiny.hex2style(data._lineTint);
+        // data._fillTint = Tiny.hex2style(data._fillTint);
+        // data._lineTint = Tiny.hex2style(data._lineTint);
     }
 };
 

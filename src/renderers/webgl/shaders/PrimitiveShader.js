@@ -1,24 +1,23 @@
+import { uid } from '../../../utils';
 import { compileProgram } from '../utils/WebGLShaderUtils';
-
 
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
  */
 
 /**
-* @class PrimitiveShader
-* @constructor
-* @param gl {WebGLContext} the current WebGL drawing context
-*/
-var PrimitiveShader = function(gl)
-{
+ * @class PrimitiveShader
+ * @constructor
+ * @param gl {WebGLContext} the current WebGL drawing context
+ */
+var PrimitiveShader = function (gl) {
     /**
      * @property _UID
      * @type Number
      * @private
      */
-    this._UID = Tiny._UID++;
- 
+    this._UID = uid();
+
     /**
      * @property gl
      * @type WebGLContext
@@ -51,7 +50,7 @@ var PrimitiveShader = function(gl)
      * @property vertexSrc
      * @type Array
      */
-    this.vertexSrc  = [
+    this.vertexSrc = [
         'attribute vec2 aVertexPosition;',
         'attribute vec4 aColor;',
         'uniform mat3 translationMatrix;',
@@ -76,12 +75,11 @@ var PrimitiveShader = function(gl)
 PrimitiveShader.prototype.constructor = PrimitiveShader;
 
 /**
-* Initialises the shader.
-* 
-* @method init
-*/
-PrimitiveShader.prototype.init = function()
-{
+ * Initialises the shader.
+ *
+ * @method init
+ */
+PrimitiveShader.prototype.init = function () {
     var gl = this.gl;
 
     var program = compileProgram(gl, this.vertexSrc, this.fragmentSrc);
@@ -106,13 +104,12 @@ PrimitiveShader.prototype.init = function()
 };
 
 /**
-* Destroys the shader.
-* 
-* @method destroy
-*/
-PrimitiveShader.prototype.destroy = function()
-{
-    this.gl.deleteProgram( this.program );
+ * Destroys the shader.
+ *
+ * @method destroy
+ */
+PrimitiveShader.prototype.destroy = function () {
+    this.gl.deleteProgram(this.program);
     this.uniforms = null;
     this.gl = null;
 

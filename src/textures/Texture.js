@@ -1,5 +1,5 @@
 import { Rectangle } from '../math/shapes/Rectangle';
-import { Cache } from '../systems/Loader';
+import { Cache } from '../app/Cache';
 import { TextureUvs } from './TextureUvs';
 import { BaseTexture } from './BaseTexture';
 
@@ -12,9 +12,9 @@ var Texture = function (base, frame, crop, trim) {
     // console.log(this);
     this.noFrame = false;
 
-    this.resolution = 1;
+    // this.resolution = 1;
 
-    this.hasLoaded = false;
+    // this.hasLoaded = false;
 
     if (!frame) {
         this.noFrame = true;
@@ -105,11 +105,6 @@ Texture.prototype.setFrame = function (frame) {
     this.noFrame = false;
 
     this.frame = frame;
-
-    this.valid = frame && frame.width && frame.height && this.base.source && this.base.loaded;
-
-    if (!this.valid) return;
-
     this.width = frame.width;
     this.height = frame.height;
 
@@ -122,13 +117,13 @@ Texture.prototype.setFrame = function (frame) {
         !this.trim &&
         (frame.x + frame.width > this.base.width || frame.y + frame.height > this.base.height)
     ) {
-        // if (!TextureSilentFail) {
-        //     throw new Error('Texture Error: frame does not fit inside the base Texture dimensions ' + this);
-        // }
+        // throw new Error('Texture Error: frame does not fit inside the base Texture dimensions ' + this);
 
         this.valid = false;
         return;
     }
+
+    this.valid = frame && frame.width && frame.height && this.base.source && this.base.loaded;
 
     if (this.trim) {
         this.width = this.trim.width;
@@ -137,7 +132,7 @@ Texture.prototype.setFrame = function (frame) {
         this.frame.height = this.trim.height;
     }
 
-    this._updateUvs();
+    if (this.valid) this._updateUvs();
 };
 
 Texture.prototype._updateUvs = function () {

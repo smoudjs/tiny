@@ -1,3 +1,4 @@
+import { uid } from '../../../utils';
 import { compileProgram } from '../utils/WebGLShaderUtils';
 
 /**
@@ -15,7 +16,7 @@ var ComplexPrimitiveShader = function (gl) {
      * @type Number
      * @private
      */
-    this._UID = Tiny._UID++;
+    this._UID = uid();
 
     /**
      * @property gl

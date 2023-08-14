@@ -1,3 +1,5 @@
+import { uid } from '../../../utils';
+
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
  */
@@ -13,7 +15,7 @@ var PixiFastShader = function (gl) {
      * @type Number
      * @private
      */
-    this._UID = PIXI._UID++;
+    this._UID = uid();
 
     /**
      * @property gl

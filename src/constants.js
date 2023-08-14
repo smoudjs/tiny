@@ -1,3 +1,5 @@
+export const VERSION = '3.0.0';
+
 export const BLEND_MODES = {
     NORMAL: 0,
     ADD: 1,
@@ -16,4 +18,17 @@ export const BLEND_MODES = {
     SATURATION: 14,
     COLOR: 15,
     LUMINOSITY: 16
+};
+
+export const SCALE_MODES = {
+    LINEAR: 0,
+    NEAREST: 1
+};
+
+export const SHAPES = {
+    POLY: 0,
+    RECT: 1,
+    CIRC: 2,
+    ELIP: 3,
+    RREC: 4
 };

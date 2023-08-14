@@ -1,5 +1,3 @@
-import { BlendModes } from './BlendModes';
-
 Tiny.Object2D.prototype.renderCanvas = function (renderSession) {
     if (this.visible === false || this.alpha === 0) return;
 
@@ -34,7 +32,7 @@ Tiny.Sprite.prototype.renderCanvas = function (renderSession) {
 
     if (this.blendMode !== renderSession.currentBlendMode) {
         renderSession.currentBlendMode = this.blendMode;
-        renderSession.context.globalCompositeOperation = BlendModes[renderSession.currentBlendMode];
+        renderSession.context.globalCompositeOperation = renderSession.blendModes[renderSession.currentBlendMode];
     }
 
     if (this._mask) {
@@ -43,7 +41,7 @@ Tiny.Sprite.prototype.renderCanvas = function (renderSession) {
 
     //  Ignore null sources
     if (this.texture.valid) {
-        var resolution = this.texture.resolution / renderSession.resolution;
+        var resolution = this.texture.base.resolution / renderSession.resolution;
 
         renderSession.context.globalAlpha = this.worldAlpha;
 
@@ -78,9 +76,9 @@ Tiny.Sprite.prototype.renderCanvas = function (renderSession) {
             );
         }
 
-        if (this.tint !== '#ffffff') {
-            if (this.cachedTint !== this.tint) {
-                this.cachedTint = this.tint;
+        if (this.tint.int !== 0xffffff) {
+            if (this.cachedTint !== this.tint.int) {
+                this.cachedTint = this.tint.int;
                 this.tintedTexture = Tiny.CanvasTinter.getTintedTexture(this, this.tint);
             }
 
@@ -128,5 +126,46 @@ Tiny.Text.prototype.renderCanvas = function (renderSession) {
         this.dirty = false;
     }
 
-    Sprite.prototype.renderCanvas.call(this, renderSession);
+    Tiny.Sprite.prototype.renderCanvas.call(this, renderSession);
+};
+
+/**
+ * This function will draw the display object to the texture.
+ *
+ * @method renderCanvas
+ * @param displayObject {DisplayObject} The display object to render this texture on
+ * @param [matrix] {Matrix} Optional matrix to apply to the display object before rendering.
+ * @param [clear] {Boolean} If true the texture will be cleared before the displayObject is drawn
+ * @private
+ */
+Tiny.RenderTexture.prototype.renderCanvas = function (displayObject, matrix, clear) {
+    if (!this.valid) return;
+
+    var wt = displayObject.worldTransform;
+    wt.identity();
+    if (matrix) wt.append(matrix);
+
+    // setWorld Alpha to ensure that the object is renderer at full opacity
+    displayObject.worldAlpha = 1;
+
+    // Time to update all the children of the displayObject with the new matrix..
+    var children = displayObject.children;
+
+    for (var i = 0, j = children.length; i < j; i++) {
+        children[i].updateTransform();
+    }
+
+    wt.identity();
+
+    if (clear) this.textureBuffer.clear();
+
+    var context = this.textureBuffer.context;
+
+    var realResolution = this.renderer.resolution;
+
+    this.renderer.resolution = this.base.resolution;
+
+    this.renderer.renderObject(displayObject, context);
+
+    this.renderer.resolution = realResolution;
 };

@@ -1,3 +1,4 @@
+import './core';
 import { BaseObject2D } from './objects/BaseObject2D';
 import { Object2D } from './objects/Object2D';
 import { Scene } from './objects/Scene';
@@ -5,10 +6,9 @@ import { Sprite } from './objects/Sprite';
 import { Text } from './objects/Text';
 import { Graphics } from './objects/Graphics';
 import { Texture } from './textures/Texture';
-import { RenderTexture } from './textures/RenderTexture';
+import { TextureUvs } from './textures/TextureUvs';
+import { RenderTexture } from './textures/RenderTexture3';
 import { Rectangle } from './math/shapes/Rectangle';
-
-// import { WebGLRenderer } from './renderers/webgl/WebGLRenderer';
 
 Tiny.BaseObject2D = BaseObject2D;
 Tiny.Object2D = Object2D;
@@ -17,9 +17,7 @@ Tiny.Sprite = Sprite;
 Tiny.Text = Text;
 Tiny.Graphics = Graphics;
 
+Tiny.TextureUvs = TextureUvs;
 Tiny.Texture = Texture;
 Tiny.RenderTexture = RenderTexture;
 Tiny.Rectangle = Rectangle;
-
-
-// Tiny.Renderer = WebGLRenderer;

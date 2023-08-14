@@ -1,6 +1,7 @@
 import '@smoud/tiny/app';
 import '@smoud/tiny/2d';
-import '@smoud/tiny/extras/canvas-renderer';
+import '@smoud/tiny/webgl';
+// import '@smoud/tiny/extras/canvas-renderer';
 import App from './App';
 
 window.addEventListener('load', () => {

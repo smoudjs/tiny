@@ -26,18 +26,18 @@ MaskManager.prototype.setContext = function (gl) {
  *
  * @method pushMask
  * @param maskData {Array}
- * @param renderSession {Object}
+ * @param renderer {Object}
  */
-MaskManager.prototype.pushMask = function (maskData, renderSession) {
-    var gl = renderSession.gl;
+MaskManager.prototype.pushMask = function (maskData, renderer) {
+    var gl = renderer.gl;
 
     if (maskData.dirty) {
-        PIXI.WebGLGraphics.updateGraphics(maskData, gl);
+        Tiny.WebGLGraphics.updateGraphics(maskData, gl);
     }
 
     if (!maskData._webGL[gl.id].data.length) return;
 
-    renderSession.stencilManager.pushStencil(maskData, maskData._webGL[gl.id].data[0], renderSession);
+    renderer.stencilManager.pushStencil(maskData, maskData._webGL[gl.id].data[0], renderer);
 };
 
 /**
@@ -45,11 +45,11 @@ MaskManager.prototype.pushMask = function (maskData, renderSession) {
  *
  * @method popMask
  * @param maskData {Array}
- * @param renderSession {Object} an object containing all the useful parameters
+ * @param renderer {Object} an object containing all the useful parameters
  */
-MaskManager.prototype.popMask = function (maskData, renderSession) {
+MaskManager.prototype.popMask = function (maskData, renderer) {
     var gl = this.gl;
-    renderSession.stencilManager.popStencil(maskData, maskData._webGL[gl.id].data[0], renderSession);
+    renderer.stencilManager.popStencil(maskData, maskData._webGL[gl.id].data[0], renderer);
 };
 
 /**

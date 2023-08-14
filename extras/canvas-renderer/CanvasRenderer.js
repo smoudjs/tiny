@@ -1,9 +1,10 @@
-import { BlendModes } from './BlendModes';
+import { canUseNewCanvasBlendModes } from './utils';
 
 var CanvasRenderer = function (width, height, options) {
     options = options || {};
 
     this.resolution = options.resolution != undefined ? options.resolution : 1;
+    this._resolution = this.resolution;
 
     this.clearBeforeRender = options.clearBeforeRender != undefined ? options.clearBeforeRender : true;
 
@@ -23,42 +24,58 @@ var CanvasRenderer = function (width, height, options) {
 
     this.context = view.getContext('2d', { alpha: this.transparent });
 
+    this._context = this.context;
+
     // view.width = this.width * this.resolution;
     // view.height = this.height * this.resolution;
 
     this.resize(width || 800, height || 600);
 
-    this.setClearColor('#ffffff');
+    this.setClearColor(0xffffff);
 
     if (Tiny.CanvasMaskManager) this.maskManager = new Tiny.CanvasMaskManager();
 
-    this.renderSession = {
-        context: this.context,
-        maskManager: this.maskManager,
-        smoothProperty: null,
-        /**
-         * If true Pixi will Math.floor() x/y values when rendering, stopping pixel interpolation.
-         * Handy for crisp pixel art and speed on legacy devices.
-         *
-         */
-        roundPixels: false
-    };
+    this.roundPixels = false;
 
-    if ('imageSmoothingEnabled' in this.context) this.renderSession.smoothProperty = 'imageSmoothingEnabled';
+    if ('imageSmoothingEnabled' in this.context) this.smoothProperty = 'imageSmoothingEnabled';
     else if ('webkitImageSmoothingEnabled' in this.context)
-        this.renderSession.smoothProperty = 'webkitImageSmoothingEnabled';
-    else if ('mozImageSmoothingEnabled' in this.context)
-        this.renderSession.smoothProperty = 'mozImageSmoothingEnabled';
-    else if ('oImageSmoothingEnabled' in this.context)
-        this.renderSession.smoothProperty = 'oImageSmoothingEnabled';
-    else if ('msImageSmoothingEnabled' in this.context)
-        this.renderSession.smoothProperty = 'msImageSmoothingEnabled';
+        this.smoothProperty = 'webkitImageSmoothingEnabled';
+    else if ('mozImageSmoothingEnabled' in this.context) this.smoothProperty = 'mozImageSmoothingEnabled';
+    else if ('oImageSmoothingEnabled' in this.context) this.smoothProperty = 'oImageSmoothingEnabled';
+    else if ('msImageSmoothingEnabled' in this.context) this.smoothProperty = 'msImageSmoothingEnabled';
+
+    var BlendModes = [];
+
+    var modes = Tiny;
+
+    BlendModes[modes.NORMAL] = 'source-over';
+    BlendModes[modes.ADD] = 'lighter'; //IS THIS OK???
+
+    var canUse = canUseNewCanvasBlendModes();
+
+    BlendModes[modes.MULTIPLY] = canUse ? 'multiply' : 'source-over';
+    BlendModes[modes.SCREEN] = canUse ? 'screen' : 'source-over';
+    BlendModes[modes.OVERLAY] = canUse ? 'overlay' : 'source-over';
+    BlendModes[modes.DARKEN] = canUse ? 'darken' : 'source-over';
+    BlendModes[modes.LIGHTEN] = canUse ? 'lighten' : 'source-over';
+    BlendModes[modes.COLOR_DODGE] = canUse ? 'color-dodge' : 'source-over';
+    BlendModes[modes.COLOR_BURN] = canUse ? 'color-burn' : 'source-over';
+    BlendModes[modes.HARD_LIGHT] = canUse ? 'hard-light' : 'source-over';
+    BlendModes[modes.SOFT_LIGHT] = canUse ? 'soft-light' : 'source-over';
+    BlendModes[modes.DIFFERENCE] = canUse ? 'difference' : 'source-over';
+    BlendModes[modes.EXCLUSION] = canUse ? 'exclusion' : 'source-over';
+    BlendModes[modes.HUE] = canUse ? 'hue' : 'source-over';
+    BlendModes[modes.SATURATION] = canUse ? 'saturation' : 'source-over';
+    BlendModes[modes.COLOR] = canUse ? 'color' : 'source-over';
+    BlendModes[modes.LUMINOSITY] = canUse ? 'luminosity' : 'source-over';
+
+    this.blendModes = BlendModes;
 };
 
 CanvasRenderer.prototype.constructor = CanvasRenderer;
 
 CanvasRenderer.prototype.setClearColor = function (color) {
-    this.clearColor = color;
+    this.clearColor = new Tiny.Color(color).toStyle();
 
     // if (color === null) {
     //     this.clearColor = null;
@@ -94,8 +111,8 @@ CanvasRenderer.prototype.render = function (scene) {
 
     this.context.globalAlpha = 1;
 
-    this.renderSession.currentBlendMode = Tiny.NORMAL;
-    this.context.globalCompositeOperation = BlendModes[Tiny.NORMAL];
+    this.currentBlendMode = Tiny.NORMAL;
+    this.context.globalCompositeOperation = this.blendModes[Tiny.NORMAL];
 
     if (navigator.isCocoonJS && this.domElement.screencanvas) {
         this.context.fillStyle = 'black';
@@ -104,10 +121,10 @@ CanvasRenderer.prototype.render = function (scene) {
 
     if (this.clearBeforeRender) {
         if (this.transparent) {
-            this.context.clearRect(0, 0, this.width * this.resolution, this.height * this.resolution);
+            this.context.clearRect(0, 0, this.width * this._resolution, this.height * this._resolution);
         } else {
             this.context.fillStyle = this.clearColor;
-            this.context.fillRect(0, 0, this.width * this.resolution, this.height * this.resolution);
+            this.context.fillRect(0, 0, this.width * this._resolution, this.height * this._resolution);
         }
     }
 
@@ -126,7 +143,7 @@ CanvasRenderer.prototype.destroy = function (removeView) {
     this.domElement = null;
     this.context = null;
     this.maskManager = null;
-    this.renderSession = null;
+    // this.renderSession = null;
 
     if (Tiny.defaultRenderer === this) Tiny.defaultRenderer = null;
 };
@@ -137,8 +154,8 @@ CanvasRenderer.prototype.resize = function (width, height) {
 
     var view = this.domElement;
 
-    view.width = Math.floor(this.width * this.resolution);
-    view.height = Math.floor(this.height * this.resolution);
+    view.width = Math.floor(this.width * this._resolution);
+    view.height = Math.floor(this.height * this._resolution);
 
     if (this.autoResize) {
         view.style.width = width + 'px';
@@ -147,18 +164,18 @@ CanvasRenderer.prototype.resize = function (width, height) {
 };
 
 CanvasRenderer.prototype.setPixelRatio = function (resolution) {
-    this.resolution = resolution;
+    this._resolution = this.resolution = resolution;
 
     var view = this.domElement;
 
-    view.width = Math.floor(this.width * this.resolution);
-    view.height = Math.floor(this.height * this.resolution);
+    view.width = Math.floor(this.width * this._resolution);
+    view.height = Math.floor(this.height * this._resolution);
 };
 
 CanvasRenderer.prototype.renderObject = function (displayObject, context) {
-    this.renderSession.context = context || this.context;
-    this.renderSession.resolution = this.resolution;
-    displayObject.renderCanvas(this.renderSession);
+    this.context = context || this._context;
+    this.resolution = this._resolution;
+    displayObject.renderCanvas(this);
 };
 
 export { CanvasRenderer };

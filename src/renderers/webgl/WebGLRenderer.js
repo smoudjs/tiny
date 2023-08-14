@@ -1,11 +1,15 @@
 import { StencilManager } from './managers/StencilManager';
-import { WebGLSpriteBatch } from './utils/WebGLSpriteBatch';
+import { SpriteBatch } from './utils/SpriteBatch';
 import { ShaderManager } from './managers/ShaderManager';
 import { MaskManager } from './managers/MaskManager';
 import { FilterManager } from './managers/FilterManager';
 import { BlendModeManager } from './managers/BlendModeManager';
 import { Vec2 } from '../../math/Vec2';
-import { _Math } from '../../math/Math';
+import { isPow2 } from '../../utils';
+import { SCALE_MODES } from '../../constants';
+import { Cache } from '../../app/Cache';
+import { BLEND_MODES } from '../../constants';
+import { Color } from '../../math/Color';
 
 Tiny.glContexts = []; // this is where we store the webGL contexts for easy access.
 Tiny.instances = [];
@@ -153,12 +157,15 @@ var WebGLRenderer = function (width, height, options) {
      * @type Point
      */
     this.projection = new Vec2();
+    this._projection = new Vec2();
 
     /**
      * @property offset
      * @type Point
      */
     this.offset = new Vec2(0, 0);
+
+    this.clearColor = new Color();
 
     // time to create the render managers! each one focuses on managing a state in webGL
 
@@ -172,9 +179,9 @@ var WebGLRenderer = function (width, height, options) {
     /**
      * Manages the rendering of sprites
      * @property spriteBatch
-     * @type WebGLSpriteBatch
+     * @type SpriteBatch
      */
-    this.spriteBatch = new WebGLSpriteBatch();
+    this.spriteBatch = new SpriteBatch(this);
 
     /**
      * Manages the masks using the stencil buffer
@@ -188,7 +195,7 @@ var WebGLRenderer = function (width, height, options) {
      * @property filterManager
      * @type FilterManager
      */
-    this.filterManager = new FilterManager();
+    this.filterManager = new FilterManager(this);
 
     /**
      * Manages the stencil buffer
@@ -202,25 +209,25 @@ var WebGLRenderer = function (width, height, options) {
      * @property blendModeManager
      * @type BlendModeManager
      */
-    this.blendModeManager = new BlendModeManager();
+    this.blendModeManager = new BlendModeManager(this);
 
     /**
      * TODO remove
      * @property renderSession
      * @type Object
      */
-    this.renderSession = {
-        gl: this.gl,
-        drawCount: 0,
-        shaderManager: this.shaderManager,
-        maskManager: this.maskManager,
-        filterManager: this.filterManager,
-        blendModeManager: this.blendModeManager,
-        spriteBatch: this.spriteBatch,
-        stencilManager: this.stencilManager,
-        renderer: this,
-        resolution: this.resolution
-    };
+    // this.renderSession = {
+    //     gl: this.gl,
+    //     drawCount: 0,
+    //     shaderManager: this.shaderManager,
+    //     maskManager: this.maskManager,
+    //     filterManager: this.filterManager,
+    //     blendModeManager: this.blendModeManager,
+    //     spriteBatch: this.spriteBatch,
+    //     stencilManager: this.stencilManager,
+    //     renderer: this,
+    //     resolution: this.resolution
+    // };
 
     // time init the context..
     this.initContext();
@@ -257,6 +264,30 @@ WebGLRenderer.prototype.initContext = function () {
     gl.disable(gl.CULL_FACE);
     gl.enable(gl.BLEND);
 
+    if (!this.blendModes) {
+        var blendModes = {};
+
+        blendModes[BLEND_MODES.NORMAL] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+        blendModes[BLEND_MODES.ADD] = [gl.ONE, gl.DST_ALPHA];
+        blendModes[BLEND_MODES.MULTIPLY] = [gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA];
+        blendModes[BLEND_MODES.SCREEN] = [gl.ONE, gl.ONE_MINUS_SRC_COLOR];
+        blendModes[BLEND_MODES.OVERLAY] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+        blendModes[BLEND_MODES.DARKEN] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+        blendModes[BLEND_MODES.LIGHTEN] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+        blendModes[BLEND_MODES.COLOR_DODGE] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+        blendModes[BLEND_MODES.COLOR_BURN] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+        blendModes[BLEND_MODES.HARD_LIGHT] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+        blendModes[BLEND_MODES.SOFT_LIGHT] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+        blendModes[BLEND_MODES.DIFFERENCE] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+        blendModes[BLEND_MODES.EXCLUSION] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+        blendModes[BLEND_MODES.HUE] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+        blendModes[BLEND_MODES.SATURATION] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+        blendModes[BLEND_MODES.COLOR] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+        blendModes[BLEND_MODES.LUMINOSITY] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+
+        this.blendModes = blendModes;
+    }
+
     // need to set the context for all the managers...
     this.shaderManager.setContext(gl);
     this.spriteBatch.setContext(gl);
@@ -265,14 +296,14 @@ WebGLRenderer.prototype.initContext = function () {
     this.blendModeManager.setContext(gl);
     this.stencilManager.setContext(gl);
 
-    this.renderSession.gl = this.gl;
+    // this.renderSession.gl = this.gl;
 
     // now resize and we are good to go!
     this.resize(this.width, this.height);
 };
 
 WebGLRenderer.prototype.setClearColor = function (color) {
-    this.clearColor = Tiny.hex2rgb(Tiny.style2hex(color));
+    this.clearColor = new Color(color);
 
     // if (color === null) {
     //     this.clearColor = null;
@@ -334,13 +365,13 @@ WebGLRenderer.prototype.render = function (scene) {
         if (this.transparent) {
             gl.clearColor(0, 0, 0, 0);
         } else {
-            gl.clearColor(this.clearColor[0], this.clearColor[1], this.clearColor[2], 1);
+            gl.clearColor(this.clearColor.r, this.clearColor.g, this.clearColor.b, this.clearColor.a);
         }
 
         gl.clear(gl.COLOR_BUFFER_BIT);
     }
 
-    this.renderObject(scene, this.projection);
+    this.renderObject(scene, this._projection);
 };
 
 /**
@@ -352,28 +383,28 @@ WebGLRenderer.prototype.render = function (scene) {
  * @param buffer {Array} a standard WebGL buffer
  */
 WebGLRenderer.prototype.renderObject = function (displayObject, projection, buffer) {
-    // this.renderSession.blendModeManager.setBlendMode(PIXI.blendModes.NORMAL);
+    this.blendModeManager.setBlendMode(BLEND_MODES.NORMAL);
 
     // reset the render session data..
-    this.renderSession.drawCount = 0;
+    this.drawCount = 0;
 
     // make sure to flip the Y if using a render texture..
-    this.renderSession.flipY = buffer ? -1 : 1;
+    this.flipY = buffer ? -1 : 1;
 
     // set the default projection
-    this.renderSession.projection = projection;
+    this.projection = projection;
 
     //set the default offset
-    this.renderSession.offset = this.offset;
+    // this.offset = this.offset;
 
     // start the sprite batch
-    this.spriteBatch.begin(this.renderSession);
+    this.spriteBatch.begin(this);
 
     // start the filter manager
-    this.filterManager.begin(this.renderSession, buffer);
+    this.filterManager.begin(this, buffer);
 
     // render the scene!
-    displayObject.render(this.renderSession);
+    displayObject.render(this);
 
     // finish the sprite batch
     this.spriteBatch.flush();
@@ -402,8 +433,8 @@ WebGLRenderer.prototype.resize = function (width, height) {
 
     this.gl.viewport(0, 0, this.width, this.height);
 
-    this.projection.x = this.width / 2 / this.resolution;
-    this.projection.y = -this.height / 2 / this.resolution;
+    this._projection.x = this.width / 2 / this.resolution;
+    this._projection.y = -this.height / 2 / this.resolution;
 };
 
 /**
@@ -427,21 +458,21 @@ WebGLRenderer.prototype.updateTexture = function (texture) {
     gl.texParameteri(
         gl.TEXTURE_2D,
         gl.TEXTURE_MAG_FILTER,
-        texture.scaleMode === PIXI.scaleModes.LINEAR ? gl.LINEAR : gl.NEAREST
+        texture.scaleMode === SCALE_MODES.LINEAR ? gl.LINEAR : gl.NEAREST
     );
 
-    if (texture.mipmap && _Math.isPowerOfTwo(texture.width, texture.height)) {
+    if (texture.mipmap && isPow2(texture.width) && isPow2(texture.height)) {
         gl.texParameteri(
             gl.TEXTURE_2D,
             gl.TEXTURE_MIN_FILTER,
-            texture.scaleMode === PIXI.scaleModes.LINEAR ? gl.LINEAR_MIPMAP_LINEAR : gl.NEAREST_MIPMAP_NEAREST
+            texture.scaleMode === SCALE_MODES.LINEAR ? gl.LINEAR_MIPMAP_LINEAR : gl.NEAREST_MIPMAP_NEAREST
         );
         gl.generateMipmap(gl.TEXTURE_2D);
     } else {
         gl.texParameteri(
             gl.TEXTURE_2D,
             gl.TEXTURE_MIN_FILTER,
-            texture.scaleMode === PIXI.scaleModes.LINEAR ? gl.LINEAR : gl.NEAREST
+            texture.scaleMode === SCALE_MODES.LINEAR ? gl.LINEAR : gl.NEAREST
         );
     }
 
@@ -482,9 +513,8 @@ WebGLRenderer.prototype.handleContextRestored = function () {
     this.initContext();
 
     // empty all the ol gl textures as they are useless now
-    for (var key in PIXI.TextureCache) {
-        var texture = PIXI.TextureCache[key].baseTexture;
-        texture._glTextures = [];
+    for (var key in Cache.image) {
+        Cache.image[key]._glTextures = [];
     }
 
     this.contextLost = false;
@@ -495,7 +525,7 @@ WebGLRenderer.prototype.handleContextRestored = function () {
  *
  * @method destroy
  */
-WebGLRenderer.prototype.destroy = function () {
+WebGLRenderer.prototype.destroy = function (removeView) {
     // remove listeners
     this.view.removeEventListener('webglcontextlost', this.contextLostBound);
     this.view.removeEventListener('webglcontextrestored', this.contextRestoredBound);
@@ -517,7 +547,11 @@ WebGLRenderer.prototype.destroy = function () {
     this.filterManager = null;
 
     this.gl = null;
-    this.renderSession = null;
+
+    if (removeView !== false && this.domElement.parentNode) {
+        this.domElement.parentNode.removeChild(this.domElement);
+    }
+    // this.renderSession = null;
 };
 
 /**
@@ -525,31 +559,31 @@ WebGLRenderer.prototype.destroy = function () {
  *
  * @method mapBlendModes
  */
-WebGLRenderer.prototype.mapBlendModes = function () {
-    var gl = this.gl;
+// WebGLRenderer.prototype.mapBlendModes = function () {
+//     var gl = this.gl;
 
-    if (!Tiny.blendModesWebGL) {
-        Tiny.blendModesWebGL = [];
+//     if (!Tiny.blendModesWebGL) {
+//         Tiny.blendModesWebGL = [];
 
-        Tiny.blendModesWebGL[Tiny.blendModes.NORMAL] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-        Tiny.blendModesWebGL[Tiny.blendModes.ADD] = [gl.SRC_ALPHA, gl.DST_ALPHA];
-        Tiny.blendModesWebGL[Tiny.blendModes.MULTIPLY] = [gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA];
-        Tiny.blendModesWebGL[Tiny.blendModes.SCREEN] = [gl.SRC_ALPHA, gl.ONE];
-        Tiny.blendModesWebGL[Tiny.blendModes.OVERLAY] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-        Tiny.blendModesWebGL[Tiny.blendModes.DARKEN] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-        Tiny.blendModesWebGL[Tiny.blendModes.LIGHTEN] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-        Tiny.blendModesWebGL[Tiny.blendModes.COLOR_DODGE] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-        Tiny.blendModesWebGL[Tiny.blendModes.COLOR_BURN] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-        Tiny.blendModesWebGL[Tiny.blendModes.HARD_LIGHT] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-        Tiny.blendModesWebGL[Tiny.blendModes.SOFT_LIGHT] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-        Tiny.blendModesWebGL[Tiny.blendModes.DIFFERENCE] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-        Tiny.blendModesWebGL[Tiny.blendModes.EXCLUSION] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-        Tiny.blendModesWebGL[Tiny.blendModes.HUE] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-        Tiny.blendModesWebGL[Tiny.blendModes.SATURATION] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-        Tiny.blendModesWebGL[Tiny.blendModes.COLOR] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-        Tiny.blendModesWebGL[Tiny.blendModes.LUMINOSITY] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-    }
-};
+//         Tiny.blendModesWebGL[Tiny.blendModes.NORMAL] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+//         Tiny.blendModesWebGL[Tiny.blendModes.ADD] = [gl.SRC_ALPHA, gl.DST_ALPHA];
+//         Tiny.blendModesWebGL[Tiny.blendModes.MULTIPLY] = [gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA];
+//         Tiny.blendModesWebGL[Tiny.blendModes.SCREEN] = [gl.SRC_ALPHA, gl.ONE];
+//         Tiny.blendModesWebGL[Tiny.blendModes.OVERLAY] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+//         Tiny.blendModesWebGL[Tiny.blendModes.DARKEN] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+//         Tiny.blendModesWebGL[Tiny.blendModes.LIGHTEN] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+//         Tiny.blendModesWebGL[Tiny.blendModes.COLOR_DODGE] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+//         Tiny.blendModesWebGL[Tiny.blendModes.COLOR_BURN] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+//         Tiny.blendModesWebGL[Tiny.blendModes.HARD_LIGHT] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+//         Tiny.blendModesWebGL[Tiny.blendModes.SOFT_LIGHT] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+//         Tiny.blendModesWebGL[Tiny.blendModes.DIFFERENCE] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+//         Tiny.blendModesWebGL[Tiny.blendModes.EXCLUSION] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+//         Tiny.blendModesWebGL[Tiny.blendModes.HUE] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+//         Tiny.blendModesWebGL[Tiny.blendModes.SATURATION] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+//         Tiny.blendModesWebGL[Tiny.blendModes.COLOR] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+//         Tiny.blendModesWebGL[Tiny.blendModes.LUMINOSITY] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+//     }
+// };
 
 WebGLRenderer.glContextId = 0;
 

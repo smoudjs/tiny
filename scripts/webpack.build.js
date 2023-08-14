@@ -56,7 +56,7 @@ const webpackConfig = {
 
 Object.assign(webpackConfig, commonConfig);
 
-// webpackConfig.plugins.splice(0, 0, new CleanWebpackPlugin());
+webpackConfig.plugins.splice(0, 0, new CleanWebpackPlugin());
 webpackConfig.plugins.push(new Webpack.DefinePlugin(DEFINES));
 
 // Create new Webpack compiler

@@ -7,15 +7,18 @@ export default class BunnyApp extends Tiny.App {
     constructor(width, height, parentNode, states) {
         super(states);
 
+        // width = 800;
+        // height = 600;
+
         this.width = width;
         this.height = height;
 
-        this.renderer = new Tiny.CanvasRenderer(this.width, this.height, {
+        this.renderer = new Tiny.Renderer(this.width, this.height, {
             resolution: 1,
             autoResize: true
         });
 
-        this.renderer.setClearColor('#f4f4f4');
+        this.renderer.setClearColor('#ffffff');
 
         var view = (this.inputView = this.renderer.domElement);
 
@@ -27,7 +30,7 @@ export default class BunnyApp extends Tiny.App {
         // view.style.left = "0px";
 
         // view.style.transformOrigin = '0% 0%';
-        view.style.perspective = '1000px';
+        // view.style.perspective = '1000px';
 
         this.scene = new Tiny.Scene();
         this.maxCount = 200000;
@@ -43,10 +46,10 @@ export default class BunnyApp extends Tiny.App {
         };
 
         const counter = document.createElement('div');
-        counter.className = "disable";
+        counter.className = 'disable';
         document.body.appendChild(counter);
 
-        counter.id = "counter";
+        counter.id = 'counter';
 
         counter.innerText = `${this.count} BUNNIES`;
 
@@ -55,6 +58,10 @@ export default class BunnyApp extends Tiny.App {
         document.body.append(this.stats.domElement);
 
         this.counter = counter;
+
+        setTimeout(() => {
+            // this.addBunnies(100000);
+        }, 1000);
     }
 
     /** Add an arbitrary amount of bunnies */
@@ -76,7 +83,12 @@ export default class BunnyApp extends Tiny.App {
     }
 
     create() {
-        this.textures = resources.map((e) => e.key);
+        this.textures = Object.keys(Tiny.Cache.texture);
+        if (this.textures.length == 0) {
+            for (let key in Tiny.Cache.image) {
+                this.textures.push(new Tiny.Texture(key));
+            }
+        }
     }
 
     setPixelRatio(dpr) {

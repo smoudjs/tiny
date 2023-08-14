@@ -71,7 +71,7 @@ Text.prototype.setText = function (text) {
 };
 
 Text.prototype.updateText = function () {
-    this.texture.resolution = this.resolution;
+    this.texture.base.resolution = this.resolution;
 
     this.context.font = this.style.font;
 
@@ -186,6 +186,8 @@ Text.prototype.updateTexture = function () {
 
     this._width = this.canvas.width;
     this._height = this.canvas.height;
+
+    this.texture.base.dirty();
 };
 
 Text.prototype.render = function (renderSession) {

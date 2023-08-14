@@ -153,9 +153,9 @@ ShaderManager.prototype.destroy = function()
 
     this.defaultShader.destroy();
 
-    this.fastShader.destroy();
+    // this.fastShader.destroy();
 
-    this.stripShader.destroy();
+    // this.stripShader.destroy();
 
     this.gl = null;
 };

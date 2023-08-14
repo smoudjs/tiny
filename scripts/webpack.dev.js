@@ -6,9 +6,10 @@ const Webpack = require('webpack'),
     path = require('path'),
     commonConfig = require('./webpack.common.js'),
     WebpackDevServer = require('webpack-dev-server'),
-    HtmlWebpackPlugin = require('html-webpack-plugin');
+    HtmlWebpackPlugin = require('html-webpack-plugin'),
+    argv = require('./argv');
 
-const isTest = process.argv[2] === '--test';
+const isTest = argv['test'];
 
 const DEFINES = {
     __DEV__: JSON.stringify(!isTest)
@@ -23,15 +24,17 @@ const webpackConfig = {
         alias: {
             '@smoud/tiny/app': path.resolve('src/app.js'),
             '@smoud/tiny/2d': path.resolve('src/2d.js'),
+            '@smoud/tiny/webgl': path.resolve('src/webgl.js'),
             '@smoud/tiny/3d': path.resolve('src/3d'),
             '@smoud/tiny/extras': path.resolve('extras'),
+            '@smoud/tiny/plugins': path.resolve('plugins'),
             '@smoud/tiny': path.resolve('src')
         }
     },
 
     watch: true,
 
-    entry: path.resolve('dev/bunny-mark/index.js'),
+    entry: path.resolve('dev/' + (argv.scene || 'basic') + '/index.js'),
 
     output: {
         filename: '[name].js',
@@ -40,7 +43,7 @@ const webpackConfig = {
 
     devServer: {
         hot: true,
-        port: 3000,
+        port: argv['port'] || 3000,
         open: true
     },
     optimization: {

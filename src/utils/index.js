@@ -18,3 +18,14 @@ export function uid() {
 export function isPow2(v) {
     return !(v & (v - 1)) && !!v;
 }
+
+export function getNextPow2(number) {
+    if (number > 0 && (number & (number - 1)) === 0)
+        // see: http://goo.gl/D9kPj
+        return number;
+    else {
+        var result = 1;
+        while (result < number) result <<= 1;
+        return result;
+    }
+}

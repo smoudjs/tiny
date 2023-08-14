@@ -1,7 +1,19 @@
 import '@smoud/tiny/app';
 import '@smoud/tiny/2d';
+import '@smoud/tiny/extras/canvas-renderer';
+// import '@smoud/tiny/extras/canvas-renderer';
+import '@smoud/tiny/extras/canvas-graphics';
+// import '@smoud/tiny/extras/shapes';
 
 import App from './App';
+
+// var renderer = new Tiny.CanvasRenderer(640, 320);
+// document.body.appendChild(renderer.domElement);
+
+// var scene = new Tiny.Scene();
+// var text = new Tiny.Text("Hello World!");
+// scene.add(text);
+// renderer.render(scene);
 
 window.addEventListener('load', () => {
     const app = new App(window.innerWidth, window.innerHeight, 'game');

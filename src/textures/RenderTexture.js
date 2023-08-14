@@ -1,6 +1,7 @@
 import { Texture } from './Texture';
 import { CanvasBuffer } from '../utils/CanvasBuffer';
 import { Rectangle } from '../math/shapes/Rectangle';
+import { BaseTexture } from './BaseTexture';
 
 var RenderTexture = function (width, height, renderer, resolution) {
     this.width = width || 100;
@@ -13,17 +14,18 @@ var RenderTexture = function (width, height, renderer, resolution) {
 
     // this.crop = new Rectangle(0, 0, this.width * this.resolution, this.height * this.resolution);
 
-    // this.baseTexture = new Tiny.BaseTexture();
-    // this.baseTexture.width = this.width * this.resolution;
-    // this.baseTexture.height = this.height * this.resolution;
-    // this.baseTexture.resolution = this.resolution;
-
-    // this.baseTexture.hasLoaded = true;
     this.textureBuffer = new CanvasBuffer(this.width * resolution, this.height * resolution);
+
+    this.base = new BaseTexture(this.textureBuffer.canvas);
+    this.base.width = this.width * this.resolution;
+    this.base.height = this.height * this.resolution;
+    this.base.resolution = resolution;
+
+    this.base.loaded = true;
 
     Texture.call(
         this,
-        this.textureBuffer.canvas,
+        this.base,
         new Rectangle(0, 0, Math.floor(this.width * resolution), Math.floor(this.height * resolution))
     );
 

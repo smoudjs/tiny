@@ -1,6 +1,6 @@
 class MiniMap extends Tiny.Sprite {
     constructor(game, resolution) {
-        var texture = new Tiny.RenderTexture(game.width, game.height, null, resolution || 1);
+        var texture = new Tiny.RenderTexture(game.width, game.height, null, resolution);
 
         super(texture);
         this.game = game;
@@ -61,7 +61,7 @@ Tiny.MiniMap = MiniMap;
 
 class RecursiveSprite extends Tiny.Sprite {
     constructor(game, resolution) {
-        var texture = new Tiny.RenderTexture(game.width, game.height, null, resolution || 1);
+        var texture = new Tiny.RenderTexture(game.width, game.height, null, 1);
 
         super(texture);
         this.game = game;
@@ -78,6 +78,8 @@ class RecursiveSprite extends Tiny.Sprite {
         this.alpha = 0.9;
 
         this.setCenter(0, 0);
+
+        window.rt = this;
 
         this._update();
     }
@@ -108,10 +110,10 @@ class RecursiveSprite extends Tiny.Sprite {
     }
 
     _update() {
-        // this.visible = false;
+        this.visible = false;
         this.texture.render(this.scene);
         this.frames && this.texture.render(this.frames);
-        // this.visible = true;
+        this.visible = true;
     }
 
     update(delta) {
