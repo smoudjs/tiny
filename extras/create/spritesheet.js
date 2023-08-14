@@ -1,4 +1,6 @@
-Tiny.Create.spritesheet = function spritesheet(options) {
+var Create = {};
+
+Create.spritesheet = function spritesheet(options) {
     var resolution = options.resolution || 1;
     var frameWidth = (resolution * options.width) | 0;
     var frameHeight = (resolution * options.height) | 0;
@@ -7,35 +9,47 @@ Tiny.Create.spritesheet = function spritesheet(options) {
     var lastFrame = frames - 1;
 
     var totalWidth = frameWidth * options.frames;
-    var renderer = Tiny.defaultRenderer;
 
     var textureBuffer = new Tiny.CanvasBuffer(totalWidth, frameHeight);
+    var baseTexture = new Tiny.BaseTexture(textureBuffer.canvas);
+    // baseTexture.resolution = resolution;
 
-    var tmpMatrix = new Tiny.Matrix();
-    // var scale = 
+    // baseTexture.loaded = true;
+
+    // var tmpMatrix = new Tiny.Mat3();
+    // var scale =
     // tmpMatrix.scale(0.5, 0.5);
 
     var uuid, texture, frame, displayObject, bounds, wt, context;
 
+    context = textureBuffer.context;
+
+    var renderSession = {
+        context: context,
+        currentBlendMode: 0,
+        resolution: resolution
+    }
+
     for (var index = 0; index < frames; index++) {
         frame = new Tiny.Rectangle(frameWidth * index, 0, frameWidth, frameHeight);
 
-        context = textureBuffer.context;
-
         displayObject = options.draw((index + 1) / frames, context, frame);
 
-        if(displayObject) {
-
-            bounds = displayObject.getBounds();
+        if (displayObject) {
+            // console.log(frame);
+            // bounds = displayObject.getBounds();
             // console.log(bounds.x, bounds.y, bounds.width, bounds.height);
 
             // tmpMatrix.translate()
-            tmpMatrix.tx = -bounds.x + frame.x;
-            tmpMatrix.ty = -bounds.y;
+            // tmpMatrix.tx = -bounds.x + frame.x;
+            // tmpMatrix.ty = -bounds.y;
 
             wt = displayObject.worldTransform;
             wt.tx = options.width * index + options.width / 2;
             wt.ty = options.height / 2;
+
+            // console.log(wt.tx, wt.ty);
+
             // wt.identity();
             // wt.scale(0.5, 0.5);
             // wt.a = 0.5;
@@ -45,7 +59,7 @@ Tiny.Create.spritesheet = function spritesheet(options) {
 
             // wt.append(tmpMatrix);
             // console.log(wt.a, wt.d)
-                
+
             // displayObject.width = 50;
             // displayObject.height = 50;
 
@@ -59,24 +73,18 @@ Tiny.Create.spritesheet = function spritesheet(options) {
                 children[i].updateTransform();
             }
 
-            var realResolution = renderer.resolution;
-
-            renderer.resolution = resolution;
-
-            renderer.renderObject(displayObject, context);
+            displayObject.renderCanvas(renderSession);
 
             // if (__DEBUG__) {
-            //     context.resetTransform();
-            //     context.rect(frame.x, frame.y, frame.width, frame.height);
-            //     context.stroke();
+            // context.resetTransform();
+            // context.rect(frame.x, frame.y, frame.width, frame.height);
+            // context.stroke();
             // }
-
-            renderer.resolution = realResolution;
         }
 
         uuid = key + '.' + index;
 
-        texture = new Tiny.Texture(textureBuffer.canvas, frame);
+        texture = new Tiny.Texture(baseTexture, frame);
 
         texture.key = key;
         texture.lastFrame = lastFrame;
@@ -84,7 +92,9 @@ Tiny.Create.spritesheet = function spritesheet(options) {
         Tiny.Cache.texture[uuid] = texture;
     }
 
-    Tiny.Cache.texture[key] = new Tiny.Texture(textureBuffer.canvas);
+    Tiny.Cache.texture[key] = new Tiny.Texture(baseTexture);
 
     // return renderTexture;
 };
+
+export { Create };

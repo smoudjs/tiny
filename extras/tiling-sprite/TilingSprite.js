@@ -341,7 +341,7 @@ Object.assign(TilingSprite.prototype, {
      * @param forcePowerOfTwo {Boolean} Whether we want to force the texture to be a power of two
      */
     generateTilingTexture: function (forcePowerOfTwo) {
-        if (!this.texture.base.loaded) return;
+        if (!this.texture.base.valid) return;
 
         var texture = this.originalTexture || this.texture;
         var frame = texture.frame;

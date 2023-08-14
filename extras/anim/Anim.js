@@ -92,4 +92,4 @@ class Anim {
     }
 }
 
-Tiny.Anim = Anim;
+export { Anim };

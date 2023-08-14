@@ -1,18 +1,20 @@
 import '@smoud/tiny/app';
 import '@smoud/tiny/2d';
+import '@smoud/tiny/webgl';
 import '@smoud/tiny/extras/canvas-renderer';
 import '@smoud/tiny/extras/canvas-graphics';
 import '@smoud/tiny/extras/shapes';
 import '@smoud/tiny/extras/tiling-sprite';
 import '@smoud/tiny/extras/progress-bar';
-import '@smoud/tiny/plugins/anim';
-import '@smoud/tiny/plugins/sound';
+import '@smoud/tiny/extras/anim';
+import '@smoud/tiny/extras/sound';
+import '@smoud/tiny/extras/create';
 import '../../examples/js/App2D';
 import '../../examples/js/App3D';
 import '../../examples/js/objects/MiniMap';
 import '../../examples/libs/howler';
 
-import App from './App';
+import App from './Create';
 
 window.addEventListener('load', () => {
     const app = new App(window.innerWidth, window.innerHeight, 'game');

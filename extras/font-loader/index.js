@@ -5,12 +5,11 @@ Tiny.Loader.prototype.font = function (key, src, weight) {
         key: key,
         src: src,
         weight: weight,
-        type: "font"
+        type: 'font'
     });
 };
 
 Tiny.Loader.font = function (resource, cb) {
-
     var weight = resource.weight || 'normal';
     var key = resource.key + '-' + weight;
 

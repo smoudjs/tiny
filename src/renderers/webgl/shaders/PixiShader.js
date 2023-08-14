@@ -190,7 +190,7 @@ PixiShader.prototype.initUniforms = function () {
  * @method initSampler2D
  */
 PixiShader.prototype.initSampler2D = function (uniform) {
-    if (!uniform.value || !uniform.value.base || !uniform.value.base.loaded) {
+    if (!uniform.value || !uniform.value.base || !uniform.value.base.valid) {
         return;
     }
 

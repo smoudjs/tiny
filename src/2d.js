@@ -5,6 +5,7 @@ import { Scene } from './objects/Scene';
 import { Sprite } from './objects/Sprite';
 import { Text } from './objects/Text';
 import { Graphics } from './objects/Graphics';
+import { BaseTexture } from './textures/BaseTexture';
 import { Texture } from './textures/Texture';
 import { TextureUvs } from './textures/TextureUvs';
 import { RenderTexture } from './textures/RenderTexture3';
@@ -17,6 +18,7 @@ Tiny.Sprite = Sprite;
 Tiny.Text = Text;
 Tiny.Graphics = Graphics;
 
+Tiny.BaseTexture = BaseTexture;
 Tiny.TextureUvs = TextureUvs;
 Tiny.Texture = Texture;
 Tiny.RenderTexture = RenderTexture;

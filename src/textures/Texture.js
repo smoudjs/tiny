@@ -52,10 +52,10 @@ var Texture = function (base, frame, crop, trim) {
 
     this.crop = crop || new Rectangle(0, 0, 1, 1);
 
-    if (base.loaded) {
-        this.onBaseLoaded();
+    if (base.valid) {
+        this.onBaseUpdate();
     } else {
-        base.onload = this.onBaseLoaded.bind(this);
+        base.onload = this.onBaseUpdate.bind(this);
     }
 
     // if ((this.source.complete || this.source.getContext) && this.source.width && this.source.height) {
@@ -70,7 +70,7 @@ var Texture = function (base, frame, crop, trim) {
 
 Texture.prototype.constructor = Texture;
 
-Texture.prototype.onBaseLoaded = function () {
+Texture.prototype.onBaseUpdate = function () {
     // this.hasLoaded = true;
     // this.width = this.source.naturalWidth || this.source.width;
     // this.height = this.source.naturalHeight || this.source.height;
@@ -123,7 +123,7 @@ Texture.prototype.setFrame = function (frame) {
         return;
     }
 
-    this.valid = frame && frame.width && frame.height && this.base.source && this.base.loaded;
+    this.valid = frame && frame.width && frame.height && this.base.valid;
 
     if (this.trim) {
         this.width = this.trim.width;

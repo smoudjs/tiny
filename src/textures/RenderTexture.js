@@ -21,7 +21,7 @@ var RenderTexture = function (width, height, renderer, resolution) {
     this.base.height = this.height * this.resolution;
     this.base.resolution = resolution;
 
-    this.base.loaded = true;
+    this.base.valid = true;
 
     Texture.call(
         this,

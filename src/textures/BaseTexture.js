@@ -25,7 +25,7 @@ var BaseTexture = function (source, scaleMode) {
     this.resolution = 1;
 
     /**
-     * [read-only] The width of the base texture set when the image has loaded
+     * [read-only] The width of the base texture set when the image has valid
      *
      * @property width
      * @type Number
@@ -34,7 +34,7 @@ var BaseTexture = function (source, scaleMode) {
     this.width = 100;
 
     /**
-     * [read-only] The height of the base texture set when the image has loaded
+     * [read-only] The height of the base texture set when the image has valid
      *
      * @property height
      * @type Number
@@ -52,13 +52,13 @@ var BaseTexture = function (source, scaleMode) {
     this.scaleMode = scaleMode || 0;
 
     /**
-     * [read-only] Set to true once the base texture has loaded
+     * [read-only] Set to true once the base texture has valid
      *
-     * @property loaded
+     * @property valid
      * @type Boolean
      * @readOnly
      */
-    this.loaded = false;
+    this.valid = false;
 
     /**
      * The image source that is used to create the texture.
@@ -133,7 +133,7 @@ var BaseTexture = function (source, scaleMode) {
 BaseTexture.prototype.constructor = BaseTexture;
 
 BaseTexture.prototype.onLoad = function (newSrc) {
-    this.loaded = true;
+    this.valid = true;
     this.width = this.source.naturalWidth || this.source.width;
     this.height = this.source.naturalHeight || this.source.height;
     this.dirty();
@@ -169,7 +169,7 @@ BaseTexture.prototype.destroy = function () {
  * @param newSrc {String} the path of the image
  */
 // BaseTexture.prototype.setSource = function (newSrc) {
-//     this.loaded = false;
+//     this.valid = false;
 //     this.source.src = null;
 //     this.source.src = newSrc;
 // };
@@ -187,7 +187,7 @@ BaseTexture.prototype.dirty = function () {
 
 /**
  * Removes the base texture from the GPU, useful for managing resources on the GPU.
- * Atexture is still 100% usable and will simply be reuploaded if there is a sprite on screen that is using it.
+ * Atexture is still 100% usable and will simply be reupvalid if there is a sprite on screen that is using it.
  *
  * @method unloadFromGPU
  */
@@ -211,7 +211,7 @@ BaseTexture.prototype.unloadFromGPU = function () {
 
 /**
  * Helper function that creates a base texture from the given image url.
- * If the image is not in the base texture cache it will be created and loaded.
+ * If the image is not in the base texture cache it will be created and valid.
  *
  * @static
  * @method fromImage

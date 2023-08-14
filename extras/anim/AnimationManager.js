@@ -1,3 +1,5 @@
+import { Anim } from './Anim';
+
 class AnimationManager {
     constructor(game) {
         this.game = game;
@@ -44,7 +46,7 @@ class AnimationManager {
             if (typeof options === 'string') options = { key: options };
 
             var source = manager.cache[options.key];
-            var __class__ = Tiny.Anim[source.type];
+            var __class__ = Anim[source.type];
 
             for (var key in source) {
                 if (options[key] === undefined) options[key] = source[key];

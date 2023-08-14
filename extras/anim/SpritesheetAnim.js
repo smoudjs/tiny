@@ -1,4 +1,6 @@
-class SpritesheetAnim extends Tiny.Anim {
+import { Anim } from './Anim';
+
+class SpritesheetAnim extends Anim {
     constructor(obj, options) {
         super(obj, options);
 
@@ -59,4 +61,6 @@ class SpritesheetAnim extends Tiny.Anim {
     }
 }
 
-Tiny.Anim.spritesheet = SpritesheetAnim;
+Anim.spritesheet = SpritesheetAnim;
+
+export { SpritesheetAnim };

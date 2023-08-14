@@ -97,7 +97,7 @@ var RenderTexture = function (width, height, renderer, resolution, scaleMode) {
 
     baseTexture.scaleMode = scaleMode || 0;
 
-    baseTexture.loaded = true;
+    baseTexture.valid = true;
 
     window.rt = this;
 

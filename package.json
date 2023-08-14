@@ -1,6 +1,6 @@
 {
-  "name": "h5tiny",
-  "version": "2.2.3",
+  "name": "@smoud/tiny",
+  "version": "3.0.0",
   "description": "Fast and tiny JavaScript library for HTML5 game and creatives developing.",
   "main": "./build/tiny.js",
   "files": [
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/peter-hutsul/h5tiny"
+    "url": "https://github.com/smoudjs/tiny"
   },
   "scripts": {
     "dev": "node ./scripts/webpack.dev.js",

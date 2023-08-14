@@ -107,24 +107,24 @@ CanvasRenderer.prototype.setClearColor = function (color) {
 CanvasRenderer.prototype.render = function (scene) {
     scene.updateTransform();
 
-    this.context.setTransform(1, 0, 0, 1, 0, 0);
+    this._context.setTransform(1, 0, 0, 1, 0, 0);
 
-    this.context.globalAlpha = 1;
+    this._context.globalAlpha = 1;
 
     this.currentBlendMode = Tiny.NORMAL;
-    this.context.globalCompositeOperation = this.blendModes[Tiny.NORMAL];
+    this._context.globalCompositeOperation = this.blendModes[Tiny.NORMAL];
 
     if (navigator.isCocoonJS && this.domElement.screencanvas) {
-        this.context.fillStyle = 'black';
-        this.context.clear();
+        this._context.fillStyle = 'black';
+        this._context.clear();
     }
 
     if (this.clearBeforeRender) {
         if (this.transparent) {
-            this.context.clearRect(0, 0, this.width * this._resolution, this.height * this._resolution);
+            this._context.clearRect(0, 0, this.width * this._resolution, this.height * this._resolution);
         } else {
-            this.context.fillStyle = this.clearColor;
-            this.context.fillRect(0, 0, this.width * this._resolution, this.height * this._resolution);
+            this._context.fillStyle = this.clearColor;
+            this._context.fillRect(0, 0, this.width * this._resolution, this.height * this._resolution);
         }
     }
 
@@ -172,9 +172,9 @@ CanvasRenderer.prototype.setPixelRatio = function (resolution) {
     view.height = Math.floor(this.height * this._resolution);
 };
 
-CanvasRenderer.prototype.renderObject = function (displayObject, context) {
+CanvasRenderer.prototype.renderObject = function (displayObject, context, resolution) {
     this.context = context || this._context;
-    this.resolution = this._resolution;
+    // this.resolution = resolution || this._resolution;
     displayObject.renderCanvas(this);
 };
 

@@ -444,7 +444,7 @@ WebGLRenderer.prototype.resize = function (width, height) {
  * @param texture {Texture} the texture to update
  */
 WebGLRenderer.prototype.updateTexture = function (texture) {
-    if (!texture.loaded) return;
+    if (!texture.valid) return;
 
     var gl = this.gl;
 

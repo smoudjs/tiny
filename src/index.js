@@ -1,10 +1,10 @@
 // import './core';
 import './app';
 import './2d';
-// import './webgl';
+import './webgl';
 // import './3d';
-import '../extras/canvas-renderer';
-import '../extras/canvas-graphics';
+// import '../extras/canvas-renderer';
+// import '../extras/canvas-graphics';
 // import '../extras/shapes';
 
 // import './utils/polyfills.js';

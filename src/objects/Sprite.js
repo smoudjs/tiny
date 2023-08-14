@@ -22,7 +22,7 @@ var Sprite = function (texture, key) {
 
     this.blendMode = BLEND_MODES.NORMAL;
 
-    if (this.texture.loaded) {
+    if (this.texture.valid) {
         this.onTextureUpdate();
     }
 

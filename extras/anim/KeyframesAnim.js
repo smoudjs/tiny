@@ -1,6 +1,8 @@
+import { Anim } from './Anim';
+
 var path, len;
 
-class KeyframesAnim extends Tiny.Anim {
+class KeyframesAnim extends Anim {
     constructor(parent, options) {
         super(parent, options);
 
@@ -188,4 +190,6 @@ class KeyframesAnim extends Tiny.Anim {
     }
 }
 
-Tiny.Anim.keyframes = KeyframesAnim;
+Anim.keyframes = KeyframesAnim;
+
+export { KeyframesAnim };
