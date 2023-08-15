@@ -1,4 +1,3 @@
-import './core';
 import { BaseObject2D } from './objects/BaseObject2D';
 import { Object2D } from './objects/Object2D';
 import { Scene } from './objects/Scene';

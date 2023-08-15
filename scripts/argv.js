@@ -1,28 +1,24 @@
 const argvOptions = {
-	"port": false,
-	"test": false
-}
+	'port': false,
+	'--test': false
+};
 
 let scene = null;
 
-for (let i = 2; i < process.argv.length; i++) 
-{
+for (let i = 2; i < process.argv.length; i++) {
 	let key = process.argv[i];
 	let value = true;
 
-	const splitted = key.split("=");
+	const splitted = key.split('=');
 
-	if (splitted.length > 1) 
-	{
+	if (splitted.length > 1) {
 		key = splitted[0];
 		value = splitted[1];
 	}
 
-	if (argvOptions[key] !== undefined) 
-	{
+	if (argvOptions[key] !== undefined) {
 		argvOptions[key] = value;
-	}
-	else if (!scene) scene = key;
+	} else if (!scene) scene = key;
 }
 
 console.log(argvOptions);
@@ -30,4 +26,3 @@ console.log(argvOptions);
 argvOptions.scene = scene;
 
 module.exports = argvOptions;
-

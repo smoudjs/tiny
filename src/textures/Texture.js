@@ -5,7 +5,7 @@ import { BaseTexture } from './BaseTexture';
 
 // Tiny.TextureCache = {};
 // Tiny.FrameCache = {};
-Tiny.TextureCacheIdGenerator = 0;
+// Tiny.TextureCacheIdGenerator = 0;
 // Tiny.TextureSilentFail = false;
 
 var Texture = function (base, frame, crop, trim) {

@@ -1,4 +1,3 @@
-import './core';
 import { App } from './app/App';
 import { RAF } from './app/RAF';
 import { registerSystem, systems } from './app/registrar';
@@ -7,6 +6,7 @@ import { Cache } from './app/Cache';
 import { Input } from './app/Input';
 import { Timer } from './app/Timer';
 import { TweenManager, Easing, Interpolation } from './app/Tween';
+
 
 Tiny.App = App;
 Tiny.RAF = RAF;

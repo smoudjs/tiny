@@ -1,0 +1,1 @@
+!function(){"use strict";var t=function(t,i,s,h){this.x=t||0,this.y=i||0,this.width=s||0,this.height=h||0,this.type=Tiny.ELIP};t.prototype.constructor=t,Tiny.Graphics.prototype.drawEllipse=function(i,s,h,n){return this.drawShape(new t(i,s,h,n)),this},Tiny.Ellipse=t}();

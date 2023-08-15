@@ -50,6 +50,20 @@ class MyGame extends Tiny.App2D {
             return progress;
         }
 
+        for (let i = 0; i < 200; i++) {
+            var progressN = addProgressBar(Tiny.rnd(100, 1400), Tiny.rnd(0, 700), {
+                radius: Tiny.rnd(0, 40),
+                height: Tiny.rnd(20, 60),
+                width: Tiny.rnd(100, 250),
+                strokeWidth: Tiny.rnd(0, 10),
+                // duration: Tiny.rnd(100, 2100),
+                easing: Tiny.Easing.Elastic.Out,
+                colors: [new Tiny.Color(Math.random() * 0xffffff), new Tiny.Color(Math.random() * 0xffffff), new Tiny.Color(Math.random() * 0xffffff)]
+            });
+
+            progressN.rotation = Math.random() * Math.PI;
+        }
+
         addProgressBar(150, 40);
         addProgressBar(150, 100, { colors: ['#ff0000', '#0000ff'] });
         addProgressBar(150, 160, {
@@ -147,7 +161,6 @@ class MyGame extends Tiny.App2D {
         // var count = time * 0.01;
         // var thing = this.thing;
         // thing.clear();
-
         // thing.beginFill(0x454545, 0.4);
         // thing.moveTo(-120 + Math.sin(count) * 20, -100 + Math.cos(count) * 20);
         // thing.lineTo(120 + Math.cos(count) * 20, -100 + Math.sin(count) * 20);

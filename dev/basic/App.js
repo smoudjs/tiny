@@ -42,34 +42,34 @@ export default class BasicApp extends Tiny.App {
         this.text.position.set(400, 200);
         this.scene.add(this.text);
 
-        var graphics = new Tiny.Graphics();
-        // graphics.tint.set(0x45f223);
+        // var graphics = new Tiny.Graphics();
+        // // graphics.tint.set(0x45f223);
       
 
-        graphics.beginFill('#f23', 1);
-        graphics.drawRect(100, 100, 100, 100);
-        graphics.endFill();
+        // graphics.beginFill('#f23', 1);
+        // graphics.drawRect(100, 100, 100, 100);
+        // graphics.endFill();
 
-        graphics.lineStyle(23, 0x45ff45);
-        graphics.drawCircle(400, 200, 100);
+        // graphics.lineStyle(23, 0x45ff45);
+        // graphics.drawCircle(400, 200, 100);
 
-        graphics.moveTo(10, 10);
-        graphics.lineStyle(23, 0x4545ff, 0.1);
-        graphics.lineTo(400, 200);
-        graphics.lineTo(400, 500);
-        graphics.lineTo(100, 500);
-        graphics.bezierCurveTo(400, 500, 23, 32, 45, 12);
+        // graphics.moveTo(10, 10);
+        // graphics.lineStyle(23, 0x4545ff, 0.1);
+        // graphics.lineTo(400, 200);
+        // graphics.lineTo(400, 500);
+        // graphics.lineTo(100, 500);
+        // graphics.bezierCurveTo(400, 500, 23, 32, 45, 12);
 
-          // graphics.cacheAsBitmap = true
+        //   // graphics.cacheAsBitmap = true
 
-        setInterval(() => {
-            this.text.tint.set(Math.floor(Math.random() * 0xffffff));
-            graphics.tint.set(Math.floor(Math.random() * 0xffffff));
-            // graphics.dirty = true;
-        }, 1000)
+        // setInterval(() => {
+        //     this.text.tint.set(Math.floor(Math.random() * 0xffffff));
+        //     graphics.tint.set(Math.floor(Math.random() * 0xffffff));
+        //     // graphics.dirty = true;
+        // }, 1000)
 
 
-        this.scene.add(graphics);
+        // this.scene.add(graphics);
     }
 
     setPixelRatio(dpr) {

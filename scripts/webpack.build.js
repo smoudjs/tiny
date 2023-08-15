@@ -6,11 +6,20 @@ const Webpack = require('webpack'),
     path = require('path'),
     commonConfig = require('./webpack.common.js'),
     { CleanWebpackPlugin } = require('clean-webpack-plugin'),
-    TerserPlugin = require('terser-webpack-plugin');
+    TerserPlugin = require('terser-webpack-plugin'),
+    { globSync } = require('glob');
 
 const DEFINES = {
     __DEV__: JSON.stringify(false)
 };
+
+const files = globSync('./extras/*/index.js', { withFileTypes: true });
+const extrasNames = files.map((e) => e.parent.name);
+const extras = {};
+
+for (let extra of extrasNames) {
+    extras['extras/' + extra] = path.resolve('extras/' + extra + '/index.js');
+}
 
 const webpackConfig = {
     mode: 'production',
@@ -20,9 +29,28 @@ const webpackConfig = {
     watch: false,
 
     entry: {
-        tiny: path.resolve('src/index.js')
-        // 'tiny.mini': path.resolve('src/index.js'),
-        // 'tiny.base': path.resolve('src/index.js'),
+        ...extras,
+        // 'tiny.core': [path.resolve('src/core.js')],
+        // 'tiny.app': [path.resolve('src/core.js'), path.resolve('src/app.js')],
+        // 'tiny.2d': [
+        //     path.resolve('src/core.js'),
+        //     path.resolve('src/app.js'),
+        //     path.resolve('src/2d.js'),
+        //     path.resolve('src/webgl.js')
+        // ],
+        // 'tiny.3d': [path.resolve('src/core.js'), path.resolve('src/app.js'), path.resolve('src/3d.js')],
+        // 'tiny': [
+        //     path.resolve('src/core.js'),
+        //     path.resolve('src/app.js'),
+        //     path.resolve('src/2d.js'),
+        //     path.resolve('src/3d.js'),
+        //     path.resolve('src/webgl.js')
+        // ]
+        'tiny.core': path.resolve('src/tiny.core.js'),
+        'tiny.app': path.resolve('src/tiny.app.js'),
+        'tiny.2d': path.resolve('src/tiny.2d.js'),
+        'tiny.3d': path.resolve('src/tiny.3d.js'),
+        'tiny': path.resolve('src/tiny.js')
     },
 
     optimization: {
@@ -47,7 +75,8 @@ const webpackConfig = {
 
     output: {
         filename: '[name].js',
-        path: path.resolve('build'),
+        chunkFilename: '[name].chunk.bundle.js',
+        path: path.resolve('dist'),
         environment: {
             arrowFunction: false
         }

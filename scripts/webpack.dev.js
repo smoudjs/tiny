@@ -9,7 +9,7 @@ const Webpack = require('webpack'),
     HtmlWebpackPlugin = require('html-webpack-plugin'),
     argv = require('./argv');
 
-const isTest = argv['test'];
+const isTest = argv['--test'];
 
 const DEFINES = {
     __DEV__: JSON.stringify(!isTest)
