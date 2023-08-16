@@ -3,84 +3,86 @@
 // TODO: need? encoding = linearEncoding
 // TODO: support non-compressed mipmaps uploads
 
-const emptyPixel = new Uint8Array(4);
+var emptyPixel = new Uint8Array(4);
 
 function isPowerOf2(value) {
     return (value & (value - 1)) === 0;
 }
 
-let ID = 1;
+var ID = 1;
 
-export class Texture {
-    constructor(
-        gl,
-        {
-            image,
-            target = gl.TEXTURE_2D,
-            type = gl.UNSIGNED_BYTE,
-            format = gl.RGBA,
-            internalFormat = format,
-            wrapS = gl.CLAMP_TO_EDGE,
-            wrapT = gl.CLAMP_TO_EDGE,
-            generateMipmaps = true,
-            minFilter = generateMipmaps ? gl.NEAREST_MIPMAP_LINEAR : gl.LINEAR,
-            magFilter = gl.LINEAR,
-            premultiplyAlpha = false,
-            unpackAlignment = 4,
-            flipY = target == gl.TEXTURE_2D ? true : false,
-            anisotropy = 0,
-            level = 0,
-            width, // used for RenderTargets or Data Textures
-            height = width,
-        } = {}
-    ) {
-        this.gl = gl;
-        this.id = ID++;
+function Texture(
+    gl,
+    {
+        image,
+        target = gl.TEXTURE_2D,
+        type = gl.UNSIGNED_BYTE,
+        format = gl.RGBA,
+        internalFormat = format,
+        wrapS = gl.CLAMP_TO_EDGE,
+        wrapT = gl.CLAMP_TO_EDGE,
+        generateMipmaps = true,
+        minFilter = generateMipmaps ? gl.NEAREST_MIPMAP_LINEAR : gl.LINEAR,
+        magFilter = gl.LINEAR,
+        premultiplyAlpha = false,
+        unpackAlignment = 4,
+        flipY = target == gl.TEXTURE_2D ? true : false,
+        anisotropy = 0,
+        level = 0,
+        width, // used for RenderTargets or Data Textures
+        height = width,
+    } = {}
+) {
+    this.gl = gl;
+    this.id = ID++;
 
-        this.image = image;
-        this.target = target;
-        this.type = type;
-        this.format = format;
-        this.internalFormat = internalFormat;
-        this.minFilter = minFilter;
-        this.magFilter = magFilter;
-        this.wrapS = wrapS;
-        this.wrapT = wrapT;
-        this.generateMipmaps = generateMipmaps;
-        this.premultiplyAlpha = premultiplyAlpha;
-        this.unpackAlignment = unpackAlignment;
-        this.flipY = flipY;
-        this.anisotropy = Math.min(anisotropy, this.gl.renderer.parameters.maxAnisotropy);
-        this.level = level;
-        this.width = width;
-        this.height = height;
-        this.texture = this.gl.createTexture();
+    this.image = image;
+    this.target = target;
+    this.type = type;
+    this.format = format;
+    this.internalFormat = internalFormat;
+    this.minFilter = minFilter;
+    this.magFilter = magFilter;
+    this.wrapS = wrapS;
+    this.wrapT = wrapT;
+    this.generateMipmaps = generateMipmaps;
+    this.premultiplyAlpha = premultiplyAlpha;
+    this.unpackAlignment = unpackAlignment;
+    this.flipY = flipY;
+    this.anisotropy = Math.min(anisotropy, this.gl.renderer.parameters.maxAnisotropy);
+    this.level = level;
+    this.width = width;
+    this.height = height;
+    this.texture = this.gl.createTexture();
 
-        this.store = {
-            image: null,
-        };
+    this.store = {
+        image: null,
+    };
 
-        // Alias for state store to avoid redundant calls for global state
-        this.glState = this.gl.renderer.state;
+    // Alias for state store to avoid redundant calls for global state
+    this.glState = this.gl.renderer.state;
 
-        // State store to avoid redundant calls for per-texture state
-        this.state = {};
-        this.state.minFilter = this.gl.NEAREST_MIPMAP_LINEAR;
-        this.state.magFilter = this.gl.LINEAR;
-        this.state.wrapS = this.gl.REPEAT;
-        this.state.wrapT = this.gl.REPEAT;
-        this.state.anisotropy = 0;
-    }
+    // State store to avoid redundant calls for per-texture state
+    this.state = {};
+    this.state.minFilter = this.gl.NEAREST_MIPMAP_LINEAR;
+    this.state.magFilter = this.gl.LINEAR;
+    this.state.wrapS = this.gl.REPEAT;
+    this.state.wrapT = this.gl.REPEAT;
+    this.state.anisotropy = 0;
+}
 
-    bind() {
+Texture.prototype = {
+    constructor: Texture,
+
+    bind: function () {
         // Already bound to active texture unit
         if (this.glState.textureUnits[this.glState.activeTextureUnit] === this.id) return;
         this.gl.bindTexture(this.target, this.texture);
         this.glState.textureUnits[this.glState.activeTextureUnit] = this.id;
-    }
+    },
 
-    update(textureUnit = 0) {
-        const needsUpdate = !(this.image === this.store.image && !this.needsUpdate);
+    update: function (textureUnit = 0) {
+        var needsUpdate = !(this.image === this.store.image && !this.needsUpdate);
 
         // Make sure that texture is bound to its texture unit
         if (needsUpdate || this.glState.textureUnits[textureUnit] !== this.id) {
@@ -144,7 +146,7 @@ export class Texture {
 
             if (this.target === this.gl.TEXTURE_CUBE_MAP) {
                 // For cube maps
-                for (let i = 0; i < 6; i++) {
+                for (var i = 0; i < 6; i++) {
                     this.gl.texImage2D(
                         this.gl.TEXTURE_CUBE_MAP_POSITIVE_X + i,
                         this.level,
@@ -159,7 +161,7 @@ export class Texture {
                 this.gl.texImage2D(this.target, this.level, this.internalFormat, this.width, this.height, 0, this.format, this.type, this.image);
             } else if (this.image.isCompressedTexture) {
                 // Compressed texture
-                for (let level = 0; level < this.image.length; level++) {
+                for (var level = 0; level < this.image.length; level++) {
                     this.gl.compressedTexImage2D(
                         this.target,
                         level,
@@ -191,7 +193,7 @@ export class Texture {
         } else {
             if (this.target === this.gl.TEXTURE_CUBE_MAP) {
                 // Upload empty pixel for each side while no image to avoid errors while image or video loading
-                for (let i = 0; i < 6; i++) {
+                for (var i = 0; i < 6; i++) {
                     this.gl.texImage2D(
                         this.gl.TEXTURE_CUBE_MAP_POSITIVE_X + i,
                         0,
@@ -217,3 +219,5 @@ export class Texture {
 }
 
 Tiny.WebGlTexture = Texture;
+
+export {Texture};

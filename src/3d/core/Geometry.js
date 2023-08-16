@@ -16,33 +16,34 @@
 
 // TODO: fit in transform feedback
 
-import {Mat4} from "../math";
-import { Vec3 } from '../math/Vec3.js';
+import {Vec3} from '../math/Vec3.js';
 import {Attribute} from "./Attribute";
 
-const tempVec3 = new Vec3();
+var tempVec3 = new Vec3();
 
-let ID = 1;
-let ATTR_ID = 1;
+var ID = 1;
+var ATTR_ID = 1;
 
 // To stop inifinite warnings
-let isBoundsWarned = false;
+var isBoundsWarned = false;
 
-export class Geometry {
-    constructor(attributes = {}) {
-        this.attributes = attributes;
-        this.id = ID++;
+function Geometry(attributes = {}) {
+    this.id = ID++;
 
-        // Store one VAO per program attribute locations order
-        this.VAOs = {};
+    this.attributes = attributes;
 
-        this.drawRange = { start: 0, count: 0 };
-        // this.attributes.instancedMatrix = { size: 16, data: new Float32Array(new Mat4().elements) };
-        this.instancedCount = 0;
-    }
+    // Store one VAO per program attribute locations order
+    this.VAOs = {};
 
-    initialize(gl) {
-        const {attributes} = this;
+    this.drawRange = {start: 0, count: 0};
+    this.instancedCount = 0;
+}
+
+Geometry.prototype = {
+    constructor: Geometry,
+
+    initialize: function (gl) {
+        var {attributes} = this;
 
         this.gl = gl;
 
@@ -54,12 +55,12 @@ export class Geometry {
         this.glState = this.gl.renderer.state;
 
         // create the buffers
-        for (let key in attributes) {
+        for (var key in attributes) {
             this.addAttribute(key, attributes[key]);
         }
-    }
+    },
 
-    addAttribute(key, attr) {
+    addAttribute: function (key, attr) {
         attr = this.attributes[key] = new Attribute(attr);
 
         // Set options
@@ -70,8 +71,8 @@ export class Geometry {
             (attr.data.constructor === Float32Array
                 ? this.gl.FLOAT
                 : attr.data.constructor === Uint16Array
-                ? this.gl.UNSIGNED_SHORT
-                : this.gl.UNSIGNED_INT); // Uint32Array
+                    ? this.gl.UNSIGNED_SHORT
+                    : this.gl.UNSIGNED_INT); // Uint32Array
         attr.target = key === 'index' ? this.gl.ELEMENT_ARRAY_BUFFER : this.gl.ARRAY_BUFFER;
         attr.normalized = attr.normalized || false;
         attr.stride = attr.stride || 0;
@@ -101,10 +102,10 @@ export class Geometry {
         }
 
         return attr;
-    }
+    },
 
-    updateAttribute(attr) {
-        const isNewBuffer = !attr.buffer;
+    updateAttribute: function (attr) {
+        var isNewBuffer = !attr.buffer;
         if (isNewBuffer) attr.buffer = this.gl.createBuffer();
         if (this.glState.boundBuffer !== attr.buffer) {
             this.gl.bindBuffer(attr.target, attr.buffer);
@@ -116,52 +117,52 @@ export class Geometry {
             this.gl.bufferSubData(attr.target, 0, attr.data);
         }
         attr.needsUpdate = false;
-    }
+    },
 
-    setIndex(value) {
+    setIndex: function (value) {
         this.addAttribute('index', value);
-    }
+    },
 
-    setDrawRange(start, count) {
+    setDrawRange: function (start, count) {
         this.drawRange.start = start;
         this.drawRange.count = count;
-    }
+    },
 
-    setInstancedCount(value) {
+    setInstancedCount: function (value) {
         this.instancedCount = value;
-    }
+    },
 
-    createVAO(program) {
+    createVAO: function (program) {
         this.VAOs[program.attributeOrder] = this.gl.renderer.createVertexArray();
         this.gl.renderer.bindVertexArray(this.VAOs[program.attributeOrder]);
         this.bindAttributes(program);
-    }
+    },
 
-    bindAttributes(program) {
+    bindAttributes: function (program) {
         // Link all attributes to program using gl.vertexAttribPointer
-        program.attributeLocations.forEach((location, { name, type }) => {
+        program.attributeLocations.forEach((location, {name, type}) => {
             // If geometry missing a required shader attribute
             if (!this.attributes[name]) {
                 console.warn(`active attribute ${name} not being supplied`);
                 return;
             }
 
-            const attr = this.attributes[name];
+            var attr = this.attributes[name];
 
             this.gl.bindBuffer(attr.target, attr.buffer);
             this.glState.boundBuffer = attr.buffer;
 
             // For matrix attributes, buffer needs to be defined per column
-            let numLoc = 1;
+            var numLoc = 1;
             if (type === 35674) numLoc = 2; // mat2
             if (type === 35675) numLoc = 3; // mat3
             if (type === 35676) numLoc = 4; // mat4
 
-            const size = attr.size / numLoc;
-            const stride = numLoc === 1 ? 0 : numLoc * numLoc * 4;
-            const offset = numLoc === 1 ? 0 : numLoc * 4;
+            var size = attr.size / numLoc;
+            var stride = numLoc === 1 ? 0 : numLoc * numLoc * 4;
+            var offset = numLoc === 1 ? 0 : numLoc * 4;
 
-            for (let i = 0; i < numLoc; i++) {
+            for (var i = 0; i < numLoc; i++) {
                 this.gl.vertexAttribPointer(location + i, size, attr.type, attr.normalized, attr.stride + stride, attr.offset + i * offset);
                 this.gl.enableVertexAttribArray(location + i);
 
@@ -173,9 +174,9 @@ export class Geometry {
 
         // Bind indices if geometry indexed
         if (this.attributes.index) this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.attributes.index.buffer);
-    }
+    },
 
-    draw({ program, mode = WebGLRenderingContext.TRIANGLES }) {
+    draw: function ({program, mode = WebGLRenderingContext.TRIANGLES}) {
         if (this.gl.renderer.currentGeometry !== `${this.id}_${program.attributeOrder}`) {
             if (!this.VAOs[program.attributeOrder]) this.createVAO(program);
             this.gl.renderer.bindVertexArray(this.VAOs[program.attributeOrder]);
@@ -183,13 +184,13 @@ export class Geometry {
         }
 
         // Check if any attributes need updating
-        program.attributeLocations.forEach((location, { name }) => {
-            const attr = this.attributes[name];
+        program.attributeLocations.forEach((location, {name}) => {
+            var attr = this.attributes[name];
             if (attr.needsUpdate) this.updateAttribute(attr);
         });
 
         // For drawElements, offset needs to be multiple of type size
-        let indexBytesPerElement = 2;
+        var indexBytesPerElement = 2;
         if (this.attributes.index?.type === this.gl.UNSIGNED_INT) indexBytesPerElement = 4;
 
         if (this.isInstanced) {
@@ -216,24 +217,24 @@ export class Geometry {
                 this.gl.drawArrays(mode, this.drawRange.start, this.drawRange.count);
             }
         }
-    }
+    },
 
-    getPosition() {
+    getPosition: function () {
         // Use position buffer, or min/max if available
-        const attr = this.attributes.position;
+        var attr = this.attributes.position;
         // if (attr.min) return [...attr.min, ...attr.max];
         if (attr.data) return attr;
         if (isBoundsWarned) return;
         console.warn('No position buffer data found to compute bounds');
         return (isBoundsWarned = true);
-    }
+    },
 
-    computeBoundingBox(attr) {
+    computeBoundingBox: function (attr) {
         if (!attr) attr = this.getPosition();
-        const array = attr.data;
+        var array = attr.data;
         // Data loaded shouldn't haave stride, only buffers
-        // const stride = attr.stride ? attr.stride / array.BYTES_PER_ELEMENT : attr.size;
-        const stride = attr.size;
+        // var stride = attr.stride ? attr.stride / array.BYTES_PER_ELEMENT : attr.size;
+        var stride = attr.size;
 
         if (!this.bounds) {
             this.bounds = {
@@ -245,19 +246,19 @@ export class Geometry {
             };
         }
 
-        const min = this.bounds.min;
-        const max = this.bounds.max;
-        const center = this.bounds.center;
-        const scale = this.bounds.scale;
+        var min = this.bounds.min;
+        var max = this.bounds.max;
+        var center = this.bounds.center;
+        var scale = this.bounds.scale;
 
         min.set(+Infinity);
         max.set(-Infinity);
 
         // TODO: check size of position (eg triangle with Vector2)
-        for (let i = 0, l = array.length; i < l; i += stride) {
-            const x = array[i];
-            const y = array[i + 1];
-            const z = array[i + 2];
+        for (var i = 0, l = array.length; i < l; i += stride) {
+            var x = array[i];
+            var y = array[i + 1];
+            var z = array[i + 2];
 
             min.x = Math.min(x, min.x);
             min.y = Math.min(y, min.y);
@@ -270,72 +271,72 @@ export class Geometry {
 
         scale.subVectors(max, min);
         center.subVectors(min, max).divideScalar(2);
-    }
+    },
 
-    computeBoundingSphere(attr) {
+    computeBoundingSphere: function (attr) {
         if (!attr) attr = this.getPosition();
-        const array = attr.data;
+        var array = attr.data;
         // Data loaded shouldn't haave stride, only buffers
-        // const stride = attr.stride ? attr.stride / array.BYTES_PER_ELEMENT : attr.size;
-        const stride = attr.size;
+        // var stride = attr.stride ? attr.stride / array.BYTES_PER_ELEMENT : attr.size;
+        var stride = attr.size;
 
         if (!this.bounds) this.computeBoundingBox(attr);
 
-        let maxRadiusSq = 0;
-        for (let i = 0, l = array.length; i < l; i += stride) {
+        var maxRadiusSq = 0;
+        for (var i = 0, l = array.length; i < l; i += stride) {
             tempVec3.fromArray(array, i);
             maxRadiusSq = Math.max(maxRadiusSq, this.bounds.center.distanceToSquared(tempVec3));
         }
 
         this.bounds.radius = Math.sqrt(maxRadiusSq);
-    }
+    },
 
-    computeVertexNormals() {
-        const index = this.attributes['index'];
-        const positionAttribute = this.attributes['position'];
+    computeVertexNormals: function () {
+        var index = this.attributes['index'];
+        var positionAttribute = this.attributes['position'];
 
-        if ( positionAttribute !== undefined ) {
+        if (positionAttribute !== undefined) {
 
-            let normalAttribute = this.attributes['normal'];
+            var normalAttribute = this.attributes['normal'];
 
             if (normalAttribute === undefined) {
                 normalAttribute = this.addAttribute('normal', {
                     size: 3,
-                    data: new Float32Array( positionAttribute.count * 3 )
+                    data: new Float32Array(positionAttribute.count * 3)
                 })
             } else {
                 // @TODO not sure is needed
-                // for ( let i = 0, il = normalAttribute.count; i < il; i ++ ) {
+                // for ( var i = 0, il = normalAttribute.count; i < il; i ++ ) {
                 //     normalAttribute.setXYZ( i, 0, 0, 0 );
                 // }
             }
 
-            const pA = new Vec3(), pB = new Vec3(), pC = new Vec3();
-            const nA = new Vec3(), nB = new Vec3(), nC = new Vec3();
-            const cb = new Vec3(), ab = new Vec3();
+            var pA = new Vec3(), pB = new Vec3(), pC = new Vec3();
+            var nA = new Vec3(), nB = new Vec3(), nC = new Vec3();
+            var cb = new Vec3(), ab = new Vec3();
 
             // indexed elements
-            if ( index ) {
-                for ( let i = 0, il = index.count; i < il; i += 3 ) {
-                    const vA = index.getX(i);
-                    const vB = index.getX(i + 1);
-                    const vC = index.getX(i + 2);
+            if (index) {
+                for (var i = 0, il = index.count; i < il; i += 3) {
+                    var vA = index.getX(i);
+                    var vB = index.getX(i + 1);
+                    var vC = index.getX(i + 2);
 
                     pA.fromBufferAttribute(positionAttribute, vA);
                     pB.fromBufferAttribute(positionAttribute, vB);
                     pC.fromBufferAttribute(positionAttribute, vC);
 
-                    cb.subVectors( pC, pB );
-                    ab.subVectors( pA, pB );
-                    cb.cross( ab );
+                    cb.subVectors(pC, pB);
+                    ab.subVectors(pA, pB);
+                    cb.cross(ab);
 
-                    nA.fromBufferAttribute( normalAttribute, vA);
-                    nB.fromBufferAttribute( normalAttribute, vB);
-                    nC.fromBufferAttribute( normalAttribute, vC);
+                    nA.fromBufferAttribute(normalAttribute, vA);
+                    nB.fromBufferAttribute(normalAttribute, vB);
+                    nC.fromBufferAttribute(normalAttribute, vC);
 
-                    nA.add( cb );
-                    nB.add( cb );
-                    nC.add( cb );
+                    nA.add(cb);
+                    nB.add(cb);
+                    nC.add(cb);
 
                     normalAttribute.setXYZ(vA, nA.x, nA.y, nA.z);
                     normalAttribute.setXYZ(vB, nB.x, nB.y, nB.z);
@@ -345,7 +346,7 @@ export class Geometry {
                 //@TODO add in future
                 // non-indexed elements (unconnected triangle soup)
 
-                // for ( let i = 0, il = positionAttribute.count; i < il; i += 3 ) {
+                // for ( var i = 0, il = positionAttribute.count; i < il; i += 3 ) {
                 //
                 //     pA.fromBufferAttribute( positionAttribute, i + 0 );
                 //     pB.fromBufferAttribute( positionAttribute, i + 1 );
@@ -364,18 +365,20 @@ export class Geometry {
 
             normalAttribute.needsUpdate = true;
         }
-    }
+    },
 
-    remove() {
-        for (let key in this.VAOs) {
+    remove: function () {
+        for (var key in this.VAOs) {
             this.gl.renderer.deleteVertexArray(this.VAOs[key]);
             delete this.VAOs[key];
         }
-        for (let key in this.attributes) {
+        for (var key in this.attributes) {
             this.gl.deleteBuffer(this.attributes[key].buffer);
             delete this.attributes[key];
         }
     }
-}
+};
 
 Tiny.Geometry = Geometry;
+
+export {Geometry};

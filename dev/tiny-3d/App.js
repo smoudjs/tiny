@@ -1,5 +1,4 @@
 import {Mat4, Vec3} from "../../src/3d";
-import {InstancedMeshLambertMaterial} from "../../src/3d/extras/materials/InstancedMeshLambertMaterial";
 import {tinyVSthreeCubesAmount} from "../constants";
 import resources from "./resources";
 
@@ -164,11 +163,7 @@ export default class BunnyApp extends Tiny.App {
 
                 instancedMesh.setMatrixAt(i, mat4);
             }
-
-            instancedMesh.geometry.attributes.instancedMatrix.needsUpdate = true;
         });
-
-        // instancedMesh.geometry.attributes.instancedMatrix.needsUpdate = true;
 
         // world.add(box);
         world.add(instancedMesh);
@@ -186,8 +181,8 @@ export default class BunnyApp extends Tiny.App {
         delta *= 0.001;
         this.time = time;
 
-        // this.box.rotation.x += delta;
-        // this.box.rotation.z += delta;
+        this.box.rotation.x += delta;
+        this.box.rotation.z += delta;
     }
 
     render() {

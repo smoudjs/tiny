@@ -1,227 +1,239 @@
 import {Vec3, Vec4} from "../math";
 
-function arraysEqual(a, b) {
-    if (a.length !== b.length) return false;
-    for (let i = 0, l = a.length; i < l; i++) {
-        if (a[i] !== b[i]) return false;
+function Uniform(
+    {
+        value,
+        boundary,
+        itemSize
     }
-    return true;
+) {
+    this.boundary = boundary; // used to build the uniform buffer according to the STD140 layout
+    this.itemSize = itemSize;
+
+    this.location = null;
+
+    this.glValue = itemSize === 1 ? 0 : new Float32Array(this.itemSize);
+
+    this.dirty = false;
+
+    value && this.set(value);
 }
 
-class Uniform {
-    constructor(
-        {
-            value,
-            boundary,
-            itemSize
-        }
-) {
-        this.boundary = boundary; // used to build the uniform buffer according to the STD140 layout
-        this.itemSize = itemSize;
-
-        this.location = null;
-
-        this.glValue = itemSize === 1 ? 0 : new Float32Array(this.itemSize);
-
-        this.dirty = false;
-
-        value && this.set(value);
-    }
+Uniform.prototype = {
+    constructor: Uniform,
 
     set(value) {
         this.value = value;
 
         this.dirty = true;
-    }
+    },
 
     apply(gl) {
 
     }
 }
 
-class FloatUniform extends Uniform {
-    constructor(value) {
-        super({
+function FloatUniform(value) {
+    Uniform.call(
+        this,
+        {
             value,
             boundary: 0,
             itemSize: 1
-        });
-    }
+        }
+    );
+}
 
-    set(value) {
-        super.set(value);
+FloatUniform.prototype = Object.assign(Object.create(Uniform), {
+    constructor: FloatUniform,
+
+    set: function (value) {
+        Uniform.prototype.set.call(this, value);
 
         this.glValue = value;
-    }
+    },
 
-    apply(gl) {
+    apply: function (gl) {
         gl.uniform1f(this.location, this.glValue);
 
         this.dirty = false;
     }
-}
+});
 
-class TextureUniform extends Uniform {
-    constructor(value) {
-        super({
+function TextureUniform(value) {
+    Uniform.call(
+        this,
+        {
             value,
             boundary: 0,
             itemSize: 1
-        });
+        }
+    );
+}
 
-        this.isTextureUniform = true;
-    }
+TextureUniform.prototype = Object.assign(Uniform.prototype, {
+    constructor: TextureUniform,
 
-    apply(gl, unit) {
+    isTextureUniform: true,
+
+    apply: function (gl, unit) {
         gl.uniform1i(this.location, unit);
 
         this.dirty = false;
     }
+});
+
+function Vector2Uniform(value) {
+    Uniform.call(this, {
+        value,
+        boundary: 8,
+        itemSize: 2
+    });
 }
 
-class Vector2Uniform extends Uniform {
-    constructor(value) {
-        super({
-            value,
-            boundary: 8,
-            itemSize: 2
-        });
-    }
+Vector2Uniform.prototype = Object.assign(Object.create(Uniform), {
+    constructor: Vector2Uniform,
 
-    set(value) {
-        super.set(value);
+    set: function (value) {
+        Uniform.prototype.set.call(this, ).call(this, value);
 
         this.glValue[0] = value.x;
         this.glValue[1] = value.y;
-    }
+    },
 
-    apply(gl) {
+    apply: function (gl) {
         gl.uniform2fv(this.location, this.glValue);
 
         this.dirty = false;
     }
+});
+
+function Vector3Uniform(value) {
+    Uniform.call(this, {
+        value,
+        boundary: 12,
+        itemSize: 3
+    });
 }
 
-class Vector3Uniform extends Uniform {
-    constructor(value = new Vec3()) {
-        super({
-            value,
-            boundary: 12,
-            itemSize: 3
-        });
-    }
+Vector3Uniform.prototype = Object.assign(Object.create(Uniform), {
+    constructor: Vector3Uniform,
 
-    set(value) {
-        super.set(value);
+    set: function (value) {
+        Uniform.prototype.set.call(this, value);
 
         this.glValue[0] = value.x;
         this.glValue[1] = value.y;
         this.glValue[2] = value.z;
-    }
+    },
 
-    apply(gl) {
+    apply: function (gl) {
         gl.uniform3fv(this.location, this.glValue);
 
         this.dirty = false;
     }
+});
+
+function Vector4Uniform(value) {
+    Uniform.call(this, {
+        value,
+        boundary: 16,
+        itemSize: 4
+    });
 }
 
-class Vector4Uniform extends Uniform {
-    constructor(value = new Vec4()) {
-        super({
-            value,
-            boundary: 16,
-            itemSize: 4
-        });
-    }
+Vector4Uniform.prototype = Object.assign(Object.create(Uniform), {
+    constructor: Vector4Uniform,
 
-    set(value) {
-        if (arraysEqual(this.glValue, value.toArray())) {
-            return;
-        }
-
-        super.set(value);
+    set: function (value) {
+        Uniform.prototype.set.call(this, value);
 
         this.glValue[0] = value.x;
         this.glValue[1] = value.y;
         this.glValue[2] = value.z;
         this.glValue[3] = value.w;
-    }
+    },
 
-    apply(gl) {
+    apply: function (gl) {
         gl.uniform4fv(this.location, this.glValue);
 
         this.dirty = false;
     }
+});
+
+function ColorUniform(value) {
+    Uniform.call(this, {
+        value,
+        boundary: 16,
+        itemSize: 3
+    });
 }
 
-class ColorUniform extends Uniform {
-    constructor(value) {
-        super( {
-            value,
-            boundary: 16,
-            itemSize: 3
-        });
-    }
+ColorUniform.prototype = Object.assign(Object.create(Uniform), {
+    constructor: ColorUniform,
 
-    set(value) {
-        super.set(value);
+    set: function (value) {
+        Uniform.prototype.set.call(this, value);
 
         this.glValue[0] = value.r;
         this.glValue[1] = value.g;
         this.glValue[2] = value.b;
-    }
+    },
 
-    apply(gl) {
+    apply: function (gl) {
         gl.uniform3fv(this.location, this.glValue);
 
         this.dirty = false;
     }
+});
+
+function Matrix3Uniform(value) {
+    Uniform.call(this, {
+        value,
+        boundary: 48,
+        itemSize: 12
+    });
 }
 
-class Matrix3Uniform extends Uniform {
-    constructor(value) {
-        super( {
-            value,
-            boundary: 48,
-            itemSize: 12
-        });
-    }
+Matrix3Uniform.prototype = Object.assign(Object.create(Uniform), {
+    constructor: Matrix3Uniform,
 
-    set(value) {
-        super.set(value);
+    set: function (value) {
+        Uniform.prototype.set.call(this, value);
 
         this.glValue.set(value.elements);
-    }
+    },
 
-    apply(gl) {
+    apply: function (gl) {
         gl.uniformMatrix3fv(this.location, false,this.glValue);
 
         this.dirty = false;
     }
+});
+
+function Matrix4Uniform(value) {
+    Uniform.call(this, {
+        value,
+        boundary: 64,
+        itemSize: 16
+    });
 }
 
-class Matrix4Uniform extends Uniform {
-    constructor(value) {
-        super( {
-            value,
-            boundary: 64,
-            itemSize: 16
-        });
-    }
+Matrix4Uniform.prototype = Object.assign(Object.create(Uniform), {
+    constructor: Matrix4Uniform,
 
-    set(value) {
-        super.set(value);
+    set: function (value) {
+        Uniform.prototype.set.call(this, value);
 
         this.glValue.set(value.elements);
-    }
+    },
 
-    apply(gl) {
+    apply: function (gl) {
         gl.uniformMatrix4fv(this.location, false,this.glValue);
 
         this.dirty = false;
     }
-}
+});
 
 export {
     Uniform,

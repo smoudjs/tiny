@@ -3,59 +3,41 @@ import { Quat } from '../math/Quat';
 import { Mat4 } from '../math/Mat4';
 import { Euler } from '../math/Euler';
 
-var _object3DId = 0;
-
-var _v1 = new Vec3();
 var _q1 = new Quat();
 var _m1 = new Mat4();
 var _target = new Vec3();
 
 var _position = new Vec3();
-var _scale = new Vec3();
-var _quaternion = new Quat();
 
-var _xAxis = new Vec3( 1, 0, 0 );
-var _yAxis = new Vec3( 0, 1, 0 );
-var _zAxis = new Vec3( 0, 0, 1 );
+function Object3D() {
+    this.parent = null;
+    this.children = [];
+    this.visible = true;
 
-var _addedEvent = { type: 'added' };
-var _removedEvent = { type: 'removed' };
+    this.matrix = new Mat4();
+    this.worldMatrix = new Mat4();
+    this.matrixAutoUpdate = true;
 
-export class Object3D {
-    constructor() {
-        this.parent = null;
-        this.children = [];
-        this.visible = true;
+    this.position = new Vec3();
+    this.quaternion = new Quat();
+    this.scale = new Vec3(1, 1, 1);
+    this.rotation = new Euler();
+    this.up = new Vec3(0, 1, 0);
 
-        this.matrix = new Mat4();
-        this.worldMatrix = new Mat4();
-        this.matrixAutoUpdate = true;
+    this.rotation._onChange( () => {
+        this.quaternion.setFromEuler( this.rotation, false );
+    });
 
-        this.position = new Vec3();
-        this.quaternion = new Quat();
-        this.scale = new Vec3(1, 1, 1);
-        this.rotation = new Euler();
-        this.up = new Vec3(0, 1, 0);
+    this.quaternion._onChange( () => {
+        this.rotation.setFromQuaternion( this.quaternion, undefined, false );
+    });
+}
 
-        this.rotation._onChange( () => {
-            this.quaternion.setFromEuler( this.rotation, false );
-        });
+Object3D.prototype = {
+    constructor: Object3D,
 
-        this.quaternion._onChange( () => {
-            this.rotation.setFromQuaternion( this.quaternion, undefined, false );
-        });
-    }
-
-    clone(recursive) {
-        return new this.constructor().copy(this, recursive);
-    }
-
-    copy() {
-
-    }
-
-    getObjectByName(name = '') {
-        let obj = null;
+    getObjectByName: function (name = '') {
+        var obj = null;
 
         this.traverse((child) => {
             if (child.name === name) {
@@ -64,25 +46,25 @@ export class Object3D {
         });
 
         return obj;
-    }
+    },
 
-    setParent(parent, notifyParent = true) {
+    setParent: function (parent, notifyParent = true) {
         if (this.parent && parent !== this.parent) this.parent.removeChild(this, false);
         this.parent = parent;
         if (notifyParent && parent) parent.add(this, false);
-    }
+    },
 
-    add(child, notifyChild = true) {
+    add: function (child, notifyChild = true) {
         if (!~this.children.indexOf(child)) this.children.push(child);
         if (notifyChild) child.setParent(this, false);
-    }
+    },
 
-    removeChild(child, notifyChild = true) {
+    removeChild: function (child, notifyChild = true) {
         if (!!~this.children.indexOf(child)) this.children.splice(this.children.indexOf(child), 1);
         if (notifyChild) child.setParent(null, false);
-    }
+    },
 
-    updateMatrixWorld(force) {
+    updateMatrixWorld: function (force) {
         if (this.matrixAutoUpdate) this.updateMatrix();
         if (this.worldMatrixNeedsUpdate || force) {
             if (this.parent === null) this.worldMatrix.copy(this.matrix);
@@ -91,32 +73,32 @@ export class Object3D {
             force = true;
         }
 
-        for (let i = 0, l = this.children.length; i < l; i++) {
+        for (var i = 0, l = this.children.length; i < l; i++) {
             this.children[i].updateMatrixWorld(force);
         }
-    }
+    },
 
-    updateMatrix() {
+    updateMatrix: function () {
         this.matrix.compose(this.position, this.quaternion, this.scale);
         this.worldMatrixNeedsUpdate = true;
-    }
+    },
 
-    traverse(callback) {
+    traverse: function (callback) {
         // Return true in callback to stop traversing children
         if (callback(this)) return;
-        for (let i = 0, l = this.children.length; i < l; i++) {
+        for (var i = 0, l = this.children.length; i < l; i++) {
             this.children[i].traverse(callback);
         }
-    }
+    },
 
-    decompose() {
+    decompose: function () {
         this.matrix.getTranslation(this.position);
         this.matrix.getRotation(this.quaternion);
         this.matrix.getScaling(this.scale);
         this.rotation.fromQuaternion(this.quaternion);
-    }
+    },
 
-    lookAt (x, y, z) {
+    lookAt: function (x, y, z) {
 
         // This method does not support objects having non-uniformly-scaled parent(s)
 
@@ -155,3 +137,5 @@ export class Object3D {
 }
 
 Tiny.Object3D = Object3D;
+
+export {Object3D};

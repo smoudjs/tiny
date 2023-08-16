@@ -1,4 +1,4 @@
-import '@smoud/tiny';
+import '@smoud/tiny/app';
 import '@smoud/tiny/3d';
 
 import App from './App';
