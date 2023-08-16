@@ -396,6 +396,8 @@ export class WebGLRenderer {
 
             node.draw({ camera, directionalLight, ambientLight });
         }
+
+        camera.projectMatrixDirty = false;
     }
 }
 

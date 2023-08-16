@@ -16,6 +16,7 @@
 
 // TODO: fit in transform feedback
 
+import {Mat4} from "../math";
 import { Vec3 } from '../math/Vec3.js';
 import {Attribute} from "./Attribute";
 
@@ -36,6 +37,7 @@ export class Geometry {
         this.VAOs = {};
 
         this.drawRange = { start: 0, count: 0 };
+        // this.attributes.instancedMatrix = { size: 16, data: new Float32Array(new Mat4().elements) };
         this.instancedCount = 0;
     }
 

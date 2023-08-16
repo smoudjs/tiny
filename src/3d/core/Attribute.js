@@ -5,6 +5,12 @@ export class Attribute {
         Object.assign(this, attrJSON);
     }
 
+    set(array, offset = 0) {
+        this.data.set(array, offset);
+
+        this.needsUpdate = true;
+    }
+
     getX(index) {
         let x = this.data[index * this.size];
 

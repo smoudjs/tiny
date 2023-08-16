@@ -1,1 +1,1 @@
-export const tinyVSthreeCubesAmount = 1000;
+export const tinyVSthreeCubesAmount = 10000;

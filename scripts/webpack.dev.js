@@ -31,7 +31,7 @@ const webpackConfig = {
 
     watch: true,
 
-    entry: path.resolve('dev/bunny-mark/index.js'),
+    entry: path.resolve('dev/tiny-3d/index.js'),
 
     output: {
         filename: '[name].js',

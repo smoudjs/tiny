@@ -36,7 +36,7 @@ export class Mesh extends Object3D {
 
     draw({ camera, directionalLight, ambientLight } = {}) {
         if (this.program.gl.renderer.state.currentProgram !== this.program.id) {
-            if (this.program.isMeshLambertMaterial) {
+            if (this.program.isMeshLambertMaterial || this.program.isInstancedMeshLambertMaterial) {
                 if (ambientLight) {
                     this.program.uniforms.ambientLight.set(
                         new Vec4(
@@ -61,7 +61,9 @@ export class Mesh extends Object3D {
                     this.program.uniforms.directionalLightDirection.set(directionalLight.position);
                 }
             }
+        }
 
+        if (camera.projectMatrixDirty) {
             this.program.uniforms.projectViewMatrix.set(camera.projectionViewMatrix);
         }
 
