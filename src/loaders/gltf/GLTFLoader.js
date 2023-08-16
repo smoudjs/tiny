@@ -2,12 +2,12 @@ import { Geometry } from '../../core/Geometry.js';
 import { Object3D } from '../../core/Object3D.js';
 import { Texture } from '../../core/Texture.js';
 import { Mesh } from '../../core/Mesh.js';
-import { MeshLambertMaterial } from "../materials";
+import { MeshLambertMaterial } from '../materials';
 import { GLTFAnimation } from './GLTFAnimation.js';
 import { GLTFSkin } from './GLTFSkin.js';
 import { Mat4 } from '../../math/Mat4.js';
 import { Vec3 } from '../../math/Vec3.js';
-import { InstancedMesh } from '../InstancedMesh.js';
+import { InstancedMesh } from '../../objects/InstancedMesh.js';
 
 // Supports
 // [x] glb
@@ -30,13 +30,13 @@ import { InstancedMesh } from '../InstancedMesh.js';
 // TODO: option to turn off GPU instancing
 
 const TYPE_ARRAY = {
-    5121: Uint8Array,
-    5122: Int16Array,
-    5123: Uint16Array,
-    5125: Uint32Array,
-    5126: Float32Array,
+    '5121': Uint8Array,
+    '5122': Int16Array,
+    '5123': Uint16Array,
+    '5125': Uint32Array,
+    '5126': Float32Array,
     'image/jpeg': Uint8Array,
-    'image/png': Uint8Array,
+    'image/png': Uint8Array
 };
 
 const TYPE_SIZE = {
@@ -46,7 +46,7 @@ const TYPE_SIZE = {
     VEC4: 4,
     MAT2: 4,
     MAT3: 9,
-    MAT4: 16,
+    MAT4: 16
 };
 
 const ATTRIBUTES = {
@@ -57,21 +57,21 @@ const ATTRIBUTES = {
     TEXCOORD_1: 'uv2',
     COLOR_0: 'color',
     WEIGHTS_0: 'skinWeight',
-    JOINTS_0: 'skinIndex',
+    JOINTS_0: 'skinIndex'
 };
 
 const TRANSFORMS = {
     translation: 'position',
     rotation: 'quaternion',
-    scale: 'scale',
+    scale: 'scale'
 };
 
-export class GLTFLoader {
-    static setBasisManager(manager) {
+var GLTFLoader = {
+    setBasisManager: function (manager) {
         this.basisManager = manager;
-    }
+    },
 
-    static async load(gl, src) {
+    load: async function (gl, src) {
         const dir = '/';
 
         // load main description json
@@ -79,13 +79,16 @@ export class GLTFLoader {
         const desc = JSON.parse(src);
 
         return await this.parse(gl, desc, dir);
-    }
+    },
 
-    static async parse(gl, desc, dir) {
-        if (desc.asset === undefined || desc.asset.version[0] < 2) console.warn('Only GLTF >=2.0 supported. Attempting to parse.');
+    parse: async function (gl, desc, dir) {
+        if (desc.asset === undefined || desc.asset.version[0] < 2)
+            console.warn('Only GLTF >=2.0 supported. Attempting to parse.');
 
         if (desc.extensionsRequired?.includes('KHR_texture_basisu') && !this.basisManager)
-            console.warn('KHR_texture_basisu extension required but no manager supplied. Use .setBasisManager()');
+            console.warn(
+                'KHR_texture_basisu extension required but no manager supplied. Use .setBasisManager()'
+            );
 
         // Load buffers async
         const buffers = await this.loadBuffers(desc, dir);
@@ -142,8 +145,8 @@ export class GLTFLoader {
             animations,
             scenes,
             scene,
-            getObjectByName: function(name = '') {
-                const {nodes} = this;
+            getObjectByName: function (name = '') {
+                const { nodes } = this;
 
                 for (let i = 0; i < nodes.length; i++) {
                     const node = nodes[i];
@@ -154,9 +157,9 @@ export class GLTFLoader {
                 }
             }
         };
-    }
+    },
 
-    static async parseDesc(src) {
+    parseDesc: async function (src) {
         if (!src.match(/\.glb/)) {
             return await fetch(src).then((res) => res.json());
         } else {
@@ -164,10 +167,10 @@ export class GLTFLoader {
                 .then((res) => res.arrayBuffer())
                 .then((glb) => this.unpackGLB(glb));
         }
-    }
+    },
 
     // From https://github.com/donmccurdy/glTF-Object3D/blob/e4108cc/packages/core/src/io/io.ts#L32
-    static unpackGLB(glb) {
+    unpackGLB: function (glb) {
         // Decode and verify GLB header.
         const header = new Uint32Array(glb, 0, 3);
         if (header[0] !== 0x46546c67) {
@@ -200,10 +203,10 @@ export class GLTFLoader {
         // Attach binary to buffer
         json.buffers[0].binary = binary;
         return json;
-    }
+    },
 
     // Threejs GLTF Loader https://github.com/mrdoob/three.js/blob/master/examples/js/loaders/GLTFLoader.js#L1085
-    static resolveURI(uri, dir) {
+    resolveURI: function (uri, dir) {
         // Invalid URI
         if (typeof uri !== 'string' || uri === '') return '';
 
@@ -223,9 +226,9 @@ export class GLTFLoader {
 
         // Relative URI
         return dir + uri;
-    }
+    },
 
-    static async loadBuffers(desc, dir) {
+    loadBuffers: async function (desc, dir) {
         if (!desc.buffers) return null;
         return await Promise.all(
             desc.buffers.map((buffer) => {
@@ -235,9 +238,9 @@ export class GLTFLoader {
                 return fetch(uri).then((res) => res.arrayBuffer());
             })
         );
-    }
+    },
 
-    static parseBufferViews(gl, desc, buffers) {
+    parseBufferViews: function (gl, desc, buffers) {
         if (!desc.bufferViews) return null;
         // Clone to leave description pure
         const bufferViews = desc.bufferViews.map((o) => Object.assign({}, o));
@@ -246,7 +249,8 @@ export class GLTFLoader {
             desc.meshes.forEach(({ primitives }) => {
                 primitives.forEach(({ attributes, indices }) => {
                     // Flag bufferView as an attribute, so it knows to create a gl buffer
-                    for (let attr in attributes) bufferViews[desc.accessors[attributes[attr]].bufferView].isAttribute = true;
+                    for (let attr in attributes)
+                        bufferViews[desc.accessors[attributes[attr]].bufferView].isAttribute = true;
 
                     if (indices === undefined) return;
                     bufferViews[desc.accessors[indices].bufferView].isAttribute = true;
@@ -283,7 +287,7 @@ export class GLTFLoader {
 
                     componentType, // optional, added from accessor above
                     mimeType, // optional, added from images above
-                    isAttribute,
+                    isAttribute
                 },
                 i
             ) => {
@@ -300,9 +304,9 @@ export class GLTFLoader {
         );
 
         return bufferViews;
-    }
+    },
 
-    static async parseImages(gl, desc, dir, bufferViews) {
+    parseImages: async function (gl, desc, dir, bufferViews) {
         if (!desc.images) return null;
         return await Promise.all(
             desc.images.map(async ({ uri, bufferView: bufferViewIndex, mimeType, name }) => {
@@ -328,14 +332,19 @@ export class GLTFLoader {
                 return image;
             })
         );
-    }
+    },
 
-    static parseTextures(gl, desc, images) {
+    parseTextures: function (gl, desc, images) {
         if (!desc.textures) return null;
         return desc.textures.map((textureInfo) => this.createTexture(gl, desc, images, textureInfo));
-    }
+    },
 
-    static createTexture(gl, desc, images, { sampler: samplerIndex, source: sourceIndex, name, extensions, extras }) {
+    createTexture: function (
+        gl,
+        desc,
+        images,
+        { sampler: samplerIndex, source: sourceIndex, name, extensions, extras }
+    ) {
         if (sourceIndex === undefined && !!extensions) {
             // Basis extension source index
             if (extensions.KHR_texture_basisu) sourceIndex = extensions.KHR_texture_basisu.source;
@@ -347,7 +356,7 @@ export class GLTFLoader {
         const options = {
             flipY: false,
             wrapS: gl.REPEAT, // Repeat by default, opposed to OGL's clamp by default
-            wrapT: gl.REPEAT,
+            wrapT: gl.REPEAT
         };
         const sampler = samplerIndex !== undefined ? desc.samplers[samplerIndex] : null;
         if (sampler) {
@@ -378,9 +387,9 @@ export class GLTFLoader {
         });
 
         return texture;
-    }
+    },
 
-    static parseMaterials(gl, desc, textures) {
+    parseMaterials: function (gl, desc, textures) {
         if (!desc.materials) return null;
         return desc.materials.map(
             ({
@@ -394,14 +403,14 @@ export class GLTFLoader {
                 emissiveFactor = [0, 0, 0],
                 alphaMode = 'OPAQUE',
                 alphaCutoff = 0.5,
-                doubleSided = false,
+                doubleSided = false
             }) => {
                 const {
                     baseColorFactor = [1, 1, 1, 1],
                     baseColorTexture,
                     metallicFactor = 1,
                     roughnessFactor = 1,
-                    metallicRoughnessTexture,
+                    metallicRoughnessTexture
                     //   extensions,
                     //   extras,
                 } = pbrMetallicRoughness;
@@ -444,19 +453,19 @@ export class GLTFLoader {
                     emissiveFactor,
                     alphaMode,
                     alphaCutoff,
-                    doubleSided,
+                    doubleSided
                 };
             }
         );
-    }
+    },
 
-    static parseSkins(gl, desc, bufferViews) {
+    parseSkins: function (gl, desc, bufferViews) {
         if (!desc.skins) return null;
         return desc.skins.map(
             ({
                 inverseBindMatrices, // optional
                 skeleton, // optional
-                joints, // required
+                joints // required
                 // name,
                 // extensions,
                 // extras,
@@ -464,13 +473,13 @@ export class GLTFLoader {
                 return {
                     inverseBindMatrices: this.parseAccessor(inverseBindMatrices, desc, bufferViews),
                     skeleton,
-                    joints,
+                    joints
                 };
             }
         );
-    }
+    },
 
-    static parseMeshes(gl, desc, bufferViews, materials, skins) {
+    parseMeshes: function (gl, desc, bufferViews, materials, skins) {
         if (!desc.meshes) return null;
         return desc.meshes.map(
             (
@@ -479,7 +488,7 @@ export class GLTFLoader {
                     weights, // optional
                     name, // optional
                     extensions, // optional
-                    extras, // optional
+                    extras // optional
                 },
                 meshIndex
             ) => {
@@ -503,43 +512,60 @@ export class GLTFLoader {
                 // For skins, return array of skin meshes to account for multiple instances
                 if (isSkin) {
                     primitives = skinIndices.map((skinIndex) => {
-                        return this.parsePrimitives(gl, primitives, desc, bufferViews, materials, 1, isLightmap).map(
-                            ({ geometry, program, mode }) => {
-                                const mesh = new GLTFSkin(gl, { skeleton: skins[skinIndex], geometry, program, mode });
-                                mesh.name = name;
-                                // TODO: support skin frustum culling
-                                mesh.frustumCulled = false;
-                                return mesh;
-                            }
-                        );
+                        return this.parsePrimitives(
+                            gl,
+                            primitives,
+                            desc,
+                            bufferViews,
+                            materials,
+                            1,
+                            isLightmap
+                        ).map(({ geometry, program, mode }) => {
+                            const mesh = new GLTFSkin(gl, {
+                                skeleton: skins[skinIndex],
+                                geometry,
+                                program,
+                                mode
+                            });
+                            mesh.name = name;
+                            // TODO: support skin frustum culling
+                            mesh.frustumCulled = false;
+                            return mesh;
+                        });
                     });
                     // For retrieval to add to node
                     primitives.instanceCount = 0;
                     primitives.numInstances = numInstances;
                 } else {
-                    primitives = this.parsePrimitives(gl, primitives, desc, bufferViews, materials, numInstances, isLightmap).map(
-                        ({ geometry, program, mode }) => {
-                            // InstancedMesh class has custom frustum culling for instances
-                            const meshConstructor = geometry.attributes.instanceMatrix ? InstancedMesh : Mesh;
-                            const mesh = new meshConstructor(geometry, program, { mode });
-                            mesh.name = name;
-                            // Tag mesh so that nodes can add their transforms to the instance attribute
-                            mesh.numInstances = numInstances;
-                            return mesh;
-                        }
-                    );
+                    primitives = this.parsePrimitives(
+                        gl,
+                        primitives,
+                        desc,
+                        bufferViews,
+                        materials,
+                        numInstances,
+                        isLightmap
+                    ).map(({ geometry, program, mode }) => {
+                        // InstancedMesh class has custom frustum culling for instances
+                        const meshConstructor = geometry.attributes.instanceMatrix ? InstancedMesh : Mesh;
+                        const mesh = new meshConstructor(geometry, program, { mode });
+                        mesh.name = name;
+                        // Tag mesh so that nodes can add their transforms to the instance attribute
+                        mesh.numInstances = numInstances;
+                        return mesh;
+                    });
                 }
 
                 return {
                     primitives,
                     weights,
-                    name,
+                    name
                 };
             }
         );
-    }
+    },
 
-    static parsePrimitives(gl, primitives, desc, bufferViews, materials, numInstances, isLightmap) {
+    parsePrimitives: function (gl, primitives, desc, bufferViews, materials, numInstances, isLightmap) {
         return primitives.map(
             ({
                 attributes, // required
@@ -548,7 +574,7 @@ export class GLTFLoader {
                 mode = 4, // optional
                 targets, // optional
                 extensions, // optional
-                extras, // optional
+                extras // optional
             }) => {
                 // TODO: materials
                 const program = new MeshLambertMaterial();
@@ -565,7 +591,10 @@ export class GLTFLoader {
 
                 // Add each attribute found in primitive
                 for (let attr in attributes) {
-                    geometry.addAttribute(ATTRIBUTES[attr], this.parseAccessor(attributes[attr], desc, bufferViews));
+                    geometry.addAttribute(
+                        ATTRIBUTES[attr],
+                        this.parseAccessor(attributes[attr], desc, bufferViews)
+                    );
                 }
 
                 // Add index attribute if found
@@ -579,7 +608,7 @@ export class GLTFLoader {
                     geometry.addAttribute('instanceMatrix', {
                         instanced: 1,
                         size: 16,
-                        data: new Float32Array(numInstances * 16),
+                        data: new Float32Array(numInstances * 16)
                     });
                 }
 
@@ -589,20 +618,20 @@ export class GLTFLoader {
                     geometry.addAttribute('lightmapScaleOffset', {
                         instanced: 1,
                         size: 4,
-                        data: new Float32Array(numInstances * 4),
+                        data: new Float32Array(numInstances * 4)
                     });
                 }
 
                 return {
                     geometry,
                     program,
-                    mode,
+                    mode
                 };
             }
         );
-    }
+    },
 
-    static parseAccessor(index, desc, bufferViews) {
+    parseAccessor: function (index, desc, bufferViews) {
         // TODO: init missing bufferView with 0s
         // TODO: support sparse
 
@@ -615,7 +644,7 @@ export class GLTFLoader {
             type, // required
             min, // optional
             max, // optional
-            sparse, // optional
+            sparse // optional
             // name, // optional
             // extensions, // optional
             // extras, // optional
@@ -627,7 +656,7 @@ export class GLTFLoader {
             byteOffset: bufferByteOffset = 0,
             // byteLength, // applied in parseBufferViews
             byteStride = 0,
-            target,
+            target
             // name,
             // extensions,
             // extras,
@@ -675,11 +704,11 @@ export class GLTFLoader {
             offset: byteOffset,
             count,
             min,
-            max,
+            max
         };
-    }
+    },
 
-    static parseNodes(gl, desc, meshes, skins, images) {
+    parseNodes: function (gl, desc, meshes, skins, images) {
         if (!desc.nodes) return null;
         const nodes = desc.nodes.map(
             ({
@@ -694,7 +723,7 @@ export class GLTFLoader {
                 weights, // optional
                 name, // optional
                 extensions, // optional
-                extras, // optional
+                extras // optional
             }) => {
                 const node = new Object3D();
                 if (name) node.name = name;
@@ -703,7 +732,9 @@ export class GLTFLoader {
 
                 // Need to attach to node as may have same material but different lightmap
                 if (extras && extras.lightmapTexture !== undefined) {
-                    extras.lightmapTexture.texture = this.createTexture(gl, desc, images, { source: extras.lightmapTexture.index });
+                    extras.lightmapTexture.texture = this.createTexture(gl, desc, images, {
+                        source: extras.lightmapTexture.index
+                    });
                 }
 
                 // Apply transformations
@@ -726,13 +757,18 @@ export class GLTFLoader {
                 // add mesh if included
                 if (meshIndex !== undefined) {
                     if (isSkin) {
-                        meshes[meshIndex].primitives[meshes[meshIndex].primitives.instanceCount].forEach((mesh) => {
-                            mesh.extras = extras;
-                            mesh.setParent(node);
-                        });
+                        meshes[meshIndex].primitives[meshes[meshIndex].primitives.instanceCount].forEach(
+                            (mesh) => {
+                                mesh.extras = extras;
+                                mesh.setParent(node);
+                            }
+                        );
                         meshes[meshIndex].primitives.instanceCount++;
                         // Remove properties once all instances added
-                        if (meshes[meshIndex].primitives.instanceCount === meshes[meshIndex].primitives.numInstances) {
+                        if (
+                            meshes[meshIndex].primitives.instanceCount ===
+                            meshes[meshIndex].primitives.numInstances
+                        ) {
                             delete meshes[meshIndex].primitives.numInstances;
                             delete meshes[meshIndex].primitives.instanceCount;
                         }
@@ -750,11 +786,17 @@ export class GLTFLoader {
                                 }
                                 if (mesh.geometry.attributes.instanceMatrix) {
                                     isInstancedMatrix = true;
-                                    node.matrix.toArray(mesh.geometry.attributes.instanceMatrix.data, mesh.instanceCount * 16);
+                                    node.matrix.toArray(
+                                        mesh.geometry.attributes.instanceMatrix.data,
+                                        mesh.instanceCount * 16
+                                    );
                                 }
 
                                 if (mesh.geometry.attributes.lightmapScaleOffset) {
-                                    mesh.geometry.attributes.lightmapScaleOffset.data.set(extras.lightmap_scale_offset, mesh.instanceCount * 4);
+                                    mesh.geometry.attributes.lightmapScaleOffset.data.set(
+                                        extras.lightmap_scale_offset,
+                                        mesh.instanceCount * 4
+                                    );
                                 }
 
                                 mesh.instanceCount++;
@@ -812,29 +854,31 @@ export class GLTFLoader {
         });
 
         return nodes;
-    }
+    },
 
-    static populateSkins(skins, nodes) {
+    populateSkins: function (skins, nodes) {
         if (!skins) return;
         skins.forEach((skin) => {
             skin.joints = skin.joints.map((i, index) => {
                 const joint = nodes[i];
                 joint.skin = skin;
-                joint.bindInverse = new Mat4(...skin.inverseBindMatrices.data.slice(index * 16, (index + 1) * 16));
+                joint.bindInverse = new Mat4(
+                    ...skin.inverseBindMatrices.data.slice(index * 16, (index + 1) * 16)
+                );
                 return joint;
             });
             if (skin.skeleton) skin.skeleton = nodes[skin.skeleton];
         });
-    }
+    },
 
-    static parseAnimations(gl, desc, nodes, bufferViews) {
+    parseAnimations: function (gl, desc, nodes, bufferViews) {
         if (!desc.animations) return null;
         return desc.animations.map(
             (
                 {
                     channels, // required
                     samplers, // required
-                    name, // optional
+                    name // optional
                     // extensions, // optional
                     // extras,  // optional
                 },
@@ -843,21 +887,21 @@ export class GLTFLoader {
                 const data = channels.map(
                     ({
                         sampler: samplerIndex, // required
-                        target, // required
+                        target // required
                         // extensions, // optional
                         // extras, // optional
                     }) => {
                         const {
                             input: inputIndex, // required
                             interpolation = 'LINEAR',
-                            output: outputIndex, // required
+                            output: outputIndex // required
                             // extensions, // optional
                             // extras, // optional
                         } = samplers[samplerIndex];
 
                         const {
                             node: nodeIndex, // optional - TODO: when is it not included?
-                            path, // required
+                            path // required
                             // extensions, // optional
                             // extras, // optional
                         } = target;
@@ -876,27 +920,27 @@ export class GLTFLoader {
                             transform,
                             interpolation,
                             times,
-                            values,
+                            values
                         };
                     }
                 );
 
                 return {
                     name,
-                    animation: new GLTFAnimation(data),
+                    animation: new GLTFAnimation(data)
                 };
             }
         );
-    }
+    },
 
-    static parseScenes(desc, nodes) {
+    parseScenes: function (desc, nodes) {
         if (!desc.scenes) return null;
         return desc.scenes.map(
             ({
                 nodes: nodesIndices = [],
                 name, // optional
                 extensions,
-                extras,
+                extras
             }) => {
                 const scene = nodesIndices.reduce((map, i) => {
                     // Don't add null nodes (instanced transforms)
@@ -907,13 +951,13 @@ export class GLTFLoader {
                 return scene;
             }
         );
-    }
+    },
 
-    static parseLights(gl, desc, nodes, scenes) {
+    parseLights: function (gl, desc, nodes, scenes) {
         const lights = {
             directional: [],
             point: [],
-            spot: [],
+            spot: []
         };
 
         // Update matrices on root nodes
@@ -929,7 +973,7 @@ export class GLTFLoader {
             const lightDesc = lightsDescArray[lightIndex];
             const light = {
                 name: lightDesc.name || '',
-                color: { value: new Vec3().set(lightDesc.color || 1) },
+                color: { value: new Vec3().set(lightDesc.color || 1) }
             };
             // Apply intensity directly to color
             if (lightDesc.intensity !== undefined) light.color.value.multiply(lightDesc.intensity);
@@ -954,4 +998,6 @@ export class GLTFLoader {
 
         return lights;
     }
-}
+};
+
+export { GLTFLoader };

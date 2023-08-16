@@ -3,15 +3,15 @@
 // TODO: make scroll zoom more accurate than just >/< zero
 // TODO: be able to pass in new camera position
 
-import { Vec3 } from '../math/Vec3.js';
-import { Vec2 } from '../math/Vec2.js';
+var Vec3 = Tiny.Vec3;
+var Vec2 = Tiny.Vec2;
 
 const STATE = { NONE: -1, ROTATE: 0, DOLLY: 1, PAN: 2, DOLLY_PAN: 3 };
 const tempVec3 = new Vec3();
 const tempVec2a = new Vec2();
 const tempVec2b = new Vec2();
 
-export function Orbit(
+export function OrbitControls(
     object,
     {
         element = document,
@@ -33,7 +33,7 @@ export function Orbit(
         minAzimuthAngle = -Infinity,
         maxAzimuthAngle = Infinity,
         minDistance = 0,
-        maxDistance = Infinity,
+        maxDistance = Infinity
     } = {}
 ) {
     this.enabled = enabled;
@@ -58,7 +58,9 @@ export function Orbit(
     offset.copy(object.position).subVectors(offset, this.target);
     spherical.radius = sphericalTarget.radius = offset.length();
     spherical.theta = sphericalTarget.theta = Math.atan2(offset.x, offset.z);
-    spherical.phi = sphericalTarget.phi = Math.acos(Math.min(Math.max(offset.y / sphericalTarget.radius, -1), 1));
+    spherical.phi = sphericalTarget.phi = Math.acos(
+        Math.min(Math.max(offset.y / sphericalTarget.radius, -1), 1)
+    );
 
     this.offset = offset;
 
@@ -75,7 +77,10 @@ export function Orbit(
         // apply boundaries
         sphericalTarget.theta = Math.max(minAzimuthAngle, Math.min(maxAzimuthAngle, sphericalTarget.theta));
         sphericalTarget.phi = Math.max(minPolarAngle, Math.min(maxPolarAngle, sphericalTarget.phi));
-        sphericalTarget.radius = Math.max(this.minDistance, Math.min(this.maxDistance, sphericalTarget.radius));
+        sphericalTarget.radius = Math.max(
+            this.minDistance,
+            Math.min(this.maxDistance, sphericalTarget.radius)
+        );
 
         // ease values
         spherical.phi += (sphericalTarget.phi - spherical.phi) * ease;
@@ -95,6 +100,8 @@ export function Orbit(
         object.position.copy(this.target).add(offset);
         object.lookAt(this.target);
 
+        object.updateProjectionMatrix();
+
         // Apply inertia to values
         sphericalDelta.theta *= inertia;
         sphericalDelta.phi *= inertia;
@@ -106,10 +113,12 @@ export function Orbit(
 
     // Updates internals with new position
     this.forcePosition = () => {
-        offset.copy(object.position).subVectors(this.target);
+        offset.copy(object.position).sub(this.target);
         spherical.radius = sphericalTarget.radius = offset.distance();
         spherical.theta = sphericalTarget.theta = Math.atan2(offset.x, offset.z);
-        spherical.phi = sphericalTarget.phi = Math.acos(Math.min(Math.max(offset.y / sphericalTarget.radius, -1), 1));
+        spherical.phi = sphericalTarget.phi = Math.acos(
+            Math.min(Math.max(offset.y / sphericalTarget.radius, -1), 1)
+        );
         object.lookAt(this.target);
     };
 
@@ -141,8 +150,8 @@ export function Orbit(
 
     const pan = (deltaX, deltaY) => {
         let el = element === document ? document.body : element;
-        tempVec3.copy(object.position).subVectors(this.target);
-        let targetDistance = tempVec3.distance();
+        tempVec3.copy(object.position).sub(this.target);
+        let targetDistance = tempVec3.length();
         targetDistance *= Math.tan((((object.fov || 45) / 2) * Math.PI) / 180.0);
         panLeft((2 * deltaX * targetDistance) / el.clientHeight, object.matrix);
         panUp((2 * deltaY * targetDistance) / el.clientHeight, object.matrix);

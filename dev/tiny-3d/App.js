@@ -2,6 +2,7 @@ import {Mat4, Vec3} from "../../src/3d";
 import {InstancedMeshLambertMaterial} from "../../src/3d/extras/materials/InstancedMeshLambertMaterial";
 import {tinyVSthreeCubesAmount} from "../constants";
 import resources from "./resources";
+import {Orbit} from '../../src/3d/extras/Orbit';
 
 const random = (s = 5) => {
     return (Math.random() - 0.5) * s;
@@ -83,6 +84,8 @@ export default class BunnyApp extends Tiny.App {
 
         this.worldCamera.position.set(10, 10, 10);
         this.worldCamera.lookAt(0, 0, 0);
+
+        this.control = new Orbit(this.worldCamera, { element: view })
     }
 
     preload() {
@@ -104,7 +107,7 @@ export default class BunnyApp extends Tiny.App {
             new Tiny.BoxGeometry(),
             new Tiny.MeshLambertMaterial(
                 {
-                    color: new Tiny.Color(1, 0, 0)
+                    color: new Tiny.Color(1, 1, 0)
                 }
             )
         );
@@ -126,6 +129,8 @@ export default class BunnyApp extends Tiny.App {
         );
 
         const {box, world, instancedMesh} = this;
+
+        box.position.x = 10;
 
         const testMatrixes = [];
 
@@ -170,7 +175,7 @@ export default class BunnyApp extends Tiny.App {
 
         // instancedMesh.geometry.attributes.instancedMatrix.needsUpdate = true;
 
-        // world.add(box);
+        world.add(box);
         world.add(instancedMesh);
 
         // aLofOFBoxesSimulation(tinyVSthreeCubesAmount);
@@ -185,9 +190,10 @@ export default class BunnyApp extends Tiny.App {
     update(time, delta) {
         delta *= 0.001;
         this.time = time;
+        this.control.update();
 
-        // this.box.rotation.x += delta;
-        // this.box.rotation.z += delta;
+        this.box.rotation.x += delta;
+        this.box.rotation.z += delta;
     }
 
     render() {

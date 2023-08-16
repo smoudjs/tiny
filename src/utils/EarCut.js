@@ -622,32 +622,32 @@ function Node(i, x, y) {
 
 // return a percentage difference between the polygon area and its triangulation area;
 // used to verify correctness of triangulation
-EarCut.deviation = function (data, holeIndices, dim, triangles) {
-    var hasHoles = holeIndices && holeIndices.length;
-    var outerLen = hasHoles ? holeIndices[0] * dim : data.length;
+// EarCut.deviation = function (data, holeIndices, dim, triangles) {
+//     var hasHoles = holeIndices && holeIndices.length;
+//     var outerLen = hasHoles ? holeIndices[0] * dim : data.length;
 
-    var polygonArea = Math.abs(signedArea(data, 0, outerLen, dim));
-    if (hasHoles) {
-        for (var i = 0, len = holeIndices.length; i < len; i++) {
-            var start = holeIndices[i] * dim;
-            var end = i < len - 1 ? holeIndices[i + 1] * dim : data.length;
-            polygonArea -= Math.abs(signedArea(data, start, end, dim));
-        }
-    }
+//     var polygonArea = Math.abs(signedArea(data, 0, outerLen, dim));
+//     if (hasHoles) {
+//         for (var i = 0, len = holeIndices.length; i < len; i++) {
+//             var start = holeIndices[i] * dim;
+//             var end = i < len - 1 ? holeIndices[i + 1] * dim : data.length;
+//             polygonArea -= Math.abs(signedArea(data, start, end, dim));
+//         }
+//     }
 
-    var trianglesArea = 0;
-    for (i = 0; i < triangles.length; i += 3) {
-        var a = triangles[i] * dim;
-        var b = triangles[i + 1] * dim;
-        var c = triangles[i + 2] * dim;
-        trianglesArea += Math.abs(
-            (data[a] - data[c]) * (data[b + 1] - data[a + 1]) -
-            (data[a] - data[b]) * (data[c + 1] - data[a + 1]));
-    }
+//     var trianglesArea = 0;
+//     for (i = 0; i < triangles.length; i += 3) {
+//         var a = triangles[i] * dim;
+//         var b = triangles[i + 1] * dim;
+//         var c = triangles[i + 2] * dim;
+//         trianglesArea += Math.abs(
+//             (data[a] - data[c]) * (data[b + 1] - data[a + 1]) -
+//             (data[a] - data[b]) * (data[c + 1] - data[a + 1]));
+//     }
 
-    return polygonArea === 0 && trianglesArea === 0 ? 0 :
-        Math.abs((trianglesArea - polygonArea) / polygonArea);
-};
+//     return polygonArea === 0 && trianglesArea === 0 ? 0 :
+//         Math.abs((trianglesArea - polygonArea) / polygonArea);
+// };
 
 function signedArea(data, start, end, dim) {
     var sum = 0;
@@ -659,21 +659,21 @@ function signedArea(data, start, end, dim) {
 }
 
 // turn a polygon in a multi-dimensional array form (e.g. as in GeoJSON) into a form Earcut accepts
-EarCut.flatten = function (data) {
-    var dim = data[0][0].length,
-        result = {vertices: [], holes: [], dimensions: dim},
-        holeIndex = 0;
+// EarCut.flatten = function (data) {
+//     var dim = data[0][0].length,
+//         result = {vertices: [], holes: [], dimensions: dim},
+//         holeIndex = 0;
 
-    for (var i = 0; i < data.length; i++) {
-        for (var j = 0; j < data[i].length; j++) {
-            for (var d = 0; d < dim; d++) result.vertices.push(data[i][j][d]);
-        }
-        if (i > 0) {
-            holeIndex += data[i - 1].length;
-            result.holes.push(holeIndex);
-        }
-    }
-    return result;
-};
+//     for (var i = 0; i < data.length; i++) {
+//         for (var j = 0; j < data[i].length; j++) {
+//             for (var d = 0; d < dim; d++) result.vertices.push(data[i][j][d]);
+//         }
+//         if (i > 0) {
+//             holeIndex += data[i - 1].length;
+//             result.holes.push(holeIndex);
+//         }
+//     }
+//     return result;
+// };
 
 export { EarCut };

@@ -8,4 +8,4 @@ export * from './Euler';
 export * from './Mat4';
 export * from './Mat3';
 
-export * from './Color';
+export * from '../../math/Color';

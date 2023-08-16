@@ -11,27 +11,31 @@ const tmpQuatB = new Quat();
 const tmpQuatC = new Quat();
 const tmpQuatD = new Quat();
 
-export class GLTFAnimation {
-    constructor(data, weight = 1) {
-        this.data = data;
-        this.elapsed = 0;
-        this.weight = weight;
+function GLTFAnimation(data, weight) {
+    this.data = data;
+    this.elapsed = 0;
+    this.weight = weight || 1;
 
-        // Set to false to not apply modulo to elapsed against duration
-        this.loop = true;
+    // Set to false to not apply modulo to elapsed against duration
+    this.loop = true;
 
-        // Find starting time as exports from blender (perhaps others too) don't always start from 0
-        this.startTime = data.reduce((a, { times }) => Math.min(a, times[0]), Infinity);
-        // Get largest final time in all channels to calculate duration
-        this.endTime = data.reduce((a, { times }) => Math.max(a, times[times.length - 1]), 0);
-        this.duration = this.endTime - this.startTime;
-    }
+    // Find starting time as exports from blender (perhaps others too) don't always start from 0
+    this.startTime = data.reduce((a, op) => Math.min(a, op.times[0]), Infinity);
+    // Get largest final time in all channels to calculate duration
+    this.endTime = data.reduce((a, op) => Math.max(a, op.times[op.times.length - 1]), 0);
+    this.duration = this.endTime - this.startTime;
+}
 
-    update(totalWeight = 1, isSet) {
+GLTFAnimation.prototype.constructor = GLTFAnimation;
+
+Object.assign(GLTFAnimation.prototype, {
+    update: function (totalWeight, isSet) {
+        totalWeight = totalWeight || 1;
         const weight = isSet ? 1 : this.weight / totalWeight;
         const elapsed = !this.duration
             ? 0
-            : (this.loop ? this.elapsed % this.duration : Math.min(this.elapsed, this.duration - 0.001)) + this.startTime;
+            : (this.loop ? this.elapsed % this.duration : Math.min(this.elapsed, this.duration - 0.001)) +
+              this.startTime;
 
         this.data.forEach(({ node, transform, interpolation, times, values }) => {
             if (!this.duration) {
@@ -97,9 +101,9 @@ export class GLTFAnimation {
             if (size === 4) node[transform].slerp(prevVal, weight);
             else node[transform].lerp(prevVal, weight);
         });
-    }
+    },
 
-    cubicSplineInterpolate(t, prevVal, prevTan, nextTan, nextVal) {
+    cubicSplineInterpolate: function (t, prevVal, prevTan, nextTan, nextVal) {
         const t2 = t * t;
         const t3 = t2 * t;
 
@@ -114,4 +118,6 @@ export class GLTFAnimation {
 
         return prevVal;
     }
-}
+});
+
+export { GLTFAnimation };

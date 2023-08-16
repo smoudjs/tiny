@@ -5,18 +5,26 @@ import { Texture } from '../../core/Texture.js';
 const tempMat4 = new Mat4();
 const identity = new Mat4();
 
-export class GLTFSkin extends Mesh {
-    constructor(gl, { skeleton, geometry, program, mode = gl.TRIANGLES } = {}) {
-        super(gl, { geometry, program, mode });
-        this.skeleton = skeleton;
-        this.program = program;
-        this.createBoneTexture();
-        // this.animations = [];
-    }
+var GLTFSkin = function (skeleton, geometry, program, mode) {
+    var mode = op.mode || gl.TRIANGLES;
+    Mesh.call(this, gl, { geometry: op.geometry, program: op.program, mode: mode });
 
-    createBoneTexture() {
+    this.skeleton = op.skeleton;
+    this.program = op.program;
+    this.createBoneTexture();
+    // this.animations = [];
+};
+
+GLTFSkin.prototype = Object.create(Mesh.prototype);
+GLTFSkin.prototype.constructor = GLTFSkin;
+
+Object.assign(GLTFSkin.prototype, {
+    createBoneTexture: function () {
         if (!this.skeleton.joints.length) return;
-        const size = Math.max(4, Math.pow(2, Math.ceil(Math.log(Math.sqrt(this.skeleton.joints.length * 4)) / Math.LN2)));
+        const size = Math.max(
+            4,
+            Math.pow(2, Math.ceil(Math.log(Math.sqrt(this.skeleton.joints.length * 4)) / Math.LN2))
+        );
         this.boneMatrices = new Float32Array(size * size * 4);
         this.boneTextureSize = size;
         this.boneTexture = new Texture(this.gl, {
@@ -27,9 +35,9 @@ export class GLTFSkin extends Mesh {
             minFilter: this.gl.NEAREST,
             magFilter: this.gl.NEAREST,
             flipY: false,
-            width: size,
+            width: size
         });
-    }
+    },
 
     // addAnimation(data) {
     //     const animation = new Animation({ objects: this.bones, data });
@@ -48,7 +56,7 @@ export class GLTFSkin extends Mesh {
     //     });
     // }
 
-    updateUniforms() {
+    updateUniforms: function () {
         // Update bone texture
         this.skeleton.joints.forEach((bone, i) => {
             // Find difference between current and bind pose
@@ -56,13 +64,13 @@ export class GLTFSkin extends Mesh {
             this.boneMatrices.set(tempMat4, i * 16);
         });
         if (this.boneTexture) this.boneTexture.needsUpdate = true;
-    }
+    },
 
-    draw({ camera } = {}) {
+    draw: function () {
         if (!this.program.uniforms.boneTexture) {
             Object.assign(this.program.uniforms, {
                 boneTexture: { value: this.boneTexture },
-                boneTextureSize: { value: this.boneTextureSize },
+                boneTextureSize: { value: this.boneTextureSize }
             });
         }
 
@@ -73,9 +81,11 @@ export class GLTFSkin extends Mesh {
         const _worldMatrix = this.worldMatrix;
         this.worldMatrix = identity;
 
-        super.draw({ camera });
+        super.draw();
 
         // Switch back to leave identity untouched
         this.worldMatrix = _worldMatrix;
     }
-}
+});
+
+export { GLTFSkin };
