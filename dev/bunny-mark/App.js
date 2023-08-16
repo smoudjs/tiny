@@ -55,7 +55,7 @@ export default class BunnyApp extends Tiny.App {
 
         this.stats = new Stats();
         this.stats.domElement.id = 'stats';
-        document.body.append(this.stats.domElement);
+        document.body.appendChild(this.stats.domElement);
 
         this.counter = counter;
 

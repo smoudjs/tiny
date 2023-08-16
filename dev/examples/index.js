@@ -14,7 +14,7 @@ import '../../examples/js/App3D';
 import '../../examples/js/objects/MiniMap';
 import '../../examples/libs/howler';
 
-import App from './Progress';
+import App from './Extended';
 
 window.addEventListener('load', () => {
     const app = new App(window.innerWidth, window.innerHeight, 'game');

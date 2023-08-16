@@ -54,7 +54,7 @@ var WebGLRenderer = function (width, height, options) {
      * @type Number
      * @default 1
      */
-    this.resolution = options.resolution;
+    this.resolution = this._resolution = options.resolution;
 
     // do a catch.. only 1 webGL renderer..
 
@@ -328,13 +328,13 @@ WebGLRenderer.prototype.render = function (scene) {
     if (this.contextLost) return;
 
     // if rendering a new scene clear the batches..
-    if (this.__scene !== scene) {
-        if (scene.interactive) scene.interactionManager.removeEvents();
+    // if (this.__scene !== scene) {
+    //     if (scene.interactive) scene.interactionManager.removeEvents();
 
-        // TODO make this work
-        // dont think this is needed any more?
-        this.__scene = scene;
-    }
+    //     // TODO make this work
+    //     // dont think this is needed any more?
+    //     this.__scene = scene;
+    // }
 
     // update the scene graph
     scene.updateTransform();
@@ -342,21 +342,21 @@ WebGLRenderer.prototype.render = function (scene) {
     var gl = this.gl;
 
     // interaction
-    if (scene._interactive) {
-        //need to add some events!
-        if (!scene._interactiveEventsAdded) {
-            scene._interactiveEventsAdded = true;
-            scene.interactionManager.setTarget(this);
-        }
-    } else {
-        if (scene._interactiveEventsAdded) {
-            scene._interactiveEventsAdded = false;
-            scene.interactionManager.setTarget(this);
-        }
-    }
+    // if (scene._interactive) {
+    //     //need to add some events!
+    //     if (!scene._interactiveEventsAdded) {
+    //         scene._interactiveEventsAdded = true;
+    //         scene.interactionManager.setTarget(this);
+    //     }
+    // } else {
+    //     if (scene._interactiveEventsAdded) {
+    //         scene._interactiveEventsAdded = false;
+    //         scene.interactionManager.setTarget(this);
+    //     }
+    // }
 
     // -- Does this need to be set every frame? -- //
-    gl.viewport(0, 0, this.width, this.height);
+    gl.viewport(0, 0, this._width, this._height);
 
     // make sure we are bound to the main frame buffer
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -392,7 +392,7 @@ WebGLRenderer.prototype.renderObject = function (displayObject, projection, buff
     this.flipY = buffer ? -1 : 1;
 
     // set the default projection
-    this.projection = projection;
+    this.projection = projection || this._projection;
 
     //set the default offset
     // this.offset = this.offset;
@@ -418,23 +418,36 @@ WebGLRenderer.prototype.renderObject = function (displayObject, projection, buff
  * @param height {Number} the new height of the webGL view
  */
 WebGLRenderer.prototype.resize = function (width, height) {
-    this.width = Math.floor(width * this.resolution);
-    this.height = Math.floor(height * this.resolution);
+    this.width = width;
+    this.height = height;
+
+    this._width = width = Math.floor(width * this._resolution);
+    this._height = height = Math.floor(height * this._resolution);
 
     var view = this.view;
 
-    view.width = this.width;
-    view.height = this.height;
+    view.width = width;
+    view.height = height;
 
     if (this.autoResize) {
-        view.style.width = width + 'px';
-        view.style.height = height + 'px';
+        view.style.width = this.width + 'px';
+        view.style.height = this.height + 'px';
     }
 
-    this.gl.viewport(0, 0, this.width, this.height);
+    this.gl.viewport(0, 0, width, height);
 
-    this._projection.x = this.width / 2 / this.resolution;
-    this._projection.y = -this.height / 2 / this.resolution;
+    this._projection.x = this.width / 2;
+    this._projection.y = -this.height / 2;
+};
+
+WebGLRenderer.prototype.setPixelRatio = function (resolution) {
+    this._resolution = this.resolution = resolution;
+    this.resize(this.width, this.height);
+
+    // var view = this.domElement;
+
+    // view.width = Math.floor(this.width * this._resolution);
+    // view.height = Math.floor(this.height * this._resolution);
 };
 
 /**

@@ -1,6 +1,6 @@
 {
   "name": "@smoud/tiny",
-  "version": "3.0.1",
+  "version": "3.0.3",
   "description": "Fast and tiny JavaScript library for HTML5 game and playable ads creation.",
   "main": "./dist/tiny.js",
   "module": "./dist/tiny.esm.js",
@@ -11,7 +11,7 @@
     },
     "./examples/*": "./examples/jsm/*",
     "./src/*": "./src/*",
-    "./app": "./src/app.js",
+    "./app": "./src/tiny.app.js",
     "./2d": "./src/2d.js",
     "./3d": "./src/3d.js",
     "./webgl": "./src/webgl.js",
@@ -29,9 +29,6 @@
     "examples/jsm",
     "README.md"
   ],
-  "directories": {
-    "examples": "examples"
-  },
   "scripts": {
     "dev": "node ./scripts/webpack.dev.js",
     "build": "node ./scripts/webpack.build.js",

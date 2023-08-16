@@ -1,4 +1,4 @@
-export const VERSION = '3.0.0';
+export const VERSION = '3.0.3';
 
 export const BLEND_MODES = {
     NORMAL: 0,

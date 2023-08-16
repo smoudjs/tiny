@@ -348,12 +348,12 @@ Object.assign(TilingSprite.prototype, {
         var targetWidth, targetHeight;
 
         //  Check that the frame is the same size as the base texture.
-        var isFrame = frame.width !== texture.base.width || frame.height !== texture.base.height;
+        // var isFrame = frame.width !== texture.base.width || frame.height !== texture.base.height;
 
         var newTextureRequired = false;
 
         if (!forcePowerOfTwo) {
-            if (isFrame) {
+            // if (isFrame) {
                 if (texture.trim) {
                     targetWidth = texture.trim.width;
                     targetHeight = texture.trim.height;
@@ -363,23 +363,25 @@ Object.assign(TilingSprite.prototype, {
                 }
 
                 newTextureRequired = true;
-            }
+            // }
         } else {
             targetWidth = Tiny.Math.getNextPow2(frame.width);
             targetHeight = Tiny.Math.getNextPow2(frame.height);
 
             //  If the BaseTexture dimensions don't match the texture frame then we need a new texture anyway because it's part of a texture atlas
-            if (
-                frame.width !== targetWidth ||
-                frame.height !== targetHeight ||
-                texture.base.width !== targetWidth ||
-                texture.base.height ||
-                targetHeight
-            )
+            // if (
+            //     frame.width !== targetWidth ||
+            //     frame.height !== targetHeight ||
+            //     texture.base.width !== targetWidth ||
+            //     texture.base.height ||
+            //     targetHeight
+            // )
                 newTextureRequired = true;
         }
 
-        if (newTextureRequired) {
+        console.log(newTextureRequired);
+
+        // if (newTextureRequired) {
             var canvasBuffer;
 
             if (this.tilingTexture && this.tilingTexture.isTiling) {
@@ -410,18 +412,18 @@ Object.assign(TilingSprite.prototype, {
 
             this.tileScaleOffset.x = frame.width / targetWidth;
             this.tileScaleOffset.y = frame.height / targetHeight;
-        } else {
-            //  TODO - switching?
-            if (this.tilingTexture && this.tilingTexture.isTiling) {
-                // destroy the tiling texture!
-                // TODO could store this somewhere?
-                this.tilingTexture.destroy(true);
-            }
+        // } else {
+        //     //  TODO - switching?
+        //     if (this.tilingTexture && this.tilingTexture.isTiling) {
+        //         // destroy the tiling texture!
+        //         // TODO could store this somewhere?
+        //         this.tilingTexture.destroy(true);
+        //     }
 
-            this.tileScaleOffset.x = 1;
-            this.tileScaleOffset.y = 1;
-            this.tilingTexture = texture;
-        }
+        //     this.tileScaleOffset.x = 1;
+        //     this.tileScaleOffset.y = 1;
+        //     this.tilingTexture = texture;
+        // }
 
         this.refreshTexture = false;
 

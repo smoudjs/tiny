@@ -22,10 +22,10 @@ const webpackConfig = {
 
     resolve: {
         alias: {
-            '@smoud/tiny/app': path.resolve('src/app.js'),
-            '@smoud/tiny/2d': path.resolve('src/2d.js'),
+            '@smoud/tiny/app': path.resolve('src/tiny.app.js'),
+            '@smoud/tiny/2d': path.resolve('src/tiny.2d.js'),
             '@smoud/tiny/webgl': path.resolve('src/webgl.js'),
-            '@smoud/tiny/3d': path.resolve('src/3d'),
+            '@smoud/tiny/3d': path.resolve('src/tiny.3d.js'),
             '@smoud/tiny/extras': path.resolve('extras'),
             '@smoud/tiny/plugins': path.resolve('plugins'),
             '@smoud/tiny': path.resolve('src')

@@ -23,23 +23,23 @@ export default [
     /**
      * 100000 - 52-53   150000 - 36 
      */
-    // {
-    //     key: 'rabbitv3_ash',
-    //     src: sheetv3,
-    //     type: 'spritesheet',
-    //     data: [
-    //         { x: 2, y: 47, width: 26, height: 37 },
-    //         { x: 2, y: 86, width: 26, height: 37 },
-    //         { x: 2, y: 125, width: 26, height: 37 },
-    //         { x: 2, y: 164, width: 26, height: 37 },
-    //         { x: 2, y: 2, width: 26, height: 37 }
-    //     ]
-    // }
+    {
+        key: 'rabbitv3_ash',
+        src: sheetv3,
+        type: 'spritesheet',
+        data: [
+            { x: 2, y: 47, width: 26, height: 37 },
+            { x: 2, y: 86, width: 26, height: 37 },
+            { x: 2, y: 125, width: 26, height: 37 },
+            { x: 2, y: 164, width: 26, height: 37 },
+            { x: 2, y: 2, width: 26, height: 37 }
+        ]
+    },
 
     /**
      * 100000 - 42-43   150000 - 28 
      */
-    { key: 'rabbitv3_ash', src: sheetv4, type: 'spritesheet', width: 35.83, height: 36 },
+    // { key: 'rabbitv3_ash', src: sheetv4, type: 'spritesheet', width: 35.83, height: 36 },
 
 
     /**

@@ -95,6 +95,15 @@ class MyGame extends Tiny.App2D {
 
         this.sprites = [];
 
+        //  this.sprite = new Tiny.TilingSprite('atlas', null, this.width - 10, this.height - 10);
+        // this.sprite.x = this.sprite.y = 5;
+        // this.sprite.y = 100;
+        // this.sprite.tint.set(0xff4545);
+        // // this.sprite.scale.set(0.6);
+        // this.sprite.scale.set(0.5);
+
+        // this.scene.add(this.sprite);
+
         this.addSprites = function (amount, fps) {
             for (let i = 0; i < amount; i++) {
                 const sprite = new Tiny.Sprite('spritesheetAnimation', 0);
@@ -134,6 +143,8 @@ class MyGame extends Tiny.App2D {
 
         this.addSprites(1, 60);
         this.resize(this.width, this.height)
+
+        // this.setPixelRatio(0.5);
     }
 
     update(time, delta) {
