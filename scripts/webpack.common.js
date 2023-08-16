@@ -16,11 +16,11 @@ const config = {
             },
 
             // JS
-            // {
-            //     test: /\.m?js$/,
-            //     exclude: /node_modules/,
-            //     use: ['babel-loader']
-            // },
+            {
+                test: /\.m?js$/,
+                exclude: /node_modules/,
+                use: ['babel-loader']
+            },
 
             // CSS
             // {

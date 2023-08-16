@@ -17,8 +17,6 @@ var Tiny = {
     Color: Color
 };
 
-Object.assign(Tiny, BLEND_MODES);
-Object.assign(Tiny, SCALE_MODES);
-Object.assign(Tiny, SHAPES);
+Object.assign(Tiny, BLEND_MODES, SCALE_MODES, SHAPES);
 
 window.Tiny = Tiny;

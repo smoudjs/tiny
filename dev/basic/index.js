@@ -4,6 +4,7 @@ import '@smoud/tiny/extras/canvas-renderer';
 // import '@smoud/tiny/extras/canvas-renderer';
 import '@smoud/tiny/extras/canvas-graphics';
 // import '@smoud/tiny/extras/shapes';
+import '@smoud/tiny/extras/anim';
 
 import App from './App';
 

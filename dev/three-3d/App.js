@@ -104,7 +104,7 @@ export default class BunnyApp extends Tiny.App {
             const mat4 = new THREE.Matrix4();
 
             mat4.angleOffset = 50 * i;
-            mat4.axis = new Vec3(random(pos), random(pos), random(pos));
+            mat4.axis = new THREE.Vector3(random(pos), random(pos), random(pos));
 
             const r = Math.random() * Math.PI * 2;
 
@@ -120,7 +120,7 @@ export default class BunnyApp extends Tiny.App {
         }
 
         game.on('update', () => {
-            return;
+          
 
             for (let i = 0; i < instancedMesh.count; i++) {
                 const mat4 = testMatrixes[i];
@@ -160,7 +160,7 @@ export default class BunnyApp extends Tiny.App {
     }
 
     render() {
-        debugger;
+        // debugger;
         this.renderer.render(this.world, this.worldCamera);
     }
 

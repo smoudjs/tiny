@@ -1,5 +1,5 @@
 import { Rectangle } from '../math/shapes/Rectangle';
-import { Cache } from '../app/Cache';
+import { Cache } from '../loaders/Cache';
 import { TextureUvs } from './TextureUvs';
 import { BaseTexture } from './BaseTexture';
 

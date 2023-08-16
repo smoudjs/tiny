@@ -1,5 +1,6 @@
 import '@smoud/tiny/app';
 import '@smoud/tiny/3d';
+import '@smoud/tiny/extras/orbit-controls';
 
 import App from './App';
 

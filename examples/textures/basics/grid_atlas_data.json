@@ -1,0 +1,6 @@
+[
+	{ "name": "SB", "x": 0, "y": 0, "width": 230, "height": 230 },
+	{ "name": "BR", "x": 0, "y": 231, "width": 230, "height": 230 },
+	{ "name": "IH", "x": 231, "y": 0, "width": 230, "height": 230 },
+	{ "name": "MM", "x": 231, "y": 231, "width": 230, "height": 230 }
+]

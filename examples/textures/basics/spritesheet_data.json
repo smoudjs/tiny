@@ -1,0 +1,8 @@
+[
+	{ "index": 0, "x": 0, "y": 0, "width": 222, "height": 222, "duration": 90 },
+	{ "index": 1, "x": 222, "y": 0, "width": 222, "height": 222, "duration": 90 },
+	{ "index": 2, "x": 444, "y": 0, "width": 222, "height": 222, "duration": 90 },
+	{ "index": 3, "x": 666, "y": 0, "width": 222, "height": 222, "duration": 90 },
+	{ "index": 4, "x": 888, "y": 0, "width": 222, "height": 222, "duration": 90 },
+	{ "index": 5, "x": 1110, "y": 0, "width": 222, "height": 222, "duration": 90 }
+]

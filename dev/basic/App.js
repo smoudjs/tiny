@@ -29,22 +29,50 @@ export default class BasicApp extends Tiny.App {
 
     preload() {
         console.log('preload');
+        this.load.spritesheet(
+            'spritesheet',
+            require('textures/basics/gif.jpg'),
+            require('textures/basics/gif_data.json')
+        );
         // this.load.all(resources);
     }
 
     create() {
         console.log('create');
 
-        this.text = new Tiny.Text('Hello World !', {fill: "#ffff00"});
+        this.text = new Tiny.Text('Hello World !', { fill: '#ffff00' });
 
         // this.text.cacheAsBitmap = true;
         this.text.tint.set(0xa1a100);
         this.text.position.set(400, 200);
         this.scene.add(this.text);
 
+        var sprite = new Tiny.Sprite('spritesheet', 2);
+
+        sprite.x = 500;
+        sprite.scale.set(2);
+
+        this.anim.create({
+            key: 'idle',
+            type: 'spritesheet',
+            data: {
+                key: 'spritesheet'
+                // from: 0,
+                // to: 3
+            },
+            repeat: -1,
+            // yoyo: true,
+            fps: 34
+        });
+
+        this.anim.add(sprite);
+
+        sprite.play('idle');
+
+        this.scene.add(sprite);
+
         // var graphics = new Tiny.Graphics();
         // // graphics.tint.set(0x45f223);
-      
 
         // graphics.beginFill('#f23', 1);
         // graphics.drawRect(100, 100, 100, 100);
@@ -67,7 +95,6 @@ export default class BasicApp extends Tiny.App {
         //     graphics.tint.set(Math.floor(Math.random() * 0xffffff));
         //     // graphics.dirty = true;
         // }, 1000)
-
 
         // this.scene.add(graphics);
     }

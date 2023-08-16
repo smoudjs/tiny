@@ -22,6 +22,8 @@ const webpackConfig = {
 
     resolve: {
         alias: {
+            'textures': path.resolve('examples/textures'),
+            'models': path.resolve('examples/models'),
             '@smoud/tiny/app': path.resolve('src/tiny.app.js'),
             '@smoud/tiny/2d': path.resolve('src/tiny.2d.js'),
             '@smoud/tiny/webgl': path.resolve('src/webgl.js'),

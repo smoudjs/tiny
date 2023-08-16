@@ -1,12 +1,8 @@
-import {Mat4, Vec3} from "../../src/3d";
-import {InstancedMeshLambertMaterial} from "../../src/3d/extras/materials/InstancedMeshLambertMaterial";
-import {tinyVSthreeCubesAmount} from "../constants";
-import resources from "./resources";
-import {Orbit} from '../../src/3d/extras/Orbit';
+import { tinyVSthreeCubesAmount } from '../constants';
 
 const random = (s = 5) => {
     return (Math.random() - 0.5) * s;
-}
+};
 
 const aLofOFBoxesSimulation = (amount) => {
     const color = new Tiny.Color(1, 0, 0);
@@ -14,7 +10,7 @@ const aLofOFBoxesSimulation = (amount) => {
     let material = new Tiny.MeshLambertMaterial({
         color: color,
         // opacity: 1,
-        transparent: false,
+        transparent: false
     });
 
     let o = 1;
@@ -30,28 +26,25 @@ const aLofOFBoxesSimulation = (amount) => {
     const geometry = new Tiny.BoxGeometry();
 
     for (let i = 0; i < amount; i++) {
-        const box = new Tiny.Mesh(
-            geometry,
-            material
-        );
+        const box = new Tiny.Mesh(geometry, material);
 
-        if (!newMat && i > amount/2) {
+        if (!newMat && i > amount / 2) {
             material = new Tiny.MeshLambertMaterial({
                 color: new Tiny.Color(0, 1, 0),
                 // opacity: 0.5,
-                transparent: false,
+                transparent: false
             });
 
             newMat = true;
         }
 
-        box.position.set(random(), random(), random())
+        box.position.set(random(), random(), random());
 
         game.world.add(box);
     }
 };
 
-export default class BunnyApp extends Tiny.App {
+export default class BasicApp extends Tiny.App {
     constructor(width, height, parentNode, states) {
         super(states);
 
@@ -60,7 +53,7 @@ export default class BunnyApp extends Tiny.App {
 
         window.game = this;
 
-        this.renderer = new Tiny.WebGLRenderer( {
+        this.renderer = new Tiny.WebGLRenderer({
             width,
             height
         });
@@ -85,11 +78,12 @@ export default class BunnyApp extends Tiny.App {
         this.worldCamera.position.set(10, 10, 10);
         this.worldCamera.lookAt(0, 0, 0);
 
-        this.control = new Orbit(this.worldCamera, { element: view })
+        this.control = new Tiny.OrbitControls(this.worldCamera, { element: view });
     }
 
     preload() {
-        this.load.all(resources);
+        this.load.image('rabbitv3', require('textures/bunnies/rabbitv3.png'));
+        this.load.image('rabbitv3_batman', require('textures/bunnies/rabbitv3_batman.png'));
     }
 
     create() {
@@ -104,12 +98,10 @@ export default class BunnyApp extends Tiny.App {
         // });
 
         this.box = new Tiny.Mesh(
-            new Tiny.BoxGeometry(),
-            new Tiny.MeshLambertMaterial(
-                {
-                    color: new Tiny.Color(1, 1, 0)
-                }
-            )
+            new Tiny.BoxGeometry(3,3,3),
+            new Tiny.MeshBasicMaterial({
+                color: new Tiny.Color(1, 1, 0)
+            })
         );
 
         this.ambientLight = new Tiny.AmbientLight(undefined, 0.5);
@@ -117,66 +109,60 @@ export default class BunnyApp extends Tiny.App {
 
         this.directionalLight.position.set(0, 10, 0);
 
-        this.instancedMesh = new Tiny.InstancedMesh(
-            new Tiny.BoxGeometry(0.5, 0.5, 0.5),
-            new Tiny.InstancedMeshLambertMaterial(
-                {
-                    color: new Tiny.Color(1, 0, 0),
-                    // map: this.testTexture
-                }
-            ),
-            tinyVSthreeCubesAmount
-        );
+        // this.instancedMesh = new Tiny.InstancedMesh(
+        //     new Tiny.BoxGeometry(0.5, 0.5, 0.5),
+        //     new Tiny.InstancedMeshLambertMaterial({
+        //         color: new Tiny.Color(1, 0, 0)
+        //         // map: this.testTexture
+        //     }),
+        //     tinyVSthreeCubesAmount
+        // );
 
-        const {box, world, instancedMesh} = this;
+        const { box, world, instancedMesh } = this;
 
-        box.position.x = 10;
+        // box.position.x = 10;
 
         const testMatrixes = [];
 
         const pos = 10;
 
-        for (let i = 0; i < instancedMesh.count; i++) {
-            const mat4 = new Mat4();
+        // for (let i = 0; i < instancedMesh.count; i++) {
+        //     const mat4 = new Tiny.Mat4();
 
-            mat4.angleOffset = 50 * i;
-            mat4.axis = new Vec3(random(pos), random(pos), random(pos));
+        //     mat4.angleOffset = 50 * i;
+        //     mat4.axis = new Tiny.Vec3(random(pos), random(pos), random(pos));
 
-            const r = Math.random() * Math.PI * 2;
+        //     const r = Math.random() * Math.PI * 2;
 
-            const cos = Math.cos(r);
-            const sin = Math.sin(r);
+        //     const cos = Math.cos(r);
+        //     const sin = Math.sin(r);
 
-            mat4.makeRotationX(cos);
-            mat4.setPosition(cos * mat4.axis.x, sin * mat4.axis.y, -sin * mat4.axis.z)
+        //     mat4.makeRotationX(cos);
+        //     mat4.setPosition(cos * mat4.axis.x, sin * mat4.axis.y, -sin * mat4.axis.z);
 
-            testMatrixes.push(mat4);
+        //     testMatrixes.push(mat4);
 
-            instancedMesh.setMatrixAt(i, mat4);
-        }
+        //     instancedMesh.setMatrixAt(i, mat4);
+        // }
 
-        game.on('update', () => {
-            // return;
+        // game.on('update', () => {
+        //     // return;
 
-            for (let i = 0; i < instancedMesh.count; i++) {
-                const mat4 = testMatrixes[i];
+        //     for (let i = 0; i < instancedMesh.count; i++) {
+        //         const mat4 = testMatrixes[i];
 
-                const cos = Math.cos((game.time + mat4.angleOffset) * 0.001);
-                const sin = Math.sin((game.time + mat4.angleOffset) * 0.001);
+        //         const cos = Math.cos((game.time + mat4.angleOffset) * 0.001);
+        //         const sin = Math.sin((game.time + mat4.angleOffset) * 0.001);
 
-                mat4.makeRotationX((game.time + mat4.angleOffset) * 0.001);
-                mat4.setPosition(cos * mat4.axis.x, sin * mat4.axis.y, -sin * mat4.axis.z);
+        //         mat4.makeRotationX((game.time + mat4.angleOffset) * 0.001);
+        //         mat4.setPosition(cos * mat4.axis.x, sin * mat4.axis.y, -sin * mat4.axis.z);
 
-                instancedMesh.setMatrixAt(i, mat4);
-            }
-
-            instancedMesh.geometry.attributes.instancedMatrix.needsUpdate = true;
-        });
-
-        // instancedMesh.geometry.attributes.instancedMatrix.needsUpdate = true;
+        //         instancedMesh.setMatrixAt(i, mat4);
+        //     }
+        // });
 
         world.add(box);
-        world.add(instancedMesh);
+        // world.add(instancedMesh);
 
         // aLofOFBoxesSimulation(tinyVSthreeCubesAmount);
 
@@ -210,7 +196,7 @@ export default class BunnyApp extends Tiny.App {
 
         this.renderer.resize(width, height);
 
-        const {worldCamera} = this;
+        const { worldCamera } = this;
 
         const aspect = width / height;
         const distance = 10;

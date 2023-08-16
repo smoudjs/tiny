@@ -11,6 +11,10 @@ var _Math = {
         return Math.sqrt(dx * dx + dy * dy);
     },
 
+    clamp: function (value, min, max) {
+        return Math.max(min, Math.min(max, value));
+    },
+
     degToRad: function (degrees) {
         return degrees * DEG2RAD;
     },

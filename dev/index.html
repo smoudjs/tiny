@@ -7,6 +7,111 @@
             content="initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover,minimal-ui"
         />
 
+          <script>
+            (function () {
+                var container = document.createElement('div');
+                container.style.cssText =
+                    'position: absolute; overflow: auto; -webkit-user-select: text; user-select: text;left: 0; width: 96%; height: 96%; top: 0; z-index: 1026; background-color: rgba(0, 0, 0, 0.75); font-size: 20px; font-weight: 300; color: #ff0000; padding: 2vh 2vw; font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";';
+
+                var errorContainer = document.createElement('div');
+
+                var copyTextButton = document.createElement('button');
+                copyTextButton.innerText = 'Copy Errors to Clipboard';
+                copyTextButton.style.cssText =
+                    'background-color: #4e73df;padding: 6px 10px;font-size: 15px;font-weight: 900;border: 5px solid #4e73df;color: #ffffff;width: 100%;border-radius: 7px;';
+
+                copyTextButton.onclick = function copyErrorsToClipboard() {
+                    var text = errorContainer.innerText;
+
+                    var textArea = document.createElement('textarea');
+                    textArea.value = text;
+
+                    // Avoid scrolling to bottom
+                    textArea.style.top = '0';
+                    textArea.style.left = '0';
+                    textArea.style.position = 'fixed';
+
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+
+                    var msgElement = document.createElement('div');
+                    msgElement.style.cssText = 'margin: 10px; color: #ffffff;';
+                    container.insertBefore(msgElement, errorContainer);
+
+                    try {
+                        var successful = document.execCommand('copy');
+                        var msg = successful ? 'successful' : 'unsuccessful';
+
+                        msgElement.innerText = 'Copying text command was ' + msg;
+                    } catch (err) {
+                        msgElement.innerText = 'Oops, unable to copy' + err.message;
+                    }
+
+                    document.body.removeChild(textArea);
+                };
+
+                container.appendChild(copyTextButton);
+                container.appendChild(errorContainer);
+
+                var inited = false;
+                var hasError = false;
+
+                var componentLabel = document.createElement('div');
+                componentLabel.innerText = 'console debugger is active';
+                componentLabel.style.cssText =
+                    'position: absolute; color: #00e300; font-family: monospace; width: 100vw; pointer-events: none; touch-action: none; top: 0px; left: 0px; z-index: 1025; text-align: center; padding: 10px 0px; background-color: rgba(255, 255, 255, 0.4);';
+
+                window.addEventListener('load', function () {
+                    document.body.appendChild(componentLabel);
+
+                    if (!inited && hasError) document.body.appendChild(container);
+                    inited = true;
+                });
+
+                function logError(text) {
+                    if (!hasError && inited) document.body.appendChild(container);
+                    hasError = true;
+
+                    var errEl = document.createElement('pre');
+                    errEl.innerText = text.toString() + '\n\n';
+                    errorContainer.appendChild(errEl);
+                }
+
+                // window.onerror = function(message, ref, row, col, error) {
+                //  if (error && error.stack) logError(error.stack);
+                //  else logError(message);
+                // };
+
+                window.addEventListener('error', function (event, e) {
+                    if (event.error && event.error.stack) logError(event.message + '\n' + event.error.stack);
+                    else logError(event.message);
+                });
+
+                window.addEventListener('unhandledrejection', function (event) {
+                    var error = 'Unknown nhandled Promise rejection';
+
+                    console.log(event.reason);
+
+                    if (event.reason && event.reason.message) {
+                        error = event.reason.message;
+                        if (event.reason.stack) error += '\n' + event.reason.stack;
+                    }
+
+                    logError(error);
+                });
+
+                console.error = logError;
+
+                var addEventListener = window.EventTarget.prototype.addEventListener;
+                window.EventTarget.prototype.addEventListener = function (event, callback, bubble) {
+                    if (event === 'touchmove' && this === document) return;
+                    // addEventListener.call(this, event, wrap(callback), bubble);
+                    addEventListener.call(this, event, callback, bubble);
+                };
+            })();
+        </script>
+
         <style>
             body,
             html {

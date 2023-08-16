@@ -10,3 +10,5 @@ var Light = function (color, intensity) {
 
 Light.prototype = Object.create(Object3D.prototype);
 Light.prototype.constructor = Light;
+
+export { Light };

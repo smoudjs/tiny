@@ -1,4 +1,4 @@
-import { Attribute } from '../core/Attribute';
+import { Attribute } from '../renderers/Attribute';
 import { Mesh } from './Mesh.js';
 
 const mat4Length = 16;

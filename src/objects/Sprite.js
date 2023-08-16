@@ -1,7 +1,7 @@
 import { Object2D } from './Object2D';
 import { Vec2 } from '../math/Vec2';
 import { Color } from '../math/Color';
-import { Cache } from '../app/Cache';
+import { Cache } from '../loaders/Cache';
 import { Texture } from '../textures/Texture';
 import { BLEND_MODES } from '../constants';
 

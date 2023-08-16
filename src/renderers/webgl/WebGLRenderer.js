@@ -7,7 +7,7 @@ import { BlendModeManager } from './managers/BlendModeManager';
 import { Vec2 } from '../../math/Vec2';
 import { isPow2 } from '../../utils';
 import { SCALE_MODES } from '../../constants';
-import { Cache } from '../../app/Cache';
+import { Cache } from '../../loaders/Cache';
 import { BLEND_MODES } from '../../constants';
 import { Color } from '../../math/Color';
 
