@@ -5,10 +5,11 @@ export class Camera extends Object3D {
         super();
 
         this.isCamera = true;
+        this.projectMatrixDirty = false;
     }
 
     updateProjectionMatrix() {
-
+        this.projectMatrixDirty = true;
     }
 }
 
