@@ -4,8 +4,10 @@ import { Scene } from './objects/Scene';
 import { Sprite } from './objects/Sprite';
 import { Text } from './objects/Text';
 import { Graphics } from './objects/Graphics';
+import { BaseTexture } from './textures/BaseTexture';
 import { Texture } from './textures/Texture';
-import { RenderTexture } from './textures/RenderTexture';
+import { TextureUvs } from './textures/TextureUvs';
+import { RenderTexture } from './textures/RenderTexture3';
 import { Rectangle } from './math/shapes/Rectangle';
 
 Tiny.BaseObject2D = BaseObject2D;
@@ -15,6 +17,8 @@ Tiny.Sprite = Sprite;
 Tiny.Text = Text;
 Tiny.Graphics = Graphics;
 
+Tiny.BaseTexture = BaseTexture;
+Tiny.TextureUvs = TextureUvs;
 Tiny.Texture = Texture;
 Tiny.RenderTexture = RenderTexture;
 Tiny.Rectangle = Rectangle;

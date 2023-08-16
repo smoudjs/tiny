@@ -1,12 +1,30 @@
 {
-  "name": "h5tiny",
-  "version": "2.2.3",
-  "description": "Fast and tiny JavaScript library for HTML5 game and creatives developing.",
-  "main": "./build/tiny.js",
+  "name": "@smoud/tiny",
+  "version": "3.0.1",
+  "description": "Fast and tiny JavaScript library for HTML5 game and playable ads creation.",
+  "main": "./dist/tiny.js",
+  "module": "./dist/tiny.esm.js",
+  "exports": {
+    ".": {
+      "import": "./dist/tiny.esm.js",
+      "require": "./dist/tiny.cjs.js"
+    },
+    "./examples/*": "./examples/jsm/*",
+    "./src/*": "./src/*",
+    "./app": "./src/app.js",
+    "./2d": "./src/2d.js",
+    "./3d": "./src/3d.js",
+    "./webgl": "./src/webgl.js",
+    "./extras/*": {
+      "import": "./extras/*",
+      "require": "./dist/extras/*"
+    }
+  },
   "files": [
     "src",
-    "build",
+    "dist",
     "plugins",
+    "extras",
     "examples/js",
     "examples/jsm",
     "README.md"
@@ -14,23 +32,24 @@
   "directories": {
     "examples": "examples"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/peter-hutsul/h5tiny"
-  },
   "scripts": {
     "dev": "node ./scripts/webpack.dev.js",
     "build": "node ./scripts/webpack.build.js",
-    "test": "node ./scripts/webpack.dev.js --test",
-    "serve:old": "webpack-dev-server --port 3000 --open --live-reload --mode development --watch-files examples --static-directory examples",
-    "watch:old": "webpack --config webpack.dev.js --watch",
-    "dev:old": "start npm run watch && npm run serve",
-    "build:old": "webpack --config webpack.build.js"
+    "test": "node ./scripts/webpack.dev.js --test"
+  },
+  "homepage": "https://github.com/smoudjs/tiny#readme",
+  "bugs": "https://github.com/smoudjs/tiny/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/smoudjs/tiny.git"
   },
   "keywords": [
     "2d",
+    "3d",
     "html5",
     "canvas",
+    "engine",
+    "library",
     "game",
     "tiny",
     "javascript",
@@ -38,14 +57,17 @@
     "three"
   ],
   "author": "Peter Hutsul",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
+    "@babel/preset-env": "^7.22.10",
+    "babel-loader": "^9.1.3",
     "clean-webpack-plugin": "^4.0.0",
     "file-loader": "^6.2.0",
+    "glob": "^10.3.3",
     "html-loader": "^4.2.0",
     "html-webpack-plugin": "^5.5.3",
+    "three": "^0.112.1",
     "webpack": "^5.88.2",
-    "webpack-dev-server": "^4.15.1",
-    "three": "^0.112.1"
+    "webpack-dev-server": "^4.15.1"
   }
 }

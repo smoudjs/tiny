@@ -13,7 +13,7 @@ Scene.prototype.constructor = Scene;
 Scene.prototype.updateTransform = function () {
     this.worldAlpha = 1;
 
-    for (var i = 0; i < this.children.length; i++) {
+    for (var i = 0, j = this.children.length; i < j; i++) {
         this.children[i].updateTransform();
     }
 };

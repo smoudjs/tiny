@@ -1,0 +1,1 @@
+Tiny.TweenManager.prototype.removeByObject=function(e){for(var t=this.group._tweens,o=Object.keys(t),r=0;r<o.length;r++){var n=t[o[r]];n._object===e&&this.remove(n)}};

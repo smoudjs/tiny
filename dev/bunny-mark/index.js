@@ -1,6 +1,7 @@
 import '@smoud/tiny/app';
 import '@smoud/tiny/2d';
-import '@smoud/tiny/extras/renderers/canvas';
+import '@smoud/tiny/webgl';
+import '@smoud/tiny/extras/canvas-renderer';
 import App from './App';
 
 window.addEventListener('load', () => {
@@ -16,12 +17,12 @@ if (__DEV__) {
         var script = document.createElement('script');
 
         script.onload = function () {
-            var stats = new Stats();
-            document.body.appendChild(stats.dom);
-            requestAnimationFrame(function loop() {
-                stats.update();
-                requestAnimationFrame(loop);
-            });
+            // var stats = new Stats();
+            // document.body.appendChild(stats.dom);
+            // requestAnimationFrame(function loop() {
+            //     stats.update();
+            //     requestAnimationFrame(loop);
+            // });
         };
 
         script.src = 'https://mrdoob.github.io/stats.js/build/stats.min.js';

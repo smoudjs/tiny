@@ -1,7 +1,9 @@
 import { Object2D } from './Object2D';
 import { Vec2 } from '../math/Vec2';
-import { Cache } from '../systems/Loader';
+import { Color } from '../math/Color';
+import { Cache } from '../app/Cache';
 import { Texture } from '../textures/Texture';
+import { BLEND_MODES } from '../constants';
 
 var Sprite = function (texture, key) {
     Object2D.call(this);
@@ -16,11 +18,11 @@ var Sprite = function (texture, key) {
 
     // this._frame = 0;
 
-    this.tint = '#ffffff';
+    this.tint = new Color();
 
-    this.blendMode = 'source-over';
+    this.blendMode = BLEND_MODES.NORMAL;
 
-    if (this.texture.hasLoaded) {
+    if (this.texture.valid) {
         this.onTextureUpdate();
     }
 
@@ -144,8 +146,8 @@ Sprite.prototype.onTextureUpdate = function () {
 // };
 
 Sprite.prototype.getBounds = function (matrix) {
-    var width = this.texture.frame.width / this.texture.resolution;
-    var height = this.texture.frame.height / this.texture.resolution;
+    var width = this.texture.frame.width / this.texture.base.resolution;
+    var height = this.texture.frame.height / this.texture.base.resolution;
 
     var w0 = width * (1 - this.anchor.x);
     var w1 = width * -this.anchor.x;
@@ -243,7 +245,7 @@ Sprite.prototype.getBounds = function (matrix) {
     return bounds;
 };
 
-Sprite.prototype.render = function (renderSession) {
+Sprite.prototype.render = function (renderer) {
     // if the sprite is not visible or the alpha is 0 then no need to render this element
     if (!this.visible || this.alpha <= 0) return;
 
@@ -251,17 +253,17 @@ Sprite.prototype.render = function (renderSession) {
 
     // do a quick check to see if this element has a mask or a filter.
     if (this._mask || this._filters) {
-        var spriteBatch = renderSession.spriteBatch;
+        var spriteBatch = renderer.spriteBatch;
 
         // push filter first as we need to ensure the stencil buffer is correct for any masking
         if (this._filters) {
             spriteBatch.flush();
-            renderSession.filterManager.pushFilter(this._filterBlock);
+            renderer.filterManager.pushFilter(this._filterBlock);
         }
 
         if (this._mask) {
             spriteBatch.stop();
-            renderSession.maskManager.pushMask(this.mask, renderSession);
+            renderer.maskManager.pushMask(this.mask, renderer);
             spriteBatch.start();
         }
 
@@ -270,22 +272,22 @@ Sprite.prototype.render = function (renderSession) {
 
         // now loop through the children and make sure they get rendered
         for (i = 0, j = this.children.length; i < j; i++) {
-            this.children[i].render(renderSession);
+            this.children[i].render(renderer);
         }
 
         // time to stop the sprite batch as either a mask element or a filter draw will happen next
         spriteBatch.stop();
 
-        if (this._mask) renderSession.maskManager.popMask(this._mask, renderSession);
-        if (this._filters) renderSession.filterManager.popFilter();
+        if (this._mask) renderer.maskManager.popMask(this._mask, renderer);
+        if (this._filters) renderer.filterManager.popFilter();
 
         spriteBatch.start();
     } else {
-        renderSession.spriteBatch.render(this);
+        renderer.spriteBatch.render(this);
 
         // simple render children!
         for (i = 0, j = this.children.length; i < j; i++) {
-            this.children[i].render(renderSession);
+            this.children[i].render(renderer);
         }
     }
 };

@@ -1,20 +1,22 @@
+import { uid } from '../../../utils';
+import { compileProgram } from '../utils/WebGLShaderUtils';
+
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
  */
 
 /**
-* @class ComplexPrimitiveShader
-* @constructor
-* @param gl {WebGLContext} the current WebGL drawing context
-*/
-PIXI.ComplexPrimitiveShader = function(gl)
-{
+ * @class ComplexPrimitiveShader
+ * @constructor
+ * @param gl {WebGLContext} the current WebGL drawing context
+ */
+var ComplexPrimitiveShader = function (gl) {
     /**
      * @property _UID
      * @type Number
      * @private
      */
-    this._UID = PIXI._UID++;
+    this._UID = uid();
 
     /**
      * @property gl
@@ -35,7 +37,6 @@ PIXI.ComplexPrimitiveShader = function(gl)
      * @type Array
      */
     this.fragmentSrc = [
-
         'precision mediump float;',
 
         'varying vec4 vColor;',
@@ -50,13 +51,13 @@ PIXI.ComplexPrimitiveShader = function(gl)
      * @property vertexSrc
      * @type Array
      */
-    this.vertexSrc  = [
+    this.vertexSrc = [
         'attribute vec2 aVertexPosition;',
         //'attribute vec4 aColor;',
         'uniform mat3 translationMatrix;',
         'uniform vec2 projectionVector;',
         'uniform vec2 offsetVector;',
-        
+
         'uniform vec3 tint;',
         'uniform float alpha;',
         'uniform vec3 color;',
@@ -67,25 +68,24 @@ PIXI.ComplexPrimitiveShader = function(gl)
         '   vec3 v = translationMatrix * vec3(aVertexPosition , 1.0);',
         '   v -= offsetVector.xyx;',
         '   gl_Position = vec4( v.x / projectionVector.x -1.0, (v.y / projectionVector.y * -flipY) + flipY , 0.0, 1.0);',
-        '   vColor = vec4(color * alpha * tint, alpha);',//" * vec4(tint * alpha, alpha);',
+        '   vColor = vec4(color * alpha * tint, alpha);', //" * vec4(tint * alpha, alpha);',
         '}'
     ];
 
     this.init();
 };
 
-PIXI.ComplexPrimitiveShader.prototype.constructor = PIXI.ComplexPrimitiveShader;
+ComplexPrimitiveShader.prototype.constructor = ComplexPrimitiveShader;
 
 /**
-* Initialises the shader.
-* 
-* @method init
-*/
-PIXI.ComplexPrimitiveShader.prototype.init = function()
-{
+ * Initialises the shader.
+ *
+ * @method init
+ */
+ComplexPrimitiveShader.prototype.init = function () {
     var gl = this.gl;
 
-    var program = PIXI.compileProgram(gl, this.vertexSrc, this.fragmentSrc);
+    var program = compileProgram(gl, this.vertexSrc, this.fragmentSrc);
     gl.useProgram(program);
 
     // get and store the uniforms for the shader
@@ -97,7 +97,7 @@ PIXI.ComplexPrimitiveShader.prototype.init = function()
 
     // get and store the attributes
     this.aVertexPosition = gl.getAttribLocation(program, 'aVertexPosition');
-   // this.colorAttribute = gl.getAttribLocation(program, 'aColor');
+    // this.colorAttribute = gl.getAttribLocation(program, 'aColor');
 
     this.attributes = [this.aVertexPosition, this.colorAttribute];
 
@@ -108,15 +108,16 @@ PIXI.ComplexPrimitiveShader.prototype.init = function()
 };
 
 /**
-* Destroys the shader.
-* 
-* @method destroy
-*/
-PIXI.ComplexPrimitiveShader.prototype.destroy = function()
-{
-    this.gl.deleteProgram( this.program );
+ * Destroys the shader.
+ *
+ * @method destroy
+ */
+ComplexPrimitiveShader.prototype.destroy = function () {
+    this.gl.deleteProgram(this.program);
     this.uniforms = null;
     this.gl = null;
 
     this.attribute = null;
 };
+
+export { ComplexPrimitiveShader };

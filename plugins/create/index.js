@@ -1,3 +1,0 @@
-Tiny.Create = {};
-
-require('./spritesheet');

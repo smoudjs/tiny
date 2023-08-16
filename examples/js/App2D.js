@@ -5,12 +5,12 @@ class App2D extends Tiny.App {
         this.width = width;
         this.height = height;
 
-        this.renderer = new Tiny.CanvasRenderer(this.width, this.height, {
+        this.renderer = new Tiny.Renderer(this.width, this.height, {
             resolution: 1.25,
             autoResize: true
         });
 
-        this.renderer.setClearColor("#f4f4f4");
+        this.renderer.setClearColor(0xf4f4f4);
 
         var view = (this.inputView = this.renderer.domElement);
 

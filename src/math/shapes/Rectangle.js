@@ -1,101 +1,94 @@
+import { SHAPES } from '../../constants';
+
+/**
+ * @author Mat Groves http://matgroves.com/
+ */
+
+/**
+ * the Rectangle object is an area defined by its position, as indicated by its top-left corner point (x, y) and by its width and its height.
+ *
+ * @class Rectangle
+ * @constructor
+ * @param x {Number} The X coordinate of the upper-left corner of the rectangle
+ * @param y {Number} The Y coordinate of the upper-left corner of the rectangle
+ * @param width {Number} The overall width of this rectangle
+ * @param height {Number} The overall height of this rectangle
+ */
 var Rectangle = function (x, y, width, height) {
-    x = x || 0;
-    y = y || 0;
-    width = width || 0;
-    height = height || 0;
+    /**
+     * @property x
+     * @type Number
+     * @default 0
+     */
+    this.x = x || 0;
 
-    this.x = x;
-    this.y = y;
+    /**
+     * @property y
+     * @type Number
+     * @default 0
+     */
+    this.y = y || 0;
 
-    this.width = width;
-    this.height = height;
+    /**
+     * @property width
+     * @type Number
+     * @default 0
+     */
+    this.width = width || 0;
 
-    this.type = Tiny.Primitives.RECT;
+    /**
+     * @property height
+     * @type Number
+     * @default 0
+     */
+    this.height = height || 0;
+
+    /**
+     * The type of the object, should be one of the Graphics type consts, PIXI.Graphics.RECT in this case
+     * @property type
+     * @type Number
+     * @default 0
+     */
+
+    this.type = SHAPES.RECT;
 };
 
-Rectangle.prototype = {
-    setTo: function (x, y, width, height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
+/**
+ * Creates a clone of this Rectangle
+ *
+ * @method clone
+ * @return {Rectangle} a copy of the rectangle
+ */
+// Rectangle.prototype.clone = function()
+// {
+//     return new Rectangle(this.x, this.y, this.width, this.height);
+// };
 
-        return this;
-    },
+/**
+ * Checks whether the x and y coordinates given are contained within this Rectangle
+ *
+ * @method contains
+ * @param x {Number} The X coordinate of the point to test
+ * @param y {Number} The Y coordinate of the point to test
+ * @return {Boolean} Whether the x/y coordinates are within this Rectangle
+ */
+Rectangle.prototype.contains = function (x, y) {
+    if (this.width <= 0 || this.height <= 0) return false;
 
-    contains: function (x, y) {
-        return Rectangle.contains(this, x, y);
-    },
+    var x1 = this.x;
+    if (x >= x1 && x <= x1 + this.width) {
+        var y1 = this.y;
 
-    intersects: function (b) {
-        return Rectangle.intersects(this, b);
+        if (y >= y1 && y <= y1 + this.height) {
+            return true;
+        }
     }
+
+    return false;
 };
 
-Object.defineProperty(Rectangle.prototype, 'bottom', {
-    get: function () {
-        return this.y + this.height;
-    },
-
-    set: function (value) {
-        if (value <= this.y) {
-            this.height = 0;
-        } else {
-            this.height = value - this.y;
-        }
-    }
-});
-
-Object.defineProperty(Rectangle.prototype, 'right', {
-    get: function () {
-        return this.x + this.width;
-    },
-
-    set: function (value) {
-        if (value <= this.x) {
-            this.width = 0;
-        } else {
-            this.width = value - this.x;
-        }
-    }
-});
-
-Object.defineProperty(Rectangle.prototype, 'volume', {
-    get: function () {
-        return this.width * this.height;
-    }
-});
-
+// constructor
 Rectangle.prototype.constructor = Rectangle;
-
-Rectangle.contains = function (a, x, y) {
-    if (a.width <= 0 || a.height <= 0) {
-        return false;
-    }
-
-    return x >= a.x && x < a.right && y >= a.y && y < a.bottom;
-};
-
-Rectangle.containsPoint = function (a, point) {
-    return Rectangle.contains(a, point.x, point.y);
-};
-
-Rectangle.containsRect = function (a, b) {
-    //  If the given rect has a larger volume than this one then it can never contain it
-    if (a.volume > b.volume) {
-        return false;
-    }
-
-    return a.x >= b.x && a.y >= b.y && a.right < b.right && a.bottom < b.bottom;
-};
-
-Rectangle.intersects = function (a, b) {
-    if (a.width <= 0 || a.height <= 0 || b.width <= 0 || b.height <= 0) {
-        return false;
-    }
-
-    return !(a.right < b.x || a.bottom < b.y || a.x > b.right || a.y > b.bottom);
-};
 
 var EmptyRectangle = new Rectangle(0, 0, 0, 0);
 export { Rectangle, EmptyRectangle };

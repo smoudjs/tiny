@@ -21,10 +21,33 @@
                 -webkit-user-select: none;
                 touch-action: none;
                 user-select: none;
-                text-align: center;
             }
             * {
                 -webkit-tap-highlight-color: transparent;
+            }
+
+            .disable {
+                -moz-user-select:none;
+                -webkit-user-select:none;
+                user-select:none;
+                pointer-events: none;
+            }
+
+            #counter {
+                background: #ccc;
+                width: 74px;
+                overflow: hidden;
+                white-space: nowrap;
+                position: absolute;
+                background-color:#105CB6;
+                padding: 3px;
+                top:48px;
+                left:0;
+                z-index: 2;
+                color:#0ff;
+                font-family: "Libre Franklin", Arial;
+                font-size: 9px;
+                font-weight: bold;
             }
 
             #game {

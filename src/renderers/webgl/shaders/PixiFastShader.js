@@ -1,21 +1,22 @@
+import { uid } from '../../../utils';
+
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
  */
 
 /**
-* @class PixiFastShader
-* @constructor
-* @param gl {WebGLContext} the current WebGL drawing context
-*/
-PIXI.PixiFastShader = function(gl)
-{
+ * @class PixiFastShader
+ * @constructor
+ * @param gl {WebGLContext} the current WebGL drawing context
+ */
+var PixiFastShader = function (gl) {
     /**
      * @property _UID
      * @type Number
      * @private
      */
-    this._UID = PIXI._UID++;
-    
+    this._UID = uid();
+
     /**
      * @property gl
      * @type WebGLContext
@@ -74,7 +75,7 @@ PIXI.PixiFastShader = function(gl)
         '   v = ( uMatrix * vec3(v + aPositionCoord , 1.0) ).xy ;',
         '   gl_Position = vec4( ( v / projectionVector) + center , 0.0, 1.0);',
         '   vTextureCoord = aTextureCoord;',
-      //  '   vec3 color = mod(vec3(aColor.y/65536.0, aColor.y/256.0, aColor.y), 256.0) / 256.0;',
+        //  '   vec3 color = mod(vec3(aColor.y/65536.0, aColor.y/256.0, aColor.y), 256.0) / 256.0;',
         '   vColor = aColor;',
         '}'
     ];
@@ -85,23 +86,22 @@ PIXI.PixiFastShader = function(gl)
      * @type Number
      */
     this.textureCount = 0;
-    
+
     this.init();
 };
 
-PIXI.PixiFastShader.prototype.constructor = PIXI.PixiFastShader;
+PixiFastShader.prototype.constructor = PixiFastShader;
 
 /**
-* Initialises the shader.
-* 
-* @method init
-*/
-PIXI.PixiFastShader.prototype.init = function()
-{
+ * Initialises the shader.
+ *
+ * @method init
+ */
+PixiFastShader.prototype.init = function () {
     var gl = this.gl;
 
     var program = PIXI.compileProgram(gl, this.vertexSrc, this.fragmentSrc);
-    
+
     gl.useProgram(program);
 
     // get and store the uniforms for the shader
@@ -121,35 +121,42 @@ PIXI.PixiFastShader.prototype.init = function()
 
     this.aTextureCoord = gl.getAttribLocation(program, 'aTextureCoord');
     this.colorAttribute = gl.getAttribLocation(program, 'aColor');
-   
+
     // Begin worst hack eva //
 
     // WHY??? ONLY on my chrome pixel the line above returns -1 when using filters?
     // maybe its somthing to do with the current state of the gl context.
     // Im convinced this is a bug in the chrome browser as there is NO reason why this should be returning -1 especially as it only manifests on my chrome pixel
     // If theres any webGL people that know why could happen please help :)
-    if(this.colorAttribute === -1)
-    {
+    if (this.colorAttribute === -1) {
         this.colorAttribute = 2;
     }
 
-    this.attributes = [this.aVertexPosition, this.aPositionCoord,  this.aScale, this.aRotation, this.aTextureCoord, this.colorAttribute];
-    
+    this.attributes = [
+        this.aVertexPosition,
+        this.aPositionCoord,
+        this.aScale,
+        this.aRotation,
+        this.aTextureCoord,
+        this.colorAttribute
+    ];
+
     // End worst hack eva //
 
     this.program = program;
 };
 
 /**
-* Destroys the shader.
-* 
-* @method destroy
-*/
-PIXI.PixiFastShader.prototype.destroy = function()
-{
-    this.gl.deleteProgram( this.program );
+ * Destroys the shader.
+ *
+ * @method destroy
+ */
+PixiFastShader.prototype.destroy = function () {
+    this.gl.deleteProgram(this.program);
     this.uniforms = null;
     this.gl = null;
 
     this.attributes = null;
 };
+
+export { PixiFastShader };

@@ -174,7 +174,11 @@ BaseObject2D.prototype.toLocal = function (position, from) {
 BaseObject2D.prototype._renderCachedSprite = function (renderSession) {
     this._cachedSprite.worldAlpha = this.worldAlpha;
 
-    Tiny.Sprite.prototype.render.call(this._cachedSprite, renderSession);
+    if (renderSession.gl) {
+        Tiny.Sprite.prototype.render.call(this._cachedSprite, renderSession);
+    } else {
+        Tiny.Sprite.prototype.renderCanvas.call(this._cachedSprite, renderSession);
+    }
 };
 
 BaseObject2D.prototype._generateCachedSprite = function () {
@@ -183,14 +187,19 @@ BaseObject2D.prototype._generateCachedSprite = function () {
 
     var bounds = this.getLocalBounds();
 
-    if (!this._cachedSprite) {
-        var renderTexture = new Tiny.RenderTexture(bounds.width | 0, bounds.height | 0); //, renderSession.renderer);
+    // if (!this._cachedSprite) {
+    var renderTexture = new Tiny.RenderTexture(bounds.width | 0, bounds.height | 0); //, renderSession.renderer);
 
-        this._cachedSprite = new Tiny.Sprite(renderTexture);
-        this._cachedSprite.worldTransform = this.worldTransform;
-    } else {
-        this._cachedSprite.texture.resize(bounds.width | 0, bounds.height | 0);
-    }
+    this._cachedSprite = new Tiny.Sprite(renderTexture);
+    this._cachedSprite.worldTransform = this.worldTransform;
+    // } else {
+    //     this._cachedSprite.texture.resize(bounds.width | 0, bounds.height | 0);
+    // }
+
+    var tempFilters = this._filters;
+    this._filters = null;
+
+    this._cachedSprite.filters = tempFilters;
 
     BaseObject2D._tempMatrix.tx = -bounds.x;
     BaseObject2D._tempMatrix.ty = -bounds.y;

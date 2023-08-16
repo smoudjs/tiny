@@ -1,5 +1,5 @@
 import { EventEmitter } from '../utils/EventEmitter';
-import { systems } from '../systems/registrar';
+import { systems } from './registrar';
 
 var noop = function () {};
 

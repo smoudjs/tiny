@@ -1,3 +1,5 @@
+import { getNextPow2, isPow2 } from '../utils';
+
 var DEG2RAD = Math.PI / 180;
 var RAD2DEG = 180 / Math.PI;
 
@@ -17,9 +19,9 @@ var _Math = {
         return radians * RAD2DEG;
     },
 
-    isPowerOfTwo: function (value) {
-        return (value & (value - 1)) === 0 && value !== 0;
-    }
+    isPow2: isPow2,
+
+    getNextPow2: getNextPow2
 };
 
 export { _Math };

@@ -27,20 +27,6 @@ export default class BasicApp extends Tiny.App {
         this.scene = new Tiny.Scene();
     }
 
-    /** Add an arbitrary amount of bunnies */
-    addBunnies(num) {
-        for (let i = 0; i < num; i++) {
-            const texture = this.textures[this.count % this.textures.length];
-            const bunny = new Bunny(texture, this.bounds);
-
-            bunny.position.x = (this.count % 2) * this.width;
-            this.bunnies.push(bunny);
-            this.scene.add(bunny);
-            this.count++;
-        }
-        this.counter.innerText = `${this.count} BUNNIES`;
-    }
-
     preload() {
         console.log('preload');
         // this.load.all(resources);
@@ -49,9 +35,41 @@ export default class BasicApp extends Tiny.App {
     create() {
         console.log('create');
 
-        this.text = new Tiny.Text('Hello World !');
+        this.text = new Tiny.Text('Hello World !', {fill: "#ffff00"});
+
+        // this.text.cacheAsBitmap = true;
+        this.text.tint.set(0xa1a100);
         this.text.position.set(400, 200);
         this.scene.add(this.text);
+
+        // var graphics = new Tiny.Graphics();
+        // // graphics.tint.set(0x45f223);
+      
+
+        // graphics.beginFill('#f23', 1);
+        // graphics.drawRect(100, 100, 100, 100);
+        // graphics.endFill();
+
+        // graphics.lineStyle(23, 0x45ff45);
+        // graphics.drawCircle(400, 200, 100);
+
+        // graphics.moveTo(10, 10);
+        // graphics.lineStyle(23, 0x4545ff, 0.1);
+        // graphics.lineTo(400, 200);
+        // graphics.lineTo(400, 500);
+        // graphics.lineTo(100, 500);
+        // graphics.bezierCurveTo(400, 500, 23, 32, 45, 12);
+
+        //   // graphics.cacheAsBitmap = true
+
+        // setInterval(() => {
+        //     this.text.tint.set(Math.floor(Math.random() * 0xffffff));
+        //     graphics.tint.set(Math.floor(Math.random() * 0xffffff));
+        //     // graphics.dirty = true;
+        // }, 1000)
+
+
+        // this.scene.add(graphics);
     }
 
     setPixelRatio(dpr) {
@@ -60,15 +78,6 @@ export default class BasicApp extends Tiny.App {
 
     update(time, delta) {
         this.text.rotation += delta * 0.01;
-        // if (this.input.isDown) {
-        //     if (this.count < this.maxCount) {
-        //         this.addBunnies(this.amount);
-        //     }
-        // }
-
-        // for (let i = 0; i < this.bunnies.length; i++) {
-        //     this.bunnies[i].update();
-        // }
     }
 
     render() {
