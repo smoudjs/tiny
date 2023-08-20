@@ -6,7 +6,7 @@ import App from './App';
 
 window.addEventListener('load', () => {
     const app = new App(window.innerWidth, window.innerHeight, 'game');
-
+    window.app = app;
     window.addEventListener('resize', () => {
         app.resize(window.innerWidth, window.innerHeight);
     });

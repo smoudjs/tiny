@@ -15,6 +15,4 @@ Camera.prototype = Object.assign(Object.create(Object3D.prototype), {
     }
 });
 
-Tiny.Camera = Camera;
-
 export {Camera};

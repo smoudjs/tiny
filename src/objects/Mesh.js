@@ -86,6 +86,4 @@ Mesh.prototype = Object.assign(Object.create(Object3D.prototype), {
     }
 });
 
-Tiny.Mesh = Mesh;
-
 export { Mesh };

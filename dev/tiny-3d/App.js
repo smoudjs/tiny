@@ -82,15 +82,15 @@ export default class BasicApp extends Tiny.App {
     }
 
     preload() {
-        this.load.image('rabbitv3', require('textures/bunnies/rabbitv3.png'));
-        this.load.image('rabbitv3_batman', require('textures/bunnies/rabbitv3_batman.png'));
+        this.load.image('texture', require('examples/textures/leaf.jpg'));
+        this.load.image('rabbitv3_batman', require('examples/textures/bunnies/rabbitv3_batman.png'));
     }
 
     create() {
         // this.textures = resources.map((e) => e.key);
 
         this.testTexture = new Tiny.WebGlTexture(this.renderer.gl, {
-            image: Tiny.Cache.image['rabbitv3']
+            image: Tiny.Cache.image['texture'].source
         });
         //
         // this.testTexture2 = new Tiny.WebGlTexture(this.renderer.gl, {
@@ -99,8 +99,9 @@ export default class BasicApp extends Tiny.App {
 
         this.box = new Tiny.Mesh(
             new Tiny.BoxGeometry(3,3,3),
-            new Tiny.MeshBasicMaterial({
-                color: new Tiny.Color(1, 1, 0)
+            new Tiny.MeshLambertMaterial({
+                color: new Tiny.Color(0.6, 1,0),
+                map: this.testTexture
             })
         );
 

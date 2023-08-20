@@ -1,13 +1,6 @@
 /**
  * import "h5tiny";
  * import "h5tiny/examples/js/App2D";
- */
-
-import '../../examples/res/resources';
-
-/**
- * import "h5tiny";
- * import "h5tiny/examples/js/App2D";
  *
  * import "h5tiny/plugins/sound";
  * import "h5tiny/plugins/particles";

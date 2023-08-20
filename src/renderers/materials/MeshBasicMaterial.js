@@ -45,7 +45,7 @@ const fragment = /* glsl */ `
 export class MeshBasicMaterial extends Material {
     constructor({
         map = Texture.WHITE,
-        color = Color.WHITE,
+        color = new Color(),
         opacity = 1,
         transparent = false,
         cullFace = WebGLRenderingContext.BACK,

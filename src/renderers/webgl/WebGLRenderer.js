@@ -304,6 +304,7 @@ WebGLRenderer.prototype.initContext = function () {
 
 WebGLRenderer.prototype.setClearColor = function (color) {
     this.clearColor = new Color(color);
+    this.gl.clearColor(this.clearColor.r, this.clearColor.g, this.clearColor.b, this.clearColor.a);
 
     // if (color === null) {
     //     this.clearColor = null;
@@ -365,7 +366,7 @@ WebGLRenderer.prototype.render = function (scene) {
         if (this.transparent) {
             gl.clearColor(0, 0, 0, 0);
         } else {
-            gl.clearColor(this.clearColor.r, this.clearColor.g, this.clearColor.b, this.clearColor.a);
+            // gl.clearColor(this.clearColor.r, this.clearColor.g, this.clearColor.b, this.clearColor.a);
         }
 
         gl.clear(gl.COLOR_BUFFER_BIT);

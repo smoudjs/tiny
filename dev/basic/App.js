@@ -5,7 +5,7 @@ export default class BasicApp extends Tiny.App {
         this.width = width;
         this.height = height;
 
-        this.renderer = new Tiny.CanvasRenderer(this.width, this.height, {
+        this.renderer = new Tiny.Renderer(this.width, this.height, {
             resolution: 1.25,
             autoResize: true
         });
@@ -31,8 +31,8 @@ export default class BasicApp extends Tiny.App {
         console.log('preload');
         this.load.spritesheet(
             'spritesheet',
-            require('textures/basics/gif.jpg'),
-            require('textures/basics/gif_data.json')
+            require('examples/textures/basics/gif.jpg'),
+            require('examples/textures/basics/gif_data.json')
         );
         // this.load.all(resources);
     }

@@ -75,7 +75,6 @@ const webpackConfig = {
 
     output: {
         filename: '[name].js',
-        chunkFilename: '[name].chunk.bundle.js',
         path: path.resolve('dist'),
         environment: {
             arrowFunction: false

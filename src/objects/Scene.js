@@ -3,7 +3,7 @@ import { Mat3 } from '../math/Mat3';
 
 var Scene = function (game) {
     Object2D.call(this);
-    this.worldTransform = new Mat3();
+    // this.worldTransform = new Mat3();
     this.game = game;
 };
 

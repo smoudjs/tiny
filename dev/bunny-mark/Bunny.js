@@ -5,6 +5,7 @@ class Bunny extends Tiny.Sprite {
 
         /** The amount of gravity */
         this.gravity = 0.75;
+        // this.tint.set(0xff3434);
 
         // this.blendMode = Tiny.ADD;
 

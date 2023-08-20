@@ -61,7 +61,7 @@ const fragment = /* glsl */ `
 
 function MeshLambertMaterial({
     map = Texture.WHITE,
-    color = Color.WHITE,
+    color = new Color(),
     opacity = 1,
     transparent = false,
     cullFace = WebGLRenderingContext.BACK,

@@ -23,7 +23,6 @@
   "files": [
     "src",
     "dist",
-    "plugins",
     "extras",
     "examples/js",
     "examples/jsm",

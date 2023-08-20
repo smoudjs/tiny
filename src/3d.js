@@ -6,6 +6,7 @@ import { InstancedMesh } from './objects/InstancedMesh';
 import { Light } from './objects/lights/Light';
 import { AmbientLight } from './objects/lights/AmbientLight';
 import { DirectionalLight } from './objects/lights/DirectionalLight';
+import { Camera } from './objects/Camera';
 import { OrthographicCamera } from './objects/OrthographicCamera';
 
 import { WebGLRenderer } from './renderers/WebGLRenderer';
@@ -25,6 +26,7 @@ Tiny.InstancedMesh = InstancedMesh;
 Tiny.Light = Light;
 Tiny.AmbientLight = AmbientLight;
 Tiny.DirectionalLight = DirectionalLight;
+Tiny.Camera = Camera;
 Tiny.OrthographicCamera = OrthographicCamera;
 
 Tiny.WebGLRenderer = WebGLRenderer;

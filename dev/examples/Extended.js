@@ -1,14 +1,15 @@
-import '../../examples/res/resources';
-
-
 class MyGame extends Tiny.App2D {
     constructor(width, height) {
         super(width, height, 'game');
     }
 
     preload() {
-        this.load.image('base', resources.baseImage);
-        this.load.atlas('atlas', resources.atlas, resources.atlas_data);
+        this.load.image('base', require('examples/textures/basics/coin.png'));
+        this.load.atlas(
+            'atlas',
+            require('examples/textures/basics/grid_atlas.png'),
+            require('examples/textures/basics/grid_atlas_data.json')
+        );
         // this.load.spritesheet("gifsprite", spritesheet, 222, 222);
         // this.load.spritesheet("gifsprite", spritesheet, spritesheet_data);
 
@@ -17,18 +18,24 @@ class MyGame extends Tiny.App2D {
             // { key: "atlas", src: resources.atlas, data: atlas_data, type: "atlas" },
             // { key: "gifsprite", src: spritesheet, cols: 12, rows: 1, total: 15, duration: 40, type: "spritesheet" },
             // { key: "gifsprite", src: spritesheet, width: 222, height: 222, duration: 40, type: "spritesheet" },
-            { key: 'gifsprite', src: resources.spritesheet, cols: 6, rows: 1, duration: 90, type: 'spritesheet' }
+            {
+                key: 'gifsprite',
+                src: require('examples/textures/basics/spritesheet.png'),
+                cols: 6,
+                rows: 1,
+                duration: 90,
+                type: 'spritesheet'
+            }
             // { key: "gifsprite", src: spritesheet, data: spritesheet_data, type: "spritesheet" }
         ]);
     }
 
     create() {
-
         this.anim.create({
-            key: "idle",
-            type: "spritesheet",
+            key: 'idle',
+            type: 'spritesheet',
             data: {
-                key: "gifsprite",
+                key: 'gifsprite'
                 // from: 0,
                 // to: 3
             },
@@ -100,10 +107,9 @@ class MyGame extends Tiny.App2D {
         this.anim.add(animatedSprite);
         this.input.add(animatedSprite);
 
-
         animatedSprite.play('idle');
         animatedSprite.input.once('down', function () {
-            animatedSprite.play({key: 'idle', yoyo: false, fps: 30});
+            animatedSprite.play({ key: 'idle', yoyo: false, fps: 30 });
         });
 
         this.interval = setInterval(function () {

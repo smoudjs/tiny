@@ -422,10 +422,10 @@ WebGLRenderer.prototype = {
         }
 
         // updates all scene graph matrices
-        if (update) scene.updateMatrixWorld();
+        if (update) scene.updateTransform();
 
         // Update camera separately, in case not in scene graph
-        if (camera) camera.updateMatrixWorld();
+        if (camera) camera.updateTransform();
 
         // Get render list - entails culling and sorting
         var renderList = this.getRenderList({ scene, camera, frustumCull, sort });

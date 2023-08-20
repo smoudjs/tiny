@@ -1,9 +1,6 @@
-import '../../examples/res/resources';
-
 Tiny.rnd = function (min, max) {
     return min + Math.floor(Math.random() * (max - min + 1));
 };
-
 
 Tiny.CanvasTinter.cacheTint = true;
 
@@ -13,8 +10,12 @@ class MyGame extends Tiny.App2D {
     }
 
     preload() {
-        this.load.image('base', resources.baseImage);
-        this.load.atlas('atlas', resources.atlas, resources.atlas_data);
+        this.load.image('base', require('examples/textures/basics/coin.png'));
+        this.load.atlas(
+            'atlas',
+            require('examples/textures/basics/grid_atlas.png'),
+            require('examples/textures/basics/grid_atlas_data.json')
+        );
 
         this.world = new Tiny.Object2D();
         this.scene.add(this.world);
@@ -66,8 +67,8 @@ class MyGame extends Tiny.App2D {
         });
 
         this.anim.create({
-            key: "run",
-            data: "spritesheetAnimation",
+            key: 'run',
+            data: 'spritesheetAnimation',
             fps: 30,
             repeat: -1
         });
@@ -120,11 +121,11 @@ class MyGame extends Tiny.App2D {
                 // }
                 this.anim.add(sprite);
                 sprite.play({
-                    key: "run",
+                    key: 'run',
                     fps: fps || Tiny.rnd(25, 100)
                 });
                 game.world.add(sprite);
-                sprite.scale.set(0.3)
+                sprite.scale.set(0.3);
                 this.sprites.push(sprite);
             }
 
@@ -135,14 +136,14 @@ class MyGame extends Tiny.App2D {
         const sprite = new Tiny.Sprite('spritesheetAnimation', 0);
         sprite.game = game;
         this.anim.add(sprite);
-        sprite.play("run");
+        sprite.play('run');
         sprite.anchor.set(0.5);
         sprite.scale.set(5);
         sprite.alpha = 0.2;
         game.world.add(sprite);
 
         this.addSprites(1, 60);
-        this.resize(this.width, this.height)
+        this.resize(this.width, this.height);
 
         // this.setPixelRatio(0.5);
     }
@@ -179,6 +180,5 @@ class MyGame extends Tiny.App2D {
         this.world.scale.set(1 / Math.max(mw / width, mh / height));
     }
 }
-
 
 export default MyGame;

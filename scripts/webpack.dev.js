@@ -22,14 +22,12 @@ const webpackConfig = {
 
     resolve: {
         alias: {
-            'textures': path.resolve('examples/textures'),
-            'models': path.resolve('examples/models'),
+            'examples': path.resolve('examples'),
             '@smoud/tiny/app': path.resolve('src/tiny.app.js'),
             '@smoud/tiny/2d': path.resolve('src/tiny.2d.js'),
             '@smoud/tiny/webgl': path.resolve('src/webgl.js'),
             '@smoud/tiny/3d': path.resolve('src/tiny.3d.js'),
             '@smoud/tiny/extras': path.resolve('extras'),
-            '@smoud/tiny/plugins': path.resolve('plugins'),
             '@smoud/tiny': path.resolve('src')
         }
     },
@@ -40,7 +38,7 @@ const webpackConfig = {
 
     output: {
         filename: '[name].js',
-        path: path.resolve('dist')
+        path: path.resolve('serve')
     },
 
     devServer: {

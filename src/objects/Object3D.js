@@ -64,7 +64,7 @@ Object3D.prototype = {
         if (notifyChild) child.setParent(null, false);
     },
 
-    updateMatrixWorld: function (force) {
+    updateTransform: function (force) {
         if (this.matrixAutoUpdate) this.updateMatrix();
         if (this.worldMatrixNeedsUpdate || force) {
             if (this.parent === null) this.worldMatrix.copy(this.matrix);
@@ -74,7 +74,7 @@ Object3D.prototype = {
         }
 
         for (var i = 0, l = this.children.length; i < l; i++) {
-            this.children[i].updateMatrixWorld(force);
+            this.children[i].updateTransform(force);
         }
     },
 
@@ -110,7 +110,7 @@ Object3D.prototype = {
 
         var parent = this.parent;
 
-        this.updateMatrixWorld( true, false );
+        this.updateTransform( true, false );
 
         _position.setFromMatrixPosition( this.worldMatrix );
 
@@ -135,7 +135,5 @@ Object3D.prototype = {
         }
     }
 }
-
-Tiny.Object3D = Object3D;
 
 export {Object3D};
