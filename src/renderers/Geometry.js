@@ -251,8 +251,8 @@ Geometry.prototype = {
         var center = this.bounds.center;
         var scale = this.bounds.scale;
 
-        min.set(+Infinity);
-        max.set(-Infinity);
+        min.set(+Infinity,+Infinity,+Infinity);
+        max.set(-Infinity,-Infinity,-Infinity);
 
         // TODO: check size of position (eg triangle with Vector2)
         for (var i = 0, l = array.length; i < l; i += stride) {

@@ -449,6 +449,4 @@ WebGLRenderer.prototype = {
     }
 };
 
-Tiny.WebGLRenderer = WebGLRenderer;
-
 export { WebGLRenderer };
