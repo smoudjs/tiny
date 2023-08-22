@@ -1,4 +1,3 @@
-import { Attribute } from '../renderers/Attribute';
 import { Mesh } from './Mesh.js';
 
 const mat4Length = 16;
@@ -6,14 +5,10 @@ const mat4Length = 16;
 function InstancedMesh(geometry, material, count) {
     count = count !== undefined ? count : 1;
 
-    if (!geometry.attributes.instancedMatrix) {
-        const instancedMatrix = new Float32Array(count * mat4Length);
+    if (!geometry.attributes.instanceMatrix) {
+        var instanceMatrix = new Float32Array( count * mat4Length );
 
-        geometry.attributes.instancedMatrix = new Attribute({
-            instanced: 1,
-            size: mat4Length,
-            data: instancedMatrix
-        });
+        geometry.addAttribute('instanceMatrix', { instanced: 1, size: mat4Length, data: instanceMatrix });
     }
 
     geometry.instancedCount = count;
@@ -25,22 +20,21 @@ function InstancedMesh(geometry, material, count) {
     this.isInstancedMesh = true;
 }
 
-InstancedMesh.prototype = Object.create(Mesh.prototype);
-InstancedMesh.prototype.constructor = InstancedMesh;
+InstancedMesh.prototype = Object.assign(Object.create(Mesh.prototype), {
+    constructor: InstancedMesh,
 
-Object.defineProperty(InstancedMesh.prototype, 'count', {
-    get: function () {
-        return this.geometry.instancedCount;
+    setMatrixAt: function (index, matrix) {
+        this.geometry.attributes.instanceMatrix.set(matrix.elements, index * mat4Length);
     },
 
-    set: function (value) {
-        this.geometry.instancedCount = value;
+    draw: function ({camera, directionalLight, ambientLight} = {}) {
+        if (this.dynamic) {
+            this.needsUpdate = true;
+        }
+
+        Mesh.prototype.draw.call(this, {camera, directionalLight, ambientLight});
     }
 });
-
-InstancedMesh.prototype.setMatrixAt = function (index, matrix) {
-    this.geometry.attributes.instancedMatrix.set(matrix.elements, index * mat4Length);
-};
 
 // @TODO add later
 // addFrustumCull() {

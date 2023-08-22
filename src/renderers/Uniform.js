@@ -1,6 +1,3 @@
-import { Vec3 } from '../math/Vec3';
-import { Vec4 } from '../math/Vec4';
-
 function Uniform({ value, boundary, itemSize }) {
     this.boundary = boundary; // used to build the uniform buffer according to the STD140 layout
     this.itemSize = itemSize;

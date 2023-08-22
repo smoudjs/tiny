@@ -16,8 +16,12 @@
 
 // TODO: fit in transform feedback
 
+import {Mat3} from "../math/Mat3-3d";
+import {Mat4} from "../math/Mat4";
 import {Vec3} from '../math/Vec3.js';
 import {Attribute} from "./Attribute";
+
+var _m1 = new Mat4();
 
 var tempVec3 = new Vec3();
 
@@ -31,6 +35,8 @@ function Geometry(attributes = {}) {
     this.id = ID++;
 
     this.attributes = attributes;
+
+    this.index = null;
 
     // Store one VAO per program attribute locations order
     this.VAOs = {};
@@ -60,8 +66,120 @@ Geometry.prototype = {
         }
     },
 
+    translate: function( x, y, z ) {
+        _m1.makeTranslation( x, y, z );
+
+        this.applyMatrix4( _m1 );
+
+        return this;
+    },
+
+    clone: function() {
+        return new this.constructor().copy( this );
+    },
+
+    scale: function( x, y, z ) {
+        _m1.makeScale( x, y, z );
+
+        this.applyMatrix4( _m1 );
+
+        return this;
+    },
+
+    applyMatrix4: function( matrix ) {
+
+        var position = this.attributes.position;
+
+        if ( position !== undefined ) {
+
+            position.applyMatrix4( matrix );
+
+            position.needsUpdate = true;
+
+        }
+
+        var normal = this.attributes.normal;
+
+        if ( normal !== undefined ) {
+
+            var normalMatrix = new Mat3().getNormalMatrix( matrix );
+
+            normal.applyNormalMatrix( normalMatrix );
+
+            normal.needsUpdate = true;
+
+        }
+
+        if ( this.boundingBox !== null ) {
+
+            this.computeBoundingBox();
+
+        }
+
+        if ( this.boundingSphere !== null ) {
+
+            this.computeBoundingSphere();
+
+        }
+
+        return this;
+    },
+
+    copy: function( source ) {
+
+        // reset
+
+        this.attributes = {};
+        this.boundingBox = null;
+        this.boundingSphere = null;
+
+        // name
+
+        this.name = source.name;
+
+        // attributes
+
+        var attributes = source.attributes;
+
+        for ( var name in attributes ) {
+            this.attributes[name] = attributes[ name ].clone();
+        }
+
+        // bounding box
+
+        // var boundingBox = source.boundingBox;
+        //
+        // if ( boundingBox !== null ) {
+        //
+        //     this.boundingBox = boundingBox.clone();
+        //
+        // }
+        //
+        // // bounding sphere
+        //
+        // var boundingSphere = source.boundingSphere;
+        //
+        // if ( boundingSphere !== null ) {
+        //
+        //     this.boundingSphere = boundingSphere.clone();
+        //
+        // }
+
+        // draw range
+
+        this.drawRange.start = source.drawRange.start;
+        this.drawRange.count = source.drawRange.count;
+
+        return this;
+
+    },
+
     addAttribute: function (key, attr) {
         attr = this.attributes[key] = new Attribute(attr);
+
+        if (!this.gl) {
+            return;
+        }
 
         // Set options
         attr.id = ATTR_ID++; // TODO: currently unused, remove?

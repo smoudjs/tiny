@@ -6,16 +6,17 @@ import {
     Vector3Uniform,
     Vector4Uniform
 } from '../Uniform';
+
 import { Material } from '../Material';
 import { Texture } from '../Texture';
 import { Color } from '../../math/Color';
 
-const vertex = /* glsl */ `
+var vertex = /* glsl */ `
     attribute vec2 uv;
     attribute vec3 position;
     attribute vec3 normal;
     
-    attribute mat4 instancedMatrix;
+    attribute mat4 instanceMatrix;
     
     uniform mat4 projectViewMatrix;
     uniform mat4 modelMatrix;
@@ -26,7 +27,7 @@ const vertex = /* glsl */ `
     void main() {
         vUv = uv;
     
-        mat4 modelInstancedMatrix = instancedMatrix * modelMatrix;
+        mat4 modelInstancedMatrix = modelMatrix * instanceMatrix;
     
         vNormal = mat3(modelInstancedMatrix) * normal;
     
@@ -34,7 +35,7 @@ const vertex = /* glsl */ `
     }
 `;
 
-const fragment = /* glsl */ `
+var fragment = /* glsl */ `
     precision highp float;
     
     uniform vec4 ambientLight;

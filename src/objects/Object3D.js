@@ -36,6 +36,8 @@ function Object3D() {
 Object3D.prototype = {
     constructor: Object3D,
 
+    isObject3D: true,
+
     getObjectByName: function (name = '') {
         var obj = null;
 
@@ -48,20 +50,42 @@ Object3D.prototype = {
         return obj;
     },
 
-    setParent: function (parent, notifyParent = true) {
-        if (this.parent && parent !== this.parent) this.parent.removeChild(this, false);
-        this.parent = parent;
-        if (notifyParent && parent) parent.add(this, false);
+    add: function (object) {
+        if ( arguments.length > 1 ) {
+            for ( let i = 0; i < arguments.length; i ++ ) {
+                this.add( arguments[ i ] );
+            }
+
+            return this;
+        }
+
+        if ( object.parent !== null ) {
+            object.parent.remove( object );
+        }
+
+        object.parent = this;
+
+        this.children.push(object);
     },
 
-    add: function (child, notifyChild = true) {
-        if (!~this.children.indexOf(child)) this.children.push(child);
-        if (notifyChild) child.setParent(this, false);
-    },
+    remove: function( object ) {
+        if ( arguments.length > 1 ) {
+            for ( let i = 0; i < arguments.length; i ++ ) {
+                this.remove( arguments[ i ] );
+            }
 
-    removeChild: function (child, notifyChild = true) {
-        if (!!~this.children.indexOf(child)) this.children.splice(this.children.indexOf(child), 1);
-        if (notifyChild) child.setParent(null, false);
+            return this;
+        }
+
+        const index = this.children.indexOf( object );
+
+        if ( index !== - 1 ) {
+            object.parent = null;
+
+            this.children.splice( index, 1 );
+        }
+
+        return this;
     },
 
     updateTransform: function (force) {

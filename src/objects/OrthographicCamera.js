@@ -60,8 +60,8 @@ OrthographicCamera.prototype = Object.assign(Object.create(Camera.prototype), {
         this.projectionMatrix.makeOrthographic(left, right, top, bottom, this.near, this.far);
     },
 
-    updateMatrixWorld: function () {
-        Camera.prototype.updateMatrixWorld.call(this);
+    updateTransform: function () {
+        Camera.prototype.updateTransform.call(this);
 
         this.viewMatrix.getInverse(this.worldMatrix);
         this.projectionViewMatrix.multiplyMatrices(this.projectionMatrix, this.viewMatrix);

@@ -478,4 +478,6 @@ Object.assign(Color.prototype, {
 	}
 });
 
+Color.WHITE = new Color();
+
 export { Color };

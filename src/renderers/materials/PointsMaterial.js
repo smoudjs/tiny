@@ -1,8 +1,11 @@
-import {ColorUniform, FloatUniform, Material, Matrix4Uniform, Texture, TextureUniform} from "../../core";
-import {Color} from "../../math";
-import {MeshLambertMaterial} from "./MeshLambertMaterial";
+import {ColorUniform, FloatUniform, Matrix4Uniform, TextureUniform} from "../Uniform";
 
-const vertex = /* glsl */ `
+import {Material} from '../Material';
+import {Texture} from '../Texture';
+import {Color} from '../../math/Color';
+import {InstancedMeshLambertMaterial} from "./InstancedMeshLambertMaterial";
+
+var vertex = /* glsl */ `
     attribute vec3 position;
     attribute float size;
 
@@ -15,7 +18,7 @@ const vertex = /* glsl */ `
     }
 `;
 
-const fragment = /* glsl */ `
+var fragment = /* glsl */ `
     precision highp float;
 
     uniform sampler2D uMap;
@@ -29,39 +32,40 @@ const fragment = /* glsl */ `
     }
 `;
 
-export class PointsMaterial extends Material {
-    constructor(
-        {
-            map = Texture.WHITE,
-            color = Color.WHITE,
-            opacity = 1,
-            transparent = false,
-            cullFace = WebGLRenderingContext.BACK,
-            frontFace = WebGLRenderingContext.CCW,
-            depthTest = true,
-            depthWrite = true,
-            depthFunc = WebGLRenderingContext.LESS,
-        } = {},
-    ) {
-        super({
-            vertex,
-            fragment,
-            uniforms: {
-                uMap: new TextureUniform(map),
-                uColor: new ColorUniform(color),
-                uOpacity: new FloatUniform(opacity),
+function PointsMaterial(
+    {
+        map = Texture.WHITE,
+        color = Color.WHITE,
+        opacity = 1,
+        transparent = false,
+        cullFace = WebGLRenderingContext.BACK,
+        frontFace = WebGLRenderingContext.CCW,
+        depthTest = true,
+        depthWrite = true,
+        depthFunc = WebGLRenderingContext.LESS,
+    } = {}
+) {
+    Material.call(this, {
+        vertex,
+        fragment,
+        uniforms: {
+            uMap: new TextureUniform(map),
+            uColor: new ColorUniform(color),
+            uOpacity: new FloatUniform(opacity),
 
-                modelMatrix: new Matrix4Uniform(),
-                projectViewMatrix: new Matrix4Uniform(),
-            },
-            transparent,
-            cullFace,
-            frontFace,
-            depthTest,
-            depthWrite,
-            depthFunc,
-        });
-    }
+            modelMatrix: new Matrix4Uniform(),
+            projectViewMatrix: new Matrix4Uniform(),
+        },
+        transparent,
+        cullFace,
+        frontFace,
+        depthTest,
+        depthWrite,
+        depthFunc,
+    })
 }
 
-Tiny.PointsMaterial = PointsMaterial;
+PointsMaterial.prototype = Object.create(Material.prototype);
+PointsMaterial.prototype.constructor = PointsMaterial;
+
+export {PointsMaterial};

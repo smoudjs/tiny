@@ -3,14 +3,13 @@ import {
     FloatUniform,
     Matrix4Uniform,
     TextureUniform,
-    Vector3Uniform,
-    Vector4Uniform
 } from '../Uniform';
-import { Material } from '../Material';
-import { Texture } from '../Texture';
-import { Color } from '../../math/Color';
 
-const vertex = /* glsl */ `
+import {Material} from '../Material';
+import {Texture} from '../Texture';
+import {Color} from '../../math/Color';
+
+var vertex = /* glsl */ `
     attribute vec2 uv;
     attribute vec3 position;
 
@@ -26,7 +25,7 @@ const vertex = /* glsl */ `
     }
 `;
 
-const fragment = /* glsl */ `
+var fragment = /* glsl */ `
     precision highp float;
 
     uniform sampler2D uMap;
@@ -42,37 +41,39 @@ const fragment = /* glsl */ `
     }
 `;
 
-export class MeshBasicMaterial extends Material {
-    constructor({
-        map = Texture.WHITE,
-        color = new Color(),
-        opacity = 1,
-        transparent = false,
-        cullFace = WebGLRenderingContext.BACK,
-        frontFace = WebGLRenderingContext.CCW,
-        depthTest = true,
-        depthWrite = true,
-        depthFunc = WebGLRenderingContext.LESS
-    } = {}) {
-        super({
-            vertex,
-            fragment,
-            uniforms: {
-                uMap: new TextureUniform(map),
-                uColor: new ColorUniform(color),
-                uOpacity: new FloatUniform(opacity),
+function MeshBasicMaterial({
+   map = Texture.WHITE,
+   color = Color.WHITE,
+   opacity = 1,
+   transparent = false,
+   cullFace = WebGLRenderingContext.BACK,
+   frontFace = WebGLRenderingContext.CCW,
+   depthTest = true,
+   depthWrite = true,
+   depthFunc = WebGLRenderingContext.LESS
+} = {}) {
 
-                modelMatrix: new Matrix4Uniform(),
-                projectViewMatrix: new Matrix4Uniform()
-            },
-            transparent,
-            cullFace,
-            frontFace,
-            depthTest,
-            depthWrite,
-            depthFunc
-        });
-    }
+    Material.call(this, {
+        vertex,
+        fragment,
+        uniforms: {
+            uMap: new TextureUniform(map),
+            uColor: new ColorUniform(color),
+            uOpacity: new FloatUniform(opacity),
+
+            modelMatrix: new Matrix4Uniform(),
+            projectViewMatrix: new Matrix4Uniform()
+        },
+        transparent,
+        cullFace,
+        frontFace,
+        depthTest,
+        depthWrite,
+        depthFunc
+    })
 }
 
-Tiny.MeshBasicMaterial = MeshBasicMaterial;
+MeshBasicMaterial.prototype = Object.create(Material.prototype);
+MeshBasicMaterial.prototype.constructor = MeshBasicMaterial;
+
+export {MeshBasicMaterial};

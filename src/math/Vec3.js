@@ -1,4 +1,4 @@
-import { MathFunc } from './MathFunc.js';
+import { MathFunc } from '../3ds/math/MathFunc';
 import { Quat } from './Quat.js';
 
 /**

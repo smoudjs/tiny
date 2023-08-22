@@ -6,11 +6,12 @@ import {
     Vector3Uniform,
     Vector4Uniform
 } from '../Uniform';
-import { Material } from '../Material';
-import { Texture } from '../Texture';
-import { Color } from '../../math/Color';
 
-const vertex = /* glsl */ `
+import {Material} from '../Material';
+import {Texture} from '../Texture';
+import {Color} from '../../math/Color';
+
+var vertex = /* glsl */ `
     attribute vec2 uv;
     attribute vec3 position;
     attribute vec3 normal;
@@ -29,7 +30,7 @@ const vertex = /* glsl */ `
     }
 `;
 
-const fragment = /* glsl */ `
+var fragment = /* glsl */ `
     precision highp float;
     
     uniform vec4 ambientLight;
@@ -60,16 +61,16 @@ const fragment = /* glsl */ `
 `;
 
 function MeshLambertMaterial({
-    map = Texture.WHITE,
-    color = new Color(),
-    opacity = 1,
-    transparent = false,
-    cullFace = WebGLRenderingContext.BACK,
-    frontFace = WebGLRenderingContext.CCW,
-    depthTest = true,
-    depthWrite = true,
-    depthFunc = WebGLRenderingContext.LESS
-} = {}) {
+     map = Texture.WHITE,
+     color = Color.WHITE,
+     opacity = 1,
+     transparent = false,
+     cullFace = WebGLRenderingContext.BACK,
+     frontFace = WebGLRenderingContext.CCW,
+     depthTest = true,
+     depthWrite = true,
+     depthFunc = WebGLRenderingContext.LESS
+ } = {}) {
     Material.call(this, {
         vertex,
         fragment,
@@ -99,4 +100,4 @@ function MeshLambertMaterial({
 MeshLambertMaterial.prototype = Object.create(Material.prototype);
 MeshLambertMaterial.prototype.constructor = MeshLambertMaterial;
 
-export { MeshLambertMaterial };
+export {MeshLambertMaterial};

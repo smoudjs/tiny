@@ -5,7 +5,7 @@
  * @author bhouston / http://clara.io
  */
 
-import { MathFunc } from './MathFunc.js';
+import { MathFunc } from '../3ds/math/MathFunc';
 
 function Quat(x, y, z, w ) {
 
