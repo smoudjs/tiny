@@ -52,7 +52,7 @@ var fragment = /* glsl */ `
 
     void main() {
         vec3 normal = normalize(vNormal);
-        vec3 tex = texture2D(uMap, vUv).rgb;
+        vec4 tex = texture2D(uMap, vUv);
         
         float directional = max(dot(normal, normalize(directionalLightDirection)), 0.0);
         
@@ -60,8 +60,8 @@ var fragment = /* glsl */ `
         
         vec3 ambLightColor = ambientLight.rgb * ambientLight.a;
         
-        gl_FragColor.rgb = tex * uColor * (ambLightColor + directLightColor);
-        gl_FragColor.a = uOpacity;
+        gl_FragColor.rgb = tex.rgb * (ambLightColor + directLightColor) * uColor;
+        gl_FragColor.a = tex.a * uOpacity;
     }
 `;
 

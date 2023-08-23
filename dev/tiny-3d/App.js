@@ -58,7 +58,7 @@ export default class BasicApp extends Tiny.App {
             height
         });
 
-        this.renderer.setClearColor(new Tiny.Color(0.9, 0.9, 0.9), 1);
+        this.renderer.setClearColor(new Tiny.Color(0.9, 0, 0.9), 1);
 
         var view = (this.inputView = this.renderer.domElement);
 
@@ -90,7 +90,7 @@ export default class BasicApp extends Tiny.App {
         // this.textures = resources.map((e) => e.key);
 
         this.testTexture = new Tiny.WebGlTexture(this.renderer.gl, {
-            image: Tiny.Cache.image['texture'].source
+            image: Tiny.Cache.image['rabbitv3_batman'].source
         });
         //
         // this.testTexture2 = new Tiny.WebGlTexture(this.renderer.gl, {
@@ -101,7 +101,8 @@ export default class BasicApp extends Tiny.App {
             new Tiny.BoxGeometry(3,3,3),
             new Tiny.MeshLambertMaterial({
                 color: new Tiny.Color(0.6, 1,0),
-                map: this.testTexture
+                map: this.testTexture,
+                transparent: true,
             })
         );
 
