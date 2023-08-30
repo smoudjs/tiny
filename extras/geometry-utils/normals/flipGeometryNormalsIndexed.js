@@ -1,5 +1,5 @@
 export function flipGeometryNormalsIndexed(geometry) {
-    var index = geometry.attributes.index.data;
+    var index = geometry.index.array;
 
     for (var i = 0, il = index.length / 3; i < il; i++) {
         var x = index[i * 3]
@@ -7,5 +7,5 @@ export function flipGeometryNormalsIndexed(geometry) {
         index[i * 3 + 2] = x
     }
 
-    geometry.attributes.index.needsUpdate = true
+    geometry.index.needsUpdate = true
 }

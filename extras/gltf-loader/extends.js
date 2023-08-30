@@ -46,11 +46,7 @@ Tiny.Loader.gltf = function (resource, cb) {
         cb();
     }
 
-    if (resource.src.length > 200) {
-        GLTFLoader.parse(resource.src, '', loaded);
-    } else {
-        GLTFLoader.load(resource.src, loaded);
-    }
+    GLTFLoader.parse(game.renderer.gl, JSON.parse(resource.src), loaded);
 };
 
 // Tiny.Loader.texture3d = function (resource, cb) {

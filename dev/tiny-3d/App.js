@@ -55,10 +55,11 @@ export default class BasicApp extends Tiny.App {
 
         this.renderer = new Tiny.WebGLRenderer({
             width,
-            height
+            height,
+            antialias: true
         });
 
-        this.renderer.setClearColor(new Tiny.Color(0.9, 0, 0.9), 1);
+        this.renderer.setClearColor(new Tiny.Color(0.3, 0.3, 0.9), 1);
 
         var view = (this.inputView = this.renderer.domElement);
 
@@ -84,32 +85,35 @@ export default class BasicApp extends Tiny.App {
     preload() {
         this.load.image('texture', require('examples/textures/leaf.jpg'));
         this.load.image('rabbitv3_batman', require('examples/textures/bunnies/rabbitv3_batman.png'));
+        this.load.image('palette', require('examples/textures/iss_palette.jpg'));
+
+        this.load.gltf('social_module', window.resources.models.social_module);
     }
 
     create() {
         // this.textures = resources.map((e) => e.key);
 
         this.testTexture = new Tiny.WebGlTexture(this.renderer.gl, {
-            image: Tiny.Cache.image['rabbitv3_batman'].source
+            image: Tiny.Cache.image['palette'].source,
+            flipY: false
         });
-        //
+
         // this.testTexture2 = new Tiny.WebGlTexture(this.renderer.gl, {
         //     image: Tiny.Cache.image['rabbitv3_batman']
         // });
 
         this.box = new Tiny.Mesh(
-            new Tiny.BoxGeometry(3,3,3),
-            new Tiny.MeshLambertMaterial({
-                color: new Tiny.Color(0.6, 1,0),
+            game.cache.gltf.social_module.getObjectByName('Food_module_wall_part').geometry.clone(),
+            new Tiny.MeshBasicMaterial({
                 map: this.testTexture,
-                transparent: true,
+                transparent: false,
             })
         );
 
-        this.ambientLight = new Tiny.AmbientLight(undefined, 0.5);
-        this.directionalLight = new Tiny.DirectionalLight(undefined, 0.5);
+        this.ambientLight = new Tiny.AmbientLight(Tiny.Color.WHITE, 0.5);
+        this.directionalLight = new Tiny.DirectionalLight(Tiny.Color.WHITE, 1);
 
-        this.directionalLight.position.set(0, 10, 0);
+        this.directionalLight.position.set(0, 100, 0);
 
         // this.instancedMesh = new Tiny.InstancedMesh(
         //     new Tiny.BoxGeometry(0.5, 0.5, 0.5),
@@ -180,8 +184,8 @@ export default class BasicApp extends Tiny.App {
         this.time = time;
         this.control.update();
 
-        this.box.rotation.x += delta;
-        this.box.rotation.z += delta;
+        // this.box.rotation.x += delta;
+        // this.box.rotation.z += delta;
     }
 
     render() {
@@ -201,7 +205,7 @@ export default class BasicApp extends Tiny.App {
         const { worldCamera } = this;
 
         const aspect = width / height;
-        const distance = 10;
+        const distance = 30;
 
         worldCamera.left = -distance * aspect;
         worldCamera.right = distance * aspect;

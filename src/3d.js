@@ -9,6 +9,14 @@ import { AmbientLight } from './objects/lights/AmbientLight';
 import { DirectionalLight } from './objects/lights/DirectionalLight';
 import { Camera } from './objects/Camera';
 import { OrthographicCamera } from './objects/OrthographicCamera';
+import {
+    Attribute,
+    Float16Attribute,
+    Float32Attribute,
+    Float64Attribute, Int16Attribute,
+    Int32Attribute, Int8Attribute, Uint16Attribute,
+    Uint32Attribute, Uint8Attribute, Uint8ClampedAttribute
+} from "./renderers/Attribute";
 import {Material} from "./renderers/Material";
 import {InstancedMeshBasicMaterial, PointsMaterial} from "./renderers/materials";
 import {
@@ -68,3 +76,17 @@ Tiny.Vector4Uniform = Vector4Uniform;
 Tiny.ColorUniform = ColorUniform;
 Tiny.Matrix3Uniform = Matrix3Uniform;
 Tiny.Matrix4Uniform = Matrix4Uniform;
+
+
+Tiny.Attribute = Attribute;
+
+Tiny.Float64Attribute = Float64Attribute;
+Tiny.Float32Attribute = Float32Attribute;
+Tiny.Float16Attribute = Float16Attribute;
+Tiny.Uint32Attribute = Uint32Attribute;
+Tiny.Int32Attribute = Int32Attribute;
+Tiny.Uint16Attribute = Uint16Attribute;
+Tiny.Int16Attribute = Int16Attribute;
+Tiny.Uint8ClampedAttribute = Uint8ClampedAttribute;
+Tiny.Uint8Attribute = Uint8Attribute;
+Tiny.Int8Attribute = Int8Attribute;

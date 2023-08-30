@@ -449,4 +449,7 @@ WebGLRenderer.prototype = {
     }
 };
 
-export { WebGLRenderer };
+const StaticDrawUsage = 35044;
+const DynamicDrawUsage = 35048;
+
+export { WebGLRenderer, StaticDrawUsage, DynamicDrawUsage };

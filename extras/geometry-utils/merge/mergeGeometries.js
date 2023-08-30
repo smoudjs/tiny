@@ -3,9 +3,9 @@
  * @return {Tiny.Geometry}
  */
 export function mergeGeometries(geometries) {
-    var isIndexed = geometries[0].attributes.index !== null;
+    var isIndexed = geometries[0].index !== null;
 
-    var attributesUsed = Object.keys(geometries[0].attributes).filter((name) => name !== 'index');
+    var attributesUsed = Object.keys(geometries[0].attributes);
 
     var attributes = {};
 
@@ -23,7 +23,7 @@ export function mergeGeometries(geometries) {
 
         // ensure that all geometries are indexed, or none
 
-        if (isIndexed !== (geometry.attributes.index !== null)) {
+        if (isIndexed !== (geometry.index !== null)) {
             console.error('Tiny.GeometryUtils.mergeGeometries() failed with geometry at index ' + i + '. All geometries must have compatible attributes; make sure index attribute exists among all geometries, or in none of them.');
             return null;
         }
@@ -31,10 +31,6 @@ export function mergeGeometries(geometries) {
         // gather attributes, exit early if they're different
 
         for (var name in geometry.attributes) {
-
-            if (name === 'index') {
-                continue;
-            }
 
             if (attributesUsed.indexOf(name) === -1) {
 
@@ -66,7 +62,7 @@ export function mergeGeometries(geometries) {
 
         for (var i = 0; i < geometries.length; ++i) {
 
-            var index = geometries[i].attributes.index;
+            var index = geometries[i].index;
 
             for (var j = 0; j < index.count; ++j) {
 
@@ -78,7 +74,7 @@ export function mergeGeometries(geometries) {
 
         }
 
-        mergedGeometry.attributes.index = {data: new Uint16Array(mergedIndex)};
+        mergedGeometry.setIndex(mergedIndex);
     }
 
     // merge attributes
@@ -114,18 +110,18 @@ function mergeAttributes( attributes ) {
 
         var attribute = attributes[ i ];
 
-        if ( TypedArray === undefined ) TypedArray = attribute.data.constructor;
-        if ( TypedArray !== attribute.data.constructor ) {
+        if ( TypedArray === undefined ) TypedArray = attribute.array.constructor;
+        if ( TypedArray !== attribute.array.constructor ) {
 
             console.error( 'Tiny.GeometryUtils.mergeGeometries() failed. Attribute.array must be of consistent array types across matching attributes.' );
             return null;
 
         }
 
-        if ( size === undefined ) size = attribute.size;
-        if ( size !== attribute.size ) {
+        if ( size === undefined ) size = attribute.itemSize;
+        if ( size !== attribute.itemSize ) {
 
-            console.error( 'Tiny.GeometryUtils.mergeGeometries() failed. Attribute.size must be consistent across matching attributes.' );
+            console.error( 'Tiny.GeometryUtils.mergeGeometries() failed. Attribute.itemSize must be consistent across matching attributes.' );
             return null;
 
         }
@@ -138,23 +134,23 @@ function mergeAttributes( attributes ) {
 
         }
 
-        arrayLength += attribute.data.length;
+        arrayLength += attribute.array.length;
     }
 
     var array = new TypedArray( arrayLength );
     var offset = 0;
 
     for ( var i = 0; i < attributes.length; ++ i ) {
-        array.set( attributes[ i ].data, offset );
+        array.set( attributes[ i ].array, offset );
 
-        offset += attributes[ i ].data.length;
+        offset += attributes[ i ].array.length;
     }
 
     var result = attributes[0].clone();
 
     Object.assign(result, {
-        data: array,
-        size,
+        array,
+        itemSize: size,
         normalized
     });
 

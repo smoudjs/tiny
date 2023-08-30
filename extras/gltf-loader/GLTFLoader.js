@@ -1,3 +1,4 @@
+
 import { GLTFAnimation } from './GLTFAnimation.js';
 import { GLTFSkin } from './GLTFSkin.js';
 
@@ -39,6 +40,14 @@ const TYPE_ARRAY = {
     'image/jpeg': Uint8Array,
     'image/png': Uint8Array,
 };
+
+const TYPE_ATTRIBUTES = {
+    5121: Tiny.Uint8Attribute,
+    5122: Tiny.Int16Attribute,
+    5123: Tiny.Uint16Attribute,
+    5125: Tiny.Uint32Attribute,
+    5126: Tiny.Float32Attribute,
+}
 
 const TYPE_SIZE = {
     SCALAR: 1,
@@ -82,14 +91,10 @@ export class GLTFLoader {
         return await this.parse(gl, desc, dir);
     }
 
-    static async parse(gl, desc, dir) {
+    static async parse(gl, desc, cb) {
         if (desc.asset === undefined || desc.asset.version[0] < 2) console.warn('Only GLTF >=2.0 supported. Attempting to parse.');
 
-        if (desc.extensionsRequired?.includes('KHR_texture_basisu') && !this.basisManager)
-            console.warn('KHR_texture_basisu extension required but no manager supplied. Use .setBasisManager()');
-
-        // Load buffers async
-        const buffers = await this.loadBuffers(desc, dir);
+        const buffers = await this.loadBuffers(desc);
 
         // Unbind current VAO so that new buffers don't get added to active mesh
         gl.renderer.bindVertexArray(null);
@@ -119,7 +124,15 @@ export class GLTFLoader {
         // Remove null nodes (instanced transforms)
         for (let i = nodes.length; i >= 0; i--) if (!nodes[i]) nodes.splice(i, 1);
 
-        return {
+        for (let i = 0; i < nodes.length; i++) {
+            const resourceElement = nodes[i];
+
+            if (resourceElement.geometry) {
+                resourceElement.geometry.computeVertexNormals();
+            }
+        }
+
+        cb({
             json: desc,
             buffers,
             bufferViews,
@@ -139,7 +152,7 @@ export class GLTFLoader {
                     }
                 }
             }
-        };
+        });
     }
 
     static async parseDesc(src) {
@@ -189,7 +202,7 @@ export class GLTFLoader {
     }
 
     // Threejs GLTF Loader https://github.com/mrdoob/three.js/blob/master/examples/js/loaders/GLTFLoader.js#L1085
-    static resolveURI(uri, dir) {
+    static resolveURI(uri, dir = '') {
         // Invalid URI
         if (typeof uri !== 'string' || uri === '') return '';
 
@@ -211,13 +224,13 @@ export class GLTFLoader {
         return dir + uri;
     }
 
-    static async loadBuffers(desc, dir) {
+    static async loadBuffers(desc) {
         if (!desc.buffers) return null;
         return await Promise.all(
             desc.buffers.map((buffer) => {
                 // For GLB, binary buffer ready to go
                 if (buffer.binary) return buffer.binary;
-                const uri = this.resolveURI(buffer.uri, dir);
+                const uri = this.resolveURI(buffer.uri);
                 return fetch(uri).then((res) => res.arrayBuffer());
             })
         );
@@ -403,12 +416,14 @@ export class GLTFLoader {
 
                 // Add each attribute found in primitive
                 for (let attr in attributes) {
-                    geometry.addAttribute(ATTRIBUTES[attr], this.parseAccessor(attributes[attr], desc, bufferViews));
+                    geometry.setAttribute(ATTRIBUTES[attr], this.parseAccessor(attributes[attr], desc, bufferViews));
                 }
 
                 // Add index attribute if found
                 if (indices !== undefined) {
-                    geometry.setIndex(this.parseAccessor(indices, desc, bufferViews));
+                    const data = this.parseAccessor(indices, desc, bufferViews);
+
+                    geometry.setIndex(data.array);
                 }
 
                 // Add instanced transform attribute if multiple instances
@@ -491,6 +506,8 @@ export class GLTFLoader {
             // Simply a slice
             filteredData = new TypeArray(data, byteOffset, count * size);
         }
+
+        return new TYPE_ATTRIBUTES[componentType](filteredData, size, normalized);
 
         // Return attribute data
         return {

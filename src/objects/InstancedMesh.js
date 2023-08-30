@@ -8,9 +8,11 @@ function InstancedMesh(geometry, material, count) {
     if (!geometry.attributes.instanceMatrix) {
         var instanceMatrix = new Float32Array( count * mat4Length );
 
-        geometry.addAttribute('instanceMatrix', { instanced: 1, size: mat4Length, data: instanceMatrix });
+        geometry.setAttribute('instanceMatrix', new Tiny.Float32Attribute(instanceMatrix, mat4Length));
+        geometry.attributes.instanceMatrix.instanced = 1;
     }
 
+    geometry.isInstanced = true;
     geometry.instancedCount = count;
 
     Mesh.call(this, geometry, material);
