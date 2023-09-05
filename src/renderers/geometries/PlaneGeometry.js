@@ -1,4 +1,4 @@
-import {Float32Attribute} from "../Attribute";
+import {Float32Attribute, Uint16Attribute} from "../Attribute";
 import { Geometry } from '../Geometry.js';
 
 function PlaneGeometry(width, height, widthSegments, heightSegments) {
@@ -26,7 +26,7 @@ function PlaneGeometry(width, height, widthSegments, heightSegments) {
         uv: new Float32Attribute(uv, 2)
     });
 
-    this.setIndex(index);
+    this.setIndex(new Uint16Attribute(index));
 }
 
 PlaneGeometry.prototype = Object.create(Geometry.prototype);

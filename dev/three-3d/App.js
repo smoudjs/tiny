@@ -1,6 +1,7 @@
 import { Color } from 'three';
 import { Mat4, Vec3 } from '../../src/3d';
 import { tinyVSthreeCubesAmount } from '../constants';
+import {GLTFLoader} from "./GLTFLoader";
 
 const random = (s = 5) => {
     return (Math.random() - 0.5) * s;
@@ -67,6 +68,24 @@ export default class BunnyApp extends Tiny.App {
 
         this.worldCamera.position.set(10, 10, 10);
         this.worldCamera.lookAt(0, 0, 0);
+
+        const loader = new GLTFLoader(new THREE.LoadingManager(() => {
+            // console.log(true);
+        }));
+
+        loader.parse(resources.models.social_module, '', (gltf) => {
+            console.log(gltf);
+
+            const model = new THREE.Mesh(
+                gltf.scene.getObjectByName('Food_module_wall_part').geometry.clone(),
+                new THREE.MeshLambertMaterial({
+                    color: new THREE.Color(0.6, 1,0),
+                    map: this.testTexture
+                })
+            );
+
+            this.world.add(model);
+        })
     }
 
     preload() {

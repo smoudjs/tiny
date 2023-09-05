@@ -102,9 +102,13 @@ export default class BasicApp extends Tiny.App {
         //     image: Tiny.Cache.image['rabbitv3_batman']
         // });
 
+        game.cache.gltf.social_module.scene.traverse((obj) => {
+            if (obj.isMesh) obj.geometry.computeVertexNormals();
+        });
+
         this.box = new Tiny.Mesh(
-            game.cache.gltf.social_module.getObjectByName('Food_module_wall_part').geometry.clone(),
-            new Tiny.MeshBasicMaterial({
+            game.cache.gltf.social_module.scene.getObjectByName('Food_module_wall_part').geometry.clone(),
+            new Tiny.MeshLambertMaterial({
                 map: this.testTexture,
                 transparent: false,
             })
@@ -113,7 +117,7 @@ export default class BasicApp extends Tiny.App {
         this.ambientLight = new Tiny.AmbientLight(Tiny.Color.WHITE, 0.5);
         this.directionalLight = new Tiny.DirectionalLight(Tiny.Color.WHITE, 1);
 
-        this.directionalLight.position.set(0, 100, 0);
+        this.directionalLight.position.set(0, 1, 0);
 
         // this.instancedMesh = new Tiny.InstancedMesh(
         //     new Tiny.BoxGeometry(0.5, 0.5, 0.5),

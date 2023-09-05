@@ -1,9 +1,8 @@
-import { GLTFLoader } from './GLTFLoader';
+import {GLTFLoader} from './GLTFLoader';
+
+const loader = new GLTFLoader();
 
 Tiny.Cache.gltf = {};
-// Tiny.Cache.texture3d = {};
-// Tiny.Cache.mesh3d = {};
-// Tiny.Cache.animation3d = {};
 
 Tiny.Loader.prototype.gltf = function (key, json, splitObjects, cb) {
     this.list.push({
@@ -14,15 +13,6 @@ Tiny.Loader.prototype.gltf = function (key, json, splitObjects, cb) {
         cb: cb
     });
 };
-
-// Tiny.Loader.prototype.texture3d = function (key, src, cb) {
-//     this.list.push({
-//         key: key,
-//         src: src,
-//         type: "texture3d",
-//         cb: cb
-//     });
-// };
 
 Tiny.Loader.gltf = function (resource, cb) {
     var key = resource.key;
@@ -46,21 +36,5 @@ Tiny.Loader.gltf = function (resource, cb) {
         cb();
     }
 
-    GLTFLoader.parse(game.renderer.gl, JSON.parse(resource.src), loaded);
+    loader.parse(resource.src, '', loaded);
 };
-
-// Tiny.Loader.texture3d = function (resource, cb) {
-//     var key = resource.key;
-
-//     Tiny.Loader.image(resource, function (resource, image) {
-//         var texture = new Texture(image);
-//         texture.encoding = sRGBEncoding;
-//         texture.flipY = false;
-//         texture.needsUpdate = true;
-//         texture.key = key;
-
-//         Tiny.Cache.texture3d[resource.key] = texture;
-
-//         cb();
-//     });
-// };

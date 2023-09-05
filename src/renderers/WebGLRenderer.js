@@ -292,8 +292,8 @@ WebGLRenderer.prototype = {
     sortOpaque: function (a, b) {
         if (a.renderOrder !== b.renderOrder) {
             return a.renderOrder - b.renderOrder;
-        } else if (a.program.id !== b.program.id) {
-            return a.program.id - b.program.id;
+        } else if (a.material.id !== b.material.id) {
+            return a.material.id - b.material.id;
         } else if (a.zDepth !== b.zDepth) {
             return a.zDepth - b.zDepth;
         } else {
@@ -316,8 +316,8 @@ WebGLRenderer.prototype = {
     sortUI: function (a, b) {
         if (a.renderOrder !== b.renderOrder) {
             return a.renderOrder - b.renderOrder;
-        } else if (a.program.id !== b.program.id) {
-            return a.program.id - b.program.id;
+        } else if (a.material.id !== b.material.id) {
+            return a.material.id - b.material.id;
         } else {
             return b.id - a.id;
         }
@@ -349,9 +349,9 @@ WebGLRenderer.prototype = {
                 var node = renderList[i];
 
                 // Split into the 3 render groups
-                if (!node.program.transparent) {
+                if (!node.material.transparent) {
                     opaque.push(node);
-                } else if (node.program.depthTest) {
+                } else if (node.material.depthTest) {
                     transparent.push(node);
                 } else {
                     ui.push(node);
@@ -360,7 +360,7 @@ WebGLRenderer.prototype = {
                 node.zDepth = 0;
 
                 // Only calculate z-depth if renderOrder unset and depthTest is true
-                if (node.renderOrder !== 0 || !node.program.depthTest || !camera) return;
+                if (node.renderOrder !== 0 || !node.material.depthTest || !camera) return;
 
                 tempVec3.set(
                     node.worldMatrix.elements[12],
@@ -437,8 +437,8 @@ WebGLRenderer.prototype = {
                 node.geometry.initialize(this.gl);
             }
 
-            if (!node.program.gl) {
-                node.program.initialize(this.gl);
+            if (!node.material.gl) {
+                node.material.initialize(this.gl);
             }
 
             node.draw({ camera, directionalLight, ambientLight });

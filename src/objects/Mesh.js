@@ -7,14 +7,14 @@ var ID = 0;
 
 function Mesh(
     geometry,
-    program,
+    material,
     { mode = WebGLRenderingContext.TRIANGLES, frustumCulled = true, renderOrder = 0 } = {}
 ) {
     Object3D.call(this);
 
     this.id = ID++;
     this.geometry = geometry;
-    this.program = program;
+    this.material = material;
     this.mode = mode;
 
     // Used to skip frustum culling
@@ -31,6 +31,8 @@ function Mesh(
 Mesh.prototype = Object.assign(Object.create(Object3D.prototype), {
     constructor: Mesh,
 
+    isMesh: true,
+
     onBeforeRender: function (f) {
         this.beforeRenderCallbacks.push(f);
         return this;
@@ -42,10 +44,10 @@ Mesh.prototype = Object.assign(Object.create(Object3D.prototype), {
     },
 
     draw: function ({ camera, directionalLight, ambientLight } = {}) {
-        if (this.program.gl.renderer.state.currentProgram !== this.program.id) {
-            if (this.program.isMeshLambertMaterial || this.program.isInstancedMeshLambertMaterial) {
+        if (this.material.gl.renderer.state.currentProgram !== this.material.id) {
+            if (this.material.isMeshLambertMaterial || this.material.isInstancedMeshLambertMaterial) {
                 if (ambientLight) {
-                    this.program.uniforms.ambientLight.set(
+                    this.material.uniforms.ambientLight.set(
                         new Vec4(
                             ambientLight.color.r,
                             ambientLight.color.g,
@@ -56,7 +58,7 @@ Mesh.prototype = Object.assign(Object.create(Object3D.prototype), {
                 }
 
                 if (directionalLight) {
-                    this.program.uniforms.directionalLight.set(
+                    this.material.uniforms.directionalLight.set(
                         new Vec4(
                             directionalLight.color.r,
                             directionalLight.color.g,
@@ -65,23 +67,23 @@ Mesh.prototype = Object.assign(Object.create(Object3D.prototype), {
                         )
                     );
 
-                    this.program.uniforms.directionalLightDirection.set(directionalLight.position);
+                    this.material.uniforms.directionalLightDirection.set(directionalLight.position);
                 }
             }
         }
 
         if (camera.projectMatrixDirty) {
-            this.program.uniforms.projectViewMatrix.set(camera.projectionViewMatrix);
+            this.material.uniforms.projectViewMatrix.set(camera.projectionViewMatrix);
         }
 
-        this.program.uniforms.modelMatrix.set(this.worldMatrix);
+        this.material.uniforms.modelMatrix.set(this.worldMatrix);
 
         this.beforeRenderCallbacks.forEach((f) => f && f({ mesh: this, camera }));
 
         // determine if faces need to be flipped - when mesh scaled negatively
-        var flipFaces = this.program.cullFace && this.worldMatrix.determinant() < 0;
-        this.program.use({ flipFaces });
-        this.geometry.draw({ mode: this.mode, program: this.program });
+        var flipFaces = this.material.cullFace && this.worldMatrix.determinant() < 0;
+        this.material.use({ flipFaces });
+        this.geometry.draw({ mode: this.mode, material: this.material });
         this.afterRenderCallbacks.forEach((f) => f && f({ mesh: this, camera }));
     }
 });

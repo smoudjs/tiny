@@ -71,10 +71,9 @@ export function mergeGeometries(geometries) {
             }
 
             indexOffset += geometries[i].attributes.position.count;
-
         }
 
-        mergedGeometry.setIndex(mergedIndex);
+        mergedGeometry.setIndex(new Tiny.Uint16Attribute(mergedIndex));
     }
 
     // merge attributes
@@ -151,7 +150,8 @@ function mergeAttributes( attributes ) {
     Object.assign(result, {
         array,
         itemSize: size,
-        normalized
+        normalized,
+        count: array.length / size
     });
 
     return result;

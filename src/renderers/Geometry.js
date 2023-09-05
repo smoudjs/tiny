@@ -38,7 +38,7 @@ function Geometry(attributes = {}) {
 
     this.index = null;
 
-    // Store one VAO per program attribute locations order
+    // Store one VAO per material attribute locations order
     this.VAOs = {};
 
     this.drawRange = {start: 0, count: 0};
@@ -147,7 +147,7 @@ Geometry.prototype = {
         }
 
         if (source.index) {
-            this.setIndex(source.index.array);
+            this.setIndex(source.index.clone());
         }
 
         // bounding box
@@ -204,10 +204,10 @@ Geometry.prototype = {
         attr.needsUpdate = false;
     },
 
-    setIndex: function (array) {
-        this.index = new Int16Attribute(array, 1);
+    setIndex: function (indexAttribute) {
+        this.index = indexAttribute;
 
-        this.drawRange.count = array.length;
+        this.drawRange.count = indexAttribute.count;
     },
 
     setDrawRange: function (start, count) {
@@ -219,15 +219,15 @@ Geometry.prototype = {
         this.instancedCount = value;
     },
 
-    createVAO: function (program) {
-        this.VAOs[program.attributeOrder] = this.gl.renderer.createVertexArray();
-        this.gl.renderer.bindVertexArray(this.VAOs[program.attributeOrder]);
-        this.bindAttributes(program);
+    createVAO: function (material) {
+        this.VAOs[material.attributeOrder] = this.gl.renderer.createVertexArray();
+        this.gl.renderer.bindVertexArray(this.VAOs[material.attributeOrder]);
+        this.bindAttributes(material);
     },
 
-    bindAttributes: function (program) {
-        // Link all attributes to program using gl.vertexAttribPointer
-        program.attributeLocations.forEach((location, {name, type}) => {
+    bindAttributes: function (material) {
+        // Link all attributes to material using gl.vertexAttribPointer
+        material.attributeLocations.forEach((location, {name, type}) => {
             // If geometry missing a required shader attribute
             if (!this.attributes[name]) {
                 console.warn(`active attribute ${name} not being supplied`);
@@ -268,15 +268,15 @@ Geometry.prototype = {
         if (this.index) this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.index.buffer);
     },
 
-    draw: function ({program, mode = WebGLRenderingContext.TRIANGLES}) {
-        if (this.gl.renderer.currentGeometry !== `${this.id}_${program.attributeOrder}`) {
-            if (!this.VAOs[program.attributeOrder]) this.createVAO(program);
-            this.gl.renderer.bindVertexArray(this.VAOs[program.attributeOrder]);
-            this.gl.renderer.currentGeometry = `${this.id}_${program.attributeOrder}`;
+    draw: function ({material, mode = WebGLRenderingContext.TRIANGLES}) {
+        if (this.gl.renderer.currentGeometry !== `${this.id}_${material.attributeOrder}`) {
+            if (!this.VAOs[material.attributeOrder]) this.createVAO(material);
+            this.gl.renderer.bindVertexArray(this.VAOs[material.attributeOrder]);
+            this.gl.renderer.currentGeometry = `${this.id}_${material.attributeOrder}`;
         }
 
         // Check if any attributes need updating
-        program.attributeLocations.forEach((location, {name}) => {
+        material.attributeLocations.forEach((location, {name}) => {
             var attr = this.attributes[name];
             if (attr.needsUpdate) this.updateAttribute(attr);
         });

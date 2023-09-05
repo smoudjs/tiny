@@ -1,4 +1,4 @@
-import {Float32Attribute} from "../Attribute";
+import {Float32Attribute, Uint16Attribute} from "../Attribute";
 import { Geometry } from '../Geometry.js';
 import { PlaneGeometry } from './PlaneGeometry.js';
 
@@ -268,7 +268,7 @@ function BoxGeometry(width, height, depth, widthSegments, heightSegments, depthS
         uv: new Float32Attribute(uv, 2)
     });
 
-    this.setIndex(index);
+    this.setIndex(new Uint16Attribute(index));
 }
 
 BoxGeometry.prototype = Object.create(Geometry.prototype);
