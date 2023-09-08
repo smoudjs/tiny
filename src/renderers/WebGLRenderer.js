@@ -360,7 +360,7 @@ WebGLRenderer.prototype = {
                 node.zDepth = 0;
 
                 // Only calculate z-depth if renderOrder unset and depthTest is true
-                if (node.renderOrder !== 0 || !node.material.depthTest || !camera) return;
+                if (node.renderOrder !== 0 || !node.material.depthTest || !camera) continue;
 
                 tempVec3.set(
                     node.worldMatrix.elements[12],

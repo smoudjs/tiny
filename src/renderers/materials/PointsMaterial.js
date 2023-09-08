@@ -3,7 +3,6 @@ import {ColorUniform, FloatUniform, Matrix4Uniform, TextureUniform} from "../Uni
 import {Material} from '../Material';
 import {Texture} from '../Texture';
 import {Color} from '../../math/Color';
-import {InstancedMeshLambertMaterial} from "./InstancedMeshLambertMaterial";
 
 var vertex = /* glsl */ `
     attribute vec3 position;

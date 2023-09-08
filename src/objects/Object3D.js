@@ -1,7 +1,7 @@
-import { Vec3 } from '../math/Vec3';
-import { Quat } from '../math/Quat';
-import { Mat4 } from '../math/Mat4';
-import { Euler } from '../math/Euler';
+import {Vec3} from '../math/Vec3';
+import {Quat} from '../math/Quat';
+import {Mat4} from '../math/Mat4';
+import {Euler} from '../math/Euler';
 
 var _q1 = new Quat();
 var _m1 = new Mat4();
@@ -24,12 +24,12 @@ function Object3D() {
     this.rotation = new Euler();
     this.up = new Vec3(0, 1, 0);
 
-    this.rotation._onChange( () => {
-        this.quaternion.setFromEuler( this.rotation, false );
+    this.rotation._onChange(() => {
+        this.quaternion.setFromEuler(this.rotation, false);
     });
 
-    this.quaternion._onChange( () => {
-        this.rotation.setFromQuaternion( this.quaternion, undefined, false );
+    this.quaternion._onChange(() => {
+        this.rotation.setFromQuaternion(this.quaternion, undefined, false);
     });
 }
 
@@ -37,6 +37,36 @@ Object3D.prototype = {
     constructor: Object3D,
 
     isObject3D: true,
+
+    clone: function (recursive) {
+        return new this.constructor().copy(this, recursive);
+    },
+
+    copy: function (source, recursive) {
+        if (recursive === undefined) recursive = true;
+
+        this.up.copy(source.up);
+
+        this.position.copy(source.position);
+        this.quaternion.copy(source.quaternion);
+        this.scale.copy(source.scale);
+
+        this.matrix.copy(source.matrix);
+        this.worldMatrix.copy(source.worldMatrix);
+
+        this.matrixAutoUpdate = source.matrixAutoUpdate;
+
+        if (recursive === true) {
+            for (var i = 0; i < source.children.length; i++) {
+
+                var child = source.children[i];
+
+                this.add(child.clone());
+            }
+        }
+
+        return this;
+    },
 
     getObjectByName: function (name = '') {
         var obj = null;
@@ -51,16 +81,16 @@ Object3D.prototype = {
     },
 
     add: function (object) {
-        if ( arguments.length > 1 ) {
-            for ( let i = 0; i < arguments.length; i ++ ) {
-                this.add( arguments[ i ] );
+        if (arguments.length > 1) {
+            for (let i = 0; i < arguments.length; i++) {
+                this.add(arguments[i]);
             }
 
             return this;
         }
 
-        if ( object.parent !== null ) {
-            object.parent.remove( object );
+        if (object.parent !== null) {
+            object.parent.remove(object);
         }
 
         object.parent = this;
@@ -68,21 +98,21 @@ Object3D.prototype = {
         this.children.push(object);
     },
 
-    remove: function( object ) {
-        if ( arguments.length > 1 ) {
-            for ( let i = 0; i < arguments.length; i ++ ) {
-                this.remove( arguments[ i ] );
+    remove: function (object) {
+        if (arguments.length > 1) {
+            for (let i = 0; i < arguments.length; i++) {
+                this.remove(arguments[i]);
             }
 
             return this;
         }
 
-        const index = this.children.indexOf( object );
+        const index = this.children.indexOf(object);
 
-        if ( index !== - 1 ) {
+        if (index !== -1) {
             object.parent = null;
 
-            this.children.splice( index, 1 );
+            this.children.splice(index, 1);
         }
 
         return this;
@@ -126,35 +156,35 @@ Object3D.prototype = {
 
         // This method does not support objects having non-uniformly-scaled parent(s)
 
-        if ( x.isVector3 ) {
-            _target.copy( x );
+        if (x.isVector3) {
+            _target.copy(x);
         } else {
-            _target.set( x, y, z );
+            _target.set(x, y, z);
         }
 
         var parent = this.parent;
 
-        this.updateTransform( true, false );
+        this.updateTransform(true, false);
 
-        _position.setFromMatrixPosition( this.worldMatrix );
+        _position.setFromMatrixPosition(this.worldMatrix);
 
-        if ( this.isCamera || this.isLight ) {
+        if (this.isCamera || this.isLight) {
 
-            _m1.lookAt( _position, _target, this.up );
+            _m1.lookAt(_position, _target, this.up);
 
         } else {
 
-            _m1.lookAt( _target, _position, this.up );
+            _m1.lookAt(_target, _position, this.up);
 
         }
 
-        this.quaternion.setFromRotationMatrix( _m1 );
+        this.quaternion.setFromRotationMatrix(_m1);
 
-        if ( parent ) {
+        if (parent) {
 
-            _m1.extractRotation( parent.worldMatrix );
-            _q1.setFromRotationMatrix( _m1 );
-            this.quaternion.premultiply( _q1.inverse() );
+            _m1.extractRotation(parent.worldMatrix);
+            _q1.setFromRotationMatrix(_m1);
+            this.quaternion.premultiply(_q1.inverse());
 
         }
     }

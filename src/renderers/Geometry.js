@@ -20,7 +20,7 @@ import {Mat3} from "../math/Mat3-3d";
 import {Mat4} from "../math/Mat4";
 import {Vec3} from '../math/Vec3.js';
 
-import {Float32Attribute, Int16Attribute} from "./Attribute";
+import {Float32Attribute} from "./Attribute";
 
 var _m1 = new Mat4();
 
@@ -278,7 +278,7 @@ Geometry.prototype = {
         // Check if any attributes need updating
         material.attributeLocations.forEach((location, {name}) => {
             var attr = this.attributes[name];
-            if (attr.needsUpdate) this.updateAttribute(attr);
+            if (attr && attr.needsUpdate) this.updateAttribute(attr);
         });
 
         if (this.index && this.index.needsUpdate) {
