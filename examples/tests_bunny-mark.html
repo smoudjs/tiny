@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Tiny 2d - basic</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="main.css">
+		<script async src="https://mrdoob.github.io/stats.js/build/stats.min.js"></script>
+
+		<style>
+			#counter {
+                background: #ccc;
+                width: 74px;
+                overflow: hidden;
+                white-space: nowrap;
+                position: absolute;
+                background-color:#105CB6;
+                padding: 3px;
+                top:48px;
+                left:0;
+                z-index: 2;
+                color:#0ff;
+                font-family: "Libre Franklin", Arial;
+                font-size: 9px;
+                font-weight: bold;
+            }
+		</style>
+	</head>
+	<body>
+
+		<!-- Import maps polyfill -->
+		<!-- Remove this when import maps will be widely supported -->
+		
+		<script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+
+		<script type="importmap">
+			{
+				"imports": {
+					"@smoud/tiny/app": "../dist/tiny.app.js",
+					"@smoud/tiny/2d": "../dist/tiny.2d.js",
+					"@smoud/tiny/extras/": "../dist/extras/",
+					"@smoud/tiny/3d": "../dist/tiny.3d.js"
+				}
+			}
+		</script>
+
+		<script type="module">
+
+			import '@smoud/tiny/app';
+			import '@smoud/tiny/2d';
+
+			class Bunny extends Tiny.Sprite {
+			    constructor(texture, bounds) {
+			        super(texture);
+
+			        /** The amount of gravity */
+			        this.gravity = 0.75;
+			        // this.tint.set(0xff3434);
+
+			        // this.blendMode = Tiny.ADD;
+
+			        /** Horizontal speed */
+			        this.speedX = Math.random() * 10;
+
+			        /** Vertical speed */
+			        this.speedY = Math.random() * 10 - 5;
+
+			        /** Reference to the bounds object */
+			        this.bounds = bounds;
+
+			        // Set the anchor position
+			        this.anchor.x = 0.5;
+			        this.anchor.y = 1;
+			    }
+
+			    /** Update the position of the bunny */
+			    update() {
+			        this.position.x += this.speedX;
+			        this.position.y += this.speedY;
+			        this.speedY += this.gravity;
+
+			        if (this.position.x > this.bounds.right) {
+			            this.speedX *= -1;
+			            this.position.x = this.bounds.right;
+			        } else if (this.position.x < this.bounds.left) {
+			            this.speedX *= -1;
+			            this.position.x = this.bounds.left;
+			        }
+
+			        if (this.position.y > this.bounds.bottom) {
+			            this.speedY *= -0.85;
+			            this.position.y = this.bounds.bottom;
+			            if (Math.random() > 0.5) {
+			                this.speedY -= Math.random() * 6;
+			            }
+			        } else if (this.position.y < this.bounds.top) {
+			            this.speedY = 0;
+			            this.position.y = this.bounds.top;
+			        }
+			    }
+
+			    /** Don't use after this. */
+			    destroy(options) {
+			        this.bounds = null;
+			        super.destroy(options);
+			    }
+			}
+
+			class App extends Tiny.App {
+				constructor(width, height, parentNode, states) {
+			        super(states);
+
+			        // width = 800;
+			        // height = 600;
+
+			        this.width = width;
+			        this.height = height;
+
+			        this.renderer = new Tiny.Renderer(this.width, this.height, {
+			            resolution: 1,
+			            autoResize: true
+			        });
+
+			        this.renderer.setClearColor('#ffffff');
+
+			        var view = (this.inputView = this.renderer.domElement);
+
+			        parentNode = parentNode ? document.getElementById(parentNode) : document.body;
+			        parentNode.appendChild(view);
+			        // view.style.position = 'absolute';
+
+			        // view.style.top = "0px";
+			        // view.style.left = "0px";
+
+			        // view.style.transformOrigin = '0% 0%';
+			        // view.style.perspective = '1000px';
+
+			        this.scene = new Tiny.Scene();
+			        this.maxCount = 200000;
+			        this.amount = 100;
+			        this.count = 0;
+			        this.bunnies = [];
+
+			        this.bounds = {
+			            left: 0,
+			            top: 0,
+			            right: width,
+			            bottom: height
+			        };
+
+			        const counter = document.createElement('div');
+			        counter.className = 'disable';
+			        document.body.appendChild(counter);
+
+			        counter.id = 'counter';
+
+			        counter.innerText = `${this.count} BUNNIES`;
+
+			        this.stats = new Stats();
+			        this.stats.domElement.id = 'stats';
+			        document.body.appendChild(this.stats.domElement);
+
+			        this.counter = counter;
+
+			        setTimeout(() => {
+			            // this.addBunnies(100000);
+			        }, 1000);
+			    }
+
+			    /** Add an arbitrary amount of bunnies */
+			    addBunnies(num) {
+			        for (let i = 0; i < num; i++) {
+			            const texture = this.textures[this.count % this.textures.length];
+			            const bunny = new Bunny(texture, this.bounds);
+
+			            bunny.position.x = (this.count % 2) * this.width;
+			            this.bunnies.push(bunny);
+			            this.scene.add(bunny);
+			            this.count++;
+			        }
+			        this.counter.innerText = `${this.count} BUNNIES`;
+			    }
+
+			    preload() {
+
+			    	const resources = [
+					    /**
+					     * 100000 - 52-53   150000 - 36
+					     */
+					    {
+					        key: 'rabbitv3_ash',
+					        src: 'textures/bunnies/bunnys.png',
+					        type: 'spritesheet',
+					        data: [
+					            { x: 2, y: 47, width: 26, height: 37 },
+					            { x: 2, y: 86, width: 26, height: 37 },
+					            { x: 2, y: 125, width: 26, height: 37 },
+					            { x: 2, y: 164, width: 26, height: 37 },
+					            { x: 2, y: 2, width: 26, height: 37 }
+					        ]
+					    }
+
+					    /**
+					     * 100000 - 42-43   150000 - 28
+					     */
+					    // { key: 'rabbitv3_ash', src: 'textures/bunnies/lineup.png', type: 'spritesheet', width: 35.83, height: 36 },
+
+					    /**
+					     * Якщо один кролик
+					     * 100000 - 54   150000 - 36
+					     *
+					     * Якщо 2 і більше
+					     * 100000 - 3    10000 - 26
+					     */
+					    // { key: 'rabbitv3_ash', src: require('examples/textures/bunnies/rabbitv3_ash.png'), type: 'image' },
+					    // { key: 'rabbitv3_batman', src: require('examples/textures/bunnies/rabbitv3_batman.png'), type: 'image' },
+					    // { key: 'rabbitv3_bb8', src: require('examples/textures/bunnies/rabbitv3_bb8.png'), type: 'image' },
+					    // { key: 'rabbitv3_neo', src: require('examples/textures/bunnies/rabbitv3_neo.png'), type: 'image' },
+					    // { key: 'rabbitv3_sonic', src: require('examples/textures/bunnies/rabbitv3_sonic.png'), type: 'image' },
+					    // { key: 'rabbitv3_spidey', src: require('examples/textures/bunnies/rabbitv3_spidey.png'), type: 'image' },
+					    // {
+					    //     key: 'rabbitv3_stormtrooper',
+					    //     src: require('examples/textures/bunnies/rabbitv3_stormtrooper.png'),
+					    //     type: 'image'
+					    // },
+					    // { key: 'rabbitv3_superman', src: require('examples/textures/bunnies/rabbitv3_superman.png'), type: 'image' },
+					    // { key: 'rabbitv3_tron', src: require('examples/textures/bunnies/rabbitv3_tron.png'), type: 'image' },
+					    // { key: 'rabbitv3_wolverine', src: require('examples/textures/bunnies/rabbitv3_wolverine.png'), type: 'image' },
+					    // { key: 'rabbitv3', src: require('examples/textures/bunnies/rabbitv3.png'), type: 'image' },
+					    // {
+					    //     key: 'rabbitv3_frankenstein',
+					    //     src: require('examples/textures/bunnies/rabbitv3_frankenstein.png'),
+					    //     type: 'image'
+					    // }
+					]
+
+			        this.load.all(resources);
+			    }
+
+			    create() {
+			        this.textures = Object.keys(Tiny.Cache.texture);
+			        if (this.textures.length == 0) {
+			            for (let key in Tiny.Cache.image) {
+			                this.textures.push(new Tiny.Texture(key));
+			            }
+			        }
+			    }
+
+			    setPixelRatio(dpr) {
+			        this.renderer.setPixelRatio(dpr);
+			    }
+
+			    update(time, delta) {
+			        this.stats.begin();
+			        if (this.input.isDown) {
+			            if (this.count < this.maxCount) {
+			                this.addBunnies(this.amount);
+			            }
+			        }
+
+			        for (let i = 0; i < this.bunnies.length; i++) {
+			            this.bunnies[i].update();
+			        }
+			    }
+
+			    render() {
+			        this.renderer.render(this.scene);
+			        this.stats.end();
+			    }
+
+			    resize(width, height) {
+			        this.bounds.right = width;
+			        this.bounds.bottom = height;
+
+			        super.resize(width, height);
+
+			        this.renderer.resize(width, height);
+			    }
+
+			    destroy(clearCache) {
+			        super.destroy(clearCache);
+
+			        this.scene.destroy();
+			        this.renderer.destroy(true);
+			    }
+			}
+
+			window.addEventListener('load', function () {
+				const app = new App(window.innerWidth, window.innerHeight);
+
+				window.addEventListener('resize', function () {
+					app.resize(window.innerWidth, window.innerHeight);
+				});
+			});
+			
+
+		</script>
+
+	</body>
+</html>

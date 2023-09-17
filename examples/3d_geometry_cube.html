@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js webgl - geometry - cube</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="main.css">
+	</head>
+	<body>
+		<div id="info">
+			Build size: 110Kb. Resources size: 66Kb
+		</div>
+
+		<!-- Import maps polyfill -->
+		<!-- Remove this when import maps will be widely supported -->
+		<script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+
+		<script type="importmap">
+			{
+				"imports": {
+					"@smoud/tiny/app": "../dist/tiny.app.js",
+					"@smoud/tiny/2d": "../dist/tiny.2d.js",
+					"@smoud/tiny/3d": "../dist/tiny.3d.js",
+					"@smoud/tiny/extras/": "../dist/extras/"
+				}
+			}
+		</script>
+
+		<script type="module">
+
+			import '@smoud/tiny/app';
+			import '@smoud/tiny/3d';
+
+			class App extends Tiny.App {
+				constructor(width, height, parentNode, states) {
+					super(states);
+
+					this.width = width;
+					this.height = height;
+
+					this.renderer = new Tiny.WebGLRenderer({
+						width,
+						height,
+						antialias: true
+					});
+
+					var view = (this.inputView = this.renderer.domElement);
+
+					parentNode = parentNode ? document.getElementById(parentNode) : document.body;
+					parentNode.appendChild(view);
+
+					this.world = new Tiny.Object3D();
+					this.camera = new Tiny.OrthographicCamera();
+
+					this.camera.position.set(1, 1, 1);
+					this.camera.lookAt(0, 0, 0);
+				}
+
+				preload() {
+					this.load.image('texture', 'textures/crate.gif');
+				}
+
+				create() {
+					this.ambientLight = new Tiny.AmbientLight(Tiny.Color.WHITE, 0.5);
+					this.directionalLight = new Tiny.DirectionalLight(Tiny.Color.WHITE, 1);
+					this.directionalLight.position.set(0, 1, 0);
+
+					const texture = new Tiny.WebGlTexture(this.renderer.gl, {
+						image: Tiny.Cache.image['texture'].source,
+						flipY: false
+					});
+
+					const box = new Tiny.Mesh(
+						new Tiny.BoxGeometry(),
+						new Tiny.MeshLambertMaterial({
+							map: texture,
+							// color: new Tiny.Color(0x34ff45)
+						})
+					);
+					this.box = box;
+					this.world.add(box);
+					this.resize(window.innerWidth, window.innerHeight);
+				}
+
+				update(time, delta) {
+					delta *= 0.001;
+					this.box.rotation.x += delta;
+					this.box.rotation.z += delta;
+				}
+
+				render() {
+					this.renderer.render({
+						scene: this.world,
+						camera: this.camera,
+						ambientLight: this.ambientLight,
+						directionalLight: this.directionalLight
+					});
+				}
+
+				resize(width, height) {
+					super.resize(width, height);
+
+					this.renderer.resize(width, height);
+
+					const { camera } = this;
+
+					const aspect = width / height;
+					const distance = 1.5;
+
+					camera.left = -distance * aspect;
+					camera.right = distance * aspect;
+					camera.top = distance;
+					camera.bottom = -distance;
+
+					camera.updateProjectionMatrix();
+				}
+			}
+
+			const app = new App(window.innerWidth, window.innerHeight);
+
+			window.addEventListener('resize', function () {
+				app.resize(window.innerWidth, window.innerHeight);
+			});
+		</script>
+
+	</body>
+</html>

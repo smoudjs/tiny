@@ -1,0 +1,12 @@
+{
+	"2d": [
+		"2d_basic",
+		"2d_input"
+	],
+	"3d": [
+		"3d_geometry_cube"
+	],
+	"tests": [
+		"tests_bunny-mark"
+	]
+}

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Tiny 2d - basic</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="main.css">
+	</head>
+	<body>
+
+		<!-- Import maps polyfill -->
+		<!-- Remove this when import maps will be widely supported -->
+		<script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+
+		<script type="importmap">
+			{
+				"imports": {
+					"@smoud/tiny/app": "../dist/tiny.app.js",
+					"@smoud/tiny/2d": "../dist/tiny.2d.js",
+					"@smoud/tiny/extras/": "../dist/extras/",
+					"@smoud/tiny/3d": "../dist/tiny.3d.js"
+				}
+			}
+		</script>
+
+		<script type="module">
+
+			import '@smoud/tiny/app';
+			import '@smoud/tiny/2d';
+
+			class App extends Tiny.App {
+				constructor(width, height) {
+					super();
+
+					this.width = width;
+					this.height = height;
+
+					this.renderer = new Tiny.Renderer(this.width, this.height, {
+						resolution: 1.25,
+						autoResize: true
+					});
+
+					this.renderer.setClearColor('#f4f4f4');
+
+					var view = (this.inputView = this.renderer.domElement);
+					document.body.appendChild(view);
+
+					this.scene = new Tiny.Scene();
+				}
+
+				preload() {
+					this.load.image('coin', 'textures/basics/coin.png');
+				}
+
+				create() {
+					var text = new Tiny.Text('Hello Tiny!');
+					text.anchor.set(0.5);
+					text.x = 320;
+					text.y = 200;
+					this.text = text;
+
+					var sprite = new Tiny.Sprite('coin');
+
+					this.scene.add(sprite);
+					this.scene.add(text);
+				}
+
+				update(time, delta) {
+					this.text.rotation += delta * 0.001;
+				}
+
+				setPixelRatio(dpr) {
+					this.renderer.setPixelRatio(dpr);
+				}
+
+				render() {
+					this.renderer.render(this.scene);
+				}
+
+				resize(width, height) {
+					super.resize(width, height);
+
+					this.renderer.resize(width, height);
+				}
+			}
+
+			const app = new App(window.innerWidth, window.innerHeight);
+
+			window.addEventListener( 'resize', function () {
+				app.resize( window.innerWidth, window.innerHeight );
+			});
+
+		</script>
+
+	</body>
+</html>
