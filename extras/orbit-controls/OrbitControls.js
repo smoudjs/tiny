@@ -137,14 +137,14 @@ export function OrbitControls(
     }
 
     function panLeft(distance, m) {
-        tempVec3.set(m[0], m[1], m[2]);
-        tempVec3.multiply(-distance);
+        tempVec3.set(m.elements[0], m.elements[1], m.elements[2]);
+        tempVec3.multiplyScalar(-distance);
         panDelta.add(tempVec3);
     }
 
     function panUp(distance, m) {
-        tempVec3.set(m[4], m[5], m[6]);
-        tempVec3.multiply(distance);
+        tempVec3.set(m.elements[4], m.elements[5], m.elements[6]);
+        tempVec3.multiplyScalar(distance);
         panDelta.add(tempVec3);
     }
 
@@ -193,7 +193,7 @@ export function OrbitControls(
 
     function handleMovePan(x, y) {
         tempVec2a.set(x, y);
-        tempVec2b.subVectors(tempVec2a, panStart).multiply(panSpeed);
+        tempVec2b.subVectors(tempVec2a, panStart).multiplyScalar(panSpeed);
         pan(tempVec2b.x, tempVec2b.y);
         panStart.copy(tempVec2a);
     }

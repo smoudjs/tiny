@@ -35,7 +35,6 @@ function loadBase64(url) {
     }
 }
 
-
 function GLTFLoader() {
     this.dracoLoader = null;
 }
@@ -1597,7 +1596,6 @@ GLTFParser.prototype.loadMesh = function (meshIndex) {
     var primitives = meshDef.primitives;
 
     var materials = [];
-    var geometries = [];
 
     for (var i = 0, il = primitives.length; i < il; i++) {
 
@@ -1607,7 +1605,7 @@ GLTFParser.prototype.loadMesh = function (meshIndex) {
 
     }
 
-    geometries = parser.loadGeometries(primitives);
+    var geometries = parser.loadGeometries(primitives);
 
     var meshes = [];
 
@@ -1704,8 +1702,6 @@ GLTFParser.prototype.loadMesh = function (meshIndex) {
 
     }
 
-    debugger;
-
     return group;
 };
 
@@ -1715,25 +1711,21 @@ GLTFParser.prototype.loadMesh = function (meshIndex) {
  * @return {Object}
  */
 GLTFParser.prototype.loadSkin = function (skinIndex) {
+    var skinDef = this.json.skins[skinIndex];
 
-    // var skinDef = this.json.skins[skinIndex];
-    //
-    // var skinEntry = {joints: skinDef.joints};
-    //
-    // if (skinDef.inverseBindMatrices === undefined) {
-    //
-    //     return Promise.resolve(skinEntry);
-    //
-    // }
-    //
-    // return this.getDependency('accessor', skinDef.inverseBindMatrices).then(function (accessor) {
-    //
-    //     skinEntry.inverseBindMatrices = accessor;
-    //
-    //     return skinEntry;
-    //
-    // });
+    var skinEntry = {joints: skinDef.joints};
 
+    if (skinDef.inverseBindMatrices === undefined) {
+
+        return skinEntry;
+
+    }
+
+    var accessor = this.getDependency('accessor', skinDef.inverseBindMatrices);
+
+    skinEntry.inverseBindMatrices = accessor;
+
+    return skinEntry;
 };
 
 /**
@@ -2021,7 +2013,7 @@ GLTFParser.prototype.loadNode = function (nodeIndex) {
 
     if (nodeDef.matrix !== undefined) {
 
-        var matrix = new Tiny.Matrix4();
+        var matrix = new Tiny.Mat4();
         matrix.fromArray(nodeDef.matrix);
         node.applyMatrix(matrix);
 
@@ -2065,69 +2057,54 @@ GLTFParser.prototype.loadScene = function () {
 
         var node = parser.getDependency('node', nodeId);
 
-        if (nodeDef.skin) {
-
-            // @TODO Horch add skin later
+        if (nodeDef.skin !== undefined) {
             // build skeleton here as well
 
-            // var skinEntry;
-            //
-            // return parser.getDependency('skin', nodeDef.skin).then(function (skin) {
-            //
-            //     skinEntry = skin;
-            //
-            //     var pendingJoints = [];
-            //
-            //     for (var i = 0, il = skinEntry.joints.length; i < il; i++) {
-            //
-            //         pendingJoints.push(parser.getDependency('node', skinEntry.joints[i]));
-            //
-            //     }
-            //
-            //     return Promise.all(pendingJoints);
-            //
-            // }).then(function (jointNodes) {
-            //
-            //     node.traverse(function (mesh) {
-            //
-            //         if (!mesh.isMesh) return;
-            //
-            //         var bones = [];
-            //         var boneInverses = [];
-            //
-            //         for (var j = 0, jl = jointNodes.length; j < jl; j++) {
-            //
-            //             var jointNode = jointNodes[j];
-            //
-            //             if (jointNode) {
-            //
-            //                 bones.push(jointNode);
-            //
-            //                 var mat = new Tiny.Matrix4();
-            //
-            //                 if (skinEntry.inverseBindMatrices !== undefined) {
-            //
-            //                     mat.fromArray(skinEntry.inverseBindMatrices.array, j * 16);
-            //
-            //                 }
-            //
-            //                 boneInverses.push(mat);
-            //
-            //             } else {
-            //
-            //                 console.warn('Tiny.GLTFLoader: Joint "%s" could not be found.', skinEntry.joints[j]);
-            //
-            //             }
-            //
-            //         }
-            //
-            //         mesh.bind(new Tiny.Skeleton(bones, boneInverses), mesh.matrixWorld);
-            //
-            //     });
-            //
-            //     return node;
-            //
-            // });
+            var skinEntry = parser.getDependency('skin', nodeDef.skin);
+
+            var jointNodes = [];
+
+            for (var i = 0, il = skinEntry.joints.length; i < il; i++) {
+
+                jointNodes.push(parser.getDependency('node', skinEntry.joints[i]));
+
+            }
+
+            node.traverse(function (mesh) {
+                if (!mesh.isMesh) return;
+
+                var bones = [];
+                var boneInverses = [];
+
+                for (var j = 0, jl = jointNodes.length; j < jl; j++) {
+
+                    var jointNode = jointNodes[j];
+
+                    if (jointNode) {
+
+                        bones.push(jointNode);
+
+                        var mat = new Tiny.Mat4();
+
+                        if (skinEntry.inverseBindMatrices !== undefined) {
+
+                            mat.fromArray(skinEntry.inverseBindMatrices.array, j * 16);
+
+                        }
+
+                        boneInverses.push(mat);
+
+                    } else {
+
+                        console.warn('Tiny.GLTFLoader: Joint "%s" could not be found.', skinEntry.joints[j]);
+
+                    }
+
+                }
+
+                mesh.bind(new Tiny.Skeleton(bones, boneInverses), mesh.worldMatrix);
+
+            });
         }
 
         parentObject.add(node);

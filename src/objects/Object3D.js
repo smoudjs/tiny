@@ -56,6 +56,8 @@ Object3D.prototype = {
 
         this.matrixAutoUpdate = source.matrixAutoUpdate;
 
+        this.name = source.name;
+
         if (recursive === true) {
             for (var i = 0; i < source.children.length; i++) {
 
@@ -66,6 +68,14 @@ Object3D.prototype = {
         }
 
         return this;
+    },
+
+    getWorldPosition(out) {
+        out.x = this.worldMatrix.elements[12];
+        out.y = this.worldMatrix.elements[13];
+        out.z = this.worldMatrix.elements[14];
+
+        return out;
     },
 
     getObjectByName: function (name = '') {

@@ -88,8 +88,6 @@ export function mergeGeometries(geometries) {
         }
 
         mergedGeometry.attributes[name] = mergedAttribute;
-
-        mergedAttribute.count = null;
     }
 
     return mergedGeometry;

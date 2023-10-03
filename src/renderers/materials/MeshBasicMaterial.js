@@ -9,7 +9,7 @@ import {Material} from '../Material';
 import {Texture} from '../Texture';
 import {Color} from '../../math/Color';
 
-var vertex = /* glsl */ `
+var vertexDefault = /* glsl */ `
     attribute vec2 uv;
     attribute vec3 position;
 
@@ -25,7 +25,7 @@ var vertex = /* glsl */ `
     }
 `;
 
-var fragment = /* glsl */ `
+var fragmentDefault = /* glsl */ `
     precision highp float;
 
     uniform sampler2D uMap;
@@ -42,6 +42,8 @@ var fragment = /* glsl */ `
 `;
 
 function MeshBasicMaterial({
+   vertex = vertexDefault,
+   fragment = fragmentDefault,
    map = Texture.WHITE,
    color = Color.WHITE,
    opacity = 1,
@@ -50,20 +52,21 @@ function MeshBasicMaterial({
    frontFace = WebGLRenderingContext.CCW,
    depthTest = true,
    depthWrite = true,
-   depthFunc = WebGLRenderingContext.LESS
+   depthFunc = WebGLRenderingContext.LESS,
+   uniforms = {}
 } = {}) {
 
     Material.call(this, {
         vertex,
         fragment,
-        uniforms: {
+        uniforms: Object.assign({
             uMap: new TextureUniform(map),
             uColor: new ColorUniform(color),
             uOpacity: new FloatUniform(opacity),
 
             modelMatrix: new Matrix4Uniform(),
             projectViewMatrix: new Matrix4Uniform()
-        },
+        }, uniforms),
         transparent,
         cullFace,
         frontFace,

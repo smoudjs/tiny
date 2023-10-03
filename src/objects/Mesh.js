@@ -55,30 +55,28 @@ Mesh.prototype = Object.assign(Object.create(Object3D.prototype), {
 
     draw: function ({camera, directionalLight, ambientLight} = {}) {
         if (this.material.gl.renderer.state.currentProgram !== this.material.id) {
-            if (this.material.isMeshLambertMaterial || this.material.isInstancedMeshLambertMaterial) {
-                if (ambientLight) {
-                    this.material.uniforms.ambientLight.set(
-                        new Vec4(
-                            ambientLight.color.r,
-                            ambientLight.color.g,
-                            ambientLight.color.b,
-                            ambientLight.visible ? ambientLight.intensity : 0
-                        )
-                    );
-                }
+            if (ambientLight && this.material.uniforms.ambientLight) {
+                this.material.uniforms.ambientLight.set(
+                    new Vec4(
+                        ambientLight.color.r,
+                        ambientLight.color.g,
+                        ambientLight.color.b,
+                        ambientLight.visible ? ambientLight.intensity : 0
+                    )
+                );
+            }
 
-                if (directionalLight) {
-                    this.material.uniforms.directionalLight.set(
-                        new Vec4(
-                            directionalLight.color.r,
-                            directionalLight.color.g,
-                            directionalLight.color.b,
-                            directionalLight.visible ? directionalLight.intensity : 0
-                        )
-                    );
+            if (directionalLight && this.material.uniforms.directionalLight) {
+                this.material.uniforms.directionalLight.set(
+                    new Vec4(
+                        directionalLight.color.r,
+                        directionalLight.color.g,
+                        directionalLight.color.b,
+                        directionalLight.visible ? directionalLight.intensity : 0
+                    )
+                );
 
-                    this.material.uniforms.directionalLightDirection.set(directionalLight.position);
-                }
+                this.material.uniforms.directionalLightDirection.set(directionalLight.position);
             }
         }
 

@@ -11,7 +11,7 @@ import {Material} from '../Material';
 import {Texture} from '../Texture';
 import {Color} from '../../math/Color';
 
-var vertex = /* glsl */ `
+var vertexDefault = /* glsl */ `
     attribute vec2 uv;
     attribute vec3 position;
     attribute vec3 normal;
@@ -30,7 +30,7 @@ var vertex = /* glsl */ `
     }
 `;
 
-var fragment = /* glsl */ `
+var fragmentDefault = /* glsl */ `
     precision highp float;
     
     uniform vec4 ambientLight;
@@ -61,6 +61,8 @@ var fragment = /* glsl */ `
 `;
 
 function MeshLambertMaterial({
+     vertex = vertexDefault,
+     fragment = fragmentDefault,
      map = Texture.WHITE,
      color = Color.WHITE,
      opacity = 1,
@@ -69,12 +71,13 @@ function MeshLambertMaterial({
      frontFace = WebGLRenderingContext.CCW,
      depthTest = true,
      depthWrite = true,
-     depthFunc = WebGLRenderingContext.LESS
+     depthFunc = WebGLRenderingContext.LESS,
+     uniforms = {}
  } = {}) {
     Material.call(this, {
         vertex,
         fragment,
-        uniforms: {
+        uniforms: Object.assign({
             uColor: new ColorUniform(color),
             uMap: new TextureUniform(map),
             uOpacity: new FloatUniform(opacity),
@@ -85,7 +88,7 @@ function MeshLambertMaterial({
             directionalLight: new Vector4Uniform(),
             directionalLightDirection: new Vector3Uniform(),
             ambientLight: new Vector4Uniform()
-        },
+        }, uniforms),
         transparent,
         cullFace,
         frontFace,
