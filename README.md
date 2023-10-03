@@ -15,9 +15,9 @@
     <a href="https://smoudjs.github.io/tiny">Documentation</a>
 </p>
 
-It is a fast, comfortable, lightweight and flexible html5 game framework, you can use for building 2D games and playable ads.
-The first version of this project was based on PIXI library.
-The syntax of application is pretty similar to the Phaser framework.
+It is a fast, comfortable, lightweight and flexible html5 game framework, you can use for building 2D/3D games and playable ads.
+The first version of this project was based on PIXI library. Then it extended with 3D components thanks to Three.
+This project was created thanks to [PixiJS](https://github.com/pixijs/pixijs) | [three.js](https://github.com/mrdoob/three.js) | [Phaser](https://github.com/photonstorm/phaser) | [OGL](https://github.com/oframe/ogl)
 
 Use our plugins to extend Tiny abilities:
 

@@ -31,7 +31,8 @@
   "scripts": {
     "dev": "node ./scripts/webpack.dev.js",
     "build": "node ./scripts/webpack.build.js",
-    "test": "node ./scripts/webpack.dev.js --test"
+    "test": "node ./scripts/webpack.dev.js --test",
+    "examples": "npx http-server ."
   },
   "homepage": "https://github.com/smoudjs/tiny#readme",
   "bugs": "https://github.com/smoudjs/tiny/issues",
@@ -62,6 +63,7 @@
     "glob": "^10.3.3",
     "html-loader": "^4.2.0",
     "html-webpack-plugin": "^5.5.3",
+    "http-server": "^14.1.1",
     "three": "^0.112.1",
     "webpack": "^5.88.2",
     "webpack-dev-server": "^4.15.1"

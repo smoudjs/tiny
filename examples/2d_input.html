@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Tiny 2d - basic</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="main.css">
+	</head>
+	<body>
+
+		<!-- Import maps polyfill -->
+		<!-- Remove this when import maps will be widely supported -->
+		<script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+
+		<script type="importmap">
+			{
+				"imports": {
+					"@smoud/tiny/app": "../dist/tiny.app.js",
+					"@smoud/tiny/2d": "../dist/tiny.2d.js",
+					"@smoud/tiny/extras/": "../dist/extras/",
+					"@smoud/tiny/addons/": "./jsm/"
+				}
+			}
+		</script>
+
+		<script type="module">
+
+			import '@smoud/tiny/app';
+			import '@smoud/tiny/2d';
+			import { App2D } from '@smoud/tiny/addons/apps/App2D.js'; 
+
+			class App extends App2D {
+				constructor(width, height) {
+					super(width, height);
+				}
+
+				preload() {
+					this.load.image('base', 'textures/basics/coin.png');
+				}
+
+				create() {
+					const debugText = (this.debugText = new Tiny.Text('0:0', { fill: '#3434f3' }));
+					this.scene.add(debugText);
+
+					this.input.on(
+						'down',
+						function (e) {
+							console.log('Mouse down: ' + e.x + ':' + e.y);
+						},
+						this
+					);
+
+					this.input.on(
+						'up',
+						function (e) {
+							console.log('Mouse up: ' + e.x + ':' + e.y);
+						},
+						this
+					);
+
+					this.input.on(
+						'move',
+						function (e) {
+							console.log('Mouse move: ', this.input.isDown);
+							debugText.setText(Math.floor(e.x) + ' : ' + Math.floor(e.y));
+						},
+						this
+					);
+
+					var coin = (this.coin = new Tiny.Sprite('base'));
+					coin.x = 300;
+					coin.y = 200;
+					coin.anchor.set(0.5);
+					coin.scale.set(0.9);
+					this.scene.add(coin);
+
+					this.input.add(coin);
+					coin.input.on(
+						'click',
+						function () {
+							console.log('Coin 2 clicked');
+							coin.tint.set(Math.floor(Math.random() * 162000));
+						},
+						this
+					);
+
+					coin.input.on(
+						'down',
+						function () {
+							this.dragging = true;
+						},
+						coin
+					);
+
+					var coin2 = (this.coin2 = new Tiny.Sprite('base'));
+					coin2.x = 100;
+					coin2.y = 300;
+					coin2.anchor.set(0.5);
+					coin2.scale.set(0.9);
+					this.scene.add(coin2);
+					this.input.add(coin2);
+
+					this.graphics = new Tiny.Graphics();
+					this.graphics.x = 100;
+					this.graphics.beginFill('#0a6dc1');
+					this.graphics.drawCircle(0, 0, 91);
+					this.graphics.beginFill('#04589e');
+					this.graphics.drawCircle(0, 0, 85);
+					for (var i = 0; i < 40; i++) {
+						this.graphics.beginFill('#5500c5', 0.06);
+						this.graphics.drawCircle(0, 0, i * 2);
+					}
+					var newTexture = this.graphics.generateTexture();
+					this.graphics.destroy();
+
+					var sprite = (this.sprite = new Tiny.Sprite(newTexture));
+					sprite.position.set(560, 120);
+					sprite.anchor.set(0.5);
+
+					var text = (this.text = new Tiny.Text('Drag me!', { fill: '#ffffff' }));
+					text.anchor.set(0.5);
+
+					this.tweens
+						.add(text.scale)
+						.to({ x: 1.1, y: 1.1 }, 500)
+						.yoyo(true)
+						.easing(Tiny.Easing.Sinusoidal.InOut)
+						.repeat(Infinity)
+						.start();
+
+					var pulseTween = this.tweens
+						.add(sprite.scale)
+						.to({ x: 1.1, y: 1.1 }, 100)
+						.yoyo(true)
+						.easing(Tiny.Easing.Sinusoidal.InOut)
+						.repeat(Infinity)
+						.start();
+
+					pulseTween.pause();
+
+					sprite.add(text);
+
+					var dragging = false;
+
+					var startOffsetX = 0;
+					var startOffsetY = 0;
+
+					this.input.on(
+						'up',
+						function (e) {
+							dragging = false;
+							this.coin2.dragging = false;
+							this.coin.dragging = false;
+							pulseTween.pause();
+							sprite.scale.set(1);
+						},
+						this
+					);
+
+					this.input.on(
+						'move',
+						function (e) {
+							if (dragging) {
+								sprite.position.set(e.x + startOffsetX, e.y + startOffsetY);
+							}
+
+							if (this.coin2.dragging) {
+								this.coin2.position.set(e.x, e.y);
+								// this.recusrive.setCenter(this.coin2.x / game.width, this.coin2.y / game.height);
+							}
+
+							if (this.coin.dragging) {
+								this.coin.position.set(e.x, e.y);
+								// this.recusrive.alpha = this.coin.x / game.width;
+								// this.recusrive.clearAlpha = this.coin.y / game.height;
+								// this.recusrive.clearAlpha *= this.recusrive.clearAlpha * this.recusrive.clearAlpha;
+								// this.recusrive.updateFrames();
+							}
+						},
+						this
+					);
+
+					this.input.add(sprite);
+
+					sprite.input.on('down', function (e) {
+						startOffsetX = sprite.x - e.x;
+						startOffsetY = sprite.y - e.y;
+						dragging = true;
+						pulseTween.resume();
+					});
+
+					this.scene.add(sprite);
+
+					/**
+					 * Creating scene recursive sprite
+					 */
+					// this.recusrive = new Tiny.RecursiveSprite(this);
+					// this.scene.add(this.recusrive);
+
+					coin2.input.on(
+						'down',
+						function () {
+							this.dragging = true;
+						},
+						coin2
+					);
+				}
+
+				resize(width, height) {
+					super.resize(width, height);
+					// this.recusrive.resize(width, height);
+				}
+
+				update(time, delta) {
+					// this.recusrive.update(delta);
+				}
+			}
+
+			const app = new App(window.innerWidth, window.innerHeight);
+
+			window.addEventListener('resize', function () {
+				app.resize(window.innerWidth, window.innerHeight);
+			});
+
+		</script>
+
+	</body>
+</html>
