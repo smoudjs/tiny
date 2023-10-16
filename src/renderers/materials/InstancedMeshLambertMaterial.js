@@ -17,15 +17,18 @@ var vertex = /* glsl */ `
     attribute vec3 normal;
     
     attribute mat4 instanceMatrix;
+    attribute vec3 instanceColor;
     
     uniform mat4 projectViewMatrix;
     uniform mat4 modelMatrix;
     
     varying vec2 vUv;
     varying vec3 vNormal;
+    varying vec3 vColor;
     
     void main() {
         vUv = uv;
+        vColor = instanceColor;
     
         mat4 modelInstancedMatrix = modelMatrix * instanceMatrix;
     
@@ -49,6 +52,7 @@ var fragment = /* glsl */ `
 
     varying vec2 vUv;
     varying vec3 vNormal;
+    varying vec3 vColor;
 
     void main() {
         vec3 normal = normalize(vNormal);
@@ -60,7 +64,7 @@ var fragment = /* glsl */ `
         
         vec3 ambLightColor = ambientLight.rgb * ambientLight.a;
         
-        gl_FragColor.rgb = tex.rgb * (ambLightColor + directLightColor) * uColor;
+        gl_FragColor.rgb = tex.rgb * (ambLightColor + directLightColor) * vColor * uColor;
         gl_FragColor.a = tex.a * uOpacity;
     }
 `;

@@ -7,9 +7,14 @@ function InstancedMesh(geometry, material, count) {
 
     if (!geometry.attributes.instanceMatrix) {
         var instanceMatrix = new Float32Array( count * mat4Length );
+        var instanceColor = new Float32Array( count * 3 );
+
+        instanceColor.fill(1);
 
         geometry.setAttribute('instanceMatrix', new Tiny.Float32Attribute(instanceMatrix, mat4Length));
+        geometry.setAttribute('instanceColor', new Tiny.Float32Attribute(instanceColor, 3));
         geometry.attributes.instanceMatrix.instanced = 1;
+        geometry.attributes.instanceColor.instanced = 1;
     }
 
     geometry.isInstanced = true;
@@ -27,6 +32,10 @@ InstancedMesh.prototype = Object.assign(Object.create(Mesh.prototype), {
 
     setMatrixAt: function (index, matrix) {
         this.geometry.attributes.instanceMatrix.set(matrix.elements, index * mat4Length);
+    },
+
+    setColorAt: function (index, color) {
+        this.geometry.attributes.instanceColor.set(color.toArray(), index * 3);
     },
 
     draw: function ({camera, directionalLight, ambientLight} = {}) {
