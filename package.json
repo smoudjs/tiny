@@ -1,6 +1,6 @@
 {
   "name": "@smoud/tiny",
-  "version": "3.0.6",
+  "version": "3.0.7",
   "description": "Fast and tiny JavaScript library for HTML5 game and playable ads creation.",
   "main": "./dist/tiny.js",
   "module": "./dist/tiny.esm.js",
