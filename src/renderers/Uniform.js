@@ -47,6 +47,30 @@ FloatUniform.prototype = Object.assign(Object.create(Uniform), {
     }
 });
 
+function IntUniform(value) {
+    Uniform.call(this, {
+        value,
+        boundary: 0,
+        itemSize: 1
+    });
+}
+
+IntUniform.prototype = Object.assign(Object.create(Uniform), {
+    constructor: IntUniform,
+
+    set: function (value) {
+        Uniform.prototype.set.call(this, value);
+
+        this.glValue = value;
+    },
+
+    apply: function (gl) {
+        gl.uniform1i(this.location, this.glValue);
+
+        this.dirty = false;
+    }
+});
+
 function TextureUniform(value) {
     Uniform.call(this, {
         value,
@@ -222,6 +246,7 @@ Matrix4Uniform.prototype = Object.assign(Object.create(Uniform), {
 export {
     Uniform,
     FloatUniform,
+    IntUniform,
     TextureUniform,
     Vector2Uniform,
     Vector3Uniform,

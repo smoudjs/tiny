@@ -1,3 +1,5 @@
+import {SkinnedMeshBasicMaterial} from "../skin/SkinnedMeshBasicMaterial";
+
 /**
  * @author Rich Tibbett / https://github.com/richtr
  * @author mrdoob / http://mrdoob.com/
@@ -1627,7 +1629,7 @@ GLTFParser.prototype.loadMesh = function (meshIndex) {
 
             // .isSkinnedMesh isn't in glTF spec. See .markDefs()
             mesh = meshDef.isSkinnedMesh === true
-                ? new Tiny.SkinnedMesh(geometry, material)
+                ? new Tiny.SkinnedMesh(geometry, new Tiny.SkinnedMeshBasicMaterial())
                 : new Tiny.Mesh(geometry, material);
 
             if (mesh.isSkinnedMesh === true && !mesh.geometry.attributes.skinWeight.normalized) {
@@ -1635,7 +1637,6 @@ GLTFParser.prototype.loadMesh = function (meshIndex) {
                 // we normalize floating point skin weight array to fix malformed assets (see #15319)
                 // it's important to skip this for non-float32 data since normalizeSkinWeights assumes non-normalized inputs
                 mesh.normalizeSkinWeights();
-
             }
 
             if (primitive.mode === WEBGL_CONSTANTS.TRIANGLE_STRIP) {
@@ -2092,7 +2093,9 @@ GLTFParser.prototype.loadScene = function () {
 
                         }
 
-                        boneInverses.push(mat);
+                        jointNode.bindInverse = mat;
+
+                        // boneInverses.push(mat);
 
                     } else {
 
@@ -2102,7 +2105,13 @@ GLTFParser.prototype.loadScene = function () {
 
                 }
 
-                mesh.bind(new Tiny.Skeleton(bones, boneInverses), mesh.worldMatrix);
+                mesh.bones = bones;
+
+                mesh.createBoneTexture();
+
+                console.log(mesh);
+
+                // mesh.bind(new Tiny.Skeleton(bones, boneInverses), mesh.worldMatrix);
 
             });
         }

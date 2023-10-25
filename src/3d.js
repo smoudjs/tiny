@@ -24,6 +24,7 @@ import {
     FloatUniform, Matrix3Uniform, Matrix4Uniform,
     TextureUniform,
     Uniform,
+    IntUniform,
     Vector2Uniform,
     Vector3Uniform,
     Vector4Uniform
@@ -69,6 +70,7 @@ Tiny.InstancedMeshLambertMaterial = InstancedMeshLambertMaterial;
 
 Tiny.Uniform = Uniform;
 Tiny.FloatUniform = FloatUniform;
+Tiny.IntUniform = IntUniform;
 Tiny.TextureUniform = TextureUniform;
 Tiny.Vector2Uniform = Vector2Uniform;
 Tiny.Vector3Uniform = Vector3Uniform;
