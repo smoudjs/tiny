@@ -471,12 +471,12 @@ Check the [examples](https://smoudjs.github.io/tiny/examples/index.html) to see 
 
 [<div align="center"><img alt="Tiny examples intro" width="550" src="https://smoudjs.github.io/tiny/examples/res/image.png" /></div>](https://smoudjs.github.io/tiny/examples/index.html)
 
-[npm]: https://img.shields.io/npm/v/tiny
-[npm-url]: https://www.npmjs.com/package/tiny
-[build-size]: https://badgen.net/bundlephobia/min/tiny
-[build-size-gziped]: https://badgen.net/bundlephobia/minzip/tiny
-[build-size-url]: https://bundlephobia.com/result?p=tiny
-[npm-downloads]: https://img.shields.io/npm/dw/tiny
-[npmtrends-url]: https://www.npmtrends.com/tiny
+[npm]: https://img.shields.io/npm/v/@smoud/tiny
+[npm-url]: https://www.npmjs.com/package/@smoud/tiny
+[build-size]: https://badgen.net/bundlephobia/min/@smoud/tiny
+[build-size-gziped]: https://badgen.net/bundlephobia/minzip/@smoud/tiny
+[build-size-url]: https://bundlephobia.com/result?p=@smoud/tiny
+[npm-downloads]: https://img.shields.io/npm/dw/@smoud/tiny
+[npmtrends-url]: https://www.npmtrends.com/@smoud/tiny
 [deepscan]: https://deepscan.io/api/teams/19616/projects/23076/branches/688845/badge/grade.svg
 [deepscan-url]: https://deepscan.io/dashboard/#view=project&tid=19616&pid=23076&bid=688845
