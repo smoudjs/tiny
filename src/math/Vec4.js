@@ -53,7 +53,7 @@ Object.defineProperties( Vec4.prototype, {
 
 Object.assign( Vec4.prototype, {
 
-	isVector4: true,
+	isVec4: true,
 
 	set: function ( x, y, z, w ) {
 
@@ -157,14 +157,7 @@ Object.assign( Vec4.prototype, {
 	},
 
 	add: function ( v, w ) {
-
-		if ( w !== undefined ) {
-
-			console.warn( 'THREE.Vector4: .add() now only accepts one argument. Use .addVectors( a, b ) instead.' );
-			return this.addVectors( v, w );
-
-		}
-
+		
 		this.x += v.x;
 		this.y += v.y;
 		this.z += v.z;
@@ -185,7 +178,7 @@ Object.assign( Vec4.prototype, {
 
 	},
 
-	addVectors: function ( a, b ) {
+	add2: function ( a, b ) {
 
 		this.x = a.x + b.x;
 		this.y = a.y + b.y;
@@ -207,14 +200,7 @@ Object.assign( Vec4.prototype, {
 
 	},
 
-	sub: function ( v, w ) {
-
-		if ( w !== undefined ) {
-
-			console.warn( 'THREE.Vector4: .sub() now only accepts one argument. Use .subVectors( a, b ) instead.' );
-			return this.subVectors( v, w );
-
-		}
+	sub: function ( v ) {
 
 		this.x -= v.x;
 		this.y -= v.y;
@@ -236,7 +222,7 @@ Object.assign( Vec4.prototype, {
 
 	},
 
-	subVectors: function ( a, b ) {
+	sub2: function ( a, b ) {
 
 		this.x = a.x - b.x;
 		this.y = a.y - b.y;
@@ -247,7 +233,7 @@ Object.assign( Vec4.prototype, {
 
 	},
 
-	multiplyScalar: function ( scalar ) {
+	mulScalar: function ( scalar ) {
 
 		this.x *= scalar;
 		this.y *= scalar;
@@ -258,7 +244,7 @@ Object.assign( Vec4.prototype, {
 
 	},
 
-	applyMatrix4: function ( m ) {
+	applyMat4: function ( m ) {
 
 		var x = this.x, y = this.y, z = this.z, w = this.w;
 		var e = m.elements;
@@ -274,7 +260,7 @@ Object.assign( Vec4.prototype, {
 
 	divideScalar: function ( scalar ) {
 
-		return this.multiplyScalar( 1 / scalar );
+		return this.mulScalar( 1 / scalar );
 
 	},
 
@@ -486,7 +472,7 @@ Object.assign( Vec4.prototype, {
 
 		var length = this.length();
 
-		return this.divideScalar( length || 1 ).multiplyScalar( Math.max( min, Math.min( max, length ) ) );
+		return this.divideScalar( length || 1 ).mulScalar( Math.max( min, Math.min( max, length ) ) );
 
 	},
 
@@ -577,7 +563,7 @@ Object.assign( Vec4.prototype, {
 
 	setLength: function ( length ) {
 
-		return this.normalize().multiplyScalar( length );
+		return this.normalize().mulScalar( length );
 
 	},
 
@@ -594,7 +580,7 @@ Object.assign( Vec4.prototype, {
 
 	lerpVectors: function ( v1, v2, alpha ) {
 
-		return this.subVectors( v2, v1 ).multiplyScalar( alpha ).add( v1 );
+		return this.sub2( v2, v1 ).mulScalar( alpha ).add( v1 );
 
 	},
 

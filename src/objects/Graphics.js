@@ -8,7 +8,7 @@ import { Polygon } from '../math/shapes/Polygon';
 import { RoundedRectangle } from '../math/shapes/RoundedRectangle';
 import { Vec2 } from '../math/Vec2';
 import { Color } from '../math/Color';
-import { BLEND_MODES, SHAPES } from '../constants';
+import { NormalBlending, SHAPES } from '../constants';
 
 var GraphicsData = function (lineWidth, lineColor, fillColor, fill, shape) {
     this.lineWidth = lineWidth;
@@ -92,7 +92,7 @@ var Graphics = function () {
      * @type Number
      * @default PIXI.blendModes.NORMAL;
      */
-    this.blendMode = BLEND_MODES.NORMAL;
+    this.blendMode = NormalBlending;
 
     /**
      * Current path

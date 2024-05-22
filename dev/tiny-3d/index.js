@@ -1,7 +1,8 @@
 import '@smoud/tiny/app';
 import '@smoud/tiny/3d';
-import '@smoud/tiny/extras/orbit-controls';
-import '@smoud/tiny/extras/gltf-loader';
+import '@smoud/tiny/webgl-renderer';
+import '@smoud/tiny/orbit-controls';
+import '@smoud/tiny/gltf-loader';
 
 import App from './App';
 

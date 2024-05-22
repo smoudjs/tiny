@@ -69,7 +69,7 @@ Geometry.prototype = {
     translate: function( x, y, z ) {
         _m1.makeTranslation( x, y, z );
 
-        this.applyMatrix4( _m1 );
+        this.applyMat4( _m1 );
 
         return this;
     },
@@ -81,18 +81,18 @@ Geometry.prototype = {
     scale: function( x, y, z ) {
         _m1.makeScale( x, y, z );
 
-        this.applyMatrix4( _m1 );
+        this.applyMat4( _m1 );
 
         return this;
     },
 
-    applyMatrix4: function( matrix ) {
+    applyMat4: function( matrix ) {
 
         var position = this.attributes.position;
 
         if ( position !== undefined ) {
 
-            position.applyMatrix4( matrix );
+            position.applyMat4( matrix );
 
             position.needsUpdate = true;
 
@@ -365,8 +365,8 @@ Geometry.prototype = {
             max.z = Math.max(z, max.z);
         }
 
-        scale.subVectors(max, min);
-        center.subVectors(min, max).divideScalar(2);
+        scale.sub2(max, min);
+        center.sub2(min, max).divideScalar(2);
     },
 
     computeBoundingSphere: function (attr) {
@@ -421,8 +421,8 @@ Geometry.prototype = {
                     pB.fromAttribute(positionAttribute, vB);
                     pC.fromAttribute(positionAttribute, vC);
 
-                    cb.subVectors(pC, pB);
-                    ab.subVectors(pA, pB);
+                    cb.sub2(pC, pB);
+                    ab.sub2(pA, pB);
                     cb.cross(ab);
 
                     nA.fromAttribute(normalAttribute, vA);
@@ -447,8 +447,8 @@ Geometry.prototype = {
                 //     pB.fromAttribute( positionAttribute, i + 1 );
                 //     pC.fromAttribute( positionAttribute, i + 2 );
                 //
-                //     cb.subVectors( pC, pB );
-                //     ab.subVectors( pA, pB );
+                //     cb.sub2( pC, pB );
+                //     ab.sub2( pA, pB );
                 //     cb.cross( ab );
                 //
                 //     normalAttribute.setXYZ( i + 0, cb.x, cb.y, cb.z );

@@ -1,281 +1,377 @@
-import { uid } from '../utils';
-
 /**
- * @author Mat Groves http://matgroves.com/ @Doormat23
+ * @author mrdoob / http://mrdoob.com/
+ * @author alteredq / http://alteredqualia.com/
+ * @author szimek / https://github.com/szimek/
  */
 
-// BaseTextureCache = {};
+import { EventTarget } from '../utils/EventTarget.js';
+import { uid, getValue } from '../utils/index.js';
+import {
+	MirroredRepeatWrapping,
+	ClampToEdgeWrapping,
+	RepeatWrapping,
+	LinearEncoding,
+	UnsignedByteType,
+	RGBAFormat,
+	LinearMipmapLinearFilter,
+	LinearFilter,
+	UVMapping
+} from '../constants.js';
+import { Vec2 } from '../math/Vec2.js';
+import { Mat3 } from '../math/Mat3.js';
+// import { ImageUtils } from '../extras/ImageUtils.js';
 
-/**
- * A texture stores the information that represents an image. All textures have a base texture.
- *
- * @class BaseTexture
- * @uses EventTarget
- * @constructor
- * @param source {String} the source object (image or canvas)
- * @param scaleMode {Number} See {{#crossLink "PIXI/scaleModes:property"}}PIXI.scaleModes{{/crossLink}} for possible values
- */
-var BaseTexture = function (source, scaleMode) {
-    /**
-     * The Resolution of the texture.
-     *
-     * @property resolution
-     * @type Number
-     */
-    this.resolution = 1;
+var textureId = 0;
 
-    /**
-     * [read-only] The width of the base texture set when the image has valid
-     *
-     * @property width
-     * @type Number
-     * @readOnly
-     */
-    this.width = 100;
+function BaseTexture(image, options) {
+	options = options || {};
+	Object.defineProperty(this, 'id', { value: textureId++ });
 
-    /**
-     * [read-only] The height of the base texture set when the image has valid
-     *
-     * @property height
-     * @type Number
-     * @readOnly
-     */
-    this.height = 100;
+	this.uuid = uid();
 
-    /**
-     * The scale mode to apply when scaling this texture
-     *
-     * @property scaleMode
-     * @type {Number}
-     * @default PIXI.scaleModes.LINEAR
-     */
-    this.scaleMode = scaleMode || 0;
+	this.name = '';
 
-    /**
-     * [read-only] Set to true once the base texture has valid
-     *
-     * @property valid
-     * @type Boolean
-     * @readOnly
-     */
-    this.valid = false;
+	this.image = image !== undefined ? image : BaseTexture.DEFAULT_IMAGE;
+	this.mipmaps = [];
 
-    /**
-     * The image source that is used to create the texture.
-     *
-     * @property source
-     * @type Image
-     */
-    this.source = source;
+	this.mapping = getValue(options, 'mapping', BaseTexture.DEFAULT_MAPPING);
 
-    this._UID = uid();
+	this.wrapS = getValue(options, 'wrapS', ClampToEdgeWrapping);
+	this.wrapT = getValue(options, 'wrapT', ClampToEdgeWrapping);
 
-    /**
-     * Controls if RGB channels should be pre-multiplied by Alpha  (WebGL only)
-     *
-     * @property premultipliedAlpha
-     * @type Boolean
-     * @default true
-     */
-    this.premultipliedAlpha = true;
+	this.magFilter = getValue(options, 'magFilter', LinearFilter);
+	this.minFilter = getValue(options, 'minFilter', LinearFilter);
 
-    // used for webGL
+	this.anisotropy = getValue(options, 'anisotropy', 1);
 
-    /**
-     * @property _glTextures
-     * @type Array
-     * @private
-     */
-    this._glTextures = [];
+	this.format = getValue(options, 'format', RGBAFormat);
+	this.internalFormat = null;
+	this.type = getValue(options, 'type', UnsignedByteType);
 
-    /**
-     *
-     * Set this to true if a mipmap of this texture needs to be generated. This value needs to be set before the texture is used
-     * Also the texture must be a power of two size to work
-     *
-     * @property mipmap
-     * @type {Boolean}
-     */
-    this.mipmap = false;
+	// this.offset = new Vec2(0, 0);
+	// this.repeat = new Vec2(1, 1);
+	// this.center = new Vec2(0, 0);
+	// this.rotation = 0;
 
-    // used for webGL texture updating...
-    // TODO - this needs to be addressed
+	// this.matrixAutoUpdate = true;
+	// this.matrix = new Mat3();
 
-    /**
-     * @property _dirty
-     * @type Array
-     * @private
-     */
-    this._dirty = [true, true, true, true];
+	this.generateMipmaps = true;
+	// this.premultiplyAlpha = false;
+	this.flipY = false;
+	this.unpackAlignment = 4; // valid values: 1, 2, 4, 8 (see http://www.khronos.org/opengles/sdk/docs/man/xhtml/glPixelStorei.xml)
 
-    if (!source) return;
+	// Values of encoding !== THREE.LinearEncoding only supported on map, envMap and emissiveMap.
+	//
+	// Also changing the encoding after already used by a Material will not automatically make the Material
+	// update. You need to explicitly call Material.needsUpdate to trigger it to recompile.
+	this.encoding = getValue(options, 'encoding', LinearEncoding);
 
-    if ((source.complete || source.getContext) && source.width && source.height) {
-        this.onLoad();
-    } else {
-        source.onload = this.onLoad.bind(this);
-    }
+	this.version = 0;
+	this.onUpdate = null;
 
-    /**
-     * @property imageUrl
-     * @type String
-     */
-    this.imageUrl = null;
+	/**
+	 * The Resolution of the texture.
+	 *
+	 * @property resolution
+	 * @type Number
+	 */
+	this.resolution = 1;
 
-    /**
-     * @property _powerOf2
-     * @type Boolean
-     * @private
-     */
-    this._powerOf2 = false;
-};
+	/**
+	 * [read-only] The width of the base texture set when the image has valid
+	 *
+	 * @property width
+	 * @type Number
+	 * @readOnly
+	 */
+	this.width = 100;
 
-BaseTexture.prototype.constructor = BaseTexture;
+	/**
+	 * [read-only] The height of the base texture set when the image has valid
+	 *
+	 * @property height
+	 * @type Number
+	 * @readOnly
+	 */
+	this.height = 100;
 
-BaseTexture.prototype.onLoad = function (newSrc) {
-    this.valid = true;
-    this.width = this.source.naturalWidth || this.source.width;
-    this.height = this.source.naturalHeight || this.source.height;
-    this.dirty();
+	// this.scaleMode = scaleMode || 0;
+	this.valid = false;
+	// this.source = source;
 
-    this.onload && this.onload();
-};
+	// this._UID = uid();
+	this.premultipliedAlpha = true;
+	// this._glTextures = [];
+	this.mipmap = false;
+	// this._dirty = [true, true, true, true];
+	this.imageUrl = null;
+	this._powerOf2 = false;
 
-// PIXI.EventTarget.mixin(BaseTexture.prototype);
+	this._enabled = 0;
+	this._virtalBoundId = -1;
+	this.touched = 0;
 
-/**
- * Destroys this base texture
- *
- * @method destroy
- */
-BaseTexture.prototype.destroy = function () {
-    if (this.imageUrl) {
-        delete BaseTextureCache[this.imageUrl];
-        delete PIXI.TextureCache[this.imageUrl];
-        this.imageUrl = null;
-        if (!navigator.isCocoonJS) this.source.src = '';
-    } else if (this.source && this.source._pixiId) {
-        delete BaseTextureCache[this.source._pixiId];
-    }
-    this.source = null;
+	if (!image) return;
 
-    this.unloadFromGPU();
-};
+	let self = this;
+	function onLoad() {
+		self.valid = true;
+		self.width = self.image.naturalWidth || self.image.width;
+		self.height = self.image.naturalHeight || self.image.height;
+		// self.dirty();
+		self.version++;
+		self.emit('load');
+	}
 
-/**
- * Changes the source image of the texture
- *
- * @method setSource
- * @param newSrc {String} the path of the image
- */
-// BaseTexture.prototype.setSource = function (newSrc) {
-//     this.valid = false;
-//     this.source.src = null;
-//     this.source.src = newSrc;
-// };
+	if ((image.complete || image.getContext) && image.width && image.height) {
+		onLoad();
+	} else {
+		image.onload = onLoad;
+	}
+}
 
-/**
- * Sets all glTextures to be dirty.
- *
- * @method dirty
- */
-BaseTexture.prototype.dirty = function () {
-    for (var i = 0; i < this._glTextures.length; i++) {
-        this._dirty[i] = true;
-    }
-};
+BaseTexture.DEFAULT_IMAGE = undefined;
+BaseTexture.DEFAULT_MAPPING = UVMapping;
 
-/**
- * Removes the base texture from the GPU, useful for managing resources on the GPU.
- * Atexture is still 100% usable and will simply be reupvalid if there is a sprite on screen that is using it.
- *
- * @method unloadFromGPU
- */
-BaseTexture.prototype.unloadFromGPU = function () {
-    this.dirty();
+Object.assign(BaseTexture.prototype, {
+	constructor: BaseTexture,
 
-    // delete the webGL textures if any.
-    for (var i = this._glTextures.length - 1; i >= 0; i--) {
-        var glTexture = this._glTextures[i];
-        var gl = Tiny.glContexts[i];
+	isBaseTexture: true,
 
-        if (gl && glTexture) {
-            gl.deleteTexture(glTexture);
-        }
-    }
+	/**
+	 * Sets all glTextures to be dirty.
+	 *
+	 * @method dirty
+	 */
+	// dirty: function () {
+	// 	for (var i = 0; i < this._glTextures.length; i++) {
+	// 		this._dirty[i] = true;
+	// 	}
+	// },
 
-    this._glTextures.length = 0;
+	// updateMatrix: function () {
+	// 	this.matrix.setUvTransform(
+	// 		this.offset.x,
+	// 		this.offset.y,
+	// 		this.repeat.x,
+	// 		this.repeat.y,
+	// 		this.rotation,
+	// 		this.center.x,
+	// 		this.center.y
+	// 	);
+	// },
 
-    this.dirty();
-};
+	// clone: function () {
 
-/**
- * Helper function that creates a base texture from the given image url.
- * If the image is not in the base texture cache it will be created and valid.
- *
- * @static
- * @method fromImage
- * @param imageUrl {String} The image url of the texture
- * @param crossorigin {Boolean}
- * @param scaleMode {Number} See {{#crossLink "PIXI/scaleModes:property"}}PIXI.scaleModes{{/crossLink}} for possible values
- * @return BaseTexture
- */
-// BaseTexture.fromImage = function(imageUrl, crossorigin, scaleMode)
-// {
-//     var baseTexture = BaseTextureCache[imageUrl];
+	// 	return new this.constructor().copy( this );
 
-//     if(crossorigin === undefined && imageUrl.indexOf('data:') === -1) crossorigin = true;
+	// },
 
-//     if(!baseTexture)
-//     {
-//         // new Image() breaks tex loading in some versions of Chrome.
-//         // See https://code.google.com/p/chromium/issues/detail?id=238071
-//         var image = new Image();//document.createElement('img');
-//         if (crossorigin)
-//         {
-//             image.crossOrigin = '';
-//         }
+	// copy: function ( source ) {
 
-//         image.src = imageUrl;
-//         baseTexture = new BaseTexture(image, scaleMode);
-//         baseTexture.imageUrl = imageUrl;
-//         BaseTextureCache[imageUrl] = baseTexture;
+	// 	this.name = source.name;
 
-//         // if there is an @2x at the end of the url we are going to assume its a highres image
-//         if( imageUrl.indexOf(PIXI.RETINA_PREFIX + '.') !== -1)
-//         {
-//             baseTexture.resolution = 2;
-//         }
-//     }
+	// 	this.image = source.image;
+	// 	this.mipmaps = source.mipmaps.slice( 0 );
 
-//     return baseTexture;
-// };
+	// 	this.mapping = source.mapping;
 
-/**
- * Helper function that creates a base texture from the given canvas element.
- *
- * @static
- * @method fromCanvas
- * @param canvas {Canvas} The canvas element source of the texture
- * @param scaleMode {Number} See {{#crossLink "PIXI/scaleModes:property"}}PIXI.scaleModes{{/crossLink}} for possible values
- * @return BaseTexture
- */
-// BaseTexture.fromCanvas = function(canvas, scaleMode)
-// {
-//     if(!canvas._pixiId)
-//     {
-//         canvas._pixiId = 'canvas_' + PIXI.TextureCacheIdGenerator++;
-//     }
+	// 	this.wrapS = source.wrapS;
+	// 	this.wrapT = source.wrapT;
 
-//     var baseTexture = BaseTextureCache[canvas._pixiId];
+	// 	this.magFilter = source.magFilter;
+	// 	this.minFilter = source.minFilter;
 
-//     if(!baseTexture)
-//     {
-//         baseTexture = new BaseTexture(canvas, scaleMode);
-//         BaseTextureCache[canvas._pixiId] = baseTexture;
-//     }
+	// 	this.anisotropy = source.anisotropy;
 
-//     return baseTexture;
-// };
+	// 	this.format = source.format;
+	// 	this.internalFormat = source.internalFormat;
+	// 	this.type = source.type;
+
+	// 	this.offset.copy( source.offset );
+	// 	this.repeat.copy( source.repeat );
+	// 	this.center.copy( source.center );
+	// 	this.rotation = source.rotation;
+
+	// 	this.matrixAutoUpdate = source.matrixAutoUpdate;
+	// 	this.matrix.copy( source.matrix );
+
+	// 	this.generateMipmaps = source.generateMipmaps;
+	// 	this.premultiplyAlpha = source.premultiplyAlpha;
+	// 	this.flipY = source.flipY;
+	// 	this.unpackAlignment = source.unpackAlignment;
+	// 	this.encoding = source.encoding;
+
+	// 	return this;
+
+	// },
+
+	// toJSON: function ( meta ) {
+
+	// 	var isRootObject = ( meta === undefined || typeof meta === 'string' );
+
+	// 	if ( ! isRootObject && meta.textures[ this.uuid ] !== undefined ) {
+
+	// 		return meta.textures[ this.uuid ];
+
+	// 	}
+
+	// 	var output = {
+
+	// 		metadata: {
+	// 			version: 4.5,
+	// 			type: 'Texture',
+	// 			generator: 'Texture.toJSON'
+	// 		},
+
+	// 		uuid: this.uuid,
+	// 		name: this.name,
+
+	// 		mapping: this.mapping,
+
+	// 		repeat: [ this.repeat.x, this.repeat.y ],
+	// 		offset: [ this.offset.x, this.offset.y ],
+	// 		center: [ this.center.x, this.center.y ],
+	// 		rotation: this.rotation,
+
+	// 		wrap: [ this.wrapS, this.wrapT ],
+
+	// 		format: this.format,
+	// 		type: this.type,
+	// 		encoding: this.encoding,
+
+	// 		minFilter: this.minFilter,
+	// 		magFilter: this.magFilter,
+	// 		anisotropy: this.anisotropy,
+
+	// 		flipY: this.flipY,
+
+	// 		premultiplyAlpha: this.premultiplyAlpha,
+	// 		unpackAlignment: this.unpackAlignment
+
+	// 	};
+
+	// 	if ( this.image !== undefined ) {
+
+	// 		// TODO: Move to THREE.Image
+
+	// 		var image = this.image;
+
+	// 		if ( image.uuid === undefined ) {
+
+	// 			image.uuid = _Math.generateUUID(); // UGH
+
+	// 		}
+
+	// 		if ( ! isRootObject && meta.images[ image.uuid ] === undefined ) {
+
+	// 			var url;
+
+	// 			if ( Array.isArray( image ) ) {
+
+	// 				// process array of images e.g. CubeBaseTexture
+
+	// 				url = [];
+
+	// 				for ( var i = 0, l = image.length; i < l; i ++ ) {
+
+	// 					url.push( ImageUtils.getDataURL( image[ i ] ) );
+
+	// 				}
+
+	// 			} else {
+
+	// 				// process single image
+
+	// 				url = ImageUtils.getDataURL( image );
+
+	// 			}
+
+	// 			meta.images[ image.uuid ] = {
+	// 				uuid: image.uuid,
+	// 				url: url
+	// 			};
+
+	// 		}
+
+	// 		output.image = image.uuid;
+
+	// 	}
+
+	// 	if ( ! isRootObject ) {
+
+	// 		meta.textures[ this.uuid ] = output;
+
+	// 	}
+
+	// 	return output;
+
+	// },
+
+	dispose: function () {
+		this.emit('dispose');
+	},
+
+	// transformUv: function (uv) {
+	// 	if (this.mapping !== UVMapping) return uv;
+
+	// 	uv.applyMat3(this.matrix);
+
+	// 	if (uv.x < 0 || uv.x > 1) {
+	// 		switch (this.wrapS) {
+	// 			case RepeatWrapping:
+	// 				uv.x = uv.x - Math.floor(uv.x);
+	// 				break;
+
+	// 			case ClampToEdgeWrapping:
+	// 				uv.x = uv.x < 0 ? 0 : 1;
+	// 				break;
+
+	// 			case MirroredRepeatWrapping:
+	// 				if (Math.abs(Math.floor(uv.x) % 2) === 1) {
+	// 					uv.x = Math.ceil(uv.x) - uv.x;
+	// 				} else {
+	// 					uv.x = uv.x - Math.floor(uv.x);
+	// 				}
+	// 				break;
+	// 		}
+	// 	}
+
+	// 	if (uv.y < 0 || uv.y > 1) {
+	// 		switch (this.wrapT) {
+	// 			case RepeatWrapping:
+	// 				uv.y = uv.y - Math.floor(uv.y);
+	// 				break;
+
+	// 			case ClampToEdgeWrapping:
+	// 				uv.y = uv.y < 0 ? 0 : 1;
+	// 				break;
+
+	// 			case MirroredRepeatWrapping:
+	// 				if (Math.abs(Math.floor(uv.y) % 2) === 1) {
+	// 					uv.y = Math.ceil(uv.y) - uv.y;
+	// 				} else {
+	// 					uv.y = uv.y - Math.floor(uv.y);
+	// 				}
+	// 				break;
+	// 		}
+	// 	}
+
+	// 	if (this.flipY) {
+	// 		uv.y = 1 - uv.y;
+	// 	}
+
+	// 	return uv;
+	// }
+});
+
+Object.defineProperty(BaseTexture.prototype, 'needsUpdate', {
+	set: function (value) {
+		if (value === true) this.version++;
+	}
+});
+
+EventTarget.call(BaseTexture);
 
 export { BaseTexture };

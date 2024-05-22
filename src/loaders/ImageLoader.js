@@ -1,5 +1,5 @@
 import { LoadingManager } from './LoadingManager';
-import { BaseTexture } from '../textures/BaseTexture';
+import { Texture } from '../textures/Texture';
 import { Cache } from './Cache';
 
 var ImageLoader = function (resource, cb) {
@@ -8,10 +8,11 @@ var ImageLoader = function (resource, cb) {
     var image = new Image();
 
     image.addEventListener('load', function () {
-        var baseTexture = new BaseTexture(image);
-        Cache.image[resource.key] = baseTexture;
+        var texture = new Texture(image);
+        Cache.texture[resource.key] = texture;
+        Cache.image[resource.key] = texture.base;
 
-        cb(resource, baseTexture);
+        cb(resource, texture.base);
     });
 
     // image.addEventListener('error', function()

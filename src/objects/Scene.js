@@ -1,21 +1,24 @@
-import { Object2D } from './Object2D';
-import { Mat3 } from '../math/Mat3';
+import { Container } from './Container.js';
 
-var Scene = function (game) {
-    Object2D.call(this);
-    // this.worldTransform = new Mat3();
-    this.game = game;
-};
+function Scene(appContext) {
+	Container.call(this);
+	this.app = appContext;
 
-Scene.prototype = Object.create(Object2D.prototype);
-Scene.prototype.constructor = Scene;
+	this.autoUpdate = true; // checked by the renderer
+}
 
-Scene.prototype.updateTransform = function () {
-    this.worldAlpha = 1;
+Scene.prototype = Object.assign(Object.create(Container.prototype), {
+	constructor: Scene,
 
-    for (var i = 0, j = this.children.length; i < j; i++) {
-        this.children[i].updateTransform();
-    }
-};
+	isScene: true,
+
+	updateChildren: function (force) {
+		var children = this.children;
+
+		for (var i = 0, l = children.length; i < l; i++) {
+			children[i].updateMatrixWorld(force);
+		}
+	}
+});
 
 export { Scene };

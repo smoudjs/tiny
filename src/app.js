@@ -1,14 +1,14 @@
-import { App } from './app/App';
-import { RAF } from './app/RAF';
-import { registerSystem, systems } from './app/registrar';
-import { LoadingManager } from './loaders/LoadingManager';
-import './loaders/ImageLoader';
-import './loaders/AtlasLoader';
-import './loaders/SpritesheetLoader';
-import { Cache } from './loaders/Cache';
-import { Input } from './app/Input';
-import { Timer } from './app/Timer';
-import { TweenManager, Easing, Interpolation } from './app/Tween';
+import { App } from './app/App.js';
+import { RAF } from './app/RAF.js';
+import { registerSystem, systems } from './app/registrar.js';
+import { LoadingManager } from './loaders/LoadingManager.js';
+import './loaders/ImageLoader.js';
+import './loaders/AtlasLoader.js';
+import './loaders/SpritesheetLoader.js';
+import { Cache } from './loaders/Cache.js';
+import { Input } from './app/Input.js';
+import { Timer } from './app/Timer.js';
+import { TweenManager, Easing, Interpolation } from './app/Tween.js';
 
 
 Tiny.App = App;

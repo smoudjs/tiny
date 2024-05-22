@@ -50,7 +50,7 @@ Object.defineProperties( Vec2.prototype, {
 
 Object.assign( Vec2.prototype, {
 
-	isVector2: true,
+	isVec2: true,
 
 	set: function ( x, y ) {
 
@@ -174,8 +174,8 @@ Object.assign( Vec2.prototype, {
 
 		if ( w !== undefined ) {
 
-			console.warn( 'THREE.Vector2: .sub() now only accepts one argument. Use .subVectors( a, b ) instead.' );
-			return this.subVectors( v, w );
+			console.warn( 'THREE.Vector2: .sub() now only accepts one argument. Use .sub2( a, b ) instead.' );
+			return this.sub2( v, w );
 
 		}
 
@@ -195,7 +195,7 @@ Object.assign( Vec2.prototype, {
 
 	},
 
-	subVectors: function ( a, b ) {
+	sub2: function ( a, b ) {
 
 		this.x = a.x - b.x;
 		this.y = a.y - b.y;
@@ -213,7 +213,7 @@ Object.assign( Vec2.prototype, {
 
 	},
 
-	multiplyScalar: function ( scalar ) {
+	mulScalar: function ( scalar ) {
 
 		this.x *= scalar;
 		this.y *= scalar;
@@ -233,11 +233,11 @@ Object.assign( Vec2.prototype, {
 
 	divideScalar: function ( scalar ) {
 
-		return this.multiplyScalar( 1 / scalar );
+		return this.mulScalar( 1 / scalar );
 
 	},
 
-	applyMatrix3: function ( m ) {
+	applyMat3: function ( m ) {
 
 		var x = this.x, y = this.y;
 		var e = m.elements;
@@ -291,7 +291,7 @@ Object.assign( Vec2.prototype, {
 
 		var length = this.length();
 
-		return this.divideScalar( length || 1 ).multiplyScalar( Math.max( min, Math.min( max, length ) ) );
+		return this.divideScalar( length || 1 ).mulScalar( Math.max( min, Math.min( max, length ) ) );
 
 	},
 
@@ -409,7 +409,7 @@ Object.assign( Vec2.prototype, {
 
 	setLength: function ( length ) {
 
-		return this.normalize().multiplyScalar( length );
+		return this.normalize().mulScalar( length );
 
 	},
 
@@ -424,7 +424,7 @@ Object.assign( Vec2.prototype, {
 
 	lerpVectors: function ( v1, v2, alpha ) {
 
-		return this.subVectors( v2, v1 ).multiplyScalar( alpha ).add( v1 );
+		return this.sub2( v2, v1 ).mulScalar( alpha ).add( v1 );
 
 	},
 

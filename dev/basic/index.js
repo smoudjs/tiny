@@ -1,12 +1,17 @@
-import '@smoud/tiny/app';
 import '@smoud/tiny/2d';
-import '@smoud/tiny/extras/canvas-renderer';
+import '@smoud/tiny/3d';
+import '@smoud/tiny/webgl-renderer';
+// import '@smoud/tiny/canvas-renderer';
+import '@smoud/tiny/webgl-2d';
 // import '@smoud/tiny/extras/canvas-renderer';
-import '@smoud/tiny/extras/canvas-graphics';
+// import '@smoud/tiny/canvas-graphics';
 // import '@smoud/tiny/extras/shapes';
-import '@smoud/tiny/extras/anim';
+// import '@smoud/tiny/anim';
 
 import App from './App';
+
+window.w =window.innerWidth;
+window.h = window.innerHeight;
 
 // var renderer = new Tiny.CanvasRenderer(640, 320);
 // document.body.appendChild(renderer.domElement);
@@ -17,7 +22,7 @@ import App from './App';
 // renderer.render(scene);
 
 window.addEventListener('load', () => {
-    const app = new App(window.innerWidth, window.innerHeight, 'game');
+    const app = new App(w, h, 'game');
     window.app = app;
 
     window.addEventListener('resize', () => {
@@ -30,12 +35,12 @@ if (__DEV__) {
         var script = document.createElement('script');
 
         script.onload = function () {
-            var stats = new Stats();
-            document.body.appendChild(stats.dom);
-            requestAnimationFrame(function loop() {
-                stats.update();
-                requestAnimationFrame(loop);
-            });
+            // var stats = new Stats();
+            // document.body.appendChild(stats.dom);
+            // requestAnimationFrame(function loop() {
+            //     stats.update();
+            //     requestAnimationFrame(loop);
+            // });
         };
 
         script.src = 'https://mrdoob.github.io/stats.js/build/stats.min.js';

@@ -1,4 +1,4 @@
-import { MathFunc } from '../3ds/math/MathFunc';
+import { clamp } from './MathFunc';
 import { Quat } from './Quat.js';
 
 /**
@@ -23,7 +23,7 @@ function Vec3(x, y, z ) {
 
 Object.assign( Vec3.prototype, {
 
-	isVector3: true,
+	isVec3: true,
 
 	set: function ( x, y, z ) {
 
@@ -115,13 +115,6 @@ Object.assign( Vec3.prototype, {
 
 	add: function ( v, w ) {
 
-		if ( w !== undefined ) {
-
-			console.warn( 'THREE.Vector3: .add() now only accepts one argument. Use .addVectors( a, b ) instead.' );
-			return this.addVectors( v, w );
-
-		}
-
 		this.x += v.x;
 		this.y += v.y;
 		this.z += v.z;
@@ -140,7 +133,7 @@ Object.assign( Vec3.prototype, {
 
 	},
 
-	addVectors: function ( a, b ) {
+	add2: function ( a, b ) {
 
 		this.x = a.x + b.x;
 		this.y = a.y + b.y;
@@ -162,13 +155,6 @@ Object.assign( Vec3.prototype, {
 
 	sub: function ( v, w ) {
 
-		if ( w !== undefined ) {
-
-			console.warn( 'THREE.Vector3: .sub() now only accepts one argument. Use .subVectors( a, b ) instead.' );
-			return this.subVectors( v, w );
-
-		}
-
 		this.x -= v.x;
 		this.y -= v.y;
 		this.z -= v.z;
@@ -187,7 +173,7 @@ Object.assign( Vec3.prototype, {
 
 	},
 
-	subVectors: function ( a, b ) {
+	sub2: function ( a, b ) {
 
 		this.x = a.x - b.x;
 		this.y = a.y - b.y;
@@ -197,14 +183,7 @@ Object.assign( Vec3.prototype, {
 
 	},
 
-	multiply: function ( v, w ) {
-
-		if ( w !== undefined ) {
-
-			console.warn( 'THREE.Vector3: .multiply() now only accepts one argument. Use .multiplyVectors( a, b ) instead.' );
-			return this.multiplyVectors( v, w );
-
-		}
+	mul: function ( v, w ) {
 
 		this.x *= v.x;
 		this.y *= v.y;
@@ -214,7 +193,7 @@ Object.assign( Vec3.prototype, {
 
 	},
 
-	multiplyScalar: function ( scalar ) {
+	mulScalar: function ( scalar ) {
 
 		this.x *= scalar;
 		this.y *= scalar;
@@ -224,7 +203,7 @@ Object.assign( Vec3.prototype, {
 
 	},
 
-	multiplyVectors: function ( a, b ) {
+	mul2: function ( a, b ) {
 
 		this.x = a.x * b.x;
 		this.y = a.y * b.y;
@@ -242,17 +221,17 @@ Object.assign( Vec3.prototype, {
 
 		}
 
-		return this.applyQuaternion( _quaternion.setFromEuler( euler ) );
+		return this.applyQuat( _quaternion.setFromEuler( euler ) );
 
 	},
 
 	applyAxisAngle: function ( axis, angle ) {
 
-		return this.applyQuaternion( _quaternion.setFromAxisAngle( axis, angle ) );
+		return this.applyQuat( _quaternion.setFromAxisAngle( axis, angle ) );
 
 	},
 
-	applyMatrix3: function ( m ) {
+	applyMat3: function ( m ) {
 
 		var x = this.x, y = this.y, z = this.z;
 		var e = m.elements;
@@ -267,11 +246,11 @@ Object.assign( Vec3.prototype, {
 
 	applyNormalMatrix: function ( m ) {
 
-		return this.applyMatrix3( m ).normalize();
+		return this.applyMat3( m ).normalize();
 
 	},
 
-	applyMatrix4: function ( m ) {
+	applyMat4: function ( m ) {
 
 		var x = this.x, y = this.y, z = this.z;
 		var e = m.elements;
@@ -286,7 +265,7 @@ Object.assign( Vec3.prototype, {
 
 	},
 
-	applyQuaternion: function ( q ) {
+	applyQuat: function ( q ) {
 
 		var x = this.x, y = this.y, z = this.z;
 		var qx = q.x, qy = q.y, qz = q.z, qw = q.w;
@@ -310,13 +289,13 @@ Object.assign( Vec3.prototype, {
 
 	project: function ( camera ) {
 
-		return this.applyMatrix4( camera.matrixWorldInverse ).applyMatrix4( camera.projectionMatrix );
+		return this.applyMat4( camera.matrixWorldInverse ).applyMat4( camera.projectionMatrix );
 
 	},
 
 	unproject: function ( camera ) {
 
-		return this.applyMatrix4( camera.projectionMatrixInverse ).applyMatrix4( camera.matrixWorld );
+		return this.applyMat4( camera.projectionMatrixInverse ).applyMat4( camera.matrixWorld );
 
 	},
 
@@ -336,7 +315,7 @@ Object.assign( Vec3.prototype, {
 
 	},
 
-	divide: function ( v ) {
+	div: function ( v ) {
 
 		this.x /= v.x;
 		this.y /= v.y;
@@ -346,9 +325,9 @@ Object.assign( Vec3.prototype, {
 
 	},
 
-	divideScalar: function ( scalar ) {
+	divScalar: function ( scalar ) {
 
-		return this.multiplyScalar( 1 / scalar );
+		return this.mulScalar( 1 / scalar );
 
 	},
 
@@ -398,7 +377,7 @@ Object.assign( Vec3.prototype, {
 
 		var length = this.length();
 
-		return this.divideScalar( length || 1 ).multiplyScalar( Math.max( min, Math.min( max, length ) ) );
+		return this.divScalar( length || 1 ).mulScalar( Math.max( min, Math.min( max, length ) ) );
 
 	},
 
@@ -480,13 +459,13 @@ Object.assign( Vec3.prototype, {
 
 	normalize: function () {
 
-		return this.divideScalar( this.length() || 1 );
+		return this.divScalar( this.length() || 1 );
 
 	},
 
 	setLength: function ( length ) {
 
-		return this.normalize().multiplyScalar( length );
+		return this.normalize().mulScalar( length );
 
 	},
 
@@ -502,7 +481,7 @@ Object.assign( Vec3.prototype, {
 
 	lerpVectors: function ( v1, v2, alpha ) {
 
-		return this.subVectors( v2, v1 ).multiplyScalar( alpha ).add( v1 );
+		return this.sub2( v2, v1 ).mulScalar( alpha ).add( v1 );
 
 	},
 
@@ -538,7 +517,7 @@ Object.assign( Vec3.prototype, {
 
 		var scalar = v.dot( this ) / v.lengthSq();
 
-		return this.copy( v ).multiplyScalar( scalar );
+		return this.copy( v ).mulScalar( scalar );
 
 	},
 
@@ -555,7 +534,7 @@ Object.assign( Vec3.prototype, {
 		// reflect incident vector off plane orthogonal to normal
 		// normal is assumed to have unit length
 
-		return this.sub( _vector.copy( normal ).multiplyScalar( 2 * this.dot( normal ) ) );
+		return this.sub( _vector.copy( normal ).mulScalar( 2 * this.dot( normal ) ) );
 
 	},
 
@@ -569,7 +548,7 @@ Object.assign( Vec3.prototype, {
 
 		// clamp, to handle numerical problems
 
-		return Math.acos( MathFunc.clamp( theta, - 1, 1 ) );
+		return Math.acos( clamp( theta, - 1, 1 ) );
 
 	},
 

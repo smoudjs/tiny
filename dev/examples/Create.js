@@ -1,10 +1,12 @@
+import { App2D } from '@smoud/tiny/addons/apps/App2D';
+
 Tiny.rnd = function (min, max) {
     return min + Math.floor(Math.random() * (max - min + 1));
 };
 
 Tiny.CanvasTinter.cacheTint = true;
 
-class MyGame extends Tiny.App2D {
+class MyGame extends App2D {
     constructor(width, height) {
         super(width, height, 'game');
     }

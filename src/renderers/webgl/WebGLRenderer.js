@@ -2,7 +2,7 @@ import { StencilManager } from './managers/StencilManager';
 import { SpriteBatch } from './utils/SpriteBatch';
 import { ShaderManager } from './managers/ShaderManager';
 import { MaskManager } from './managers/MaskManager';
-import { FilterManager } from './managers/FilterManager';
+// import { FilterManager } from './managers/FilterManager';
 import { BlendModeManager } from './managers/BlendModeManager';
 import { Vec2 } from '../../math/Vec2';
 import { isPow2 } from '../../utils';
@@ -10,6 +10,8 @@ import { SCALE_MODES } from '../../constants';
 import { Cache } from '../../loaders/Cache';
 import { BLEND_MODES } from '../../constants';
 import { Color } from '../../math/Color';
+
+var CONTEXT_UID = 0;
 
 Tiny.glContexts = []; // this is where we store the webGL contexts for easy access.
 Tiny.instances = [];
@@ -195,7 +197,7 @@ var WebGLRenderer = function (width, height, options) {
      * @property filterManager
      * @type FilterManager
      */
-    this.filterManager = new FilterManager(this);
+    // this.filterManager = new FilterManager(this);
 
     /**
      * Manages the stencil buffer
@@ -253,7 +255,7 @@ WebGLRenderer.prototype.initContext = function () {
         throw new Error('This browser does not support webGL. Try using the canvas renderer');
     }
 
-    this.glContextId = gl.id = WebGLRenderer.glContextId++;
+    this.glContextId = gl.id = CONTEXT_UID++;
 
     Tiny.glContexts[this.glContextId] = gl;
 
@@ -292,7 +294,7 @@ WebGLRenderer.prototype.initContext = function () {
     this.shaderManager.setContext(gl);
     this.spriteBatch.setContext(gl);
     this.maskManager.setContext(gl);
-    this.filterManager.setContext(gl);
+    // this.filterManager.setContext(gl);
     this.blendModeManager.setContext(gl);
     this.stencilManager.setContext(gl);
 
@@ -402,7 +404,7 @@ WebGLRenderer.prototype.renderObject = function (displayObject, projection, buff
     this.spriteBatch.begin(this);
 
     // start the filter manager
-    this.filterManager.begin(this, buffer);
+    // this.filterManager.begin(this, buffer);
 
     // render the scene!
     displayObject.render(this);
@@ -553,12 +555,12 @@ WebGLRenderer.prototype.destroy = function (removeView) {
     this.shaderManager.destroy();
     this.spriteBatch.destroy();
     this.maskManager.destroy();
-    this.filterManager.destroy();
+    // this.filterManager.destroy();
 
     this.shaderManager = null;
     this.spriteBatch = null;
     this.maskManager = null;
-    this.filterManager = null;
+    // this.filterManager = null;
 
     this.gl = null;
 
@@ -598,7 +600,5 @@ WebGLRenderer.prototype.destroy = function (removeView) {
 //         Tiny.blendModesWebGL[Tiny.blendModes.LUMINOSITY] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
 //     }
 // };
-
-WebGLRenderer.glContextId = 0;
 
 export { WebGLRenderer };

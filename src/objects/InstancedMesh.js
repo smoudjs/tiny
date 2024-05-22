@@ -1,115 +1,128 @@
+import { BufferAttribute } from '../geometries/BufferAttribute.js';
 import { Mesh } from './Mesh.js';
+import { Mat4 } from '../math/Mat4.js';
 
-const mat4Length = 16;
+const _instanceLocalMatrix = new Mat4();
+const _instanceWorldMatrix = new Mat4();
 
-function InstancedMesh(geometry, material, count) {
-    count = count !== undefined ? count : 1;
+const _instanceIntersects = [];
 
-    if (!geometry.attributes.instanceMatrix) {
-        var instanceMatrix = new Float32Array( count * mat4Length );
+const _mesh = new Mesh();
 
-        geometry.setAttribute('instanceMatrix', new Tiny.Float32Attribute(instanceMatrix, mat4Length));
-        geometry.attributes.instanceMatrix.instanced = 1;
-    }
+function InstancedMesh( geometry, material, count ) {
 
-    geometry.isInstanced = true;
-    geometry.instancedCount = count;
+    Mesh.call( this, geometry, material );
 
-    Mesh.call(this, geometry, material);
+    this.instanceMatrix = new BufferAttribute( new Float32Array( count * 16 ), 16 );
+    this.instanceColor = null;
 
-    // Skip renderer frustum culling
+    this.count = count;
+
     this.frustumCulled = false;
-    this.isInstancedMesh = true;
+
 }
 
-InstancedMesh.prototype = Object.assign(Object.create(Mesh.prototype), {
+InstancedMesh.prototype = Object.assign( Object.create( Mesh.prototype ), {
+
     constructor: InstancedMesh,
 
-    setMatrixAt: function (index, matrix) {
-        this.geometry.attributes.instanceMatrix.set(matrix.elements, index * mat4Length);
+    isInstancedMesh: true,
+
+    copy: function ( source ) {
+
+        Mesh.prototype.copy.call( this, source );
+
+        this.instanceMatrix.copy( source.instanceMatrix );
+
+        if ( source.instanceColor !== null ) this.instanceColor = source.instanceColor.clone();
+
+        this.count = source.count;
+
+        return this;
+
     },
 
-    draw: function ({camera, directionalLight, ambientLight} = {}) {
-        if (this.dynamic) {
-            this.needsUpdate = true;
+    getColorAt: function ( index, color ) {
+
+        color.fromArray( this.instanceColor.array, index * 3 );
+
+    },
+
+    getMatrixAt: function ( index, matrix ) {
+
+        matrix.fromArray( this.instanceMatrix.array, index * 16 );
+
+    },
+
+    raycast: function ( raycaster, intersects ) {
+
+        const matrixWorld = this.matrixWorld;
+        const raycastTimes = this.count;
+
+        _mesh.geometry = this.geometry;
+        _mesh.material = this.material;
+
+        if ( _mesh.material === undefined ) return;
+
+        for ( let instanceId = 0; instanceId < raycastTimes; instanceId ++ ) {
+
+            // calculate the world matrix for each instance
+
+            this.getMatrixAt( instanceId, _instanceLocalMatrix );
+
+            _instanceWorldMatrix.mul2( matrixWorld, _instanceLocalMatrix );
+
+            // the mesh represents this single instance
+
+            _mesh.matrixWorld = _instanceWorldMatrix;
+
+            _mesh.raycast( raycaster, _instanceIntersects );
+
+            // process the result of raycast
+
+            for ( let i = 0, l = _instanceIntersects.length; i < l; i ++ ) {
+
+                const intersect = _instanceIntersects[ i ];
+                intersect.instanceId = instanceId;
+                intersect.object = this;
+                intersects.push( intersect );
+
+            }
+
+            _instanceIntersects.length = 0;
+
         }
 
-        Mesh.prototype.draw.call(this, {camera, directionalLight, ambientLight});
-    }
-});
+    },
 
-// @TODO add later
-// addFrustumCull() {
-//     this.instanceTransforms = null;
-//     this.instanceLightmapScaleOffset = null;
-//     this.totalInstanceCount = 0;
-//     this.frustumCullFunction = null;
-//     this.instanceRenderList = null;
-//
-//     // Get instanced mesh
-//     if (!this.geometry.attributes.instanceMatrix)
-//         console.error(`mesh ${this.name ? `"${this.name}" ` : ``}missing instanceMatrix attribute; unable to frustum cull`);
-//
-//     // Make list of transforms from instanceMatrix
-//     const matrixData = this.geometry.attributes.instanceMatrix.data;
-//     this.instanceTransforms = [];
-//     for (let i = 0, j = 0; i < matrixData.length; i += mat4Length, j++) {
-//         const transform = new Object3D();
-//         transform.index = j;
-//         transform.matrix.fromArray(matrixData, i);
-//         transform.decompose();
-//         this.instanceTransforms.push(transform);
-//         // Add transforms to parent to update world matrices
-//         transform.setParent(this.parent);
-//     }
-//     this.totalInstanceCount = this.instanceTransforms.length;
-//
-//     // Check for lightmap attributes - attach to transform
-//     if (!!this.geometry.attributes.lightmapScaleOffset) {
-//         const lightmapData = this.geometry.attributes.lightmapScaleOffset.data;
-//         for (let i = 0, j = 0; i < lightmapData.length; i += 4, j++) {
-//             this.instanceTransforms[j].lightmapData = new Vec4().fromArray(lightmapData, i);
-//         }
-//     }
-//
-//     this.frustumCullFunction = ({ camera }) => {
-//         // frustum cull transforms each frame - pass world matrix
-//         this.instanceRenderList = [];
-//         this.instanceTransforms.forEach((transform) => {
-//             if (!camera.frustumIntersectsMesh(this, transform.worldMatrix)) return;
-//             this.instanceRenderList.push(transform);
-//         });
-//
-//         // update instanceMatrix and instancedCount with visible
-//         this.instanceRenderList.forEach((transform, i) => {
-//             transform.matrix.toArray(this.geometry.attributes.instanceMatrix.data, i * mat4Length);
-//
-//             // Update lightmap attr
-//             if (transform.lightmapData) {
-//                 transform.lightmapData.toArray(this.geometry.attributes.lightmapScaleOffset.data, i * 4);
-//                 this.geometry.attributes.lightmapScaleOffset.needsUpdate = true;
-//             }
-//         });
-//         this.geometry.instancedCount = this.instanceRenderList.length;
-//         this.geometry.attributes.instanceMatrix.needsUpdate = true;
-//     };
-//
-//     this.onBeforeRender(this.frustumCullFunction);
-// }
-//
-// removeFrustumCull() {
-//     this.offBeforeRender(this.frustumCullFunction);
-//     this.geometry.instancedCount = this.totalInstanceCount;
-//     this.instanceTransforms.forEach((transform, i) => {
-//         transform.matrix.toArray(this.geometry.attributes.instanceMatrix.data, i * mat4Length);
-//
-//         // Update lightmap attr
-//         if (transform.lightmapData) {
-//             transform.lightmapData.toArray(this.geometry.attributes.lightmapScaleOffset.data, i * 4);
-//             this.geometry.attributes.lightmapScaleOffset.needsUpdate = true;
-//         }
-//     });
-//     this.geometry.attributes.instanceMatrix.needsUpdate = true;
-// }
+    setColorAt: function ( index, color ) {
+
+        if ( this.instanceColor === null ) {
+
+            this.instanceColor = new BufferAttribute( new Float32Array( this.count * 3 ), 3 );
+
+        }
+
+        color.toArray( this.instanceColor.array, index * 3 );
+
+    },
+
+    setMatrixAt: function ( index, matrix ) {
+
+        matrix.toArray( this.instanceMatrix.array, index * 16 );
+
+    },
+
+    updateMorphTargets: function () {
+
+    },
+
+    dispose: function () {
+
+        this.emit( 'dispose' );
+
+    }
+
+} );
 
 export { InstancedMesh };

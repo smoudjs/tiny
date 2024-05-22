@@ -1,5 +1,4 @@
 import { Color } from 'three';
-import { Mat4, Vec3 } from '../../src/3d';
 import { tinyVSthreeCubesAmount } from '../constants';
 import {GLTFLoader} from "./GLTFLoader";
 

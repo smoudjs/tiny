@@ -1,4 +1,6 @@
-class MyGame extends Tiny.App2D {
+import { App2D } from '@smoud/tiny/addons/apps/App2D';
+
+class MyGame extends App2D {
     constructor(width, height) {
         super(width, height, 'game');
     }

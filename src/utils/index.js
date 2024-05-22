@@ -19,13 +19,39 @@ export function isPow2(v) {
     return !(v & (v - 1)) && !!v;
 }
 
-export function getNextPow2(number) {
-    if (number > 0 && (number & (number - 1)) === 0)
-        // see: http://goo.gl/D9kPj
-        return number;
-    else {
-        var result = 1;
-        while (result < number) result <<= 1;
-        return result;
+export function ceilPow2(value) {
+    return Math.pow(2, Math.ceil(Math.log(value) / Math.LN2));
+}
+
+export function floorPow2(value) {
+    return Math.pow(2, Math.floor(Math.log(value) / Math.LN2));
+}
+
+export function nextPow2(v) {
+    v += v === 0;
+    --v;
+    v |= v >>> 1;
+    v |= v >>> 2;
+    v |= v >>> 4;
+    v |= v >>> 8;
+    v |= v >>> 16;
+    return v + 1;
+}
+
+export function arrayMax(array) {
+    if (array.length === 0) return -Infinity;
+
+    let max = array[0];
+
+    for (let i = 1, l = array.length; i < l; ++i) {
+        if (array[i] > max) max = array[i];
     }
+
+    return max;
+}
+
+export function getValue(options, name, defaultValue) {
+    if (options && options[name] !== undefined) return options[name];
+
+    return defaultValue;
 }

@@ -83,25 +83,25 @@
                 //  else logError(message);
                 // };
 
-                window.addEventListener('error', function (event, e) {
-                    if (event.error && event.error.stack) logError(event.message + '\n' + event.error.stack);
-                    else logError(event.message);
-                });
+                // window.addEventListener('error', function (event, e) {
+                //     if (event.error && event.error.stack) logError(event.message + '\n' + event.error.stack);
+                //     else logError(event.message);
+                // });
 
-                window.addEventListener('unhandledrejection', function (event) {
-                    var error = 'Unknown nhandled Promise rejection';
+                // window.addEventListener('unhandledrejection', function (event) {
+                //     var error = 'Unknown nhandled Promise rejection';
 
-                    console.log(event.reason);
+                //     console.log(event.reason);
 
-                    if (event.reason && event.reason.message) {
-                        error = event.reason.message;
-                        if (event.reason.stack) error += '\n' + event.reason.stack;
-                    }
+                //     if (event.reason && event.reason.message) {
+                //         error = event.reason.message;
+                //         if (event.reason.stack) error += '\n' + event.reason.stack;
+                //     }
 
-                    logError(error);
-                });
+                //     logError(error);
+                // });
 
-                console.error = logError;
+                // console.error = logError;
 
                 var addEventListener = window.EventTarget.prototype.addEventListener;
                 window.EventTarget.prototype.addEventListener = function (event, callback, bubble) {

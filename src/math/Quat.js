@@ -5,7 +5,7 @@
  * @author bhouston / http://clara.io
  */
 
-import { MathFunc } from '../3ds/math/MathFunc';
+import { clamp } from './MathFunc';
 
 function Quat(x, y, z, w ) {
 
@@ -162,7 +162,7 @@ Object.defineProperties( Quat.prototype, {
 
 Object.assign( Quat.prototype, {
 
-	isQuaternion: true,
+	isQuat: true,
 
 	set: function ( x, y, z, w ) {
 
@@ -394,7 +394,7 @@ Object.assign( Quat.prototype, {
 
 	angleTo: function ( q ) {
 
-		return 2 * Math.acos( Math.abs( MathFunc.clamp( this.dot( q ), - 1, 1 ) ) );
+		return 2 * Math.acos( Math.abs( clamp( this.dot( q ), - 1, 1 ) ) );
 
 	},
 
@@ -412,7 +412,7 @@ Object.assign( Quat.prototype, {
 
 	},
 
-	inverse: function () {
+	invert: function () {
 
 		// quaternion is assumed to have unit length
 
@@ -478,26 +478,19 @@ Object.assign( Quat.prototype, {
 
 	},
 
-	multiply: function ( q, p ) {
+	mul: function ( q ) {
 
-		if ( p !== undefined ) {
-
-			console.warn( 'Tiny.Quaternion: .multiply() now only accepts one argument. Use .multiplyQuaternions( a, b ) instead.' );
-			return this.multiplyQuaternions( q, p );
-
-		}
-
-		return this.multiplyQuaternions( this, q );
+		return this.mul2( this, q );
 
 	},
 
-	premultiply: function ( q ) {
+	premul: function ( q ) {
 
-		return this.multiplyQuaternions( q, this );
+		return this.mul2( q, this );
 
 	},
 
-	multiplyQuaternions: function ( a, b ) {
+	mul2: function ( a, b ) {
 
 		// from http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/code/index.htm
 

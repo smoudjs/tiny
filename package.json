@@ -6,25 +6,20 @@
   "module": "./dist/tiny.esm.js",
   "exports": {
     ".": {
-      "import": "./dist/tiny.esm.js",
-      "require": "./dist/tiny.cjs.js"
+      "import": "./packages/tiny/index.js",
+      "require": "./dist/tiny.js"
     },
-    "./examples/*": "./examples/jsm/*",
+    "./addons/*": "./examples/jsm/*",
     "./src/*": "./src/*",
-    "./app": "./src/tiny.app.js",
-    "./2d": "./src/2d.js",
-    "./3d": "./src/3d.js",
-    "./webgl": "./src/webgl.js",
-    "./extras/*": {
-      "import": "./extras/*",
-      "require": "./dist/extras/*"
+    "./*": {
+      "import": "./packages/*",
+      "require": "./dist/*"
     }
   },
   "files": [
     "src",
     "dist",
-    "extras",
-    "examples/js",
+    "packages",
     "examples/jsm",
     "README.md"
   ],

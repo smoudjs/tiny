@@ -13,12 +13,12 @@ const DEFINES = {
     __DEV__: JSON.stringify(false)
 };
 
-const files = globSync('./extras/*/index.js', { withFileTypes: true });
-const extrasNames = files.map((e) => e.parent.name);
-const extras = {};
+const files = globSync('./packages/*/index.js', { withFileTypes: true });
+const packagesNames = files.map((e) => e.parent.name);
+const packages = {};
 
-for (let extra of extrasNames) {
-    extras['extras/' + extra] = path.resolve('extras/' + extra + '/index.js');
+for (let package of packagesNames) {
+    packages[package] = path.resolve('packages/' + package + '/index.js');
 }
 
 const webpackConfig = {
@@ -29,7 +29,7 @@ const webpackConfig = {
     watch: false,
 
     entry: {
-        ...extras,
+        ...packages,
         // 'tiny.core': [path.resolve('src/core.js')],
         // 'tiny.app': [path.resolve('src/core.js'), path.resolve('src/app.js')],
         // 'tiny.2d': [
@@ -46,11 +46,11 @@ const webpackConfig = {
         //     path.resolve('src/3d.js'),
         //     path.resolve('src/webgl.js')
         // ]
-        'tiny.core': path.resolve('src/tiny.core.js'),
-        'tiny.app': path.resolve('src/tiny.app.js'),
-        'tiny.2d': path.resolve('src/tiny.2d.js'),
-        'tiny.3d': path.resolve('src/tiny.3d.js'),
-        'tiny': path.resolve('src/tiny.js')
+        // 'tiny.core': path.resolve('src/tiny.core.js'),
+        // 'tiny.app': path.resolve('src/tiny.app.js'),
+        // 'tiny.2d': path.resolve('src/tiny.2d.js'),
+        // 'tiny.3d': path.resolve('src/tiny.3d.js'),
+        // 'tiny': path.resolve('src/tiny.js')
     },
 
     optimization: {

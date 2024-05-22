@@ -1,4 +1,4 @@
-import { SHAPES } from '../../constants';
+import { SHAPES } from '../../constants.js';
 
 var RoundedRectangle = function (x, y, width, height, radius) {
     this.x = x || 0;

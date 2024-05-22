@@ -1,0 +1,1 @@
+Tiny.Cache.font={},Tiny.Loader.prototype.font=function(n,t,o){this.list.push({key:n,src:t,weight:o,type:'font'})},Tiny.Loader.font=function(n,t){var o=n.weight||'normal',e=n.key+'-'+o;if(Tiny.Cache.font[e])return t();var i=new FontFace(n.key,'url('+n.src+')',{weight:o});i.load().then((function(){document.fonts.add(i),Tiny.Cache.font[e]=i,t()}),(function(){}))};

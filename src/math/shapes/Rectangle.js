@@ -1,4 +1,4 @@
-import { SHAPES } from '../../constants';
+import { SHAPES } from '../../constants.js';
 
 /**
  * @author Mat Groves http://matgroves.com/

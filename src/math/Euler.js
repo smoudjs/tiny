@@ -256,15 +256,15 @@ Object.assign( Euler.prototype, {
 
 	},
 
-	setFromQuaternion: function ( q, order, update ) {
+	setFromQuat: function ( q, order, update ) {
 
-		_matrix.makeRotationFromQuaternion( q );
+		_matrix.makeRotationFromQuat( q );
 
 		return this.setFromRotationMatrix( _matrix, order, update );
 
 	},
 
-	setFromVector3: function ( v, order ) {
+	setFromVec3: function ( v, order ) {
 
 		return this.set( v.x, v.y, v.z, order || this._order );
 
@@ -276,7 +276,7 @@ Object.assign( Euler.prototype, {
 
 		_quaternion.setFromEuler( this );
 
-		return this.setFromQuaternion( _quaternion, newOrder );
+		return this.setFromQuat( _quaternion, newOrder );
 
 	},
 
@@ -313,7 +313,7 @@ Object.assign( Euler.prototype, {
 
 	},
 
-	toVector3: function ( optionalResult ) {
+	toVec3: function ( optionalResult ) {
 
 		if ( optionalResult ) {
 

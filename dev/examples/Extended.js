@@ -1,4 +1,7 @@
-class MyGame extends Tiny.App2D {
+import { App2D } from '@smoud/tiny/addons/apps/App2D';
+import { MiniMap } from '@smoud/tiny/addons/objects/MiniMap';
+
+class MyGame extends App2D {
     constructor(width, height) {
         super(width, height, 'game');
     }
@@ -122,7 +125,7 @@ class MyGame extends Tiny.App2D {
         /**
          * Creating scene mini-map
          */
-        this.miniMap = new Tiny.MiniMap(this);
+        this.miniMap = new MiniMap(this);
         this.scene.add(this.miniMap);
     }
 

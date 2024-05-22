@@ -66,7 +66,7 @@ RAF.prototype = {
         _lastTime = now();
 
         if (this.isRunning) {
-            this.game._update(Math.floor(_lastTime), _lastTime - _prevTime);
+            this.game._update(_lastTime - _prevTime);
 
             _timeOutID = window.requestAnimationFrame(_onLoop);
         }
@@ -77,7 +77,7 @@ RAF.prototype = {
     updateSetTimeout: function () {
         _lastTime = now();
         if (this.isRunning) {
-            this.game._update(Math.floor(_lastTime), _lastTime - _prevTime);
+            this.game._update(_lastTime - _prevTime);
 
             _timeOutID = window.setTimeout(_onLoop, RAF.timeToCall);
         }

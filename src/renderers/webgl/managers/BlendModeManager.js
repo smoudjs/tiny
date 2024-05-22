@@ -1,5 +1,3 @@
-import { BLEND_MODES } from '../../../constants';
-
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
  */

@@ -42,14 +42,14 @@ Attribute.prototype = {
 
     },
 
-    applyMatrix3(m) {
+    applyMat3(m) {
 
         if (this.itemSize === 2) {
 
             for (let i = 0, l = this.count; i < l; i++) {
 
                 _vector2.fromAttribute(this, i);
-                _vector2.applyMatrix3(m);
+                _vector2.applyMat3(m);
 
                 this.setXY(i, _vector2.x, _vector2.y);
 
@@ -60,7 +60,7 @@ Attribute.prototype = {
             for (let i = 0, l = this.count; i < l; i++) {
 
                 _vector.fromAttribute(this, i);
-                _vector.applyMatrix3(m);
+                _vector.applyMat3(m);
 
                 this.setXYZ(i, _vector.x, _vector.y, _vector.z);
 
@@ -72,13 +72,13 @@ Attribute.prototype = {
 
     },
 
-    applyMatrix4(m) {
+    applyMat4(m) {
 
         for (let i = 0, l = this.count; i < l; i++) {
 
             _vector.fromAttribute(this, i);
 
-            _vector.applyMatrix4(m);
+            _vector.applyMat4(m);
 
             this.setXYZ(i, _vector.x, _vector.y, _vector.z);
 

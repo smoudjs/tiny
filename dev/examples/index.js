@@ -1,18 +1,14 @@
-import '@smoud/tiny/app';
 import '@smoud/tiny/2d';
-import '@smoud/tiny/webgl';
-import '@smoud/tiny/extras/canvas-renderer';
-import '@smoud/tiny/extras/canvas-graphics';
-import '@smoud/tiny/extras/shapes';
-import '@smoud/tiny/extras/tiling-sprite';
-import '@smoud/tiny/extras/progress-bar';
-import '@smoud/tiny/extras/anim';
-import '@smoud/tiny/extras/sound';
-import '@smoud/tiny/extras/create';
-import '../../examples/js/App2D';
-import '../../examples/js/App3D';
-import '../../examples/js/objects/MiniMap';
-import '../../examples/libs/howler';
+import '@smoud/tiny/webgl-renderer';
+import '@smoud/tiny/canvas-renderer';
+import '@smoud/tiny/canvas-graphics';
+import '@smoud/tiny/shapes';
+import '@smoud/tiny/tiling-sprite';
+import '@smoud/tiny/progress-bar';
+import '@smoud/tiny/anim';
+import '@smoud/tiny/sound';
+import '@smoud/tiny/create';
+import '@smoud/tiny/addons/libs/howler';
 
 import App from './Extended';
 

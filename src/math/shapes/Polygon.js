@@ -1,5 +1,5 @@
-import { Vec2 } from '../Vec2';
-import { SHAPES } from '../../constants';
+import { Vec2 } from '../Vec2.js';
+import { SHAPES } from '../../constants.js';
 
 var Polygon = function (points) {
     // this.area = 0;

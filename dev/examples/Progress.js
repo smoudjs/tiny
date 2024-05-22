@@ -1,19 +1,10 @@
-/**
- * import "h5tiny";
- * import "h5tiny/examples/js/App2D";
- *
- * import "h5tiny/plugins/sound";
- * import "h5tiny/plugins/particles";
- *
- * import "h5tiny/examples/js/objects/MiniMap";
- * to use RecursiveSprite
- */
+import { App2D } from '@smoud/tiny/addons/apps/App2D';
 
 Tiny.rnd = function (min, max) {
     return min + Math.floor(Math.random() * (max - min + 1));
 };
 
-class MyGame extends Tiny.App2D {
+class MyGame extends App2D {
     constructor(width, height) {
         super(width, height, 'game');
     }

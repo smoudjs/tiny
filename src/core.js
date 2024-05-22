@@ -1,22 +1,24 @@
-import './utils/polyfills';
-import { CanvasBuffer } from './utils/CanvasBuffer';
-import { EventEmitter } from './utils/EventEmitter';
-import { _Math } from './math/Math';
-import { Color } from './math/Color';
-import { Mat3 } from './math/Mat3';
-import { Vec2 } from './math/Vec2';
-import { BLEND_MODES, SCALE_MODES, SHAPES, VERSION } from './constants';
+import './utils/polyfills.js';
+import { CanvasBuffer } from './utils/CanvasBuffer.js';
+import { EventTarget } from './utils/EventTarget.js';
+import { SystemTarget } from './utils/SystemTarget.js';
+import { _Math } from './math/Math.js';
+import { Color } from './math/Color.js';
+import { Mat3 } from './math/Mat3.js';
+import { Vec2 } from './math/Vec2.js';
+import { SHAPES, VERSION } from './constants.js';
 
 var Tiny = {
     VERSION: VERSION,
     CanvasBuffer: CanvasBuffer,
-    EventEmitter: EventEmitter,
+    EventTarget: EventTarget,
+    SystemTarget: SystemTarget,
     Math: _Math,
     Mat3: Mat3,
     Vec2: Vec2,
     Color: Color
 };
 
-Object.assign(Tiny, BLEND_MODES, SCALE_MODES, SHAPES);
+Object.assign(Tiny, SHAPES);
 
 window.Tiny = Tiny;

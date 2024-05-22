@@ -6,6 +6,7 @@ function Color(r, g, b) {
 	this.b = 1;
 	this.a = 1;
 	this.int = 0xffffff;
+	this._rgb = 0xffffff;
 
 	if (g === undefined && b === undefined) {
 		// r is THREE.Color, hex or string
@@ -32,7 +33,13 @@ function Color(r, g, b) {
 // 	return c < 0.0031308 ? c * 12.92 : 1.055 * Math.pow(c, 0.41666) - 0.055;
 // }
 
+function convert(value) {
+	return (value >> 16) + (value & 0xff00) + ((value & 0xff) << 16)
+}
+
 Object.assign(Color.prototype, {
+	isColor: true,
+
 	set: function (value) {
 		if (value && typeof value.int == 'number') {
 			this.copy(value);
@@ -47,12 +54,14 @@ Object.assign(Color.prototype, {
 
 	refresh: function () {
 		this.int = ((this.r * 255) << 16) + ((this.g * 255) << 8) + ((this.b * 255) | 0);
+		this._rgb = convert(this.int);
 		return this;
 	},
 
 	setHex: function (hex) {
 		hex = hex | 0;
 		this.int = hex;
+		this._rgb = convert(hex);
 
 		this.r = ((hex >> 16) & 255) / 255;
 		this.g = ((hex >> 8) & 255) / 255;
@@ -67,6 +76,10 @@ Object.assign(Color.prototype, {
 		this.b = b;
 
 		return this.refresh();
+	},
+
+	clone: function () {
+		return new this.constructor(this.r, this.g, this.b);
 	},
 
 	// setHSL: function (h, s, l) {
@@ -423,13 +436,13 @@ Object.assign(Color.prototype, {
 		return this.refresh();
 	},
 
-	// multiplyScalar: function (s) {
-	// 	this.r *= s;
-	// 	this.g *= s;
-	// 	this.b *= s;
+	mulScalar: function (s) {
+		this.r *= s;
+		this.g *= s;
+		this.b *= s;
 
-	// 	return this;
-	// },
+		return this;
+	},
 
 	// lerp: function (color, alpha) {
 	// 	this.r += (color.r - this.r) * alpha;

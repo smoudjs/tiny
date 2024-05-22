@@ -1,9 +1,9 @@
 import { registerSystem } from '../app/registrar';
-import { EventEmitter } from '../utils/EventEmitter';
+import { EventTarget } from '../utils/EventTarget';
 import { Cache } from './Cache';
 
 var LoadingManager = function (parent) {
-    EventEmitter.mixin(this);
+    EventTarget.mixin(this);
     parent.cache = Cache;
 
     this.game = parent;

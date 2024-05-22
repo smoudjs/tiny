@@ -36,18 +36,16 @@
 		<script type="importmap">
 			{
 				"imports": {
-					"@smoud/tiny/app": "../dist/tiny.app.js",
-					"@smoud/tiny/2d": "../dist/tiny.2d.js",
-					"@smoud/tiny/extras/": "../dist/extras/",
-					"@smoud/tiny/3d": "../dist/tiny.3d.js"
+					"@smoud/tiny/": "../dist/",
+					"@smoud/tiny/addons/": "./jsm/"
 				}
 			}
 		</script>
 
 		<script type="module">
 
-			import '@smoud/tiny/app';
-			import '@smoud/tiny/2d';
+			import '@smoud/tiny/2d.js';
+			import '@smoud/tiny/webgl-renderer.js';
 
 			class Bunny extends Tiny.Sprite {
 			    constructor(texture, bounds) {

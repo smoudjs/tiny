@@ -1,5 +1,5 @@
-import { Rectangle } from './Rectangle';
-import { SHAPES } from '../../constants';
+import { Rectangle } from './Rectangle.js';
+import { SHAPES } from '../../constants.js';
 
 /**
  * @author Chad Engler <chad@pantherdev.com>

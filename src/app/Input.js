@@ -1,5 +1,5 @@
 import { registerSystem } from './registrar';
-import { EventEmitter } from '../utils/EventEmitter';
+import { EventTarget } from '../utils/EventTarget';
 import { _Math } from '../math/Math';
 
 var listeningToTouchEvents;
@@ -31,7 +31,7 @@ var Input = function (game) {
     view.addEventListener('mousemove', this.moveHandler);
     view.addEventListener('mouseup', this.upHandler);
 
-    EventEmitter.mixin(this);
+    EventTarget.mixin(this);
 
     for (var i = 0; i < Input.systems.length; i++) {
         Input.systems[i].init.call(this);
@@ -49,7 +49,7 @@ Input.prototype = {
 
         object.input = options;
 
-        EventEmitter.mixin(object.input);
+        EventTarget.mixin(object.input);
 
         this.list.push(object);
     },

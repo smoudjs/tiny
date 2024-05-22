@@ -1,4 +1,4 @@
-import { EventEmitter } from '../utils/EventEmitter';
+import { EventTarget } from '../utils/EventTarget';
 import { systems } from './registrar';
 
 var noop = function () {};
@@ -7,6 +7,7 @@ var App = function (states) {
     this.callbackContext = this;
     this.state = 0;
     this.timeScale = 1;
+    this.time = 0;
     this.width = 0;
     this.height = 0;
     this.systems = [];
@@ -17,7 +18,7 @@ var App = function (states) {
 
     if (!Tiny.app) Tiny.app = this;
 
-    EventEmitter.mixin(this);
+    EventTarget.mixin(this);
 
     states = states || {};
     this.boot = states.boot || this.boot || noop;
@@ -103,10 +104,11 @@ App.prototype.resume = function () {
     }
 };
 
-App.prototype._update = function (time, delta) {
+App.prototype._update = function (delta) {
     if (!this.paused) {
         delta *= this.timeScale;
-        this.update.call(this.callbackContext, time, delta);
+        this.time += delta;
+        this.update.call(this.callbackContext, this.time, delta);
         this.emit('update', delta);
 
         for (var i = 0; i < this.updatable.length; i++) {

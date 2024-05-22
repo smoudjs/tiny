@@ -34,11 +34,11 @@
 
 // 	},
 
-// 	clamp: function ( value, min, max ) {
+	function clamp( value, min, max ) {
 
-// 		return Math.max( min, Math.min( max, value ) );
+		return Math.max( min, Math.min( max, value ) );
 
-// 	},
+	}
 
 // 	// compute euclidian modulo of m % n
 // 	// https://en.wikipedia.org/wiki/Modulo_operation
@@ -228,4 +228,4 @@ function normalize( value, array ) {
 
 }
 
-export {denormalize, normalize};
+export {denormalize, normalize, clamp};
