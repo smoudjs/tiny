@@ -1,5 +1,3 @@
-import '@smoud/tiny/2d';
-import '@smoud/tiny/3d';
 import '@smoud/tiny/webgl-renderer';
 // import '@smoud/tiny/orbit-controls';
 // import '@smoud/tiny/canvas-renderer';
@@ -11,11 +9,12 @@ import '@smoud/tiny/webgl-2d';
 
 import App from './App';
 
-
 import '../tests/Sprite';
 import '../tests/Text';
 import '../tests/SpriteBlending';
 import '../tests/OrbitControls';
+import '../tests/Mesh';
+import '../tests/InstancedMesh';
 
 window.w = window.innerWidth;
 window.h = window.innerHeight;

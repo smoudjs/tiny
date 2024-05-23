@@ -16,11 +16,11 @@ var Object2D = function () {
     this.pivot = new Vec2(0, 0);
     this.skew = new Vec2(0, 0);
     this.rotation = 0;
-    this.alpha = 1;
+    this.opacity = 1;
     this.visible = true;
     this.renderable = false;
     // this.parent = null;
-    this.worldAlpha = 1;
+    this.worldOpacity = 1;
     this.worldTransform = new Mat3();
     this._cx = 1; // cos rotation + skewY;
     this._sx = 0; // sin rotation + skewY;
@@ -276,7 +276,7 @@ Object2D.prototype.updateTransform = function () {
     }
 
     // multiply the alphas..
-    this.worldAlpha = this.alpha * this.parent.worldAlpha;
+    this.worldOpacity = this.opacity * this.parent.worldOpacity;
 
     if (this._cacheAsBitmap) return;
 
@@ -360,7 +360,7 @@ Object2D.prototype._render = function () {};
 
 Object2D.prototype.render = function (renderer) {
     // if the object is not visible or the alpha is 0 then no need to render this element
-    if (!this.visible || this.worldAlpha <= 0 || !this.renderable) {
+    if (!this.visible || this.worldOpacity <= 0 || !this.renderable) {
         return;
     }
 
@@ -432,7 +432,7 @@ Object2D.prototype.renderAdvancedWebGL = function (renderer) {
 };
 
 Object2D.prototype.renderOLD = function (renderSession) {
-    if (!this.visible || this.alpha <= 0) return;
+    if (!this.visible || this.opacity <= 0) return;
 
     if (this._cacheAsBitmap) {
         this._renderCachedSprite(renderSession);

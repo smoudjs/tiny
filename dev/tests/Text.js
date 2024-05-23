@@ -1,3 +1,4 @@
+import '@smoud/tiny/2d';
 import App from '../basic/App.js';
 
 class TextTest {

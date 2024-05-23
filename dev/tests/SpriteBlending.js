@@ -1,3 +1,4 @@
+import '@smoud/tiny/2d';
 import App from '../basic/App.js';
 import { randomInt, random } from '../utils/Math'; 
 
@@ -54,7 +55,7 @@ class SpriteBlendingTest {
             sprite.position.set(posX, posY);
             sprite.anchor.set(0.5);
             sprite.scale.set(1.5);
-            sprite.alpha = 0.6;
+            sprite.opacity = 0.4;
             sprite.vel = 1;
             sprite.tint.set(Math.random() * 0xffffff)
             sprite.offset = random(10, 4000)

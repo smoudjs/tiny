@@ -1,3 +1,4 @@
+import '@smoud/tiny/3d';
 import '@smoud/tiny/orbit-controls';
 import App from '../basic/App.js';
 
@@ -7,7 +8,7 @@ class OrbitControls {
     constructor(app) {
         this.app = app;
 
-        if (this.app.cameras) {
+        if (this.app.camera) {
             this.control = new Tiny.OrbitControls(this.app.camera, app.inputView);
             this.control.enableDamping = true;
             // this.control2 = new Tiny.OrbitControls(this.cameraP, { element: view });

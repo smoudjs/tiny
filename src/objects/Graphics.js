@@ -619,7 +619,7 @@ Object.assign(Graphics.prototype, {
                 this.dirty = false;
             }
 
-            this._cachedSprite.worldAlpha = this.worldAlpha;
+            this._cachedSprite.worldOpacity = this.worldOpacity;
             Sprite.prototype.render.call(this._cachedSprite, renderer);
 
             return;

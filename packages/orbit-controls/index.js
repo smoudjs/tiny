@@ -42,12 +42,12 @@ function setFromCartesianCoords( sph, x, y, z ) {
 
 var EPS = 0.000001;
 
-var OrbitControls = function ( object, input ) {
+var OrbitControls = function ( object, domElement ) {
 
     var scope = this;
 
     this.object = object;
-    this.domElement = input;
+    this.domElement = domElement;
 
     // Set to false to disable this control
     this.enabled = true;

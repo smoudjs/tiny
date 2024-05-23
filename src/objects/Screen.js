@@ -12,7 +12,7 @@ function Screen() {
     Container.call(this);
 
     this.visible = true;
-    this.worldAlpha = 1;
+    this.worldOpacity = 1;
     this.worldTransform = new Mat3();
 
     // this.matrixWorldInverse = new Mat4();
