@@ -1,7 +1,14 @@
-// Based from ThreeJS' OrbitControls class, rewritten using es6 with some additions and subVectorstractions.
+// Based from ThreeJS' OrbitControls class, rewritten using es6 with some additions and sub2 tractions.
 // TODO: abstract event handlers so can be fed from other sources
 // TODO: make scroll zoom more accurate than just >/< zero
 // TODO: be able to pass in new camera position
+
+/**
+ * 4 KB SMALLER at final build;
+ * 
+ * Lagging at phone with 2 touches
+ * When releasing one finger earlier than another
+ */ 
 
 var Vec3 = Tiny.Vec3;
 var Vec2 = Tiny.Vec2;
@@ -55,7 +62,7 @@ export function OrbitControls(
 
     // Grab initial position values
     const offset = new Vec3();
-    offset.copy(object.position).subVectors(offset, this.target);
+    offset.copy(object.position).sub(this.target);
     spherical.radius = sphericalTarget.radius = offset.length();
     spherical.theta = sphericalTarget.theta = Math.atan2(offset.x, offset.z);
     spherical.phi = sphericalTarget.phi = Math.acos(
@@ -73,6 +80,7 @@ export function OrbitControls(
         sphericalTarget.radius *= sphericalDelta.radius;
         sphericalTarget.theta += sphericalDelta.theta;
         sphericalTarget.phi += sphericalDelta.phi;
+        // console.log(sphericalTarget.phi)
 
         // apply boundaries
         sphericalTarget.theta = Math.max(minAzimuthAngle, Math.min(maxAzimuthAngle, sphericalTarget.theta));
@@ -81,6 +89,8 @@ export function OrbitControls(
             this.minDistance,
             Math.min(this.maxDistance, sphericalTarget.radius)
         );
+
+        
 
         // ease values
         spherical.phi += (sphericalTarget.phi - spherical.phi) * ease;
@@ -105,7 +115,7 @@ export function OrbitControls(
         // Apply inertia to values
         sphericalDelta.theta *= inertia;
         sphericalDelta.phi *= inertia;
-        panDelta.multiplyScalar(inertia);
+        panDelta.mulScalar(inertia);
 
         // Reset scale every frame to avoid applying scale multiple times
         sphericalDelta.radius = 1;
@@ -138,13 +148,13 @@ export function OrbitControls(
 
     function panLeft(distance, m) {
         tempVec3.set(m[0], m[1], m[2]);
-        tempVec3.multiply(-distance);
+        tempVec3.mulScalar(-distance);
         panDelta.add(tempVec3);
     }
 
     function panUp(distance, m) {
         tempVec3.set(m[4], m[5], m[6]);
-        tempVec3.multiply(distance);
+        tempVec3.mulScalar(distance);
         panDelta.add(tempVec3);
     }
 
@@ -153,8 +163,8 @@ export function OrbitControls(
         tempVec3.copy(object.position).sub(this.target);
         let targetDistance = tempVec3.length();
         targetDistance *= Math.tan((((object.fov || 45) / 2) * Math.PI) / 180.0);
-        panLeft((2 * deltaX * targetDistance) / el.clientHeight, object.matrix);
-        panUp((2 * deltaY * targetDistance) / el.clientHeight, object.matrix);
+        panLeft((2 * deltaX * targetDistance) / el.clientHeight, object.matrix.elements);
+        panUp((2 * deltaY * targetDistance) / el.clientHeight, object.matrix.elements);
     };
 
     const dolly = (dollyScale) => {
@@ -173,7 +183,7 @@ export function OrbitControls(
 
     function handleMoveRotate(x, y) {
         tempVec2a.set(x, y);
-        tempVec2b.subVectors(tempVec2a, rotateStart).multiplyScalar(rotateSpeed);
+        tempVec2b.sub2(tempVec2a, rotateStart).mulScalar(rotateSpeed);
         let el = element === document ? document.body : element;
         sphericalDelta.theta -= (2 * Math.PI * tempVec2b.x) / el.clientHeight;
         sphericalDelta.phi -= (2 * Math.PI * tempVec2b.y) / el.clientHeight;
@@ -182,7 +192,7 @@ export function OrbitControls(
 
     function handleMouseMoveDolly(e) {
         tempVec2a.set(e.clientX, e.clientY);
-        tempVec2b.subVectors(tempVec2a, dollyStart);
+        tempVec2b.sub2(tempVec2a, dollyStart);
         if (tempVec2b.y > 0) {
             dolly(getZoomScale());
         } else if (tempVec2b.y < 0) {
@@ -193,7 +203,7 @@ export function OrbitControls(
 
     function handleMovePan(x, y) {
         tempVec2a.set(x, y);
-        tempVec2b.subVectors(tempVec2a, panStart).multiply(panSpeed);
+        tempVec2b.sub2(tempVec2a, panStart).mulScalar(panSpeed);
         pan(tempVec2b.x, tempVec2b.y);
         panStart.copy(tempVec2a);
     }

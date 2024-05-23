@@ -4,6 +4,8 @@ var DEG2RAD = Math.PI / 180;
 var RAD2DEG = 180 / Math.PI;
 
 var _Math = {
+    DEG2RAD: DEG2RAD,
+    RAD2DEG: RAD2DEG,
     distance: function (x1, y1, x2, y2) {
         var dx = x1 - x2;
         var dy = y1 - y2;

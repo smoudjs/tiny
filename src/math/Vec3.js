@@ -153,7 +153,7 @@ Object.assign( Vec3.prototype, {
 
 	},
 
-	sub: function ( v, w ) {
+	sub: function ( v ) {
 
 		this.x -= v.x;
 		this.y -= v.y;

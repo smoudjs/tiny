@@ -12,6 +12,8 @@ var EventTarget = {
     },
 
     mixin: function (obj) {
+        obj = obj.prototype || obj;
+        
         obj.on = function (event, fn, context, once) {
             const listeners_events = (this._listeners = this._listeners || {});
             var listeners = listeners_events[event];

@@ -261,36 +261,36 @@ Object.assign(Texture.prototype, {
         if (this.valid) this.updateMatrix();
     },
 
-    _updateUvs: function () {
-        if (!this._uvs) this._uvs = new TextureUvs();
+    // _updateUvs: function () {
+    //     if (!this._uvs) this._uvs = new TextureUvs();
 
-        var frame = this.crop;
-        var tw = this.base.width;
-        var th = this.base.height;
+    //     var frame = this.crop;
+    //     var tw = this.base.width;
+    //     var th = this.base.height;
 
-        this._uvs.x0 = frame.x / tw;
-        this._uvs.y0 = frame.y / th;
+    //     this._uvs.x0 = frame.x / tw;
+    //     this._uvs.y0 = frame.y / th;
 
-        this._uvs.x1 = (frame.x + frame.width) / tw;
-        this._uvs.y1 = frame.y / th;
+    //     this._uvs.x1 = (frame.x + frame.width) / tw;
+    //     this._uvs.y1 = frame.y / th;
 
-        this._uvs.x2 = (frame.x + frame.width) / tw;
-        this._uvs.y2 = (frame.y + frame.height) / th;
+    //     this._uvs.x2 = (frame.x + frame.width) / tw;
+    //     this._uvs.y2 = (frame.y + frame.height) / th;
 
-        this._uvs.x3 = frame.x / tw;
-        this._uvs.y3 = (frame.y + frame.height) / th;
+    //     this._uvs.x3 = frame.x / tw;
+    //     this._uvs.y3 = (frame.y + frame.height) / th;
 
-        this.uvsUint32 = [];
+    //     this.uvsUint32 = [];
 
-        this.uvsUint32[0] =
-            ((Math.round(this._uvs.y0 * 65535) & 0xffff) << 16) | (Math.round(this._uvs.x0 * 65535) & 0xffff);
-        this.uvsUint32[1] =
-            ((Math.round(this._uvs.y1 * 65535) & 0xffff) << 16) | (Math.round(this._uvs.x1 * 65535) & 0xffff);
-        this.uvsUint32[2] =
-            ((Math.round(this._uvs.y2 * 65535) & 0xffff) << 16) | (Math.round(this._uvs.x2 * 65535) & 0xffff);
-        this.uvsUint32[3] =
-            ((Math.round(this._uvs.y3 * 65535) & 0xffff) << 16) | (Math.round(this._uvs.x3 * 65535) & 0xffff);
-    }
+    //     this.uvsUint32[0] =
+    //         ((Math.round(this._uvs.y0 * 65535) & 0xffff) << 16) | (Math.round(this._uvs.x0 * 65535) & 0xffff);
+    //     this.uvsUint32[1] =
+    //         ((Math.round(this._uvs.y1 * 65535) & 0xffff) << 16) | (Math.round(this._uvs.x1 * 65535) & 0xffff);
+    //     this.uvsUint32[2] =
+    //         ((Math.round(this._uvs.y2 * 65535) & 0xffff) << 16) | (Math.round(this._uvs.x2 * 65535) & 0xffff);
+    //     this.uvsUint32[3] =
+    //         ((Math.round(this._uvs.y3 * 65535) & 0xffff) << 16) | (Math.round(this._uvs.x3 * 65535) & 0xffff);
+    // }
 });
 
 // Texture.fromImage = function(key, imageUrl, crossorigin)

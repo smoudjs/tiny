@@ -3,7 +3,7 @@
  */
 export default [
     /**
-     * 100000 - 52-53   150000 - 36
+     * 100000 - 52-53 FPS  150000 - 36 FPS
      */
     // {
     //     key: 'rabbitv3_ash',
@@ -19,16 +19,16 @@ export default [
     // }
 
     /**
-     * 100000 - 42-43   150000 - 28
+     * 100000 - 42-43 FPS   150000 - 28 FPS
      */
     // { key: 'rabbitv3_ash', src: require('examples/textures/bunnies/lineup.png'), type: 'spritesheet', width: 35.83, height: 36 },
 
     /**
      * Якщо один кролик
-     * 100000 - 54   150000 - 36
+     * 100000 - 54 FPS   150000 - 36 FPS
      *
      * Якщо 2 і більше
-     * 100000 - 3    10000 - 26
+     * 100000 - 3 FPS    10000 - 26 FPS
      */
     { key: 'rabbitv3_ash', src: require('examples/textures/bunnies/rabbitv3_ash.png'), type: 'image' },
     { key: 'rabbitv3_batman', src: require('examples/textures/bunnies/rabbitv3_batman.png'), type: 'image' },

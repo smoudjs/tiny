@@ -68,7 +68,7 @@ function BaseTexture(image, options) {
 	this.encoding = getValue(options, 'encoding', LinearEncoding);
 
 	this.version = 0;
-	this.onUpdate = null;
+	// this.onUpdate = null;
 
 	/**
 	 * The Resolution of the texture.
@@ -372,6 +372,6 @@ Object.defineProperty(BaseTexture.prototype, 'needsUpdate', {
 	}
 });
 
-EventTarget.call(BaseTexture);
+EventTarget.mixin(BaseTexture);
 
 export { BaseTexture };

@@ -13,6 +13,7 @@ import { Screen } from './objects/Screen';
 // import { DirectionalLight } from './objects/lights/DirectionalLight.js';
 // import { Camera } from './objects/Camera.js';
 import { OrthographicCamera } from './objects/OrthographicCamera.js';
+import { PerspectiveCamera } from './objects/PerspectiveCamera.js';
 // import {
 //     Attribute,
 //     Float16Attribute,
@@ -64,6 +65,7 @@ Tiny.Screen = Screen;
 
 // Tiny.Camera = Camera;
 Tiny.OrthographicCamera = OrthographicCamera;
+Tiny.PerspectiveCamera = PerspectiveCamera;
 
 // Tiny.WebGLRenderer = WebGLRenderer;
 // Tiny.WebGlTexture = Texture;

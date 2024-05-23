@@ -1,79 +1,18 @@
 import Bunny from '../bunny-mark/Bunny';
+import { drawTexture } from '../utils/drawTexture';
 
 const random = (s = 5) => {
     return (Math.random() - 0.5) * s;
 };
 
-function rgbToInt(r, g, b) {
-    return ((r * 255) << 16) + ((g * 255) << 8) + ((b * 255) | 0);
-}
-function toStyle(int) {
-    return '#' + ('00000' + int.toString(16)).slice(-6);
-}
+export default class BasicApp extends Tiny.App {
 
-function drawTexture(index) {
-    const size = 32;
+    static tests = []
 
-    const canvas = document.createElement('canvas');
-    canvas.width = size;
-    canvas.height = size;
-    if (canvas.getContext) {
-        const ctx = canvas.getContext('2d');
-
-        var color = Math.random() * 0.3 + 0.2;
-
-        ctx.fillStyle = toStyle(rgbToInt(color + random(0.1), color + random(0.1), color + random(0.1)));
-        ctx.fillRect(0, 0, size, size);
-
-        ctx.fillStyle = toStyle(
-            rgbToInt(Math.random() * 0.5 + 0.5, Math.random() * 0.5 + 0.5, Math.random() * 0.5 + 0.5)
-        );
-        ctx.save();
-        ctx.rotate((Math.PI / 180) * random(60));
-        var w = Math.floor((Math.random() * 0.65 + 0.3) * size);
-
-        ctx.shadowBlur = size * 0.1 + 3;
-
-        ctx.shadowColor = toStyle(
-            rgbToInt(Math.random() * 0.5 + 0.5, Math.random() * 0.5 + 0.5, Math.random() * 0.5 + 0.5)
-        );
-
-        if (Math.random() > 0.5) {
-            ctx.fillRect(
-                Math.floor(Math.random() * size * 0.25),
-                Math.floor(Math.random() * size * 0.25),
-                w,
-                w
-            );
-        } else {
-            ctx.arc(
-                Math.floor(Math.random() * size * 0.5),
-                Math.floor(Math.random() * size * 0.5),
-                w * 0.8,
-                0,
-                Math.PI * 2,
-                true
-            );
-            ctx.fill();
-        }
-        ctx.restore();
-        // ctx.fillStyle = '#ffffff';
-        // ctx.font = 'bold 28px serif';
-        var s = 0.5 - ('' + index).length * 0.2;
-        ctx.shadowBlur = 5;
-        ctx.shadowColor = '#ffffff';
-
-        ctx.font = 'bold 23px serif';
-        ctx.fillStyle = '#000000';
-        ctx.fillText(index, size * s, size * 0.6);
-
-        // ctx.strokeRect(50, 50, 50, 50);
+    static registerTest(Test) {
+        this.tests.push(Test)
     }
 
-    return canvas;
-}
-
-export default class BasicApp extends Tiny.App {
     constructor(width, height, parentNode, states) {
         super(states);
 
@@ -83,7 +22,7 @@ export default class BasicApp extends Tiny.App {
         this.renderer = new Tiny.WebGLRenderer({
             width: width,
             height: height,
-            // resolution: 1.25,
+            // resolution: 0.45,
             autoResize: true
         });
 
@@ -102,9 +41,20 @@ export default class BasicApp extends Tiny.App {
         view.style.perspective = '1000px';
 
         this.scene = new Tiny.Scene();
-        this.camera = new Tiny.OrthographicCamera();
+        this.cameraO = new Tiny.OrthographicCamera(1, 1, 1, 1, 0.1, 1000); // OrthographicCamera
+        this.cameraP = new Tiny.PerspectiveCamera(50, width / height, 0.1, 1000);
+        this.camera = this.cameraP;
         this.camera.position.set(10, 10, 10);
         this.camera.lookAt(0, 0, 0);
+
+        this.screen2d = new Tiny.Screen();
+        this.scene.add(this.screen2d )
+
+        this.scene2d = this.screen2d;
+
+        // this.control = new Tiny.OrbitControls(this.camera, view);
+        // this.control.enableDamping = true;
+        // this.control2 = new Tiny.OrbitControls(this.cameraP, { element: view });
 
         this.maxCount = 200000;
         this.amount = 100;
@@ -132,10 +82,22 @@ export default class BasicApp extends Tiny.App {
         document.body.appendChild(this.stats.domElement);
 
         this.counter = counter;
+
+        this.tests = [];
+
+        for (let ctor of BasicApp.tests) {
+            var tst = new ctor(this);
+            tst.name = ctor.name;
+            this.tests.push(tst)
+        }
     }
 
     preload() {
         console.log('preload');
+
+        for (let i = 0; i < this.tests.length; i++){
+            if (this.tests[i].preload) this.tests[i].preload();
+        }
         // this.load.image('test', require('examples/textures/uv.jpg'));
         this.load.spritesheet('test3', require('examples/textures/basics/grid_atlas.png'), [
             { x: 0, y: 0, width: 230, height: 230 },
@@ -153,10 +115,7 @@ export default class BasicApp extends Tiny.App {
             require('examples/textures/basics/gif_data.json')
         );
 
-        this.load.image(
-            'box',
-            require('examples/textures/crate.gif')
-        );
+        this.load.image('box', require('examples/textures/crate.gif'));
 
         // this.load.all([
         //     {
@@ -176,7 +135,7 @@ export default class BasicApp extends Tiny.App {
         /**
          * 100000 - 42-43   150000 - 28
          */
-       // this.load.all([{ key: 'rabbitv3_ash', src: require('examples/textures/bunnies/lineup.png'), type: 'spritesheet', width: 35.83, height: 36 }])
+        // this.load.all([{ key: 'rabbitv3_ash', src: require('examples/textures/bunnies/lineup.png'), type: 'spritesheet', width: 35.83, height: 36 }])
 
         this.load.all([
             {
@@ -239,7 +198,7 @@ export default class BasicApp extends Tiny.App {
 
         this.rabbitsTextures = [];
         for (let i = 0; i < 10; i++) {
-            var canvas = drawTexture(i);
+            var canvas = drawTexture(32, i);
 
             var text = new Tiny.Texture(canvas);
             // text.base.flipY = false;
@@ -249,17 +208,24 @@ export default class BasicApp extends Tiny.App {
     }
 
     create() {
+        for (let i = 0; i < this.tests.length; i++){
+            if (this.tests[i].create) this.tests[i].create();
+        }
+
         const txts = Object.keys(Tiny.Cache.texture);
         for (let tex of txts) {
             var txt = Tiny.Cache.texture[tex];
             if (tex.startsWith('rabbit') && txt.width === txt.base.width) {
-                this.rabbitsTextures.push(tex);
+                // this.rabbitsTextures.push(tex);
                 // break;
             }
         }
 
         // var texture = new Tiny.Texture('atlas', '');
-        const cube1 = new Tiny.Mesh(new Tiny.BoxGeometry(), new Tiny.MeshBasicMaterial({ color: 0x0000ff, map: 'box' }));
+        const cube1 = new Tiny.Mesh(
+            new Tiny.BoxGeometry(),
+            new Tiny.MeshBasicMaterial({ color: 0x0000ff, map: 'box' })
+        );
         this.box1 = cube1;
 
         // Tiny.Cache.texture['atlas'].base.wrapS = 1000;
@@ -291,10 +257,10 @@ export default class BasicApp extends Tiny.App {
 
         cube2.position.x = -4;
 
-        const alight = new Tiny.AmbientLight(0xffffff, 0.4);
+        const alight = new Tiny.AmbientLight(0xffffff, 0.2);
         this.scene.add(alight);
 
-        const dlight = new Tiny.DirectionalLight(0xffffff, 0.4);
+        const dlight = new Tiny.DirectionalLight(0xffffff, 1);
         this.scene.add(dlight);
         dlight.position.set(20, 1, 10);
         dlight.lookAt(0, 0, 0);
@@ -349,7 +315,7 @@ export default class BasicApp extends Tiny.App {
 
         instancedMesh.scale.set(0.5, 0.5, 0.5);
 
-        const screen = (this.screen2d = new Tiny.Screen());
+        const screen = this.screen2d ;
 
         let text = new Tiny.Sprite('txt.5');
         text.position.x = 112;
@@ -364,15 +330,47 @@ export default class BasicApp extends Tiny.App {
         text2.anchor.set(0.5);
         // screen.add(text2);
 
+        // text2.scale.y = -1;
+        text2.skew.set(0, 1);
+
         setInterval(() => {
-            text2.rotation += 0.01;
+            text2.skew.x += 0.01;
         });
 
         this.text = text;
         // this.scene.add(text);
         // const ui = new Tiny.Screen();
+        var d = '❤️🔥';
+        for (let ch of d) {
+            var color = new Tiny.Color(0xff0000)//Math.random() * 0xffffff)
+            var text3 = new Tiny.Text( ch, {
+                fontFamily: 'Arial',
+                fontSize: 43,
+                // fontStyle: 'italic',
+                fontWeight: 'bold',
+                fill: color.toStyle(), // gradient
+                stroke: '#ffffff',
+                strokeThickness: 3,
+                dropShadow: true,
+                dropShadowColor: '#ffffff',
+                dropShadowBlur: 5,
+                dropShadowAngle: Math.PI / 6,
+                dropShadowDistance: 5,
+                wordWrap: true,
+                wordWrapWidth: 440
+                // lineJoin: 'round',
+                // miterLimit: 20
+            });
 
-        // ui.add(new Tiny.Text("Hello World"));
+            this.rabbitsTextures.push(text3.texture);
+            text3.position.set(100, 200);
+            window.text3 = text3;
+            screen.add(text3);
+        }
+
+        // text3.position.set(100, 200);
+        // window.text3 = text3;
+        // screen.add(text3);
         // ui.add(new Tiny.Sprite("coin"));
 
         // this.scene.add(ui)
@@ -395,7 +393,7 @@ export default class BasicApp extends Tiny.App {
         this.scene.add(cube2);
         this.scene.add(instancedMesh);
 
-        this.scene.add(screen);
+        // this.scene.add(screen);
 
         this.resize(this.width, this.height);
         // app.once('postrender', () => console.log("das"))
@@ -494,10 +492,11 @@ export default class BasicApp extends Tiny.App {
             const bunny = new Bunny(texture, this.bounds);
 
             // bunny.blending = 2//Math.floor(Math.random() * 5);
+            bunny.blending = 5;
 
             // bunny.tint.set(0x00ff00)
             // bunny.tint.set(Math.random() * 0xffffff);
-            // bunny.alpha = 0.1
+            bunny.alpha = 0.7
             bunny.anchor.set(0.5);
             bunny.position.x = (this.count % 2) * this.width;
 
@@ -512,6 +511,12 @@ export default class BasicApp extends Tiny.App {
     }
 
     update(time, delta) {
+        for (let i = 0; i < this.tests.length; i++){
+            if (this.tests[i].update) this.tests[i].update(time, delta);
+        }
+
+        this.control && this.control.update();
+        // this.control2.update();
         this.stats.begin();
         // this.text.rotation += delta * 0.01;
         delta *= 0.001;
@@ -548,24 +553,37 @@ export default class BasicApp extends Tiny.App {
         this.stats.end();
     }
 
+    resizeCamera() {
+        if (this.camera) {
+            var aspect = this.width / this.height;
+            var distance = 5;
+
+            if (this.camera.isOrthographicCamera) {
+                this.camera.left = -distance * aspect;
+                this.camera.right = distance * aspect;
+                this.camera.top = distance;
+                this.camera.bottom = -distance;
+            } else {
+                this.camera.fov = distance * 7;
+                this.camera.aspect = aspect;
+            }
+
+            this.camera.updateProjectionMatrix();
+        }
+    }
+
     resize(width, height) {
-        width = w;
-        height = h;
+        // width = w;
+        // height = h;
         super.resize(width, height);
 
         this.renderer.resize(width, height);
 
-        const { camera } = this;
+        this.resizeCamera();
 
-        const aspect = width / height;
-        const distance = 5;
-
-        camera.left = -distance * aspect;
-        camera.right = distance * aspect;
-        camera.top = distance;
-        camera.bottom = -distance;
-
-        camera.updateProjectionMatrix();
+        for (let i = 0; i < this.tests.length; i++){
+            if (this.tests[i].resize) this.tests[i].resize(width, height);
+        }
     }
 
     resize2d(width, height) {
@@ -579,5 +597,9 @@ export default class BasicApp extends Tiny.App {
 
         this.scene.destroy();
         this.renderer.destroy(true);
+        for (let i = 0; i < this.tests.length; i++){
+            if (this.tests[i].destroy) this.tests[i].destroy(width, height);
+        }
+        this.tests.length = 0;
     }
 }

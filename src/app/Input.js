@@ -31,8 +31,6 @@ var Input = function (game) {
     view.addEventListener('mousemove', this.moveHandler);
     view.addEventListener('mouseup', this.upHandler);
 
-    EventTarget.mixin(this);
-
     for (var i = 0; i < Input.systems.length; i++) {
         Input.systems[i].init.call(this);
     }
@@ -242,6 +240,8 @@ Input.checkBounds = function (obj, x, y) {
     //     }
     // }
 };
+
+EventTarget.mixin(Input);
 
 Input.systems = [];
 

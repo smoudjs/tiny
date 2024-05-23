@@ -73,7 +73,7 @@ function Material() {
 
 }
 
-EventTarget.call(Material);
+EventTarget.mixin(Material);
 
 Object.assign( Material.prototype, {
 

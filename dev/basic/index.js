@@ -1,6 +1,7 @@
 import '@smoud/tiny/2d';
 import '@smoud/tiny/3d';
 import '@smoud/tiny/webgl-renderer';
+// import '@smoud/tiny/orbit-controls';
 // import '@smoud/tiny/canvas-renderer';
 import '@smoud/tiny/webgl-2d';
 // import '@smoud/tiny/extras/canvas-renderer';
@@ -10,7 +11,13 @@ import '@smoud/tiny/webgl-2d';
 
 import App from './App';
 
-window.w =window.innerWidth;
+
+import '../tests/Sprite';
+import '../tests/Text';
+import '../tests/SpriteBlending';
+import '../tests/OrbitControls';
+
+window.w = window.innerWidth;
 window.h = window.innerHeight;
 
 // var renderer = new Tiny.CanvasRenderer(640, 320);

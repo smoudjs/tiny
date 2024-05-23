@@ -14,6 +14,7 @@ var Object2D = function () {
     this.position = new Vec2(0, 0);
     this.scale = new Vec2(1, 1);
     this.pivot = new Vec2(0, 0);
+    this.skew = new Vec2(0, 0);
     this.rotation = 0;
     this.alpha = 1;
     this.visible = true;
@@ -21,8 +22,10 @@ var Object2D = function () {
     // this.parent = null;
     this.worldAlpha = 1;
     this.worldTransform = new Mat3();
-    this._sr = 0;
-    this._cr = 1;
+    this._cx = 1; // cos rotation + skewY;
+    this._sx = 0; // sin rotation + skewY;
+    this._cy = 0; // cos rotation + Math.PI/2 - skewX;
+    this._sy = 1; // sin rotation + Math.PI/2 - skewX;
     this._cacheAsBitmap = false;
 
     // this.children = [];
@@ -223,19 +226,23 @@ Object2D.prototype.updateTransform = function () {
     var a, b, c, d, tx, ty;
 
     // so if rotation is between 0 then we can simplify the multiplication process..
-    if (this.rotation % pi2) {
+    if (this.rotation % pi2 || this.skew.x !== 0 || this.skew.y !== 0) {
         // check to see if the rotation is the same as the previous render. This means we only need to use sin and cos when rotation actually changes
-        if (this.rotation !== this.rotationCache) {
-            this.rotationCache = this.rotation;
-            this._sr = Math.sin(this.rotation);
-            this._cr = Math.cos(this.rotation);
+        if (this.rotation !== this._rot || this._skX !== this.skew.x || this._skY !== this.skew.y) {
+            this._rot = this.rotation;
+            this._skX = this.skew.x;
+            this._skY = this.skew.y;
+            this._cx = Math.cos(this.rotation + this._skY);
+            this._sx = Math.sin(this.rotation + this._skY);
+            this._cy = -Math.sin(this.rotation - this._skX); // cos, added PI/2
+            this._sy = Math.cos(this.rotation - this._skX);
         }
 
         // get the matrix values of the displayobject based on its transform properties..
-        a = this._cr * this.scale.x;
-        b = this._sr * this.scale.x;
-        c = -this._sr * this.scale.y;
-        d = this._cr * this.scale.y;
+        a = this._cx * this.scale.x;
+        b = this._sx * this.scale.x;
+        c = this._cy * this.scale.y;
+        d = this._sy * this.scale.y;
         tx = this.position.x;
         ty = this.position.y;
 

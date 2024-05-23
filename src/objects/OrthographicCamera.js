@@ -123,23 +123,23 @@ OrthographicCamera.prototype = Object.assign( Object.create( Camera.prototype ),
 
     },
 
-    toJSON: function ( meta ) {
+    // toJSON: function ( meta ) {
 
-        var data = Object3D.prototype.toJSON.call( this, meta );
+    //     var data = Object3D.prototype.toJSON.call( this, meta );
 
-        data.object.zoom = this.zoom;
-        data.object.left = this.left;
-        data.object.right = this.right;
-        data.object.top = this.top;
-        data.object.bottom = this.bottom;
-        data.object.near = this.near;
-        data.object.far = this.far;
+    //     data.object.zoom = this.zoom;
+    //     data.object.left = this.left;
+    //     data.object.right = this.right;
+    //     data.object.top = this.top;
+    //     data.object.bottom = this.bottom;
+    //     data.object.near = this.near;
+    //     data.object.far = this.far;
 
-        if ( this.view !== null ) data.object.view = Object.assign( {}, this.view );
+    //     if ( this.view !== null ) data.object.view = Object.assign( {}, this.view );
 
-        return data;
+    //     return data;
 
-    }
+    // }
 
 } );
 

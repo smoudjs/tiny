@@ -1,3 +1,41 @@
+# TODO:
+- Graphics
+- Particle system
+- Webgl-2d
+- Tiling sprite
+- Skeleton / skinning
+- Gltf-loader
+- Shadows
+- Canvas renderer
+- Masks 2d
+- Render target / rendere texture
+- Anim system
+- Anim keyframes
+- Anim spritesheet
+- Input with camera controls
+- More geometrices shapes
+- More graphics shapes
+- Sprite3D (Text, TilingSprite)
+- Sprite3D in world space
+- Canvas3D
+- Create-spritesheet
+- CatmullRomCurve3
+- Font-loader
+- Geometry utils
+- Raycaster
+- misc.RenderLayer
+- misc.Button
+- misc.Opaque
+- misc.extends
+- Progress Bar
+- Sound
+- ThreeJS plugin
+- tween extends
+- Points 3D
+
+
+
+
 ▪️ Timer - зробити схожим, щоб працював по принципу Tween.
 
 ▪️ EventTrigger / InputSystem - fix, when 
