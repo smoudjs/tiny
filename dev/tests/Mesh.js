@@ -9,7 +9,8 @@ class MeshTest {
 
     preload() {
         this.app.load.image('crate', require('examples/textures/crate.gif'));
-        this.app.load.image('uv', require('examples/textures/uv.jpg'));
+        this.app.load.image('alphaMap', require('examples/textures/alphaMap.jpg'));
+        this.app.load.spritesheet('sprites/run', require('examples/textures/sprites/run.png'), 64, 64);
     }
 
     create() {
@@ -47,14 +48,28 @@ class MeshTest {
 
         const cube2 = new Tiny.Mesh(
             new Tiny.BoxGeometry(),
-            new Tiny.MeshLambertMaterial({ color: 0xffffff, map: 'uv' })
+            new Tiny.MeshLambertMaterial({ color: 0xffffff, alphaMap: 'alphaMap', map: 'sprites/run.0' })
         );
+
+        cube2.scale.set(2, 2, 2);
 
         this.cube2 = cube2;
         this.app.scene.add(cube2);
 
         this.timer = this.app.timer.loop(2000, () => {
             cube2.material.color.set(Math.random() * 0xffffff);
+        });
+
+        let frame = 0;
+        this.timer2 = this.app.timer.loop(80, () => {
+            frame++;
+            if (frame > Tiny.Cache.texture['sprites/run.0'].lastFrame) {
+                frame = 0;
+            }
+
+            cube2.material.map = Tiny.Cache.texture['sprites/run.' + frame];
+            cube2.material.needsUpdate = true;
+            window.cube2 = cube2;
         });
     }
 
@@ -78,6 +93,7 @@ class MeshTest {
 
     destroy() {
         this.app.timer.remove(this.timer);
+        this.app.timer.remove(this.timer2);
     }
 }
 
