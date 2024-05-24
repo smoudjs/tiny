@@ -6,7 +6,7 @@ function Color(r, g, b) {
 	this.b = 1;
 	this.a = 1;
 	this.int = 0xffffff;
-	this._rgb = 0xffffff;
+	this._bgr = 0xffffff;
 
 	if (g === undefined && b === undefined) {
 		// r is THREE.Color, hex or string
@@ -54,14 +54,14 @@ Object.assign(Color.prototype, {
 
 	refresh: function () {
 		this.int = ((this.r * 255) << 16) + ((this.g * 255) << 8) + ((this.b * 255) | 0);
-		this._rgb = convert(this.int);
+		this._bgr = convert(this.int);
 		return this;
 	},
 
 	setHex: function (hex) {
 		hex = hex | 0;
 		this.int = hex;
-		this._rgb = convert(hex);
+		this._bgr = convert(hex);
 
 		this.r = ((hex >> 16) & 255) / 255;
 		this.g = ((hex >> 8) & 255) / 255;

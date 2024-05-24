@@ -2,7 +2,7 @@ export function premultiplyTint(tint, alpha)
 {
     if (alpha === 1.0)
     {
-        return (alpha * 255 << 24) + tint._rgb;
+        return (alpha * 255 << 24) + tint._bgr;
     }
     if (alpha === 0.0)
     {

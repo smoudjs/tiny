@@ -1,4 +1,4 @@
-import { SHAPES } from '../../constants.js';
+import { RoundedRectangleShape } from '../../constants.js';
 
 var RoundedRectangle = function (x, y, width, height, radius) {
     this.x = x || 0;
@@ -6,8 +6,10 @@ var RoundedRectangle = function (x, y, width, height, radius) {
     this.width = width || 0;
     this.height = height || 0;
     this.radius = radius || 0;
-    this.type = SHAPES.RREC;
+    this.type = RoundedRectangleShape;
 };
+
+RoundedRectangle.prototype.constructor = RoundedRectangle;
 
 // RoundedRectangle.prototype.clone = function () {
 //     return new RoundedRectangle(this.x, this.y, this.width, this.height, this.radius);
@@ -30,7 +32,5 @@ RoundedRectangle.prototype.contains = function (x, y) {
 
     return false;
 };
-
-RoundedRectangle.prototype.constructor = RoundedRectangle;
 
 export { RoundedRectangle };

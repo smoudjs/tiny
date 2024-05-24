@@ -78,8 +78,8 @@ export function generateMultiTextureShader(renderer, maxTextures) {
     );
 
     renderer.textures.resetTextureUnits();
-    renderer.state.useProgram(shader.program);
-    shader._uniforms.uSamplers.setValue(gl, sampleValues, renderer.textures)
+    gl.useProgram(shader.program);
+    shader.uniforms.setValue(gl, 'uSamplers', sampleValues, renderer.textures);
 
     // shader.uniforms.uSamplers = sampleValues;
 

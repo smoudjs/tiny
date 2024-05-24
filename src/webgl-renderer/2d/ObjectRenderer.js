@@ -66,7 +66,7 @@ Object.assign(ObjectRenderer.prototype, {
      * Generic destroy methods to be overridden by the subclass
      *
      */
-    destroy: function () {
+    dispose: function () {
         this.renderer.off('context', this.onContextChange, this);
 
         this.renderer = null;

@@ -1,4 +1,3 @@
-import '@smoud/tiny/2d';
 import App from '../basic/App.js';
 
 class TextTest {
@@ -15,7 +14,7 @@ class TextTest {
             fontSize: 43,
             // fontStyle: 'italic',
             fontWeight: 'bold',
-            fill: color.toStyle(), // gradient
+            fill: color.toStyle(),
             stroke: '#ffffff',
             strokeThickness: 13,
             dropShadow: true,

@@ -1,5 +1,5 @@
 # TODO:
-- Graphics
+- Graphics mask
 - Particle system
 - Webgl-2d
 - Tiling sprite

@@ -6,8 +6,8 @@ import { _Math } from './math/Math.js';
 import { Color } from './math/Color.js';
 import { Mat3 } from './math/Mat3.js';
 import { Vec2 } from './math/Vec2.js';
-import { SHAPES, VERSION } from './constants.js';
 import {
+    VERSION,
     PCFShadowMap,
     PCFSoftShadowMap,
     VSMShadowMap,
@@ -67,7 +67,5 @@ var Tiny = {
     OneFactor: OneFactor,
     SrcColorFactor: SrcColorFactor
 };
-
-Object.assign(Tiny, SHAPES);
 
 window.Tiny = Tiny;

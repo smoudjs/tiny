@@ -152,9 +152,8 @@ SpriteRenderer.prototype = Object.assign(Object.create(ObjectRenderer.prototype)
             /* eslint-enable max-len */
 
             // build the vao object that will render..
-            const vao = new GLGeometry(gl, renderer.state.attribs2D);
-
-            vao.addIndex(this.indexBuffer)
+            const vao = new GLGeometry(gl, renderer.state.attribs2D)
+                .addIndex(this.indexBuffer)
                 .addAttribute(vertexBuffer, attrs.aVertexPosition, gl.FLOAT, false, this.vertByteSize, 0)
                 .addAttribute(
                     vertexBuffer,
@@ -398,7 +397,7 @@ SpriteRenderer.prototype = Object.assign(Object.create(ObjectRenderer.prototype)
             const argb =
                 alpha < 1.0 && nextTexture.premultipliedAlpha
                     ? premultiplyTint(sprite.tint, alpha)
-                    : sprite.tint._rgb + ((alpha * 255) << 24);
+                    : sprite.tint._bgr + ((alpha * 255) << 24);
             // window.argb = argb;
 
             uint32View[index + 3] =

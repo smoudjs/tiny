@@ -1,3 +1,5 @@
+import '@smoud/tiny/2d';
+import '@smoud/tiny/3d';
 import '@smoud/tiny/webgl-renderer';
 // import '@smoud/tiny/orbit-controls';
 // import '@smoud/tiny/canvas-renderer';
@@ -9,27 +11,21 @@ import '@smoud/tiny/webgl-2d';
 
 import App from './App';
 
-import '../tests/Sprite';
-import '../tests/Text';
-import '../tests/SpriteBlending';
-import '../tests/OrbitControls';
-import '../tests/Mesh';
-import '../tests/InstancedMesh';
-
-window.w = window.innerWidth;
-window.h = window.innerHeight;
-
-// var renderer = new Tiny.CanvasRenderer(640, 320);
-// document.body.appendChild(renderer.domElement);
-
-// var scene = new Tiny.Scene();
-// var text = new Tiny.Text("Hello World!");
-// scene.add(text);
-// renderer.render(scene);
+import '../tests/sprite';
+import '../tests/text';
+import '../tests/orbitControls';
+import '../tests/mesh';
+import '../tests/instancedMesh';
+import '../tests/graphics';
+import '../tests/graphicsDynamic';
+import '../tests/graphicsAdvanced';
+import '../tests/spriteBlending';
 
 window.addEventListener('load', () => {
-    const app = new App(w, h, 'game');
-    window.app = app;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    const app = (window.app = new App(width, height, 'game'));
 
     window.addEventListener('resize', () => {
         app.resize(window.innerWidth, window.innerHeight);
@@ -39,16 +35,6 @@ window.addEventListener('load', () => {
 if (__DEV__) {
     (function () {
         var script = document.createElement('script');
-
-        script.onload = function () {
-            // var stats = new Stats();
-            // document.body.appendChild(stats.dom);
-            // requestAnimationFrame(function loop() {
-            //     stats.update();
-            //     requestAnimationFrame(loop);
-            // });
-        };
-
         script.src = 'https://mrdoob.github.io/stats.js/build/stats.min.js';
         document.head.appendChild(script);
     })();

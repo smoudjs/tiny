@@ -1,4 +1,3 @@
-import '@smoud/tiny/2d';
 import App from '../basic/App.js';
 
 class SpriteTest {
@@ -18,6 +17,7 @@ class SpriteTest {
         sprite.position.set(300, 200);
         sprite.skew.set(0.5, 0)
         sprite.anchor.set(0.5);
+        // sprite.opacity = 0.2;
         this.app.scene2d.add(sprite);
     }
 

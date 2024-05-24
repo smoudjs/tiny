@@ -29,15 +29,26 @@ export const VERSION = '3.0.3';
 //     NEAREST: 1
 // };
 
-export const SHAPES = {
-    POLY: 0,
-    RECT: 1,
-    CIRC: 2,
-    ELIP: 3,
-    RREC: 4
-};
+// export const SHAPES = {
+//     POLY: 0,
+//     RECT: 1,
+//     CIRC: 2,
+//     ELIP: 3,
+//     RREC: 4
+// };
 
-export var NoColors = 0;
+export const PolygonShape = 0;
+export const RectangleShape = 1;
+export const CircleShape = 2;
+export const EllipseShape = 3;
+export const RoundedRectangleShape = 4;
+// export const CubeShape = 5;
+// export const SphereShape = 6;
+// export const CylinderShape = 7;
+// export const ConeShape = 8;
+// export const PyramidShape = 9;
+
+export const NoColors = 0;
 
 // export const MOUSE = { LEFT: 0, MIDDLE: 1, RIGHT: 2, ROTATE: 0, DOLLY: 1, PAN: 2 };
 // export const TOUCH = { ROTATE: 0, PAN: 1, DOLLY_PAN: 2, DOLLY_ROTATE: 3 };

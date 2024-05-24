@@ -1,5 +1,5 @@
 import { Vec2 } from '../Vec2.js';
-import { SHAPES } from '../../constants.js';
+import { PolygonShape } from '../../constants.js';
 
 var Polygon = function (points) {
     // this.area = 0;
@@ -26,10 +26,12 @@ var Polygon = function (points) {
      */
     this.points = points;
 
-    this.type = SHAPES.POLY;
+    this.type = PolygonShape;
 };
 
-Polygon.prototype = {
+Object.assign(Polygon.prototype, {
+    constructor: Polygon,
+
     toNumberArray: function (output) {
         if (typeof output === 'undefined') {
             output = [];
@@ -49,10 +51,23 @@ Polygon.prototype = {
         return output;
     },
 
-    flatten: function () {
-        this.points = this.toNumberArray();
+    // flatten: function () {
+    //     this.points = this.toNumberArray();
 
-        return this;
+    //     return this;
+    // },
+
+    /**
+     * Closes the polygon, adding points if necessary.
+     *
+     */
+    close: function () {
+        const points = this.points;
+
+        // close the poly if the value is true!
+        if (points[0] !== points[points.length - 2] || points[1] !== points[points.length - 1]) {
+            points.push(points[0], points[1]);
+        }
     },
 
     // clone: function (output) {
@@ -163,9 +178,7 @@ Polygon.prototype = {
 
     //     return this.area;
     // }
-};
-
-Polygon.prototype.constructor = Polygon;
+});
 
 // Object.defineProperty(Polygon.prototype, 'points', {
 //     get: function () {

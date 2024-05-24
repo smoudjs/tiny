@@ -496,7 +496,7 @@ function WebGLState( gl, extensions, capabilities ) {
 
     const projectionMatrix = new Mat3();
 
-    var destinationFrame = { x: 0, y: 0, width: w, height: h };
+    var destinationFrame = { x: 0, y: 0, width: window.innerWidth, height: window.innerHeight };
     var sourceFrame = destinationFrame;
 
     projectionMatrix.identity();
@@ -518,6 +518,16 @@ function WebGLState( gl, extensions, capabilities ) {
 
     el[6] = -1 - sourceFrame.x * el[0];
     el[7] = 1 - sourceFrame.y * el[4];
+
+	window.addEventListener('resize', () => {
+		projectionMatrix.identity();
+		const el = projectionMatrix.elements;
+		el[0] = (1 / window.innerWidth) * 2;
+		el[4] = (-1 / window.innerHeight) * 2;
+
+		el[6] = -1 - sourceFrame.x * el[0];
+		el[7] = 1 - sourceFrame.y * el[4];
+	});
     // }
 
     // gl.bindFramebuffer(gl.FRAMEBUFFER, null );
@@ -533,7 +543,7 @@ function WebGLState( gl, extensions, capabilities ) {
     // gl.viewport(0,0, projectionFrame.width * this.resolution, projectionFrame.height * this.resolution);
 
     function bindShader(shader, autoProject) {
-        if (activeShader !== shader || currentProgram !== shader.program) {
+        if (currentProgram !== shader.program) {
             activeShader = shader;
             useProgram(shader.program)
             // shader.bind();

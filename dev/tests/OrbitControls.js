@@ -1,4 +1,3 @@
-import '@smoud/tiny/3d';
 import '@smoud/tiny/orbit-controls';
 import App from '../basic/App.js';
 

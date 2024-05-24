@@ -2186,11 +2186,11 @@ function WebGLRenderer( parameters ) {
 
 	};
 
-	if ( typeof __THREE_DEVTOOLS__ !== 'undefined' ) {
+	// if ( typeof __THREE_DEVTOOLS__ !== 'undefined' ) {
 
-		__THREE_DEVTOOLS__.dispatchEvent( new CustomEvent( 'observe', { detail: this } ) ); // eslint-disable-line no-undef
+	// 	__THREE_DEVTOOLS__.dispatchEvent( new CustomEvent( 'observe', { detail: this } ) ); // eslint-disable-line no-undef
 
-	}
+	// }
 
 	this.resize(_width, _height);
 

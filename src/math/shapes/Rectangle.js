@@ -1,4 +1,4 @@
-import { SHAPES } from '../../constants.js';
+import { RectangleShape } from '../../constants.js';
 
 /**
  * @author Mat Groves http://matgroves.com/
@@ -50,8 +50,11 @@ var Rectangle = function (x, y, width, height) {
      * @default 0
      */
 
-    this.type = SHAPES.RECT;
+    this.type = RectangleShape;
 };
+
+// constructor
+Rectangle.prototype.constructor = Rectangle;
 
 /**
  * Creates a clone of this Rectangle
@@ -86,9 +89,6 @@ Rectangle.prototype.contains = function (x, y) {
 
     return false;
 };
-
-// constructor
-Rectangle.prototype.constructor = Rectangle;
 
 var EmptyRectangle = new Rectangle(0, 0, 0, 0);
 export { Rectangle, EmptyRectangle };

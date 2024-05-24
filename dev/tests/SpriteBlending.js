@@ -1,4 +1,3 @@
-import '@smoud/tiny/2d';
 import App from '../basic/App.js';
 import { randomInt, random } from '../utils/Math'; 
 

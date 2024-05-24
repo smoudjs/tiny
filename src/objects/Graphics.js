@@ -1,24 +1,33 @@
-import { Object2D } from './Object2D';
-import { Sprite } from './Sprite';
-import { CanvasBuffer } from '../utils/CanvasBuffer';
-import { Texture } from '../textures/Texture';
-import { Rectangle, EmptyRectangle } from '../math/shapes/Rectangle';
-import { Circle } from '../math/shapes/Circle';
-import { Polygon } from '../math/shapes/Polygon';
-import { RoundedRectangle } from '../math/shapes/RoundedRectangle';
-import { Vec2 } from '../math/Vec2';
-import { Color } from '../math/Color';
-import { NormalBlending, SHAPES } from '../constants';
+import { Object2D } from './Object2D.js';
+import { Sprite } from './Sprite.js';
+import { CanvasBuffer } from '../utils/CanvasBuffer.js';
+import { Texture } from '../textures/Texture.js';
+import { Rectangle, EmptyRectangle } from '../math/shapes/Rectangle.js';
+import { Circle } from '../math/shapes/Circle.js';
+import { Polygon } from '../math/shapes/Polygon.js';
+import { RoundedRectangle } from '../math/shapes/RoundedRectangle.js';
+import { Ellipse } from '../math/shapes/Ellipse.js';
+import { Vec2 } from '../math/Vec2.js';
+import { Color } from '../math/Color.js';
+import {
+    NormalBlending,
+    RectangleShape,
+    CircleShape,
+    PolygonShape,
+    RoundedRectangleShape,
+    EllipseShape
+} from '../constants.js';
 
-var GraphicsData = function (lineWidth, lineColor, fillColor, fill, shape) {
+var GraphicsData = function (lineWidth, lineColor, fillColor, fill, alignment, shape) {
     this.lineWidth = lineWidth;
     this.lineColor = lineColor;
     // this.lineAlpha = lineAlpha;
-    this._lineTint = lineColor;
+    // this._lineTint = lineColor;
     this.fillColor = fillColor;
     // this.fillAlpha = fillAlpha;
-    this._fillTint = fillColor;
+    // this._fillTint = fillColor;
     this.fill = fill;
+    this.alignment = alignment;
     this.shape = shape;
     this.type = shape.type;
 };
@@ -68,6 +77,14 @@ var Graphics = function () {
     this.lineColor = new Color();
 
     /**
+     * The alignment of any lines drawn (0.5 = middle, 1 = outter, 0 = inner).
+     *
+     * @member {number}
+     * @default 0.5
+     */
+    this.alignment = 0.5;
+
+    /**
      * Graphics data
      *
      * @property graphicsData
@@ -92,7 +109,7 @@ var Graphics = function () {
      * @type Number
      * @default PIXI.blendModes.NORMAL;
      */
-    this.blendMode = NormalBlending;
+    this.blending = NormalBlending;
 
     /**
      * Current path
@@ -137,16 +154,13 @@ var Graphics = function () {
      * @type Boolean
      * @private
      */
-    this.dirty = true;
+    this.dirty = 0;
 
     /**
-     * Used to detect if the webgl graphics object has changed. If this is set to true then the graphics object will be recalculated.
-     *
-     * @property webGLDirty
-     * @type Boolean
-     * @private
+     * Used to detect if we clear the graphics webGL data
+     * @type {Number}
      */
-    this.webGLDirty = false;
+    this.clearDirty = 0;
 
     /**
      * Used to detect if the cached sprite object needs to be updated.
@@ -184,7 +198,7 @@ Object.defineProperty(Graphics.prototype, 'cacheAsBitmap', {
             this._generateCachedSprite();
         } else {
             this.destroyCachedSprite();
-            this.dirty = true;
+            this.dirty++;
         }
     }
 });
@@ -199,22 +213,25 @@ Object.assign(Graphics.prototype, {
      * @param alpha {Number} alpha of the line to draw, will update the objects stored style
      * @return {Graphics}
      */
-    lineStyle: function (lineWidth, color, alpha) {
+    lineStyle: function (lineWidth, color, alpha, alignment) {
         this.lineWidth = lineWidth || 0;
         this.lineColor = new Color(color || 0);
         if (alpha !== undefined) this.lineColor.a = alpha;
+        this.alignment = alignment !== undefined ? alignment : 0.5;
 
         if (this.currentPath) {
             if (this.currentPath.shape.points.length) {
                 // halfway through a line? start a new one!
-                this.drawShape(new Polygon(this.currentPath.shape.points.slice(-2)));
-                return this;
+                const shape = new Polygon(this.currentPath.shape.points.slice(-2));
+                shape.closed = false;
+                this.drawShape(shape);
+            } else {
+                // otherwise its empty so lets just set the line properties
+                this.currentPath.lineWidth = this.lineWidth;
+                this.currentPath.lineColor = this.lineColor;
+                this.currentPath.alignment = this.alignment;
+                // this.currentPath.lineAlpha = this.lineAlpha;
             }
-
-            // otherwise its empty so lets just set the line properties
-            this.currentPath.lineWidth = this.lineWidth;
-            this.currentPath.lineColor = this.lineColor;
-            // this.currentPath.lineAlpha = this.lineAlpha;
         }
 
         return this;
@@ -229,7 +246,9 @@ Object.assign(Graphics.prototype, {
      * @return {Graphics}
      */
     moveTo: function (x, y) {
-        this.drawShape(new Polygon([x, y]));
+        var shape = new Polygon([x, y]);
+        shape.closed = false;
+        this.drawShape(shape);
 
         return this;
     },
@@ -248,7 +267,7 @@ Object.assign(Graphics.prototype, {
             this.moveTo(0, 0);
         }
         this.currentPath.shape.points.push(x, y);
-        this.dirty = true;
+        this.dirty++;
 
         return this;
     },
@@ -290,7 +309,7 @@ Object.assign(Graphics.prototype, {
             points.push(xa + (cpX + (toX - cpX) * j - xa) * j, ya + (cpY + (toY - cpY) * j - ya) * j);
         }
 
-        this.dirty = true;
+        this.dirty++;
 
         return this;
     },
@@ -343,7 +362,7 @@ Object.assign(Graphics.prototype, {
             );
         }
 
-        this.dirty = true;
+        this.dirty++;
 
         return this;
     },
@@ -404,7 +423,7 @@ Object.assign(Graphics.prototype, {
             this.arc(cx + x1, cy + y1, radius, startAngle, endAngle, b1 * a2 > b2 * a1);
         }
 
-        this.dirty = true;
+        this.dirty++;
 
         return this;
     },
@@ -474,7 +493,7 @@ Object.assign(Graphics.prototype, {
             points.push((cTheta * c + sTheta * s) * radius + cx, (cTheta * -s + sTheta * c) * radius + cy);
         }
 
-        this.dirty = true;
+        this.dirty++;
 
         return this;
     },
@@ -568,6 +587,21 @@ Object.assign(Graphics.prototype, {
     },
 
     /**
+     * Draws an ellipse.
+     *
+     * @param {number} x - The X coordinate of the center of the ellipse
+     * @param {number} y - The Y coordinate of the center of the ellipse
+     * @param {number} width - The half width of the ellipse
+     * @param {number} height - The half height of the ellipse
+     * @return {PIXI.Graphics} This Graphics object. Good for chaining method calls
+     */
+    drawEllipse: function (x, y, width, height) {
+        this.drawShape(new Ellipse(x, y, width, height));
+
+        return this;
+    },
+
+    /**
      * Draws a polygon using the given path.
      *
      * @method drawPolygon
@@ -589,12 +623,47 @@ Object.assign(Graphics.prototype, {
     clear: function () {
         this.lineWidth = 0;
         this.filling = false;
+        this.alignment = 0.5;
 
-        this.dirty = true;
-        this.clearDirty = true;
+        this.dirty++;
+        this.clearDirty++;
         this.graphicsData = [];
 
         return this;
+    },
+
+    /**
+     * Adds a hole in the current path.
+     *
+     * @return {PIXI.Graphics} Returns itself.
+     */
+    // addHole: function () {
+    //     // this is a hole!
+    //     const hole = this.graphicsData.pop();
+
+    //     this.currentPath = this.graphicsData[this.graphicsData.length - 1];
+
+    //     this.currentPath.addHole(hole.shape);
+    //     this.currentPath = null;
+
+    //     return this;
+    // },
+
+    _render: function (renderer) {
+        // if the sprite is not visible or the alpha is 0 then no need to render this element
+        // if (this.dirty !== this.fastRectDirty)
+        // {
+        //     this.fastRectDirty = this.dirty;
+        //     this._fastRect = this.isFastRect();
+        // }
+
+        // TODO this check can be moved to dirty?
+        if (this._fastRect) {
+            this._renderSpriteRect(renderer);
+        } else {
+            renderer.setObjectRenderer(renderer.systems.graphics);
+            renderer.systems.graphics.render(this);
+        }
     },
 
     /**
@@ -604,66 +673,82 @@ Object.assign(Graphics.prototype, {
      * @param renderer {RenderSession}
      * @private
      */
-    render: function (renderer) {
-        // if the sprite is not visible or the alpha is 0 then no need to render this element
-        if (this.visible === false || this.alpha === 0 || this.isMask === true) return;
+    // render: function (renderer) {
+    //     // if the sprite is not visible or the alpha is 0 then no need to render this element
+    //     if (this.visible === false || this.alpha === 0 || this.isMask === true) return;
 
-        if (this._cacheAsBitmap) {
-            if (this.dirty || this.cachedSpriteDirty) {
-                this._generateCachedSprite();
+    //     if (this._cacheAsBitmap) {
+    //         if (this.dirty || this.cachedSpriteDirty) {
+    //             this._generateCachedSprite();
 
-                // we will also need to update the texture on the gpu too!
-                this.updateCachedSpriteTexture();
+    //             // we will also need to update the texture on the gpu too!
+    //             this.updateCachedSpriteTexture();
 
-                this.cachedSpriteDirty = false;
-                this.dirty = false;
-            }
+    //             this.cachedSpriteDirty = false;
+    //             this.dirty = false;
+    //         }
 
-            this._cachedSprite.worldOpacity = this.worldOpacity;
-            Sprite.prototype.render.call(this._cachedSprite, renderer);
+    //         this._cachedSprite.worldOpacity = this.worldOpacity;
+    //         Sprite.prototype.render.call(this._cachedSprite, renderer);
 
-            return;
-        } else {
-            renderer.spriteBatch.stop();
-            renderer.blendModeManager.setBlendMode(this.blendMode);
+    //         return;
+    //     } else {
+    //         renderer.spriteBatch.stop();
+    //         renderer.blendModeManager.setBlendMode(this.blendMode);
 
-            if (this._mask) renderer.maskManager.pushMask(this._mask, renderer);
-            if (this._filters) renderer.filterManager.pushFilter(this._filterBlock);
+    //         if (this._mask) renderer.maskManager.pushMask(this._mask, renderer);
+    //         if (this._filters) renderer.filterManager.pushFilter(this._filterBlock);
 
-            // check blend mode
-            if (this.blendMode !== renderer.spriteBatch.currentBlendMode) {
-                renderer.spriteBatch.currentBlendMode = this.blendMode;
-                var blendModeWebGL = renderer.blendModes[renderer.spriteBatch.currentBlendMode];
-                renderer.spriteBatch.gl.blendFunc(blendModeWebGL[0], blendModeWebGL[1]);
-            }
+    //         // check blend mode
+    //         if (this.blendMode !== renderer.spriteBatch.currentBlendMode) {
+    //             renderer.spriteBatch.currentBlendMode = this.blendMode;
+    //             var blendModeWebGL = renderer.blendModes[renderer.spriteBatch.currentBlendMode];
+    //             renderer.spriteBatch.gl.blendFunc(blendModeWebGL[0], blendModeWebGL[1]);
+    //         }
 
-            // check if the webgl graphic needs to be updated
-            if (this.webGLDirty) {
-                this.dirty = true;
-                this.webGLDirty = false;
-            }
+    //         // check if the webgl graphic needs to be updated
+    //         if (this.webGLDirty) {
+    //             this.dirty++;
+    //             this.webGLDirty = false;
+    //         }
 
-            Tiny.WebGLGraphics.renderGraphics(this, renderer);
+    //         Tiny.WebGLGraphics.renderGraphics(this, renderer);
 
-            // only render if it has children!
-            if (this.children.length) {
-                renderer.spriteBatch.start();
+    //         // only render if it has children!
+    //         if (this.children.length) {
+    //             renderer.spriteBatch.start();
 
-                // simple render children!
-                for (var i = 0, j = this.children.length; i < j; i++) {
-                    this.children[i].render(renderer);
-                }
+    //             // simple render children!
+    //             for (var i = 0, j = this.children.length; i < j; i++) {
+    //                 this.children[i].render(renderer);
+    //             }
 
-                renderer.spriteBatch.stop();
-            }
+    //             renderer.spriteBatch.stop();
+    //         }
 
-            if (this._filters) renderer.filterManager.popFilter();
-            if (this._mask) renderer.maskManager.popMask(this.mask, renderer);
+    //         if (this._filters) renderer.filterManager.popFilter();
+    //         if (this._mask) renderer.maskManager.popMask(this.mask, renderer);
 
-            renderer.drawCount++;
+    //         renderer.drawCount++;
 
-            renderer.spriteBatch.start();
+    //         renderer.spriteBatch.start();
+    //     }
+    // },
+
+    /**
+     * Closes the current path.
+     *
+     * @return {PIXI.Graphics} Returns itself.
+     */
+    closePath: function () {
+        // ok so close path assumes next one is a hole!
+        const currentPath = this.currentPath;
+
+        if (currentPath && currentPath.shape) {
+            currentPath.shape.close();
         }
+
+        return this;
     },
 
     /**
@@ -678,7 +763,6 @@ Object.assign(Graphics.prototype, {
 
         if (this.dirty) {
             this.updateLocalBounds();
-            this.webGLDirty = true;
             this.cachedSpriteDirty = true;
             this.dirty = false;
         }
@@ -761,59 +845,99 @@ Object.assign(Graphics.prototype, {
             for (var i = 0; i < this.graphicsData.length; i++) {
                 var data = this.graphicsData[i];
                 var type = data.type;
-                var lineWidth = data.lineWidth;
+                var lineOffset = data.lineWidth * data.alignment;
                 shape = data.shape;
 
-                if (type === SHAPES.RECT || type === SHAPES.RREC || type === SHAPES.ELIP) {
-                    x = shape.x - lineWidth / 2;
-                    y = shape.y - lineWidth / 2;
-                    w = shape.width + lineWidth;
-                    h = shape.height + lineWidth;
+                if (type === RectangleShape || type === RoundedRectangleShape || type === EllipseShape) {
+                    x = shape.x - lineOffset;
+                    y = shape.y - lineOffset;
+                    w = shape.width + lineOffset * 2;
+                    h = shape.height + lineOffset * 2;
 
                     minX = x < minX ? x : minX;
                     maxX = x + w > maxX ? x + w : maxX;
 
                     minY = y < minY ? y : minY;
                     maxY = y + h > maxY ? y + h : maxY;
-                } else if (type === SHAPES.CIRC) {
+                } else if (type === CircleShape) {
                     x = shape.x;
                     y = shape.y;
-                    w = shape.radius + lineWidth / 2;
-                    h = shape.radius + lineWidth / 2;
+                    w = shape.radius + lineOffset;
+                    h = shape.radius + lineOffset;
 
                     minX = x - w < minX ? x - w : minX;
                     maxX = x + w > maxX ? x + w : maxX;
 
                     minY = y - h < minY ? y - h : minY;
                     maxY = y + h > maxY ? y + h : maxY;
-                }
-                // else if(type === SHAPES.ELIP)
-                // {
-                //     x = shape.x;
-                //     y = shape.y;
-                //     w = shape.width + lineWidth/2;
-                //     h = shape.height + lineWidth/2;
+                    // } else if (type === EllipseShape) {
+                    //     x = shape.x;
+                    //     y = shape.y;
+                    //     w = shape.width + lineOffset;
+                    //     h = shape.height + lineOffset;
 
-                //     minX = x - w < minX ? x - w : minX;
-                //     maxX = x + w > maxX ? x + w : maxX;
+                    //     minX = x - w < minX ? x - w : minX;
+                    //     maxX = x + w > maxX ? x + w : maxX;
 
-                //     minY = y - h < minY ? y - h : minY;
-                //     maxY = y + h > maxY ? y + h : maxY;
-                // }
-                else {
+                    //     minY = y - h < minY ? y - h : minY;
+                    //     maxY = y + h > maxY ? y + h : maxY;
+                } else {
                     // POLY
-                    points = shape.points;
+                    const points = shape.points;
+                    let x2 = 0;
+                    let y2 = 0;
+                    let dx = 0;
+                    let dy = 0;
+                    let rw = 0;
+                    let rh = 0;
+                    let cx = 0;
+                    let cy = 0;
+                    h = lineOffset * 2;
 
-                    for (var j = 0; j < points.length; j += 2) {
+                    for (let j = 0; j + 2 < points.length; j += 2) {
                         x = points[j];
                         y = points[j + 1];
-                        minX = x - lineWidth < minX ? x - lineWidth : minX;
-                        maxX = x + lineWidth > maxX ? x + lineWidth : maxX;
+                        x2 = points[j + 2];
+                        y2 = points[j + 3];
+                        dx = Math.abs(x2 - x);
+                        dy = Math.abs(y2 - y);
+                        w = Math.sqrt(dx * dx + dy * dy);
 
-                        minY = y - lineWidth < minY ? y - lineWidth : minY;
-                        maxY = y + lineWidth > maxY ? y + lineWidth : maxY;
+                        if (w < 1e-9) {
+                            continue;
+                        }
+
+                        rw = ((h / w) * dy + dx) / 2;
+                        rh = ((h / w) * dx + dy) / 2;
+                        cx = (x2 + x) / 2;
+                        cy = (y2 + y) / 2;
+
+                        minX = cx - rw < minX ? cx - rw : minX;
+                        maxX = cx + rw > maxX ? cx + rw : maxX;
+
+                        minY = cy - rh < minY ? cy - rh : minY;
+                        maxY = cy + rh > maxY ? cy + rh : maxY;
                     }
                 }
+
+                /**
+                 * Old method to calculate points bounds
+                 */
+                // else {
+                //     // POLY
+                //     points = shape.points;
+                //     let h = lineOffset * 2;
+
+                //     for (var j = 0; j < points.length; j += 2) {
+                //         x = points[j];
+                //         y = points[j + 1];
+                //         minX = x - h < minX ? x - h : minX;
+                //         maxX = x + h > maxX ? x + h : maxX;
+
+                //         minY = y - h < minY ? y - h : minY;
+                //         maxY = y + h > maxY ? y + h : maxY;
+                //     }
+                // }
             }
         } else {
             minX = 0;
@@ -846,20 +970,27 @@ Object.assign(Graphics.prototype, {
 
         this.currentPath = null;
 
-        if (shape.type === SHAPES.POLY) {
-            shape.flatten();
-        }
+        // if (shape.type === PolygonShape) {
+        //     shape.flatten();
+        // }
 
-        var data = new GraphicsData(this.lineWidth, this.lineColor, this.fillColor, this.filling, shape);
+        var data = new GraphicsData(
+            this.lineWidth,
+            this.lineColor,
+            this.fillColor,
+            this.filling,
+            this.alignment,
+            shape
+        );
 
         this.graphicsData.push(data);
 
-        if (data.type === SHAPES.POLY) {
-            data.shape.closed = this.filling;
+        if (data.type === PolygonShape) {
+            // data.shape.closed = this.filling;
             this.currentPath = data;
         }
 
-        this.dirty = true;
+        this.dirty++;
 
         return data;
     }

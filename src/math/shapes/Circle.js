@@ -1,5 +1,5 @@
 import { Rectangle } from './Rectangle.js';
-import { SHAPES } from '../../constants.js';
+import { CircleShape } from '../../constants.js';
 
 /**
  * @author Chad Engler <chad@pantherdev.com>
@@ -43,10 +43,12 @@ var Circle = function (x, y, radius) {
      * @default 0
      */
 
-    this.type = SHAPES.CIRC;
+    this.type = CircleShape;
 };
 
-Circle.prototype = {
+Object.assign(Circle.prototype, {
+    constructor: Circle,
+
     /**
      * Creates a clone of this Circle instance
      *
@@ -93,9 +95,6 @@ Circle.prototype = {
             this.radius * 2
         );
     }
-};
-
-// constructor
-Circle.prototype.constructor = Circle;
+});
 
 export { Circle };

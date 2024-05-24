@@ -56,11 +56,10 @@ var GLShader = function (renderer, vertexSrc, fragmentSrc, uniforms, attributeLo
 	// console.log(cachedUniforms);
 
 	// const progUniforms = program.getUniforms();
-	const uniformsList = WebGLUniforms.seqWithValue(_uniforms.seq, uniforms);
 
-	this.uniformsList = uniformsList;
-	this.uniforms = uniforms;
+	this.uniforms = _uniforms;
 	this._uniforms = _uniforms.map;
+
 
 	window.a = this;
 
@@ -102,4 +101,5 @@ Object.assign(GLShader.prototype, {
 		this.gl.deleteProgram(this.program);
 	}
 });
+
 export { GLShader };
