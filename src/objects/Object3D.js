@@ -356,7 +356,7 @@ Object3D.prototype = Object.assign(Object.create(Container.prototype), {
             target = new Vec3();
         }
 
-        this.updateMatrixWorld(true);
+        this.updateTransform(true);
 
         return target.setFromMatrixPosition(this.matrixWorld);
     },
@@ -367,7 +367,7 @@ Object3D.prototype = Object.assign(Object.create(Container.prototype), {
             target = new Quat();
         }
 
-        this.updateMatrixWorld(true);
+        this.updateTransform(true);
 
         this.matrixWorld.decompose(_position, target, _scale);
 
@@ -380,7 +380,7 @@ Object3D.prototype = Object.assign(Object.create(Container.prototype), {
             target = new Vec3();
         }
 
-        this.updateMatrixWorld(true);
+        this.updateTransform(true);
 
         this.matrixWorld.decompose(_position, _quaternion, target);
 
@@ -393,7 +393,7 @@ Object3D.prototype = Object.assign(Object.create(Container.prototype), {
             target = new Vec3();
         }
 
-        this.updateMatrixWorld(true);
+        this.updateTransform(true);
 
         var e = this.matrixWorld.elements;
 
@@ -440,7 +440,7 @@ Object3D.prototype = Object.assign(Object.create(Container.prototype), {
         this.matrixWorldNeedsUpdate = true;
     },
 
-    updateMatrixWorld: function (force) {
+    updateTransform: function (force) {
         if (this.matrixAutoUpdate) this.updateMatrix();
 
         if (this.matrixWorldNeedsUpdate || force) {
@@ -460,7 +460,7 @@ Object3D.prototype = Object.assign(Object.create(Container.prototype), {
         var children = this.children;
 
         for (var i = 0, l = children.length; i < l; i++) {
-            children[i].updateMatrixWorld(force);
+            children[i].updateTransform(force);
         }
     },
 

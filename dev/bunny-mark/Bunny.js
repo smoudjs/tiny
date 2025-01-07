@@ -26,7 +26,8 @@ class Bunny extends Tiny.Sprite {
     /** Update the position of the bunny */
     update(delta) {
         // delta *= 62.5
-        delta = 0.3;
+        delta = 0.9
+        
         this.position.x += this.speedX * delta;
         this.position.y += this.speedY * delta;
         this.speedY += this.gravity * delta;

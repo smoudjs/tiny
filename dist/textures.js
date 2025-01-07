@@ -1,1 +1,4 @@
-Tiny.Texture.EMPTY=new Tiny.Texture({},new Tiny.Rectangle,new Tiny.Rectangle);
+/******/ (function() { // webpackBootstrap
+Tiny.Texture.EMPTY = new Tiny.Texture({}, new Tiny.Rectangle(), new Tiny.Rectangle());
+/******/ })()
+;

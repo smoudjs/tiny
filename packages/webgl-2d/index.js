@@ -7,3 +7,5 @@
 // Tiny.WebGLRenderer = WebGLRenderer;
 
 import '../../src/webgl-renderer/2d/index.js';
+import '../../src/webgl-renderer/2d/sprite/SpriteRenderer.js';
+import '../../src/webgl-renderer/2d/graphics/GraphicsRenderer.js';

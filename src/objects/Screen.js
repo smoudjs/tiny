@@ -28,7 +28,7 @@ Screen.prototype = Object.assign(Object.create(Container.prototype), {
 
     isScreen: true,
 
-    updateMatrixWorld: function () {
+    updateTransform: function () {
 
         for (var i = 0, j = this.children.length; i < j; i++) {
             this.children[i].updateTransform();

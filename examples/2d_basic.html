@@ -24,7 +24,11 @@
 		<script type="module">
 
 			import '@smoud/tiny/2d.js';
+			
 			import '@smoud/tiny/webgl-renderer.js';
+			import '@smoud/tiny/webgl-2d.js';
+			
+
 
 			class App extends Tiny.App {
 				constructor(width, height) {
@@ -33,7 +37,9 @@
 					this.width = width;
 					this.height = height;
 
-					this.renderer = new Tiny.Renderer(this.width, this.height, {
+					this.renderer = new Tiny.WebGLRenderer({
+						width: this.width,
+						height: this.height,
 						resolution: 1.25,
 						autoResize: true
 					});

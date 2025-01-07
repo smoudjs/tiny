@@ -218,8 +218,18 @@ Object2D.prototype.updateTransform = function () {
         return;
     }
 
+    var worldTransform;
+    var worldOpacity;
+    if (this.parent.isScene) {
+        worldTransform = identityMatrix;
+        worldOpacity = 1;
+    } else {
+        worldTransform = this.parent.worldTransform;
+        worldOpacity = this.parent.worldOpacity;
+    }
+
     // create some matrix refs for easy access
-    var pt = this.parent.worldTransform.elements;
+    var pt = worldTransform.elements;
     var wt = this.worldTransform.elements;
 
     // temporary matrix variables
@@ -276,7 +286,7 @@ Object2D.prototype.updateTransform = function () {
     }
 
     // multiply the alphas..
-    this.worldOpacity = this.opacity * this.parent.worldOpacity;
+    this.worldOpacity = this.opacity * worldOpacity;
 
     if (this._cacheAsBitmap) return;
 
@@ -360,7 +370,7 @@ Object2D.prototype._render = function () {};
 
 Object2D.prototype.render = function (renderer) {
     // if the object is not visible or the alpha is 0 then no need to render this element
-    if (!this.visible || this.worldOpacity <= 0 || !this.renderable) {
+    if (!this.visible || this.worldOpacity <= 0) {
         return;
     }
 

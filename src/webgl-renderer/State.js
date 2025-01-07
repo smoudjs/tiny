@@ -321,6 +321,7 @@ function WebGLState( gl, extensions, capabilities ) {
 	let currentBoundFramebuffers = {};
 
 	let currentProgram = null;
+	let currentShader = null;
 
 	let currentBlendingEnabled = false;
 	let currentBlending = null;
@@ -483,6 +484,8 @@ function WebGLState( gl, extensions, capabilities ) {
 
 			currentProgram = program;
 
+			currentShader = null;
+
 			return true;
 
 		}
@@ -491,78 +494,41 @@ function WebGLState( gl, extensions, capabilities ) {
 
 	}
 
-
-	let activeShader = null;
-
     const projectionMatrix = new Mat3();
 
-    var destinationFrame = { x: 0, y: 0, width: window.innerWidth, height: window.innerHeight };
-    var sourceFrame = destinationFrame;
+    const destinationFrame = { x: 0, y: 0, width: 100, height: 100 };
+    const sourceFrame = destinationFrame;
 
-    projectionMatrix.identity();
-    const el = projectionMatrix.elements;
+	function resize(width, height) {
+		destinationFrame.width = width;
+		destinationFrame.height = height;
 
-    // // TODO: make dest scale source
-    // if (!this.root)
-    // {
-    //     pm.a = 1 / destinationFrame.width * 2;
-    //     pm.d = 1 / destinationFrame.height * 2;
-
-    //     pm.tx = -1 - (sourceFrame.x * pm.a);
-    //     pm.ty = -1 - (sourceFrame.y * pm.d);
-    // }
-    // else
-    // {
-    el[0] = (1 / destinationFrame.width) * 2;
-    el[4] = (-1 / destinationFrame.height) * 2;
-
-    el[6] = -1 - sourceFrame.x * el[0];
-    el[7] = 1 - sourceFrame.y * el[4];
-
-	window.addEventListener('resize', () => {
 		projectionMatrix.identity();
 		const el = projectionMatrix.elements;
-		el[0] = (1 / window.innerWidth) * 2;
-		el[4] = (-1 / window.innerHeight) * 2;
+		el[0] = (1 / destinationFrame.width) * 2;
+		el[4] = (-1 / destinationFrame.height) * 2;
 
 		el[6] = -1 - sourceFrame.x * el[0];
 		el[7] = 1 - sourceFrame.y * el[4];
-	});
-    // }
 
-    // gl.bindFramebuffer(gl.FRAMEBUFFER, null );
-    // const resolution = 1.25;
-    // gl.disable(gl.SCISSOR_TEST);
-    // gl.viewport(
-    //     destinationFrame.x | 0,
-    //     destinationFrame.y | 0,
-    //     (destinationFrame.width * resolution) | 0,
-    //     (destinationFrame.height * resolution) | 0
-    // );
-
-    // gl.viewport(0,0, projectionFrame.width * this.resolution, projectionFrame.height * this.resolution);
+		if (currentShader) {
+			currentShader._uniforms.projectionMatrix.setValue(gl, projectionMatrix);
+		}
+	}
 
     function bindShader(shader, autoProject) {
+		
         if (currentProgram !== shader.program) {
-            activeShader = shader;
+            
             useProgram(shader.program)
-            // shader.bind();
-
-            // `autoProject` normally would be a default parameter set to true
-            // but because of how Babel transpiles default parameters
-            // it hinders the performance of this method.
+						currentShader = shader;
+						
             if (autoProject !== false) {
-                // automatically set the projection matrix
-                // console.log(projectionMatrix);
-                window.shader = shader
-                window.gl = gl
-                window.projectionMatrix = projectionMatrix
-                // gl.disable(gl.SCISSOR_TEST);
-                // gl.clearColor(1, 1, 0, 1);
-                // gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
                 shader._uniforms.projectionMatrix.setValue(gl, projectionMatrix);
             }
         }
+
+				
     }
 
     let activeGeometry = null;
@@ -1130,6 +1096,8 @@ function WebGLState( gl, extensions, capabilities ) {
 			depth: depthBuffer,
 			stencil: stencilBuffer
 		},
+
+		resize: resize,
 
 		enable: enable,
 		disable: disable,

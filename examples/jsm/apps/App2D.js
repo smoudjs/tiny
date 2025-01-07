@@ -5,7 +5,9 @@ class App2D extends Tiny.App {
         this.width = width;
         this.height = height;
 
-        this.renderer = new Tiny.Renderer(this.width, this.height, {
+        this.renderer = new Tiny.WebGLRenderer({
+            width: width,
+            height: height,
             resolution: 1.25,
             autoResize: true
         });

@@ -1,90 +1,22 @@
 /******/ (function() { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 20:
+/***/ 247:
 /***/ (function() {
 
-var context = window;
-var SoundManager = function SoundManager(game) {
-  this.game = game;
-};
-SoundManager.prototype.constructor = SoundManager;
-Object.assign(SoundManager.prototype, {
-  volume: function volume(vol) {
-    if (context.Howler) {
-      context.Howler.volume(vol);
-    }
-  },
-  loop: function loop(audio, volume) {
-    var sound = Tiny.Cache.sound[audio];
-    if (sound) {
-      if (volume !== undefined) {
-        sound.volume(volume);
-      }
-      sound.loop(true);
-      sound.play();
-    }
-    return sound;
-  },
-  play: function play(audio, volume) {
-    var sound = Tiny.Cache.sound[audio];
-    if (sound) {
-      if (context.Howler.state === 'running') {
-        if (volume !== undefined) {
-          sound.volume(volume);
-        }
-        sound.play();
-      }
-    }
-    return sound;
-  },
-  fade: function fade(audio, volume, duration) {
-    var sound = Tiny.Cache.sound[audio];
-    if (volume == undefined) volume = 1;
-    if (duration == undefined) duration = 600;
-    if (sound) {
-      if (context.Howler.state === 'running') {
-        sound.fade(volume, 0, duration);
-        sound.play();
-      }
-    }
-    return sound;
-  },
-  destroy: function destroy(clearCache) {
-    for (var y in Tiny.Cache.sound) Tiny.Cache.sound[y].stop();
-    if (clearCache) {
-      for (var y in Tiny.Cache.sound) Tiny.Cache.sound[y].unload();
-    }
+Tiny.Graphics.prototype.drawStar = function (x, y, points, radius, innerRadius, rotation) {
+  rotation = rotation || 0;
+  innerRadius = innerRadius || radius / 2;
+  var startAngle = -1 * Math.PI / 2 + rotation;
+  var len = points * 2;
+  var delta = Math.PI * 2 / len;
+  var polygon = [];
+  for (var i = 0; i < len; i++) {
+    var r = i % 2 ? innerRadius : radius;
+    var angle = i * delta + startAngle;
+    polygon.push(x + r * Math.cos(angle), y + r * Math.sin(angle));
   }
-});
-
-// Tiny.SoundManager = SoundManager;
-Tiny.registerSystem('sound', SoundManager);
-
-/***/ }),
-
-/***/ 405:
-/***/ (function() {
-
-Tiny.Cache.sound = {};
-Tiny.Loader.prototype.sound = function (key, src) {
-  if (src) {
-    this.list.push({
-      key: key,
-      src: src,
-      type: 'sound'
-    });
-  }
-};
-Tiny.Loader.sound = function (resource, cb) {
-  if (Tiny.Cache.sound[resource.key]) return cb();
-  var sound = new window.Howl({
-    src: [resource.src]
-  });
-  sound.once('load', function () {
-    Tiny.Cache.sound[resource.key] = sound;
-    cb();
-  });
+  return this.drawPolygon(polygon);
 };
 
 /***/ })
@@ -149,11 +81,8 @@ Tiny.Loader.sound = function (resource, cb) {
 // This entry needs to be wrapped in an IIFE because it needs to be in strict mode.
 !function() {
 "use strict";
-/* harmony import */ var _SoundManager_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(20);
-/* harmony import */ var _SoundManager_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_SoundManager_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _extends_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(405);
-/* harmony import */ var _extends_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_extends_js__WEBPACK_IMPORTED_MODULE_1__);
-
+/* harmony import */ var _drawStar_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(247);
+/* harmony import */ var _drawStar_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_drawStar_js__WEBPACK_IMPORTED_MODULE_0__);
 
 }();
 /******/ })()

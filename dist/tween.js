@@ -1,1 +1,11 @@
-Tiny.TweenManager.prototype.removeByObject=function(e){for(var t=this.group._tweens,o=Object.keys(t),r=0;r<o.length;r++){var n=t[o[r]];n._object===e&&this.remove(n)}};
+/******/ (function() { // webpackBootstrap
+Tiny.TweenManager.prototype.removeByObject = function (obj) {
+  var tweens = this.group._tweens;
+  var tweenIds = Object.keys(tweens);
+  for (var i = 0; i < tweenIds.length; i++) {
+    var tween = tweens[tweenIds[i]];
+    if (tween._object === obj) this.remove(tween);
+  }
+};
+/******/ })()
+;

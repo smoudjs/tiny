@@ -1,1 +1,173 @@
-!function(){var e={418:function(){Tiny.Object2D.prototype.removeChildren=function(e,t){var r=e||0,n='number'==typeof t?t:this.children.length,i=n-r;if(i>0&&i<=n){for(var a=this.children.splice(r,i),s=0;s<a.length;s++){a[s].parent=void 0}return a}if(0===i&&0===this.children.length)return[];throw new Error('removeChildren: Range Error, numeric values are outside the acceptable range')}}},t={};function r(n){var i=t[n];if(void 0!==i)return i.exports;var a=t[n]={exports:{}};return e[n](a,a.exports,r),a.exports}!function(){"use strict";var e=function(e){var t=new Tiny.CanvasBuffer(1,1),r=t.context;r.fillStyle=e.color||'#000000',r.rect(0,0,1e3,1e3),r.fill(),Tiny.Sprite.call(this,new Tiny.Texture(t.canvas));var n=this.game=e.game;this.visible=!0,this._bounds=new Tiny.Rectangle(0,0,1,1),this.alpha=e.alpha||.5,!1!==e.input&&n.input.add(this,{transparent:e.transparent})};e.prototype=Object.assign(Object.create(Tiny.Sprite.prototype),{constructor:e,updateTransform:function(){var e=this.worldTransform;e.a=this.game.width,e.d=this.game.height,this.worldAlpha=this.alpha},getBounds:function(){return this._bounds.width=this.game.width,this._bounds.height=this.game.height,this._bounds}}),Object.defineProperty(e.prototype,'worldVisible',{get:function(){return this.visible}});var t=function(){Tiny.Object2D.call(this)};(t.prototype=Object.create(Tiny.Object2D.prototype)).constructor=t;var n=function(){};t.prototype.addChildAt=function(e,t){if(t>=0&&t<=this.children.length)return e._RenderLayer_render=e.render,e.render=n,this.children.splice(t,0,e),e;throw new Error(e+'addChildAt: The index '+t+' supplied is out of bounds '+this.children.length)},t.prototype.removeChildAt=function(e){var t=this.getChildAt(e);return this.children.splice(e,1),t.render=t._RenderLayer_render,t._RenderLayer_render=null,t},t.prototype.updateTransform=function(){},t.prototype.renderCanvas=function(e){if(!1!==this.visible&&0!==this.alpha)if(this._cacheAsBitmap)this._renderCachedSprite(e);else{this._mask&&e.maskManager.pushMask(this._mask,e);for(var t=0;t<this.children.length;t++)this.children[t]._RenderLayer_render(e);this._mask&&e.maskManager.popMask(e)}};r(418);Tiny.Opaque=e,Tiny.RenderLayer=t}()}();
+/******/ (function() { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
+
+/***/ 644:
+/***/ (function() {
+
+Tiny.Object2D.prototype.removeChildren = function (beginIndex, endIndex) {
+  var begin = beginIndex || 0;
+  var end = typeof endIndex === 'number' ? endIndex : this.children.length;
+  var range = end - begin;
+  if (range > 0 && range <= end) {
+    var removed = this.children.splice(begin, range);
+    for (var i = 0; i < removed.length; i++) {
+      var child = removed[i];
+      child.parent = undefined;
+    }
+    return removed;
+  } else if (range === 0 && this.children.length === 0) {
+    return [];
+  } else {
+    throw new Error('removeChildren: Range Error, numeric values are outside the acceptable range');
+  }
+};
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+// This entry needs to be wrapped in an IIFE because it needs to be in strict mode.
+!function() {
+"use strict";
+
+;// ./packages/misc/Opaque.js
+var Opaque = function Opaque(options) {
+  // Tiny.BaseObject2D.call(this);
+
+  var canvas = new Tiny.CanvasBuffer(1, 1);
+  var ctx = canvas.context;
+  ctx.fillStyle = options.color || '#000000';
+  ctx.rect(0, 0, 1000, 1000);
+  ctx.fill();
+  Tiny.Sprite.call(this, new Tiny.Texture(canvas.canvas));
+  var game = this.game = options.game;
+  this.visible = true;
+  this._bounds = new Tiny.Rectangle(0, 0, 1, 1);
+
+  // this.color = options.color || '#000000';
+  this.alpha = options.alpha || 0.5;
+  if (options.input !== false) {
+    game.input.add(this, {
+      transparent: options.transparent
+    });
+  }
+};
+Opaque.prototype = Object.assign(Object.create(Tiny.Sprite.prototype), {
+  constructor: Opaque,
+  updateTransform: function updateTransform() {
+    var wt = this.worldTransform;
+    wt.a = this.game.width;
+    wt.d = this.game.height;
+    this.worldAlpha = this.alpha;
+  },
+  getBounds: function getBounds() {
+    this._bounds.width = this.game.width;
+    this._bounds.height = this.game.height;
+    return this._bounds;
+  }
+});
+Object.defineProperty(Opaque.prototype, 'worldVisible', {
+  get: function get() {
+    return this.visible;
+  }
+});
+
+// Opaque.prototype.render = function () {};
+
+// Opaque.prototype.renderCanvas = function (renderSession) {
+//     if (this.visible === false || this.alpha === 0) return;
+
+//     renderSession.context.setTransform(1, 0, 0, 1, 0, 0);
+//     // renderSession.context.resetTransform();
+
+//     renderSession.context.globalAlpha = this.alpha;
+//     renderSession.context.fillStyle = this.color;
+//     renderSession.context.fillRect(
+//         0,
+//         0,
+//         renderSession.context.canvas.width,
+//         renderSession.context.canvas.height
+//     );
+
+//     renderSession.context.globalAlpha = 1;
+// };
+
+
+;// ./packages/misc/RenderLayer.js
+var RenderLayer = function RenderLayer() {
+  Tiny.Object2D.call(this);
+};
+RenderLayer.prototype = Object.create(Tiny.Object2D.prototype);
+RenderLayer.prototype.constructor = RenderLayer;
+var noop = function noop() {};
+RenderLayer.prototype.addChildAt = function (child, index) {
+  if (index >= 0 && index <= this.children.length) {
+    child._RenderLayer_render = child.render;
+    child.render = noop;
+    this.children.splice(index, 0, child);
+    return child;
+  } else {
+    throw new Error(child + 'addChildAt: The index ' + index + ' supplied is out of bounds ' + this.children.length);
+  }
+};
+RenderLayer.prototype.removeChildAt = function (index) {
+  var child = this.getChildAt(index);
+  this.children.splice(index, 1);
+  child.render = child._RenderLayer_render;
+  child._RenderLayer_render = null;
+  return child;
+};
+RenderLayer.prototype.updateTransform = function () {};
+RenderLayer.prototype.renderCanvas = function (renderSession) {
+  if (this.visible === false || this.alpha === 0) return;
+  if (this._cacheAsBitmap) {
+    this._renderCachedSprite(renderSession);
+    return;
+  }
+  if (this._mask) {
+    renderSession.maskManager.pushMask(this._mask, renderSession);
+  }
+  for (var i = 0; i < this.children.length; i++) {
+    this.children[i]._RenderLayer_render(renderSession);
+  }
+  if (this._mask) {
+    renderSession.maskManager.popMask(renderSession);
+  }
+};
+
+// EXTERNAL MODULE: ./packages/misc/extends.js
+var misc_extends = __webpack_require__(644);
+;// ./packages/misc/index.js
+
+
+
+Tiny.Opaque = Opaque;
+Tiny.RenderLayer = RenderLayer;
+}();
+/******/ })()
+;

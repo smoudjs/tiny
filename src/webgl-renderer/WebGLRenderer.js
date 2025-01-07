@@ -377,6 +377,8 @@ function WebGLRenderer( parameters ) {
 
 		this.setViewport( 0, 0, width, height );
 
+		state.resize(width, height)
+
 	};
 
 	this.getDrawingBufferSize = function ( target ) {
@@ -974,6 +976,7 @@ function WebGLRenderer( parameters ) {
 
 	this.render = function ( scene, camera ) {
 
+
 		// let renderTarget, forceClear;
 
 		// if ( arguments[ 2 ] !== undefined ) {
@@ -1003,10 +1006,33 @@ function WebGLRenderer( parameters ) {
 
 		if ( scene.autoUpdate === true ) scene.updateChildren();
 
+		if (!camera) {
+
+			state.setCullFace( CullFaceNone );
+
+			background.render( currentRenderList, scene );
+			render2D(scene);
+
+			// state.buffers.depth.setTest( true );
+			// state.buffers.depth.setMask( true );
+			// state.buffers.color.setMask( true );
+	
+			// state.setPolygonOffset( false );
+	
+			_gl.finish();
+	
+			// bindingStates.resetDefaultState();
+			// _currentMaterialId = - 1;
+			// _currentCamera = null;
+	
+	
+			return
+		}
+
 
 		// update camera matrices and frustum
 
-		if ( camera.parent === null ) camera.updateMatrixWorld();
+		if ( camera.parent === null ) camera.updateTransform();
 
 		// if ( xr.enabled === true && xr.isPresenting === true ) {
 

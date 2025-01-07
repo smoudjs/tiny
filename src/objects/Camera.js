@@ -49,7 +49,7 @@ Camera.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
         }
 
-        this.updateMatrixWorld( true );
+        this.updateTransform( true );
 
         var e = this.matrixWorld.elements;
 
@@ -57,9 +57,9 @@ Camera.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
     },
 
-    updateMatrixWorld: function ( force ) {
+    updateTransform: function ( force ) {
 
-        Object3D.prototype.updateMatrixWorld.call( this, force );
+        Object3D.prototype.updateTransform.call( this, force );
 
         this.matrixWorldInverse.getInverse( this.matrixWorld );
 
