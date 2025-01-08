@@ -1,3 +1,5 @@
+import { WebGLRenderer } from '../WebGLRenderer.js';
+
 /**
  * Base for a common object renderer that can be used as a system renderer plugin.
  *
@@ -72,5 +74,11 @@ Object.assign(ObjectRenderer.prototype, {
         this.renderer = null;
     }
 });
+
+ObjectRenderer.system = {
+    name: 'none'
+};
+
+WebGLRenderer.registerSystem(ObjectRenderer);
 
 export { ObjectRenderer };

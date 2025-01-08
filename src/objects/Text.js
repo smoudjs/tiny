@@ -1,5 +1,5 @@
-import { Sprite } from './Sprite';
-import { Texture } from '../textures/Texture';
+import { Sprite } from './Sprite.js';
+import { Texture } from '../textures/Texture.js';
 
 var Text = function (text, style) {
     this.canvas = document.createElement('canvas');

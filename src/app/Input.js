@@ -1,6 +1,6 @@
-import { registerSystem } from './registrar';
-import { EventTarget } from '../utils/EventTarget';
-import { _Math } from '../math/Math';
+import { registerSystem } from './registrar.js';
+import { EventTarget } from '../utils/EventTarget.js';
+import { _Math } from '../math/Math.js';
 
 var listeningToTouchEvents;
 

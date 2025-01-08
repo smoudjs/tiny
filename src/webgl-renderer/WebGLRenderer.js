@@ -42,8 +42,8 @@ import { WebGLUniforms } from './Uniforms.js';
 import { WebGLUtils } from './Utils.js';
 // import { WebXRManager } from './webxr/WebXRManager.js';
 import { WebGLMaterials } from './Materials.js';
-import { SystemTarget } from '../utils/SystemTarget';
-import { EventTarget } from '../utils/EventTarget';
+import { SystemTarget } from '../utils/SystemTarget.js';
+import { EventTarget } from '../utils/EventTarget.js';
 import { createContext } from './utils/createContext.js';
 
 function createCanvasElement() {
@@ -953,9 +953,7 @@ function WebGLRenderer( parameters ) {
 
 	};
 
-	let currentRenderer;
-
-	if (Tiny.ObjectRenderer) currentRenderer = new Tiny.ObjectRenderer(this);
+	let currentRenderer = this.systems.none;
 
 	this.setObjectRenderer = function(objectRenderer)
     {

@@ -1,6 +1,6 @@
 import { ObjectRenderer } from '../ObjectRenderer.js';
 import { WebGLRenderer } from '../../WebGLRenderer.js';
-import { generateMultiTextureShader } from './generateMultiTextureShader';
+import { generateMultiTextureShader } from './generateMultiTextureShader.js';
 import { checkMaxIfStatmentsInShader } from '../../utils/checkMaxIfStatmentsInShader.js';
 // import settings from '../settings.js';
 import { _Math } from '../../../math/Math.js';
@@ -581,11 +581,7 @@ SpriteRenderer.prototype = Object.assign(Object.create(ObjectRenderer.prototype)
     }
 });
 
-SpriteRenderer.system = {
-    name: 'sprite'
-};
 
-WebGLRenderer.registerSystem(SpriteRenderer);
 
 function BatchBuffer(size) {
     this.vertices = new ArrayBuffer(size);
@@ -635,5 +631,11 @@ function createIndicesForQuads(size) {
 
     return indices;
 }
+
+SpriteRenderer.system = {
+    name: 'sprite'
+};
+
+WebGLRenderer.registerSystem(SpriteRenderer);
 
 export { SpriteRenderer };

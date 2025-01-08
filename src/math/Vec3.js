@@ -1,4 +1,4 @@
-import { clamp } from './MathFunc';
+import { clamp } from './MathFunc.js';
 import { Quat } from './Quat.js';
 
 /**

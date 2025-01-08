@@ -1,6 +1,6 @@
 import { EventTarget } from '../utils/EventTarget.js';
 import { FrontSide, FlatShading, NormalBlending, LessEqualDepth, AddEquation, OneMinusSrcAlphaFactor, SrcAlphaFactor, AlwaysStencilFunc, KeepStencilOp } from '../constants.js';
-import { Cache } from '../loaders/Cache';
+import { Cache } from '../loaders/Cache.js';
 // import { MathUtils } from '../math/MathUtils.js';
 
 let materialId = 0;

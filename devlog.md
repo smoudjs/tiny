@@ -43,6 +43,13 @@ object.on('click', () => {game.input.remove(object)})
 
 ▪️ Add rounded rect - 2nd version, with arc
 
+▪️ Переробити кеш систему - забрати глобальний інстанс - і залишити тільки app.cache
+
+▪️ Забрати можливість вказувати cacheKey як параметр спрайтам, матеріалам, текстурам і т.д. ?? 
+		-- Треба ще подумати над цим
+
+▪️ Не забудь про pretifier або лінтер
+
 
 Systems/App
 	Input

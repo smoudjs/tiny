@@ -1,6 +1,6 @@
-import { LoadingManager } from './LoadingManager';
-import { Texture } from '../textures/Texture';
-import { Cache } from './Cache';
+import { LoadingManager } from './LoadingManager.js';
+import { Texture } from '../textures/Texture.js';
+import { Cache } from './Cache.js';
 
 var ImageLoader = function (resource, cb) {
     // if (Cache["image"][resource.key]) return cb(resource, Cache["image"][resource.key]);

@@ -1,6 +1,6 @@
-import { registerSystem } from '../app/registrar';
-import { EventTarget } from '../utils/EventTarget';
-import { Cache } from './Cache';
+import { registerSystem } from '../app/registrar.js';
+import { EventTarget } from '../utils/EventTarget.js';
+import { Cache } from './Cache.js';
 
 var LoadingManager = function (parent) {
     EventTarget.mixin(this);

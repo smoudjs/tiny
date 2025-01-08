@@ -1,5 +1,6 @@
-import { EventTarget } from '../utils/EventTarget';
-import { systems } from './registrar';
+import { EventTarget } from '../utils/EventTarget.js';
+import { systems } from './registrar.js';
+import { RAF } from './RAF.js';
 
 var noop = function () {};
 
@@ -16,7 +17,7 @@ var App = function (states) {
     this.pauseDuration = 0;
     this.inputView = document.body;
 
-    if (!Tiny.app) Tiny.app = this;
+    if (!App.instance) App.instance = this;
 
     EventTarget.mixin(this);
 
@@ -46,9 +47,7 @@ App.prototype._boot = function () {
         if (system.name) this[system.name] = _sys_;
     }
 
-    if (Tiny.RAF) {
-        this.raf = new Tiny.RAF(this);
-    }
+    this.raf = new RAF(this);
 
     this.boot.call(this.callbackContext);
 
@@ -154,7 +153,7 @@ App.prototype.destroy = function (clearCache) {
 
     this._destroy_cb.call(this.callbackContext);
 
-    if (Tiny.app === this) Tiny.app = null;
+    if (App.instance === this) App.instance = null;
 };
 
 export { App };

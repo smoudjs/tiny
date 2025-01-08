@@ -1,8 +1,8 @@
 import { Vec2 } from '../math/Vec2.js';
 import { Mat3 } from '../math/Mat3.js';
 // import { Entity2D } from './Entity2D';
-import { identityMatrix } from '../math/Mat3';
-import { Rectangle, EmptyRectangle } from '../math/shapes/Rectangle';
+import { identityMatrix } from '../math/Mat3.js';
+import { Rectangle, EmptyRectangle } from '../math/shapes/Rectangle.js';
 import { Container } from './Container.js';
 
 var pi2 = Math.PI * 2;

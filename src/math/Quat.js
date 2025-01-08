@@ -5,7 +5,7 @@
  * @author bhouston / http://clara.io
  */
 
-import { clamp } from './MathFunc';
+import { clamp } from './MathFunc.js';
 
 function Quat(x, y, z, w ) {
 

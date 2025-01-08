@@ -1,7 +1,7 @@
-import { LoadingManager } from './LoadingManager';
-import { ImageLoader } from './ImageLoader';
-import { Texture } from '../textures/Texture';
-import { Cache } from './Cache';
+import { LoadingManager } from './LoadingManager.js';
+import { ImageLoader } from './ImageLoader.js';
+import { Texture } from '../textures/Texture.js';
+import { Cache } from './Cache.js';
 
 var AtlasLoader = function (resource, cb) {
     var key = resource.key;

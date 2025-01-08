@@ -36,10 +36,10 @@ const SystemTarget = {
         obj.prototype.initSystems = function initSystems() {
             this.systems = this.systems || {};
 
-            for (const o in obj._systems) {
-                const ctor = obj._systems[o];
-                let system = (this.systems[o] = new ctor(this));
-                if (ctor.system.rooted) this[o] = system;
+            for (const systemName in obj._systems) {
+                const ctor = obj._systems[systemName];
+                let system = (this.systems[systemName] = new ctor(this));
+                if (ctor.system.rooted) this[systemName] = system;
                 if (ctor.system.states) {
                     for (let i = 0; i < ctor.system.states.length; i++) {
                         const state = ctor.systems.states[i];
@@ -54,9 +54,9 @@ const SystemTarget = {
          *
          */
         obj.prototype.disposeSystems = function disposeSystems() {
-            for (const o in this.systems) {
-                this.systems[o].dispose();
-                this.systems[o] = null;
+            for (const systemName in this.systems) {
+                this.systems[systemName].dispose();
+                this.systems[systemName] = null;
             }
 
             this.systems = null;

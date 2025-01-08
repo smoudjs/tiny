@@ -1,9 +1,9 @@
-import { Object2D } from './Object2D';
-import { Vec2 } from '../math/Vec2';
-import { Color } from '../math/Color';
-import { Cache } from '../loaders/Cache';
-import { Texture } from '../textures/Texture';
-import { NormalBlending } from '../constants';
+import { Object2D } from './Object2D.js';
+import { Vec2 } from '../math/Vec2.js';
+import { Color } from '../math/Color.js';
+import { Cache } from '../loaders/Cache.js';
+import { Texture } from '../textures/Texture.js';
+import { NormalBlending } from '../constants.js';
 
 var Sprite = function (texture, key) {
     Object2D.call(this);

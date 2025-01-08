@@ -1,4 +1,4 @@
-import { registerSystem } from './registrar';
+import { registerSystem } from './registrar.js';
 
 /**
  * Tween.js - Licensed under the MIT license

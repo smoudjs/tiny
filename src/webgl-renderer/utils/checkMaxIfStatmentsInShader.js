@@ -1,4 +1,4 @@
-import { createContext } from './createContext';
+import { createContext } from './createContext.js';
 
 const fragTemplate = [
     'precision mediump float;',

@@ -1,6 +1,6 @@
-import { Vec2 } from '../math/Vec2';
-import { Mat3, identityMatrix } from '../math/Mat3';
-import { EmptyRectangle } from '../math/shapes/Rectangle';
+import { Vec2 } from '../math/Vec2.js';
+import { Mat3, identityMatrix } from '../math/Mat3.js';
+import { EmptyRectangle } from '../math/shapes/Rectangle.js';
 
 var pi2 = Math.PI * 2;
 

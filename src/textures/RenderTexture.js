@@ -1,7 +1,7 @@
-import { Texture } from './Texture';
-import { CanvasBuffer } from '../utils/CanvasBuffer';
-import { Rectangle } from '../math/shapes/Rectangle';
-import { BaseTexture } from './BaseTexture';
+import { Texture } from './Texture.js';
+import { CanvasBuffer } from '../utils/CanvasBuffer.js';
+import { Rectangle } from '../math/shapes/Rectangle.js';
+import { BaseTexture } from './BaseTexture.js';
 
 var RenderTexture = function (width, height, renderer, resolution) {
     this.width = width || 100;
