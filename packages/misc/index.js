@@ -1,6 +1,8 @@
-import { Opaque } from './Opaque.js';
-import { RenderLayer } from './RenderLayer.js';
-import './extends.js';
+// import { Opaque } from './Opaque.js';
+// import { RenderLayer } from './RenderLayer.js';
+// import './extends.js';
 
-Tiny.Opaque = Opaque;
-Tiny.RenderLayer = RenderLayer;
+// Tiny.Opaque = Opaque;
+// Tiny.RenderLayer = RenderLayer;
+
+export { App2D } from './App2D.js';
