@@ -16,15 +16,14 @@ export { Vec2 } from './math/Vec2.js';
  */
 export { App } from './app/App.js';
 export { RAF } from './app/RAF.js';
-export { registerSystem, systems } from './app/registrar.js';
-export { LoadingManager } from './loaders/LoadingManager.js';
+export { LoadingSystem } from './loaders/LoadingSystem.js';
 import './loaders/ImageLoader.js';
 import './loaders/AtlasLoader.js';
 import './loaders/SpritesheetLoader.js';
 export { Cache } from './loaders/Cache.js';
-export { Input } from './app/Input.js';
+export { InputSystem } from './app/Input.js';
 export { Timer } from './app/Timer.js';
-export { TweenManager, Easing, Interpolation } from './app/Tween.js';
+export { TweenSystem, Easing, Interpolation } from './app/Tween.js';
 
 /**
  * 2D modules

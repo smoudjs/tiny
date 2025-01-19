@@ -42,7 +42,7 @@ const SystemTarget = {
                 if (ctor.system.rooted) this[systemName] = system;
                 if (ctor.system.states) {
                     for (let i = 0; i < ctor.system.states.length; i++) {
-                        const state = ctor.systems.states[i];
+                        const state = ctor.system.states[i];
                         this[state].push(system);
                     }
                 }

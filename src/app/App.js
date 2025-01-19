@@ -1,159 +1,143 @@
 import { EventTarget } from '../utils/EventTarget.js';
-import { systems } from './registrar.js';
+import { SystemTarget } from '../utils/SystemTarget.js';
 import { RAF } from './RAF.js';
 
 var noop = function () {};
 
-var App = function (states) {
-    this.callbackContext = this;
-    this.state = 0;
-    this.timeScale = 1;
-    this.time = 0;
-    this.width = 0;
-    this.height = 0;
-    this.systems = [];
-    this.updatable = [];
-    this.paused = false;
-    this.pauseDuration = 0;
-    this.inputView = document.body;
+var App = function () {
+  this.state = 0;
+  this.timeScale = 1;
+  this.time = 0;
+  this.width = 0;
+  this.height = 0;
 
-    if (!App.instance) App.instance = this;
+  this.paused = false;
+  this.pauseDuration = 0;
+  this.inputView = document.body;
 
-    EventTarget.mixin(this);
+  this.updatable = [];
+  this.resizable = [];
 
-    states = states || {};
-    this.boot = states.boot || this.boot || noop;
-    this.preload = states.preload || this.preload || noop;
-    this.create = states.create || this.create || noop;
-    this.update = states.update || this.update || noop;
-    this.render = states.render || this.render || noop;
-    this._resize_cb = states.resize || noop;
-    this._destroy_cb = states.destroy || noop;
+  if (!App.instance) App.instance = this;
 
-    var self = this;
-    setTimeout(function () {
-        self._boot();
-    }, 0);
+  this.boot = this.boot || noop;
+  this.preload = this.preload || noop;
+  this.create = this.create || noop;
+  this.update = this.update || noop;
+  this.render = this.render || noop;
+
+  var self = this;
+  setTimeout(function () {
+    self._boot();
+  }, 0);
 };
 
 App.prototype._boot = function () {
-    for (var i = 0; i < systems.length; i++) {
-        var system = systems[i];
-
-        var _sys_ = new system._class_(this);
-        this.systems.push(_sys_);
-        if (_sys_.update) this.updatable.push(_sys_);
-
-        if (system.name) this[system.name] = _sys_;
-    }
-
-    this.raf = new RAF(this);
-
-    this.boot.call(this.callbackContext);
-
-    var self = this;
-    setTimeout(function () {
-        if (self.load) self._preload();
-        else self._create();
-    }, 0);
+  this.initSystems();
+  this.raf = new RAF(this);
+  this.boot();
+  var self = this;
+  setTimeout(function () {
+    if (self.load) self._preload();
+    else self._create();
+  }, 0);
 };
 
 App.prototype._preload = function () {
-    this.preload.call(this.callbackContext);
-    this.state = 1;
-    this.load.start(this._create);
+  this.preload();
+  this.state = 1;
+  this.load.start(this._create);
 };
 
 App.prototype._create = function () {
-    this.emit('load');
-    this.create.call(this.callbackContext);
+  this.emit('load');
+  this.create();
 
-    if (this.raf) {
-        this.raf.start();
-    }
+  if (this.raf) {
+    this.raf.start();
+  }
 
-    this.state = 2;
+  this.state = 2;
 };
 
 App.prototype.pause = function () {
-    if (this.raf) {
-        this.raf.reset();
-    }
+  if (this.raf) {
+    this.raf.reset();
+  }
 
-    if (!this.paused) {
-        for (var i = 0; i < this.systems.length; i++) {
-            if (this.systems[i].pause) this.systems[i].pause();
-        }
-
-        this.paused = true;
-    }
-};
-
-App.prototype.resume = function () {
-    if (this.raf) {
-        this.raf.reset();
-    }
-
-    if (this.paused) {
-        for (var i = 0; i < this.systems.length; i++) {
-            if (this.systems[i].resume) this.systems[i].resume();
-        }
-
-        this.paused = false;
-    }
-};
-
-App.prototype._update = function (delta) {
-    if (!this.paused) {
-        delta *= this.timeScale;
-        this.time += delta;
-        this.update.call(this.callbackContext, this.time, delta);
-        this.emit('update', delta);
-
-        for (var i = 0; i < this.updatable.length; i++) {
-            this.updatable[i].update(delta);
-        }
-    } else {
-        this.pauseDuration += delta;
-    }
-
-    this.render();
-    this.emit('postrender');
-};
-
-App.prototype.resize = function (width, height) {
-    this.width = width || this.width;
-    this.height = height || this.height;
-
-    if (this.state > 0) {
-        this._resize_cb.call(this.callbackContext, this.width, this.height);
-        this.emit('resize', width, height);
-    }
-
-    var self = this;
-    setTimeout(function () {
-        if (self.input) self.input.updateBounds();
-    }, 0);
-};
-
-App.prototype.destroy = function (clearCache) {
+  if (!this.paused) {
     for (var i = 0; i < this.systems.length; i++) {
-        if (this.systems[i].destroy) this.systems[i].destroy(clearCache);
+      if (this.systems[i].pause) this.systems[i].pause();
     }
 
     this.paused = true;
-
-    if (clearCache) {
-        this.load.clearCache();
-    }
-
-    if (this.raf) {
-        this.raf.stop();
-    }
-
-    this._destroy_cb.call(this.callbackContext);
-
-    if (App.instance === this) App.instance = null;
+  }
 };
+
+App.prototype.resume = function () {
+  if (this.raf) {
+    this.raf.reset();
+  }
+
+  if (this.paused) {
+    for (var i = 0; i < this.systems.length; i++) {
+      if (this.systems[i].resume) this.systems[i].resume();
+    }
+
+    this.paused = false;
+  }
+};
+
+App.prototype._update = function (delta) {
+  if (!this.paused) {
+    delta *= this.timeScale;
+    this.time += delta;
+    this.update(this.time, delta);
+    this.emit('update', delta);
+
+    for (var i = 0; i < this.updatable.length; i++) {
+      this.updatable[i].update(delta);
+    }
+  } else {
+    this.pauseDuration += delta;
+  }
+
+  this.render();
+  this.emit('postrender');
+};
+
+App.prototype.resize = function (width, height) {
+  this.width = width || this.width;
+  this.height = height || this.height;
+
+  if (this.state > 0) {
+    this.emit('resize', width, height);
+  }
+
+  var self = this;
+  setTimeout(function () {
+    for (var i = 0; i < self.resizable.length; i++) {
+      self.resizable[i].resize(width, height);
+    }
+  }, 0);
+};
+
+App.prototype.destroy = function (clearCache) {
+  this.disposeSystems();
+  this.paused = true;
+
+  if (clearCache && this.load) {
+    this.load.clearCache();
+  }
+
+  if (this.raf) {
+    this.raf.stop();
+  }
+
+  if (App.instance === this) App.instance = null;
+};
+
+EventTarget.mixin(App);
+SystemTarget.mixin(App);
 
 export { App };

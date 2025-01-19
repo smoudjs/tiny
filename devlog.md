@@ -50,6 +50,9 @@ object.on('click', () => {game.input.remove(object)})
 
 ▪️ Не забудь про pretifier або лінтер
 
+▪️ Create dom / html component
+
+
 
 Systems/App
 	Input

@@ -673,4 +673,17 @@ Object3D.prototype = Object.assign(Object.create(Container.prototype), {
     }
 });
 
+Object.defineProperty(Object3D.prototype, 'worldVisible', {
+    get: function () {
+        var item = this;
+
+        do {
+            if (!item.visible) return false;
+            item = item.parent;
+        } while (item);
+
+        return true;
+    }
+});
+
 export { Object3D };

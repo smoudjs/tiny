@@ -160,14 +160,15 @@ Sprite.prototype = Object.assign(Object.create(Object2D.prototype), {
         var h0 = height * (1 - this.anchor.y);
         var h1 = height * -this.anchor.y;
 
-        var worldTransform = matrix || this.worldTransform;
+        var worldTransform = (matrix || this.worldTransform).elements;
 
-        var a = worldTransform.a;
-        var b = worldTransform.b;
-        var c = worldTransform.c;
-        var d = worldTransform.d;
-        var tx = worldTransform.tx;
-        var ty = worldTransform.ty;
+        const a = worldTransform[0];
+        const b = worldTransform[1];
+        const c = worldTransform[3];
+        const d = worldTransform[4];
+        const tx = worldTransform[6];
+        const ty = worldTransform[7];
+        
 
         var maxX = -Infinity;
         var maxY = -Infinity;

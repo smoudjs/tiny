@@ -11,15 +11,16 @@ import '@smoud/tiny/webgl-2d';
 
 import App from './App';
 
-import '../tests/sprite';
-import '../tests/text';
-import '../tests/orbitControls';
-import '../tests/mesh';
-import '../tests/instancedMesh';
-import '../tests/graphics';
-import '../tests/graphicsDynamic';
-import '../tests/graphicsAdvanced';
-import '../tests/spriteBlending';
+// import '../tests/sprite';
+// import '../tests/text';
+// import '../tests/orbitControls';
+// import '../tests/mesh';
+// import '../tests/instancedMesh';
+// import '../tests/graphics';
+// import '../tests/graphicsDynamic';
+// import '../tests/graphicsAdvanced';
+// import '../tests/spriteBlending';
+import '../tests/input';
 
 window.addEventListener('load', () => {
     const width = window.innerWidth;

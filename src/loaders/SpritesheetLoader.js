@@ -1,4 +1,4 @@
-import { LoadingManager } from './LoadingManager.js';
+import { LoadingSystem } from './LoadingSystem.js';
 import { ImageLoader } from './ImageLoader.js';
 import { Texture } from '../textures/Texture.js';
 import { Cache } from './Cache.js';
@@ -82,8 +82,8 @@ var SpritesheetLoader = function (resource, cb) {
     });
 };
 
-LoadingManager.spritesheet = SpritesheetLoader;
-LoadingManager.prototype.spritesheet = function (key, source, arg_1, arg_2, totalFrames, duration) {
+LoadingSystem.spritesheet = SpritesheetLoader;
+LoadingSystem.prototype.spritesheet = function (key, source, arg_1, arg_2, totalFrames, duration) {
     var res = {
         src: source,
         key: key,

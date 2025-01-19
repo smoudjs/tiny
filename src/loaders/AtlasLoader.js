@@ -1,4 +1,4 @@
-import { LoadingManager } from './LoadingManager.js';
+import { LoadingSystem } from './LoadingSystem.js';
 import { ImageLoader } from './ImageLoader.js';
 import { Texture } from '../textures/Texture.js';
 import { Cache } from './Cache.js';
@@ -19,8 +19,8 @@ var AtlasLoader = function (resource, cb) {
     });
 };
 
-LoadingManager.atlas = AtlasLoader;
-LoadingManager.prototype.atlas = function (key, source, atlasData) {
+LoadingSystem.atlas = AtlasLoader;
+LoadingSystem.prototype.atlas = function (key, source, atlasData) {
     this.list.push({
         src: source,
         key: key,

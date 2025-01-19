@@ -1,4 +1,4 @@
-import { registerSystem } from './registrar.js';
+import { App } from './App.js';
 
 /**
  * Tween.js - Licensed under the MIT license
@@ -783,13 +783,13 @@ var Interpolation = {
     }
 };
 
-var TweenManager = function (game) {
+var TweenSystem = function (game) {
     this.game = game;
     this.bufferList = [];
     this.group = new _Group();
 };
 
-TweenManager.prototype = {
+TweenSystem.prototype = {
     remove: function (tween) {
         this.group.remove(tween);
     },
@@ -826,6 +826,12 @@ TweenManager.prototype = {
     }
 };
 
-registerSystem('tweens', TweenManager);
+TweenSystem.system = {
+    name: "tweens",
+    rooted: true,
+    states: ["updatable"]
+}
 
-export { TweenManager, Tween, Easing, Interpolation };
+App.registerSystem(TweenSystem);
+
+export { TweenSystem, Tween, Easing, Interpolation };

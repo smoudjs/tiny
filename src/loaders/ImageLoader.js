@@ -1,4 +1,4 @@
-import { LoadingManager } from './LoadingManager.js';
+import { LoadingSystem } from './LoadingSystem.js';
 import { Texture } from '../textures/Texture.js';
 import { Cache } from './Cache.js';
 
@@ -23,8 +23,8 @@ var ImageLoader = function (resource, cb) {
     image.src = resource.src;
 };
 
-LoadingManager.image = ImageLoader;
-LoadingManager.prototype.image = function (key, source) {
+LoadingSystem.image = ImageLoader;
+LoadingSystem.prototype.image = function (key, source) {
     this.list.push({
         src: source,
         key: key,

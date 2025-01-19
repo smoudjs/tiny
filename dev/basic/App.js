@@ -12,8 +12,8 @@ export default class BasicApp extends Tiny.App {
         this.tests.push(Test);
     }
 
-    constructor(width, height, parentNode, states) {
-        super(states);
+    constructor(width, height) {
+        super();
 
         this.width = width;
         this.height = height;
@@ -27,17 +27,15 @@ export default class BasicApp extends Tiny.App {
 
         this.renderer.setClearColor('#232323');
 
-        var view = (this.inputView = this.renderer.domElement);
-
-        parentNode = parentNode ? document.getElementById(parentNode) : document.body;
-        parentNode.appendChild(view);
+        document.body.appendChild(this.renderer.domElement);
+        this.inputView = this.renderer.domElement
         // view.style.position = 'absolute';
 
         // view.style.top = "0px";
         // view.style.left = "0px";
 
         // view.style.transformOrigin = '0% 0%';
-        view.style.perspective = '1000px';
+        // view.style.perspective = '1000px';
 
         this.scene = new Tiny.Scene();
         this.cameraO = new Tiny.OrthographicCamera(1, 1, 1, 1, 0.1, 1000); // OrthographicCamera
@@ -66,8 +64,6 @@ export default class BasicApp extends Tiny.App {
     }
 
     preload() {
-        console.log('preload');
-
         for (let i = 0; i < this.tests.length; i++) {
             if (this.tests[i].preload) this.tests[i].preload();
         }

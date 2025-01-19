@@ -775,14 +775,14 @@ Object.assign(Graphics.prototype, {
         var h0 = bounds.y;
         var h1 = bounds.height + bounds.y;
 
-        var worldTransform = matrix || this.worldTransform;
+        var worldTransform = (matrix || this.worldTransform).elements;
 
-        var a = worldTransform.a;
-        var b = worldTransform.b;
-        var c = worldTransform.c;
-        var d = worldTransform.d;
-        var tx = worldTransform.tx;
-        var ty = worldTransform.ty;
+        const a = worldTransform[0];
+        const b = worldTransform[1];
+        const c = worldTransform[3];
+        const d = worldTransform[4];
+        const tx = worldTransform[6];
+        const ty = worldTransform[7];
 
         var x1 = a * w1 + c * h1 + tx;
         var y1 = d * h1 + b * w1 + ty;

@@ -110,6 +110,21 @@ Object.defineProperty(Object2D.prototype, 'mask', {
     }
 });
 
+Object.defineProperty(Object2D.prototype, 'worldVisible', {
+    get: function () {
+        var item = this;
+
+        do {
+            if (item.isScene) return true;
+            if (!item.visible) return false;
+            item = item.parent;
+        } while (item);
+
+        return true;
+    }
+});
+
+
 Object2D.prototype.dispose = function (options) {
     Container.prototype.dispose.call(this, options);
 
