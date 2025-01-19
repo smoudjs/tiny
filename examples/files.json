@@ -1,6 +1,8 @@
 {
 	"2d": [
 		"2d_basic",
+		"2d_graphics_simple",
+		"2d_graphics_dynamic",
 		"2d_input"
 	],
 	"3d": [

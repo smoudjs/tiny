@@ -38,9 +38,9 @@ export function buildPoly(graphicsData, webGLData) {
         // sort color
         const color = graphicsData.fillColor;
         const alpha = color.a;
-        const r = color.r * alpha;
-        const g = color.g * alpha;
-        const b = color.b * alpha;
+        const r = color.r;
+        const g = color.g;
+        const b = color.b;
 
         const triangles = EarCut(points, null, 2); // EarCut(points, holeArray, 2);
 

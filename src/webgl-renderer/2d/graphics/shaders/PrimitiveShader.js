@@ -1,5 +1,4 @@
 import { GLShader } from '../../core/GLShader.js';
-import { Mat3 } from '../../../../math/Mat3.js';
 
 const vertexSrc = [
     'precision highp float;',

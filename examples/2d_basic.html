@@ -38,10 +38,7 @@
           });
 
           this.renderer.setClearColor('#f4f4f4');
-
-          var view = (this.inputView = this.renderer.domElement);
-          document.body.appendChild(view);
-
+          document.body.appendChild(this.renderer.domElement);
           this.scene = new Scene();
         }
 

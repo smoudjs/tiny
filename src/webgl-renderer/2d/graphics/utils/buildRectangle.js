@@ -24,9 +24,9 @@ export function buildRectangle(graphicsData, webGLData) {
         const color = graphicsData.fillColor;
         const alpha = color.a;
 
-        const r = color.r * alpha;
-        const g = color.g * alpha;
-        const b = color.b * alpha;
+        let r = color.r;
+        let g = color.g;
+        let b = color.b;
 
         const verts = webGLData.points;
         const indices = webGLData.indices;

@@ -60,9 +60,6 @@ var GLShader = function (renderer, vertexSrc, fragmentSrc, uniforms, attributeLo
 	this.uniforms = _uniforms;
 	this._uniforms = _uniforms.map;
 
-
-	window.a = this;
-
 	// console.log(uniformsList);
 
 	// this.uniformData = extractUniforms(gl, this.program);

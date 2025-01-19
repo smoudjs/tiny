@@ -71,9 +71,9 @@ export function buildLine(graphicsData, webGLData) {
     // sort color
     const color = graphicsData.lineColor;
     const alpha = color.a;
-    const r = color.r * alpha;
-    const g = color.g * alpha;
-    const b = color.b * alpha;
+    const r = color.r;
+    const g = color.g;
+    const b = color.b;
 
     let p1x = points[0];
     let p1y = points[1];
