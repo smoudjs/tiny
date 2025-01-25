@@ -4,7 +4,9 @@
 		"2d_graphics_simple",
 		"2d_graphics_dynamic",
 		"2d_input_click",
-		"2d_input_dragging"
+		"2d_input_dragging",
+		"2d_input_pointer-tracker",
+		"2d_input_slider"
 	],
 	"3d": [
 		"3d_geometry_cube"

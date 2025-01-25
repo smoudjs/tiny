@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Tiny 2d - basic</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <link type="text/css" rel="stylesheet" href="main.css" />
+  </head>
+  <body>
+    <!-- Import maps polyfill -->
+    <!-- Remove this when import maps will be widely supported -->
+    <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "@smoud/tiny": "../src/index.js",
+          "@smoud/tiny/misc": "../packages/misc/index.js"
+        }
+      }
+    </script>
+
+    <script type="module">
+      import { App, WebGLRenderer, Scene, Sprite, Object2D, NearestFilter, Text, Graphics } from '@smoud/tiny';
+
+      class Slider extends Object2D {
+        constructor(app, sliderWidth) {
+          super();
+          this.app = app;
+          this.sliderWidth = sliderWidth;
+
+          const slider = new Graphics().beginFill(0x272d37).drawRoundedRect(0, 0, sliderWidth, 10, 5);
+
+          // Draw the handle
+          const handle = new Graphics().beginFill(0xffffff).drawCircle(0, 0, 16);
+
+          handle.position.y = slider.height / 2;
+          handle.position.x = sliderWidth / 2;
+
+          handle.on('down', this.onDragStart, this);
+          slider.on('down', this.onDragStart, this);
+          slider.on('down', this.onDrag, this);
+          this.handle = handle;
+
+          this.add(slider);
+          this.add(handle);
+          app.input.add(slider);
+          app.input.add(handle);
+        }
+
+        onDragStart() {
+          this.app.input.on('move', this.onDrag, this);
+          this.app.input.on('up', this.onDragEnd, this);
+        }
+
+        onDragEnd() {
+          this.app.input.off('move', this.onDrag, this);
+          this.app.input.off('up', this.onDragEnd, this);
+        }
+
+        onDrag(event) {
+          const halfHandleWidth = this.handle.width / 2;
+          const halfHandleWidthScaled = halfHandleWidth * this.worldScaleX;
+          this.handle.position.x =
+            Math.max(
+              halfHandleWidthScaled,
+              Math.min(event.x - this.worldPositionX, this.sliderWidth * this.worldScaleX - halfHandleWidthScaled)
+            ) / this.worldScaleX;
+
+          const value = this.handle.position.x / (this.sliderWidth - halfHandleWidth);
+          this.emit('change', value);
+        }
+
+        get worldPositionX() {
+          // return the 6th element of the worldTransform matrix which is world position x
+          return this.worldTransform.elements[6];
+        }
+
+        get worldScaleX() {
+          // return the 0th element of the worldTransform matrix which is world scale x
+          return this.worldTransform.elements[0];
+        }
+      }
+
+      class MyApp extends App {
+        constructor(width, height) {
+          super();
+
+          this.width = width;
+          this.height = height;
+
+          this.renderer = new WebGLRenderer({
+            width: width,
+            height: height,
+            resolution: 1.25,
+            autoResize: true,
+            antialias: true
+          });
+          this.renderer.setClearColor('#81e3a0');
+
+          this.inputView = this.renderer.domElement;
+          document.body.appendChild(this.renderer.domElement);
+
+          this.scene = new Scene();
+
+          this.dragTarget = null;
+        }
+
+        preload() {
+          this.load.image('rabbitv3', 'textures/bunnies/rabbitv3.png');
+        }
+
+        create() {
+          const bunny = new Sprite(this.cache.texture.rabbitv3);
+
+          bunny.texture.base.minFilter = NearestFilter;
+          bunny.texture.base.magFilter = NearestFilter;
+
+          bunny.scale.set(5);
+          bunny.anchor.set(0.5);
+          bunny.position.set(this.width / 2, this.height / 2);
+
+          this.scene.add(bunny);
+
+          const title = new Text('Drag the handle to change the scale of bunny.', {
+            fill: '#272d37',
+            fontFamily: 'Arial',
+            fontSize: 20,
+            align: 'center'
+          });
+
+          title.position.set(this.width / 2, 40);
+          title.anchor.set(0.5, 0);
+          this.scene.add(title);
+
+          const sliderWidth = 320;
+          const slider = new Slider(this, sliderWidth);
+          slider.position.x = (this.width - sliderWidth) / 2;
+          slider.position.y = this.height * 0.75;
+
+          slider.on('change', (value) => {
+            bunny.scale.set(1 + value * 8);
+          });
+
+          this.scene.add(slider);
+        }
+
+        setPixelRatio(dpr) {
+          this.renderer.setPixelRatio(dpr);
+        }
+
+        render() {
+          this.renderer.render(this.scene);
+        }
+
+        resize(width, height) {
+          super.resize(width, height);
+          this.renderer.resize(width, height);
+        }
+
+        destroy(clearCache) {
+          super.destroy(clearCache);
+          this.scene.destroy();
+          this.renderer.destroy(true);
+        }
+      }
+
+      const app = new MyApp(window.innerWidth, window.innerHeight);
+      window.app = app;
+
+      window.addEventListener('resize', function () {
+        app.resize(window.innerWidth, window.innerHeight);
+      });
+    </script>
+  </body>
+</html>

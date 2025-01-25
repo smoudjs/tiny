@@ -21,7 +21,7 @@
     </script>
 
     <script type="module">
-      import { App, WebGLRenderer, Scene, Text, Graphics, Easing } from '@smoud/tiny';
+      import { App, WebGLRenderer, Scene, Sprite, NearestFilter, Vec2 } from '@smoud/tiny';
 
       class MyApp extends App {
         constructor(width, height) {
@@ -37,73 +37,87 @@
             autoResize: true,
             antialias: true
           });
-          this.renderer.setClearColor('#fbf9dd');
+          this.renderer.setClearColor('#dfeff9');
 
           this.inputView = this.renderer.domElement;
           document.body.appendChild(this.renderer.domElement);
 
           this.scene = new Scene();
+
+          this.dragTarget = null;
+        }
+
+        preload() {
+          this.load.image('rabbitv3_ash', 'textures/bunnies/rabbitv3_ash.png');
+          this.load.image('rabbitv3_batman', 'textures/bunnies/rabbitv3_batman.png');
+          this.load.image('rabbitv3_bb8', 'textures/bunnies/rabbitv3_bb8.png');
+          this.load.image('rabbitv3_neo', 'textures/bunnies/rabbitv3_neo.png');
+          this.load.image('rabbitv3_sonic', 'textures/bunnies/rabbitv3_sonic.png');
+          this.load.image('rabbitv3_spidey', 'textures/bunnies/rabbitv3_spidey.png');
+        }
+
+        createBunny(x, y) {
+          const textureKeys = Object.keys(this.cache.texture);
+          const randomTextureKey = textureKeys[(Math.random() * textureKeys.length) | 0];
+          const randomTexture = this.cache.texture[randomTextureKey];
+
+          randomTexture.base.minFilter = NearestFilter;
+          randomTexture.base.magFilter = NearestFilter;
+
+          const bunny = new Sprite(randomTexture);
+          bunny.anchor.set(0.5);
+          bunny.scale.set(3);
+          bunny.position.set(x, y);
+
+          bunny.draggingStartPosition = new Vec2(0, 0);
+
+          bunny.on('down', (event) => {
+
+            // Make sure the bunny is on top of the other bunnies
+            this.scene.remove(bunny)
+            this.scene.add(bunny)
+
+            // Substract bunny position from event position to get the offset and store it in draggingStartPosition
+            bunny.draggingStartPosition.set(bunny.position.x - event.x, bunny.position.y - event.y);
+            this.dragTarget = bunny;
+            this.onDragStart();
+          });
+
+          this.scene.add(bunny);
+          this.input.add(bunny);
         }
 
         create() {
-          const debugText = (this.debugText = new Text('0:0', { fill: '#232323', fontSize: '20px' }));
-          debugText.position.set(15, 10);
-          this.scene.add(debugText);
-
-          this.input.on('move', function (e) {
-            debugText.setText(Math.floor(e.x) + ' : ' + Math.floor(e.y));
-          }, this);
-
-          this.graphics = new Graphics();
-          this.graphics.beginFill('#0a6dc1');
-          this.graphics.drawCircle(0, 0, 91);
-          this.graphics.beginFill('#04589e');
-          this.graphics.drawCircle(0, 0, 85);
-          for (let i = 0; i < 40; i++) {
-            this.graphics.beginFill('#5500c5', 0.06);
-            this.graphics.drawCircle(0, 0, i * 2);
+          for (let i = 0; i < 30; i++) {
+            const x = Math.floor(50 + Math.random() * (this.width - 100));
+            const y = Math.floor(50 + Math.random() * (this.height - 100));
+            this.createBunny(x, y);
           }
 
-          this.scene.add(this.graphics);
-          this.graphics.position.set(520, 350);
+          this.input.on('up', this.onDragEnd, this);
+          // this.input.on('pointerupoutside', onDragEnd);
+        }
 
-          const text = new Text('Drag me!', { fill: '#ffffff' });
-          text.anchor.set(0.5);
+        onDragEnd() {
+          if (this.dragTarget) {
+            this.dragTarget.opacity = 1;
+            this.dragTarget = null;
+            this.input.off('move', this.onDragMove, this);
+          }
+        }
 
-          this.tweens
-            .add(text.scale)
-            .to({ x: 1.1, y: 1.1 }, 500)
-            .yoyo(true)
-            .easing(Easing.Sinusoidal.InOut)
-            .repeat(Infinity)
-            .start();
+        onDragStart() {
+          this.dragTarget.opacity = 0.5;
+          this.input.on('move', this.onDragMove, this);
+        }
 
-          this.graphics.add(text);
-
-          /**
-           * Dragging logic
-           */
-          let dragging = false;
-          let startOffsetX = 0;
-          let startOffsetY = 0;
-
-          this.input.on('up', function (e) {
-            dragging = false;
-          }, this);
-
-          this.input.on('move', function (e) {
-            if (dragging) {
-              this.graphics.position.set(e.x + startOffsetX, e.y + startOffsetY);
-            }
-          }, this);
-
-          this.graphics.on('down', function (e) {
-            startOffsetX = this.graphics.position.x - e.x;
-            startOffsetY = this.graphics.position.y - e.y;
-            dragging = true;
-          }, this);
-
-          this.input.add(this.graphics);
+        onDragMove(event) {
+          if (this.dragTarget) {
+            this.dragTarget.position.set(
+              event.x + this.dragTarget.draggingStartPosition.x,
+              event.y + this.dragTarget.draggingStartPosition.y
+            );
+          }
         }
 
         setPixelRatio(dpr) {
@@ -127,6 +141,7 @@
       }
 
       const app = new MyApp(window.innerWidth, window.innerHeight);
+      window.app = app;
 
       window.addEventListener('resize', function () {
         app.resize(window.innerWidth, window.innerHeight);
