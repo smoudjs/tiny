@@ -50,7 +50,7 @@ InputSystem.prototype = {
 
     view.addEventListener('mousedown', this.downHandler);
     view.addEventListener('mousemove', this.moveHandler);
-    view.addEventListener('mouseup', this.upHandler);
+    globalThis.addEventListener('mouseup', this.upHandler);
 
     this.resize();
   },
@@ -67,7 +67,7 @@ InputSystem.prototype = {
 
     view.removeEventListener('mousedown', this.downHandler);
     view.removeEventListener('mousemove', this.moveHandler);
-    view.removeEventListener('mouseup', this.upHandler);
+    globalThis.removeEventListener('mouseup', this.upHandler);
   },
 
   add: function (object, options) {

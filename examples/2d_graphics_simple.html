@@ -41,21 +41,16 @@
 
       class MyApp extends App {
         constructor(width, height) {
-          super();
-
-          this.width = width;
-          this.height = height;
-
-          this.renderer = new WebGLRenderer({
-            width: this.width,
-            height: this.height,
+          super({
+            width: width,
+            height: height,
             resolution: 1.25,
             autoResize: true,
-            antialias: true
+            antialias: true,
+            renderer: WebGLRenderer
           });
 
           this.renderer.setClearColor('#000000');
-
           document.body.appendChild(this.renderer.domElement);
 
           this.scene = new Scene();
@@ -154,15 +149,6 @@
           graphics.endFill();
 
           this.scene.add(graphics);
-        }
-
-        render() {
-          this.renderer.render(this.scene);
-        }
-
-        resize(width, height) {
-          super.resize(width, height);
-          this.renderer.resize(width, height);
         }
       }
 

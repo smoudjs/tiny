@@ -25,20 +25,16 @@
 
       class MyApp extends App {
         constructor(width, height) {
-          super();
-
-          this.width = width;
-          this.height = height;
-
-          this.renderer = new WebGLRenderer({
+          super({
             width: width,
             height: height,
             resolution: 1.25,
             autoResize: true,
-            antialias: true
+            antialias: true,
+            renderer: WebGLRenderer
           });
+
           this.renderer.setClearColor(0x1099bb);
-          this.inputView = this.renderer.domElement;
           document.body.appendChild(this.renderer.domElement);
 
           this.scene = new Scene();
@@ -53,15 +49,6 @@
           this.input.on('move', (e) => {
             circle.position.set(e.x, e.y);
           });
-        }
-
-        render() {
-          this.renderer.render(this.scene);
-        }
-
-        resize(width, height) {
-          super.resize(width, height);
-          this.renderer.resize(width, height);
         }
       }
 

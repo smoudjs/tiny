@@ -25,16 +25,12 @@
 
       class MyApp extends App {
         constructor(width, height) {
-          super();
-
-          this.width = width;
-          this.height = height;
-
-          this.renderer = new WebGLRenderer({
-            width: this.width,
-            height: this.height,
+          super({
+            width: width,
+            height: height,
             resolution: 1.25,
-            autoResize: true
+            autoResize: true,
+            renderer: WebGLRenderer
           });
 
           this.renderer.setClearColor('#f4f4f4');
@@ -61,16 +57,6 @@
 
         update(time, delta) {
           this.text.rotation += delta * 0.001;
-        }
-
-        render() {
-          this.renderer.render(this.scene);
-        }
-
-        resize(width, height) {
-          super.resize(width, height);
-
-          this.renderer.resize(width, height);
         }
       }
 

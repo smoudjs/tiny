@@ -102,28 +102,18 @@
       }
 
       class BunnyMarkApp extends App {
-        constructor(width, height, parentNode, states) {
-          super(states);
-
-          // width = 800;
-          // height = 600;
-
-          this.width = width;
-          this.height = height;
-
-          this.renderer = new WebGLRenderer({
-            width: this.width,
-            height: this.height,
+        constructor(width, height) {
+          super({
+            width: width,
+            height: height,
             resolution: 1,
-            autoResize: true
+            autoResize: true,
+            renderer: WebGLRenderer
           });
 
           this.renderer.setClearColor('#ffffff');
 
-          var view = (this.inputView = this.renderer.domElement);
-
-          parentNode = parentNode ? document.getElementById(parentNode) : document.body;
-          parentNode.appendChild(view);
+          document.body.appendChild(this.renderer.domElement);
           // view.style.position = 'absolute';
 
           // view.style.top = "0px";
@@ -269,15 +259,6 @@
           this.bounds.bottom = height;
 
           super.resize(width, height);
-
-          this.renderer.resize(width, height);
-        }
-
-        destroy(clearCache) {
-          super.destroy(clearCache);
-
-          this.scene.destroy();
-          this.renderer.destroy(true);
         }
       }
 

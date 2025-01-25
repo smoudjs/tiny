@@ -7,7 +7,7 @@ var noop = function () {};
 
 var App = function (options) {
   this.state = 0;
-  this.timeScale = getValue(options, 'timeScale', 0);
+  this.timeScale = getValue(options, 'timeScale', 1);
   this.time = 0;
   this.width = getValue(options, 'width', 0);
   this.height = getValue(options, 'height', 0);

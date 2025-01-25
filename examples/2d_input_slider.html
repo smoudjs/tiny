@@ -84,26 +84,19 @@
 
       class MyApp extends App {
         constructor(width, height) {
-          super();
-
-          this.width = width;
-          this.height = height;
-
-          this.renderer = new WebGLRenderer({
+          super({
             width: width,
             height: height,
             resolution: 1.25,
             autoResize: true,
-            antialias: true
+            antialias: true,
+            renderer: WebGLRenderer
           });
-          this.renderer.setClearColor('#81e3a0');
 
-          this.inputView = this.renderer.domElement;
+          this.renderer.setClearColor('#81e3a0');
           document.body.appendChild(this.renderer.domElement);
 
           this.scene = new Scene();
-
-          this.dragTarget = null;
         }
 
         preload() {
@@ -144,25 +137,9 @@
 
           this.scene.add(slider);
         }
-
-        render() {
-          this.renderer.render(this.scene);
-        }
-
-        resize(width, height) {
-          super.resize(width, height);
-          this.renderer.resize(width, height);
-        }
-
-        destroy(clearCache) {
-          super.destroy(clearCache);
-          this.scene.destroy();
-          this.renderer.destroy(true);
-        }
       }
 
       const app = new MyApp(window.innerWidth, window.innerHeight);
-      window.app = app;
 
       window.addEventListener('resize', function () {
         app.resize(window.innerWidth, window.innerHeight);

@@ -89,7 +89,6 @@
           }
 
           this.input.on('up', this.onDragEnd, this);
-          this.input.on('upoutside', this.onDragEnd, this);
         }
 
         onDragEnd() {
@@ -118,7 +117,6 @@
       }
 
       const app = new MyApp(window.innerWidth, window.innerHeight);
-      window.app = app;
 
       window.addEventListener('resize', function () {
         app.resize(window.innerWidth, window.innerHeight);

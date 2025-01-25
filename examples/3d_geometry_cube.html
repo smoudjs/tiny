@@ -38,17 +38,15 @@
       } from '@smoud/tiny';
 
       class MyApp extends App {
-        constructor(width, height, parentNode) {
-          super();
+        constructor(width, height) {
+          super({
+            width: width,
+            height: height,
+            renderer: WebGLRenderer,
+            autoResize: true
+          });
 
-          this.width = width;
-          this.height = height;
-
-          this.renderer = new WebGLRenderer({ width, height });
-
-          var view = this.renderer.domElement;
-
-          document.body.appendChild(view);
+          document.body.appendChild(this.renderer.domElement);
 
           this.scene = new Scene();
           this.camera = new OrthographicCamera();
@@ -85,15 +83,10 @@
           this.box.rotation.x += delta;
           this.box.rotation.z += delta;
         }
-
-        render() {
-          this.renderer.render(this.scene, this.camera);
-        }
-
+        
         resize(width, height) {
           super.resize(width, height);
-          this.renderer.resize(width, height);
-
+          
           const camera = this.camera;
 
           const aspect = width / height;
