@@ -11,9 +11,8 @@ var LoadingSystem = function (parent) {
 };
 
 LoadingSystem.prototype = {
-  clearCache: function () {
+  dispose: function () {
     for (var y in Cache.texture) Cache.texture[y].destroy();
-
     for (var y in Cache) Cache[y] = {};
   },
 

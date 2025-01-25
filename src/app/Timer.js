@@ -100,7 +100,7 @@ TimerSystem.prototype = {
     this.list.push(timer);
     return timer;
   },
-  destroy: function () {
+  dispose: function () {
     this.removeAll();
   }
 };

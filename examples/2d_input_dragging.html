@@ -25,21 +25,16 @@
 
       class MyApp extends App {
         constructor(width, height) {
-          super();
-
-          this.width = width;
-          this.height = height;
-
-          this.renderer = new WebGLRenderer({
+          super({
             width: width,
             height: height,
             resolution: 1.25,
             autoResize: true,
-            antialias: true
+            antialias: true,
+            renderer: WebGLRenderer
           });
-          this.renderer.setClearColor('#dfeff9');
 
-          this.inputView = this.renderer.domElement;
+          this.renderer.setClearColor('#dfeff9');
           document.body.appendChild(this.renderer.domElement);
 
           this.scene = new Scene();
@@ -72,10 +67,9 @@
           bunny.draggingStartPosition = new Vec2(0, 0);
 
           bunny.on('down', (event) => {
-
             // Make sure the bunny is on top of the other bunnies
-            this.scene.remove(bunny)
-            this.scene.add(bunny)
+            this.scene.remove(bunny);
+            this.scene.add(bunny);
 
             // Substract bunny position from event position to get the offset and store it in draggingStartPosition
             bunny.draggingStartPosition.set(bunny.position.x - event.x, bunny.position.y - event.y);
@@ -95,7 +89,7 @@
           }
 
           this.input.on('up', this.onDragEnd, this);
-          // this.input.on('pointerupoutside', onDragEnd);
+          this.input.on('upoutside', this.onDragEnd, this);
         }
 
         onDragEnd() {
@@ -107,8 +101,10 @@
         }
 
         onDragStart() {
-          this.dragTarget.opacity = 0.5;
-          this.input.on('move', this.onDragMove, this);
+          if (this.dragTarget) {
+            this.dragTarget.opacity = 0.5;
+            this.input.on('move', this.onDragMove, this);
+          }
         }
 
         onDragMove(event) {
@@ -118,25 +114,6 @@
               event.y + this.dragTarget.draggingStartPosition.y
             );
           }
-        }
-
-        setPixelRatio(dpr) {
-          this.renderer.setPixelRatio(dpr);
-        }
-
-        render() {
-          this.renderer.render(this.scene);
-        }
-
-        resize(width, height) {
-          super.resize(width, height);
-          this.renderer.resize(width, height);
-        }
-
-        destroy(clearCache) {
-          super.destroy(clearCache);
-          this.scene.destroy();
-          this.renderer.destroy(true);
         }
       }
 

@@ -819,7 +819,7 @@ TweenSystem.prototype = {
         this.group.update(delta);
     },
 
-    destroy: function () {
+    dispose: function () {
         this.bufferList.length = 0;
         this.group.removeAll();
         this.group = null;

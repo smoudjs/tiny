@@ -6,9 +6,9 @@ var listeningToTouchEvents;
 
 var InputSystem = function (app) {
   this.app = app;
-  this.domElement = document.body;
+  this.domElement = app.inputView;
 
-  this.bounds = { x: 0, y: 0, width: 0, height: 0 };
+  this.bounds = { x: 0, y: 0, width: app.width, height: app.height };
   this.candidates = [];
   this.list = [];
 
@@ -18,6 +18,10 @@ var InputSystem = function (app) {
   this.downHandler = this.downHandler.bind(this);
   this.moveHandler = this.moveHandler.bind(this);
   this.upHandler = this.upHandler.bind(this);
+
+  this.updateBounds = this.updateBounds.bind(this);
+
+  app.on('resize', this.resize, this);
   // this.clickHandler.bind(this);
 
   // for (var i = 0; i < InputSystem.systems.length; i++) {
@@ -29,7 +33,13 @@ var InputSystem = function (app) {
 
 InputSystem.prototype = {
   setDOMElement: function (view) {
+    this.removeEvents();
     this.domElement = view || this.domElement;
+    this.addEvents(view);
+  },
+
+  addEvents: function (view) {
+    var view = this.domElement;
 
     view.addEventListener('touchstart', this.downHandler);
     view.addEventListener('touchmove', this.moveHandler);
@@ -43,6 +53,21 @@ InputSystem.prototype = {
     view.addEventListener('mouseup', this.upHandler);
 
     this.resize();
+  },
+
+  removeEvents() {
+    var view = this.domElement;
+
+    view.removeEventListener('touchstart', this.downHandler);
+    view.removeEventListener('touchmove', this.moveHandler);
+    view.removeEventListener('touchend', this.upHandler);
+    view.removeEventListener('touchcancel', this.upHandler);
+
+    // view.removeEventListener('click', this.clickHandler);
+
+    view.removeEventListener('mousedown', this.downHandler);
+    view.removeEventListener('mousemove', this.moveHandler);
+    view.removeEventListener('mouseup', this.upHandler);
   },
 
   add: function (object, options) {
@@ -155,6 +180,7 @@ InputSystem.prototype = {
   downHandler: function (event) {
     this.isDown = true;
     this.lastMove = event;
+    this.updateBounds();
     this.inputHandler('down', event);
   },
 
@@ -191,17 +217,29 @@ InputSystem.prototype = {
 
     if ((listeningToTouchEvents && event instanceof MouseEvent) || coords === null) return null;
 
+    const resolutionMultiplier = 1.0 / this.app.resolution;
+    let widthMultiplier = 1;
+    let heightMultiplier = 1;
+    if (this.domElement.width) widthMultiplier = (this.domElement.width / this.bounds.width) * resolutionMultiplier;
+    if (this.domElement.height) heightMultiplier = (this.domElement.height / this.bounds.height) * resolutionMultiplier;
+
     coords = {
-      x: coords.x - this.bounds.x,
-      y: coords.y - this.bounds.y
+      x: (coords.x - this.bounds.x) * widthMultiplier,
+      y: (coords.y - this.bounds.y) * heightMultiplier
     };
 
     return coords;
   },
 
   resize: function () {
+    clearTimeout(this._timeout);
+    this._timeout = setTimeout(this.updateBounds, 0);
+  },
+
+  updateBounds: function () {
     var bounds = this.bounds;
 
+    //  this.domElement.isConnected - check if this.domElement is in the DOM
     var clientRect = this.domElement.getBoundingClientRect();
 
     bounds.x = clientRect.left;
@@ -210,19 +248,9 @@ InputSystem.prototype = {
     bounds.height = clientRect.height;
   },
 
-  destroy: function () {
-    var view = this.domElement;
-
-    view.removeEventListener('touchstart', this.downHandler);
-    view.removeEventListener('touchmove', this.moveHandler);
-    view.removeEventListener('touchend', this.upHandler);
-    view.removeEventListener('touchcancel', this.upHandler);
-
-    // view.removeEventListener('click', this.clickHandler);
-
-    view.removeEventListener('mousedown', this.downHandler);
-    view.removeEventListener('mousemove', this.moveHandler);
-    view.removeEventListener('mouseup', this.upHandler);
+  dispose: function () {
+    this.removeEvents();
+    this.app.off('resize', this.resize, this);
   }
 };
 
@@ -248,8 +276,7 @@ EventTarget.mixin(InputSystem);
 
 InputSystem.system = {
   name: 'input',
-  rooted: true,
-  states: ['resizable']
+  rooted: true
 };
 
 App.registerSystem(InputSystem);

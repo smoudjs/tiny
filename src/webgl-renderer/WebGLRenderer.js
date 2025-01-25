@@ -8,7 +8,7 @@ import {
 	CullFaceNone,
 	CullFaceBack
 } from '../constants.js';
-import { ceilPow2 } from '../utils/index.js';
+import { ceilPow2, getValue } from '../utils/index.js';
 import { DataTexture } from '../textures/DataTexture.js';
 import { Frustum } from '../math/Frustum.js';
 import { Mat4 } from '../math/Mat4.js';
@@ -60,17 +60,16 @@ function WebGLRenderer( parameters ) {
 
 	parameters = parameters || {};
 
-	const _canvas = parameters.canvas !== undefined ? parameters.canvas : createCanvasElement(),
-		_context = parameters.context !== undefined ? parameters.context : null,
-
-		_alpha = parameters.alpha !== undefined ? parameters.alpha : false,
-		_depth = parameters.depth !== undefined ? parameters.depth : true, // глибина для 3Д - обовязково true, але для 2Д, разом з antialias працюєє гірше
-		_stencil = parameters.stencil !== undefined ? parameters.stencil : true,
-		_antialias = parameters.antialias !== undefined ? parameters.antialias : false,
-		_premultipliedAlpha = parameters.premultipliedAlpha !== undefined ? parameters.premultipliedAlpha : true,
-		_preserveDrawingBuffer = parameters.preserveDrawingBuffer !== undefined ? parameters.preserveDrawingBuffer : false,
-		_powerPreference = parameters.powerPreference !== undefined ? parameters.powerPreference : 'default',
-		_failIfMajorPerformanceCaveat = parameters.failIfMajorPerformanceCaveat !== undefined ? parameters.failIfMajorPerformanceCaveat : false;
+	const _canvas = parameters.canvas !== undefined ? parameters.canvas : createCanvasElement();
+	const _context = getValue(parameters, "context", null);
+	const _alpha = getValue(parameters, "alpha", false);
+	const _depth = getValue(parameters, "depth", true) // глибина для 3Д - обовязково true, але для 2Д, разом з antialias працюєє гірше
+	const _stencil = getValue(parameters, "stencil", true);
+	const _antialias = getValue(parameters, "antialias", false);
+	const _premultipliedAlpha = getValue(parameters, "premultipliedAlpha", true);
+	const _preserveDrawingBuffer = getValue(parameters, "preserveDrawingBuffer", false);
+	const _powerPreference = getValue(parameters, "powerPreference", 'default');
+	const _failIfMajorPerformanceCaveat = getValue(parameters, "failIfMajorPerformanceCaveat", false);
 
 	let currentRenderList = null;
 	let currentRenderState = null;
@@ -323,13 +322,13 @@ function WebGLRenderer( parameters ) {
 
 	};
 
-	this.getPixelRatio = function () {
+	this.getResolution = function () {
 
 		return _pixelRatio;
 
 	};
 
-	this.setPixelRatio = function ( value ) {
+	this.setResolution = function ( value ) {
 
 		if ( value === undefined ) return;
 
@@ -565,7 +564,7 @@ function WebGLRenderer( parameters ) {
 		renderLists.dispose();
 		renderStates.dispose();
 		properties.dispose();
-		cubemaps.dispose();
+		// cubemaps.dispose();
 		objects.dispose();
 		bindingStates.dispose();
 

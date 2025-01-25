@@ -1,22 +1,30 @@
 import { EventTarget } from '../utils/EventTarget.js';
 import { SystemTarget } from '../utils/SystemTarget.js';
 import { RAF } from './RAF.js';
+import { getValue } from '../utils/index.js';
 
 var noop = function () {};
 
-var App = function () {
+var App = function (options) {
   this.state = 0;
-  this.timeScale = 1;
+  this.timeScale = getValue(options, 'timeScale', 0);
   this.time = 0;
-  this.width = 0;
-  this.height = 0;
-
+  this.width = getValue(options, 'width', 0);
+  this.height = getValue(options, 'height', 0);
+  this.resolution = getValue(options, 'resolution', 1);
   this.paused = false;
   this.pauseDuration = 0;
   this.inputView = document.body;
 
+  const RendererClass = getValue(options, 'renderer', null);
+  if (RendererClass) {
+    this.renderer = new RendererClass(options);
+    this.inputView = this.renderer.domElement;
+  } else {
+    this.render = noop;
+  }
+
   this.updatable = [];
-  this.resizable = [];
 
   if (!App.instance) App.instance = this;
 
@@ -24,7 +32,6 @@ var App = function () {
   this.preload = this.preload || noop;
   this.create = this.create || noop;
   this.update = this.update || noop;
-  this.render = this.render || noop;
 
   var self = this;
   setTimeout(function () {
@@ -58,6 +65,10 @@ App.prototype._create = function () {
   }
 
   this.state = 2;
+};
+
+App.prototype.render = function () {
+  this.renderer.render(this.scene, this.camera);
 };
 
 App.prototype.pause = function () {
@@ -114,25 +125,26 @@ App.prototype.resize = function (width, height) {
     this.emit('resize', width, height);
   }
 
-  var self = this;
-  setTimeout(function () {
-    for (var i = 0; i < self.resizable.length; i++) {
-      self.resizable[i].resize(width, height);
-    }
-  }, 0);
+  if (this.renderer) this.renderer.resize(width, height);
 };
 
-App.prototype.destroy = function (clearCache) {
+App.prototype.setResolution = function (resolution) {
+  this.resolution = resolution || this.resolution;
+  if (this.renderer) this.renderer.setResolution(this.resolution);
+  this.emit('resize', this.width, this.height);
+};
+
+App.prototype.destroy = function () {
   this.disposeSystems();
   this.paused = true;
-
-  if (clearCache && this.load) {
-    this.load.clearCache();
-  }
 
   if (this.raf) {
     this.raf.stop();
   }
+
+  if (this.renderer) this.renderer.dispose();
+
+  this.emit('destroy');
 
   if (App.instance === this) App.instance = null;
 };
